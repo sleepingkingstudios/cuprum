@@ -7,6 +7,9 @@ Gemfile.lock
 
 # Ignore local and generated documentation.
 /coverage
+/doc
+.yardoc
+.yardopts
 
 # Ignore temporary files.
 *.gem
