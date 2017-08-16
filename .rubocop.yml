@@ -1,0 +1,85 @@
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.4
+  Include:
+    - 'lib/**/*.rb'
+    - 'spec/**/*.rb'
+  Exclude:
+    - 'tmp/**/*'
+    - 'gemfiles/vendor/**/*'
+    - 'spec/rails*/bin/*'
+    - 'spec/rails*/config/**/*'
+    - 'vendor/**/*'
+
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+  IndentationWidth: ~
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Performance/RedundantBlockCall:
+  # Incompatible with documentation/testing requirement of explicitly defining
+  # a block argument.
+  Enabled: false
+
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/ClassAndModuleChildren:
+  # Checks the style of children definitions at classes and modules.
+  #
+  # Our preferred style is compact-plus-one, which does not match any of the
+  # existing styles, so we disable this cop.
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/FileName:
+  Exclude:
+    - Gemfile
+
+Style/FrozenStringLiteralComment:
+  # Incompatible with file location comments.
+  Enabled: false
+
+Style/HashSyntax:
+  EnforcedStyle: hash_rockets
+
+Style/MethodDefParentheses:
+  EnforcedStyle: require_no_parentheses_except_multiline
+
+Style/MultilineBlockChain:
+  # Incompatible with operation then/else syntax.
+  Enabled: false
+
+Style/NestedParenthesizedCalls:
+  # This cop is excessively strict, especially in cases where the nested method
+  # call has only one argument, e.g. outer_method(inner_method arg). Adding the
+  # inner parentheses reduces readability.
+  Enabled: false
+
+Style/NumericLiterals:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/SingleLineBlockParams:
+  # Prefer descriptive block param names.
+  Enabled: false
+
+Style/TrailingUnderscoreVariable:
+  # Prefer more explicit syntax when ignoring destructured results.
+  Enabled: false

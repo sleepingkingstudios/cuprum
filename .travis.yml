@@ -1,0 +1,12 @@
+# Build Options
+language: ruby
+rvm:
+- 2.4.1
+before_script:
+- cp .rspec.example .rspec
+script:
+- bundle exec thor ci:steps
+
+# Travis-CI Configuration
+cache: bundler
+sudo:  false # Enable containerized builds.
