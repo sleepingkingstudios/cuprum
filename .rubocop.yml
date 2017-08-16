@@ -35,8 +35,25 @@ Performance/RedundantBlockCall:
   # a block argument.
   Enabled: false
 
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/ExampleWording:
+  Enabled: false
+
 RSpec/HookArgument:
   EnforcedStyle: example
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/RepeatedDescription:
+  # Does not recognize :wrap_context nodes.
+  Enabled: false
+
+RSpec/RepeatedExample:
+  # Does not recognize :wrap_context nodes.
+  Enabled: false
 
 Style/Alias:
   EnforcedStyle: prefer_alias_method
