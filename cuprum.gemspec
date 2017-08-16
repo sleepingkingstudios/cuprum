@@ -20,4 +20,7 @@ Gem::Specification.new do |gem|
 
   gem.require_path = 'lib'
   gem.files        = Dir["lib/**/*.rb", "LICENSE", "*.md"]
+
+  gem.add_development_dependency 'rspec',                       '~> 3.6'
+  gem.add_development_dependency 'rspec-sleeping_king_studios', '>= 2.3.0'
 end # gemspec

@@ -1,8 +1,10 @@
 # Ignore local configuration files.
+/.rspec
 /.ruby-gemset
 /.ruby-version
 Gemfile.lock
 
 # Ignore temporary files.
 *.gem
+/spec/examples.txt
 /tmp
