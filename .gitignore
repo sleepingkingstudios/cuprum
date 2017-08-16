@@ -5,6 +5,9 @@
 /.ruby-version
 Gemfile.lock
 
+# Ignore local and generated documentation.
+/coverage
+
 # Ignore temporary files.
 *.gem
 /spec/examples.txt
