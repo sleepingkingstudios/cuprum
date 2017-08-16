@@ -1,0 +1,23 @@
+$: << './lib'
+
+require 'cuprum/version'
+
+Gem::Specification.new do |gem|
+  gem.name        = 'cuprum'
+  gem.version     = Cuprum::VERSION
+  gem.date        = Time.now.utc.strftime "%Y-%m-%d"
+  gem.summary     = 'A lightweight, functional-lite toolkit.'
+
+  description = <<-DESCRIPTION
+    A lightweight, functional-lite toolkit for making business logic a
+    first-class citizen of your application.
+  DESCRIPTION
+  gem.description = description.strip.gsub(/\n +/, ' ')
+  gem.authors     = ['Rob "Merlin" Smith']
+  gem.email       = ['merlin@sleepingkingstudios.com']
+  gem.homepage    = 'http://sleepingkingstudios.com'
+  gem.license     = 'MIT'
+
+  gem.require_path = 'lib'
+  gem.files        = Dir["lib/**/*.rb", "LICENSE", "*.md"]
+end # gemspec
