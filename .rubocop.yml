@@ -35,6 +35,9 @@ Performance/RedundantBlockCall:
   # a block argument.
   Enabled: false
 
+RSpec/HookArgument:
+  EnforcedStyle: example
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 
