@@ -7,7 +7,6 @@ module Cuprum
     # @return [Object] the value returned by calling the function.
     attr_accessor :value
 
-    # @param [Array] The errors (if any) generated when the function was called.
     attr_writer :errors
 
     # @return [Array] the errors (if any) generated when the function was
