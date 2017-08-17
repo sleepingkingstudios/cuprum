@@ -5,6 +5,7 @@ unless ENV['COVERAGE'] == 'false'
 end # unless
 
 require 'rspec/sleeping_king_studios/all'
+require 'byebug'
 
 # Isolated namespace for defining spec-only or transient objects.
 module Spec; end
