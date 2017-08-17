@@ -1,5 +1,3 @@
-# lib/cuprum/function.rb
-
 require 'cuprum/result'
 
 module Cuprum
