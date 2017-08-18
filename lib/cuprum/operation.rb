@@ -2,6 +2,30 @@ require 'cuprum/function'
 
 module Cuprum
   # Functional object that with syntactic sugar for tracking the last result.
+  #
+  # An Operation is like a Function, but with an additional trick of tracking
+  # its own most recent execution result. This allows us to simplify some
+  # conditional logic, especially boilerplate code used to interact with
+  # frameworks.
+  #
+  # @example
+  #   def create
+  #     operation = CreateBookOperation.new.call(book_params)
+  #
+  #     if operation.success?
+  #       redirect_to(operation.value)
+  #     else
+  #       @book = operation.value
+  #
+  #       render :new
+  #     end # if-else
+  #   end # create
+  #
+  # Like a Function, an Operation can be defined directly by passing an
+  # implementation block to the constructor or by creating a subclass that
+  # overwrites the #process method.
+  #
+  # @see Cuprum::Function
   class Operation < Cuprum::Function
     # @return [Cuprum::Result] The result from the most recent call of the
     #   operation.
