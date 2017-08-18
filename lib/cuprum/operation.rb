@@ -9,7 +9,7 @@ module Cuprum
 
     # (see Cuprum::Function#call)
     def call *args, &block
-      @result = nil # Clear reference to most recent result.
+      reset! if called? # Clear reference to most recent result.
 
       @result = super
     end # method call
@@ -32,6 +32,18 @@ module Cuprum
     def failure?
       called? ? result.failure? : false
     end # method success?
+
+    # Clears the reference to the most recent call of the operation, if any.
+    # This allows the result and any referenced data to be garbage collected.
+    # Use this method to clear any instance variables or state internal to the
+    # operation (an operation should never have external state apart from the
+    # last result).
+    #
+    # If the operation cannot be run more than once, this method should raise an
+    # error.
+    def reset!
+      @result = nil
+    end # method reset
 
     # @return [Boolean] true if the most recent result had no errors, or false
     #   if the most recent result had errors or if the operation has not been

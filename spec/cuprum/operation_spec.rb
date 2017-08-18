@@ -108,6 +108,18 @@ RSpec.describe Cuprum::Operation do
     end # wrap_context
   end # describe
 
+  describe '#reset!' do
+    it { expect(instance).to respond_to(:reset!).with(0).arguments }
+
+    wrap_context 'when the function is initialized with a block' do
+      it 'should clear the result' do
+        instance.call
+
+        expect { instance.reset! }.to change(instance, :called?).to be false
+      end # it
+    end # wrap_context
+  end # describe
+
   describe '#result' do
     include_examples 'should have reader', :result, nil
 
