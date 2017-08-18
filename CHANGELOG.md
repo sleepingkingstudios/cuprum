@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+The "Fully Armed and Operational" Update.
+
+### Operations
+
+Implemented `Cuprum::Operation`. As a Function, but with an additional trick of tracking its own most recent execution result.
+
 ## 0.1.0
 
 Initial version.
