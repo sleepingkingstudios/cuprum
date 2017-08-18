@@ -8,7 +8,7 @@ module Cuprum
     # Major version.
     MAJOR = 0
     # Minor version.
-    MINOR = 1
+    MINOR = 2
     # Patch version.
     PATCH = 0
     # Prerelease version.
