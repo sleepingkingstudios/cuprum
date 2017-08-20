@@ -141,6 +141,63 @@ module Spec::Examples
       end # describe
 
       describe '#chain' do
+        include_context 'when the function is initialized with a block'
+
+        shared_context 'when the function is failing' do
+          let(:expected_errors) do
+            ['errors.messages.unknown']
+          end # let
+          let(:last_success) { false }
+          let(:implementation) do
+            called   = called_functions
+            messages = expected_errors
+            returned = value
+
+            lambda do
+              called << 'first function'.freeze
+
+              messages.each do |message|
+                errors << message
+              end # each
+
+              [returned]
+            end # lambda
+          end # let
+        end # shared_context
+
+        shared_context 'when a previous function is failing' do
+          let(:expected_errors) do
+            ['errors.messages.unknown']
+          end # let
+          let(:expected_called) { super() << 'rescue function'.freeze }
+          let(:expected_value)  { super() << 'rescue value'.freeze }
+          let(:last_success) { true }
+          let(:implementation) do
+            called   = called_functions
+            messages = expected_errors
+            returned = value
+
+            lambda do
+              called << 'first function'.freeze
+
+              messages.each do |message|
+                errors << message
+              end # each
+
+              [returned]
+            end # lambda
+          end # let
+          let(:instance) do
+            called = called_functions
+
+            super().chain do |result|
+              called << 'rescue function'.freeze
+
+              Cuprum::Result.new(result.value + ['rescue value'.freeze])
+            end # chain
+          end # let
+        end # shared_context
+
         shared_context 'when the function has one chained function' do
           let(:expected_called) do
             super() << 'second function'.freeze
@@ -194,24 +251,24 @@ module Spec::Examples
           end # let
         end # shared_context
 
+        shared_examples 'should copy the function' do
+          it 'should copy the function' do
+            copy = chain_function(other_function)
+
+            expect(copy).to be_a described_class
+            expect(copy).not_to be instance
+          end # it
+        end # shared_examples
+
+        shared_examples 'should call each chained function' do
+          it 'should call each chained function' do
+            chain_function(other_function).call
+
+            expect(called_functions).to be == expected_called
+          end # it
+        end # shared_examples
+
         shared_examples 'should chain the function' do
-          shared_examples 'should copy the function' do
-            it 'should copy the function' do
-              copy = chain_function(other_function)
-
-              expect(copy).to be_a described_class
-              expect(copy).not_to be instance
-            end # it
-          end # shared_examples
-
-          shared_examples 'should call each chained function' do
-            it 'should call each chained function' do
-              chain_function(other_function).call
-
-              expect(called_functions).to be == expected_called
-            end # it
-          end # shared_examples
-
           describe 'should chain the function' do
             let(:other_value)     { 'last value'.freeze }
             let(:expected_called) { super() << 'last function'.freeze }
@@ -230,7 +287,7 @@ module Spec::Examples
               end # let
 
               def chain_function other_function
-                instance.chain(&other_function)
+                instance.chain(:on => conditional, &other_function)
               end # method chain_function
 
               include_examples 'should copy the function'
@@ -238,9 +295,10 @@ module Spec::Examples
               include_examples 'should call each chained function'
 
               it 'should return the function result' do
-                result = instance.chain(other_function).call
+                result = chain_function(other_function).call
 
                 expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be true
                 expect(result.value).to be == expected_value
               end # it
             end # describe
@@ -258,7 +316,7 @@ module Spec::Examples
               end # let
 
               def chain_function other_function
-                instance.chain(&other_function)
+                instance.chain(:on => conditional, &other_function)
               end # method chain_function
 
               include_examples 'should copy the function'
@@ -266,9 +324,10 @@ module Spec::Examples
               include_examples 'should call each chained function'
 
               it 'should return the previous result' do
-                result = instance.chain(other_function).call
+                result = chain_function(other_function).call
 
                 expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be last_success
                 expect(result.value).to be == expected_value
               end # it
             end # describe
@@ -287,7 +346,7 @@ module Spec::Examples
               end # let
 
               def chain_function other_function
-                instance.chain(other_function)
+                instance.chain(other_function, :on => conditional)
               end # method chain_function
 
               include_examples 'should copy the function'
@@ -295,9 +354,109 @@ module Spec::Examples
               include_examples 'should call each chained function'
 
               it 'should return the function result' do
-                result = instance.chain(other_function).call
+                result = chain_function(other_function).call
 
                 expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be true
+                expect(result.value).to be == expected_value
+              end # it
+            end # describe
+          end # describe
+        end # shared_examples
+
+        shared_examples 'should chain but not call the function' do
+          describe 'should chain but not call the function' do
+            let(:other_value) { 'last value'.freeze }
+
+            describe 'with a block that returns a result' do
+              let(:other_function) do
+                called   = called_functions
+                returned = other_value
+
+                lambda do |result|
+                  # :nocov:
+                  called << 'last function'.freeze
+
+                  Cuprum::Result.new(result.value + [returned])
+                  # :nocov:
+                end # lambda
+              end # let
+
+              def chain_function other_function
+                instance.chain(:on => conditional, &other_function)
+              end # method chain_function
+
+              include_examples 'should copy the function'
+
+              include_examples 'should call each chained function'
+
+              it 'should return the previous result' do
+                result = chain_function(other_function).call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be last_success
+                expect(result.value).to be == expected_value
+              end # it
+            end # describe
+
+            describe 'with a block that returns a value' do
+              let(:other_function) do
+                called   = called_functions
+                returned = other_value
+
+                lambda do |result|
+                  # :nocov:
+                  called << 'last function'.freeze
+
+                  result.value + [returned]
+                  # :nocov:
+                end # lambda
+              end # let
+
+              def chain_function other_function
+                instance.chain(:on => conditional, &other_function)
+              end # method chain_function
+
+              include_examples 'should copy the function'
+
+              include_examples 'should call each chained function'
+
+              it 'should return the previous result' do
+                result = chain_function(other_function).call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be last_success
+                expect(result.value).to be == expected_value
+              end # it
+            end # describe
+
+            describe 'with a function' do
+              let(:other_function) do
+                called   = called_functions
+                returned = other_value
+
+                Cuprum::Function.new do |result|
+                  # :nocov:
+                  called << 'last function'.freeze
+
+                  result.value << returned
+                  # :nocov:
+                end # function
+              end # let
+
+              def chain_function other_function
+                instance.chain(other_function, :on => conditional)
+              end # method chain_function
+
+              include_examples 'should copy the function'
+
+              include_examples 'should call each chained function'
+
+              it 'should return the previous result' do
+                result = chain_function(other_function).call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.success?).to be last_success
                 expect(result.value).to be == expected_value
               end # it
             end # describe
@@ -308,25 +467,72 @@ module Spec::Examples
         let(:value)            { 'first value'.freeze }
         let(:expected_value)   { [value] }
         let(:expected_called)  { ['first function'.freeze] }
-        let(:instance) do
+        let(:conditional)      { nil }
+        let(:last_success)     { true }
+        let(:implementation) do
           called   = called_functions
           returned = value
 
-          described_class.new do
+          lambda do
             called << 'first function'.freeze
 
             [returned]
-          end # new
+          end # lambda
         end # let
 
         it 'should define the method' do
           expect(instance).
             to respond_to(:chain).
             with(0..1).arguments.
+            and_keywords(:on).
             and_a_block
         end # it
 
         include_examples 'should chain the function'
+
+        describe 'with :on => :failure' do
+          let(:conditional) { :failure }
+
+          include_examples 'should chain but not call the function'
+        end # describe
+
+        describe 'with :on => :success' do
+          let(:conditional) { :success }
+
+          include_examples 'should chain the function'
+        end # describe
+
+        wrap_context 'when the function is failing' do
+          include_examples 'should chain the function'
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should chain the function'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should chain but not call the function'
+          end # describe
+        end # wrap_context
+
+        wrap_context 'when a previous function is failing' do
+          include_examples 'should chain the function'
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should chain but not call the function'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should chain the function'
+          end # describe
+        end # wrap_context
 
         wrap_context 'when the function has one chained function' do
           include_examples 'should chain the function'

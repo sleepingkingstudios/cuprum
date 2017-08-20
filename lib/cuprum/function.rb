@@ -116,6 +116,13 @@ module Cuprum
     # chained function(s). This creates and modifies a copy of the current
     # function.
     #
+    # @param on [Symbol] Sets a condition on when the chained function can run,
+    #   based on the status of the previous function. Valid values are :success
+    #   and :failure, and will constrain the function to run only if the
+    #   previous function succeeded or failed, respectively. If no value is
+    #   given, the function will run whether the previous function was a success
+    #   or a failure.
+    #
     # @overload chain(function)
     #   The function will be passed the #value of the previous function result
     #   as its parameter, and the result of the chained function will be
@@ -139,11 +146,13 @@ module Cuprum
     #     function.
     #
     # @return [Cuprum::Function] the chained function.
-    def chain function = nil, &block
+    def chain function = nil, on: nil, &block
       proc = block ? block : ->(result) { function.call(result) }
+      hsh  = { :proc => proc }
+      hsh[:on] = on if on
 
       clone.tap do |fn|
-        fn.chained_functions << { :proc => proc }
+        fn.chained_functions << hsh
       end # tap
     end # method chain
 
@@ -151,6 +160,8 @@ module Cuprum
 
     def call_chained_functions
       chained_functions.reduce(yield) do |result, hsh|
+        next result if skip_chained_function?(result, :on => hsh[:on])
+
         value = hsh.fetch(:proc).call(result)
 
         value_is_result?(value) ? value : result
@@ -168,6 +179,15 @@ module Cuprum
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
     end # method process
+
+    def skip_chained_function? last_result, on:
+      case on
+      when :success
+        !last_result.success?
+      when :failure
+        !last_result.failure?
+      end # case
+    end # method skip_chained_function?
 
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
