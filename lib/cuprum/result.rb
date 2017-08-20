@@ -4,16 +4,20 @@ module Cuprum
   # Data object that encapsulates the result of calling a Cuprum function or
   # operation.
   class Result
+    # @param value [Object] The value returned by calling the function.
+    # @param errors [Array] The errors (if any) generated when the function was
+    #   called.
+    def initialize value = nil, errors: []
+      @value  = value
+      @errors = errors
+    end # constructor
+
     # @return [Object] the value returned by calling the function.
     attr_accessor :value
 
-    attr_writer :errors
-
     # @return [Array] the errors (if any) generated when the function was
     #   called.
-    def errors
-      @errors ||= []
-    end # method errors
+    attr_accessor :errors
 
     # @return [Boolean] false if the function did not generate any errors,
     #   otherwise true.
