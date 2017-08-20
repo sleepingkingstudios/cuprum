@@ -100,14 +100,66 @@ module Cuprum
     #     constructor or the #process method was overriden by a Function
     #     subclass.
     def call *args, &block
-      Cuprum::Result.new.tap do |result|
-        @errors = result.errors
+      call_chained_functions do
+        Cuprum::Result.new.tap do |result|
+          @errors = result.errors
 
-        result.value = process(*args, &block)
+          result.value = process(*args, &block)
 
-        @errors = nil
-      end # tap
+          @errors = nil
+        end # tap
+      end # call_chained_functions
     end # method call
+
+    # Registers a function or block to run after the current function, or after
+    # the last chained function if the current function already has one or more
+    # chained function(s). This creates and modifies a copy of the current
+    # function.
+    #
+    # @overload chain(function)
+    #   The function will be passed the #value of the previous function result
+    #   as its parameter, and the result of the chained function will be
+    #   returned (or passed to the next chained function, if any).
+    #
+    #   @param function [Cuprum::Function] The function to call after the
+    #     current or last chained function.
+    #
+    # @overload chain(&block)
+    #   The block will be passed the #result of the previous function as its
+    #   parameter. If your use case depends on the status of the previous
+    #   function or on any errors generated, use the block form of #chain.
+    #
+    #   If the block returns a Cuprum::Result (or an object responding to #value
+    #   and #success?), the block result will be returned (or passed to the next
+    #   chained function, if any). If the block returns any other value
+    #   (including nil), the #result of the previous function will be returned
+    #   or passed to the next function.
+    #
+    #   @yieldparam result [Cuprum::Result] The #result of the previous
+    #     function.
+    #
+    # @return [Cuprum::Function] the chained function.
+    def chain function = nil, &block
+      proc = block ? block : ->(result) { function.call(result) }
+
+      clone.tap do |fn|
+        fn.chained_functions << { :proc => proc }
+      end # tap
+    end # method chain
+
+    protected
+
+    def call_chained_functions
+      chained_functions.reduce(yield) do |result, hsh|
+        value = hsh.fetch(:proc).call(result)
+
+        value_is_result?(value) ? value : result
+      end # reduce
+    end # method call_chained_functions
+
+    def chained_functions
+      @chained_functions ||= []
+    end # method chained_functions
 
     private
 
@@ -116,5 +168,9 @@ module Cuprum
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
     end # method process
+
+    def value_is_result? value
+      value.respond_to?(:value) && value.respond_to?(:success?)
+    end # method value
   end # class
 end # module
