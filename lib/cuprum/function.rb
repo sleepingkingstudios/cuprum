@@ -147,14 +147,39 @@ module Cuprum
     #
     # @return [Cuprum::Function] the chained function.
     def chain function = nil, on: nil, &block
-      proc = block ? block : ->(result) { function.call(result) }
-      hsh  = { :proc => proc }
-      hsh[:on] = on if on
+      proc = convert_function_or_proc_to_proc(block || function)
 
-      clone.tap do |fn|
-        fn.chained_functions << hsh
-      end # tap
+      chain_function(proc, :on => on)
     end # method chain
+
+    def else function = nil, &block
+      proc = convert_function_or_proc_to_proc(block || function)
+
+      chain_function(proc, :on => :failure)
+    end # method else
+
+    # Shorthand for function.chain(:on => :success). Registers a function or
+    # block to run after the current function. The chained function will only
+    # run if the previous function was successfully run.
+    #
+    # @overload then(function)
+    #
+    #   @param function [Cuprum::Function] The function to call after the
+    #     current or last chained function.
+    #
+    # @overload then(&block)
+    #
+    #   @yieldparam result [Cuprum::Result] The #result of the previous
+    #     function.
+    #
+    # @return [Cuprum::Function] the chained function.
+    #
+    # @see #chain
+    def then function = nil, &block
+      proc = convert_function_or_proc_to_proc(block || function)
+
+      chain_function(proc, :on => :success)
+    end # method then
 
     protected
 
@@ -168,6 +193,15 @@ module Cuprum
       end # reduce
     end # method call_chained_functions
 
+    def chain_function proc, on: nil
+      hsh = { :proc => proc }
+      hsh[:on] = on if on
+
+      clone.tap do |fn|
+        fn.chained_functions << hsh
+      end # tap
+    end # method chain_function
+
     def chained_functions
       @chained_functions ||= []
     end # method chained_functions
@@ -175,6 +209,12 @@ module Cuprum
     private
 
     attr_reader :errors
+
+    def convert_function_or_proc_to_proc function_or_proc
+      return function_or_proc if function_or_proc.is_a?(Proc)
+
+      ->(result) { function_or_proc.call(result) }
+    end # method convert_function_or_proc_to_proc
 
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
