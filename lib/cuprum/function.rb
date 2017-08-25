@@ -8,13 +8,13 @@ module Cuprum
   # by defining a subclass of Function and implementing the #process method.
   #
   # @example A Function with a block
-  #   double_function = Function.new { |int| 2 * int }
+  #   double_function = Cuprum::Function.new { |int| 2 * int }
   #   result          = double_function.call(5)
   #
   #   result.value #=> 10
   #
   # @example A Function subclass
-  #   class MultiplyFunction
+  #   class MultiplyFunction < Cuprum::Function
   #     def initialize multiplier
   #       @multiplier = multiplier
   #     end # constructor
@@ -32,7 +32,7 @@ module Cuprum
   #   result.value #=> 15
   #
   # @example A Function with errors
-  #   class DivideFunction
+  #   class DivideFunction < Cuprum::Function
   #     def initialize divisor
   #       @divisor = divisor
   #     end # constructor
@@ -61,6 +61,49 @@ module Cuprum
   #
   #   result.errors #=> ['errors.messages.divide_by_zero']
   #   result.value  #=> nil
+  #
+  # @example Function Chaining
+  #   class AddFunction < Cuprum::Function
+  #     def initialize addend
+  #       @addend = addend
+  #     end # constructor
+  #
+  #     private
+  #
+  #     def process int
+  #       int + @addend
+  #     end # method process
+  #   end # class
+  #
+  #   double_and_add_one = MultiplyFunction.new(2).chain(AddFunction.new(1))
+  #   result             = double_and_add_one(5)
+  #
+  #   result.value #=> 5
+  #
+  # @example Conditional Chaining With #then And #else
+  #   class EvenFunction < Cuprum::Function
+  #     private
+  #
+  #     def process int
+  #       errors << 'errors.messages.not_even' unless int.even?
+  #
+  #       int
+  #     end # method process
+  #   end # class
+  #
+  #   # The next step in a Collatz sequence is determined as follows:
+  #   # - If the number is even, divide it by 2.
+  #   # - If the number is odd, multiply it by 3 and add 1.
+  #   collatz_function =
+  #     EvenFunction.new.
+  #       then(DivideFunction.new(2)).
+  #       else(MultiplyFunction.new(3).chain(AddFunction.new(1)))
+  #
+  #   result = collatz_function.new(5)
+  #   result.value #=> 16
+  #
+  #   result = collatz_function.new(16)
+  #   result.value #=> 8
   class Function
     # Error class for calling a Function that was not given a definition block
     # or have a #process method defined.
@@ -83,7 +126,7 @@ module Cuprum
       define_singleton_method :process, &implementation if implementation
     end # method initialize
 
-    # @overload call(*arguments, *keywords, &block)
+    # @overload call(*arguments, **keywords, &block)
     #   Executes the logic encoded in the constructor block, or the #process
     #   method if no block was passed to the constructor.
     #
@@ -96,7 +139,7 @@ module Cuprum
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
     #
-    #   @raise [NotImplementedError] unless a block was passed to the
+    #   @raise [NotImplementedError] Unless a block was passed to the
     #     constructor or the #process method was overriden by a Function
     #     subclass.
     def call *args, &block
@@ -123,7 +166,7 @@ module Cuprum
     #   given, the function will run whether the previous function was a success
     #   or a failure.
     #
-    # @overload chain(function)
+    # @overload chain(function, on: nil)
     #   The function will be passed the #value of the previous function result
     #   as its parameter, and the result of the chained function will be
     #   returned (or passed to the next chained function, if any).
@@ -131,7 +174,7 @@ module Cuprum
     #   @param function [Cuprum::Function] The function to call after the
     #     current or last chained function.
     #
-    # @overload chain(&block)
+    # @overload chain(on: :nil, &block)
     #   The block will be passed the #result of the previous function as its
     #   parameter. If your use case depends on the status of the previous
     #   function or on any errors generated, use the block form of #chain.
@@ -145,13 +188,30 @@ module Cuprum
     #   @yieldparam result [Cuprum::Result] The #result of the previous
     #     function.
     #
-    # @return [Cuprum::Function] the chained function.
+    # @return [Cuprum::Function] The chained function.
     def chain function = nil, on: nil, &block
       proc = convert_function_or_proc_to_proc(block || function)
 
       chain_function(proc, :on => on)
     end # method chain
 
+    # Shorthand for function.chain(:on => :failure). Registers a function or
+    # block to run after the current function. The chained function will only
+    # run if the previous function was unsuccessfully run.
+    #
+    # @overload else(function)
+    #
+    #   @param function [Cuprum::Function] The function to call after the
+    #     current or last chained function.
+    #
+    # @overload else(&block)
+    #
+    #   @yieldparam result [Cuprum::Result] The #result of the previous
+    #     function.
+    #
+    # @return [Cuprum::Function] The chained function.
+    #
+    # @see #chain
     def else function = nil, &block
       proc = convert_function_or_proc_to_proc(block || function)
 
@@ -172,7 +232,7 @@ module Cuprum
     #   @yieldparam result [Cuprum::Result] The #result of the previous
     #     function.
     #
-    # @return [Cuprum::Function] the chained function.
+    # @return [Cuprum::Function] The chained function.
     #
     # @see #chain
     def then function = nil, &block
