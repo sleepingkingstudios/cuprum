@@ -17,32 +17,153 @@ The canonical repository for this gem is located at https://github.com/sleepingk
 
 Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached on GitHub (see above, and feel encouraged to submit bug reports or merge requests there) or via email at merlin@sleepingkingstudios.com. I look forward to hearing from you!
 
-## Features
-
-### Functions
+## Functions
 
 Functions are the core feature of Cuprum. In a nutshell, each Cuprum::Function is a functional object that encapsulates a business logic operation. A Function provides a consistent interface and tracking of result value and status. This minimizes boilerplate and allows for interchangeability between different implementations or strategies for managing your data and processes.
 
 Each Function implements a `#call` method that wraps your defined business logic and returns an instance of Cuprum::Result. The result wraps the returned data (with the `#value` method), any `#errors` generated when running the Function, and the overall status with the `#success?` and `#failure` methods. For more details about Cuprum::Result, see below.
 
-#### Defining With a Block
+### Methods
+
+A Cuprum::Function defines the following methods:
+
+#### #initialize
+
+    initialize { |*arguments, **keywords, &block| ... } #=> Cuprum::Function
+
+Returns a new instance of Cuprum::Function. If a block is given, the `#call` method will wrap the block and set the result `#value` to the return value of the block. This overrides the implementation in `#process`, if any.
+
+Yields:
+:   `arguments (Array)` - Arguments passed from `#call`.
+    <br>
+    `keywords (Hash)` - Keywords passed from `#call`.
+    <br>
+    `block` - Block argument passed from `#call`.
+
+#### #call
+
+    call(*arguments, **keywords) { ... } #=> Cuprum::Result
+
+Executes the logic encoded in the constructor block, or the #process method if no block was passed to the constructor.
+
+Parameters:
+:   `arguments (Array)` - Arguments to be passed to the implementation.
+    <br>
+    `keywords (Hash)` - Keywords to be passed to the implementation.
+
+Returns:
+:   `Cuprum::Result` - The result object for the function.
+
+Raises:
+:   `NotImplementedError` - Unless a block was passed to the constructor or the #process method was overriden by a Function subclass.
+
+#### #chain
+
+Registers a function or block to run after the current function, or after the last chained function if the current function already has one or more chained function(s). This creates and modifies a copy of the current function. See Chaining Functions, below.
+
+    chain(function, on: nil) #=> Cuprum::Function
+
+The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
+
+Parameters:
+:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
+    <br>
+    `on (Symbol)` - Optional. If this argument is present, its value must be `:success` or `:failure`. Constrains the function to be called or not based on the result of the previous chained function. See Conditional Chaining, below.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+<br>
+
+    chain(on: nil) { |result| ... } #=> Cuprum::Function
+
+The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
+
+Parameters:
+:   `on (Symbol)` - Optional. If this argument is present, its value must be `:success` or `:failure`. Constrains the function to be called or not based on the result of the previous chained function. See Conditional Chaining, below.
+
+Yields:
+:   `result (Cuprum::Result)` - The `#result` of the previous function.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+#### `#then`
+
+Shorthand for `function.chain(:on => :success)`. Registers a function or block to run after the current function. The chained function will only run if the previous function was successfully run.
+
+    then(function) #=> Cuprum::Function
+
+The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
+
+Parameters:
+:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+<br>
+
+    then() { |result| ... } #=> Cuprum::Function
+
+The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
+
+Yields:
+:   `result (Cuprum::Result)` - The `#result` of the previous function.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+#### `#else`
+
+Shorthand for `function.chain(:on => :failure)`. Registers a function or block to run after the current function. The chained function will only run if the previous function was unsuccessfully run.
+
+    else(function) #=> Cuprum::Function
+
+The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
+
+Parameters:
+:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+<br>
+
+    else() { |result| ... } #=> Cuprum::Function
+
+The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
+
+Yields:
+:   `result (Cuprum::Result)` - The `#result` of the previous function.
+
+Returns:
+:   `Cuprum::Function` - The chained function.
+
+### Defining With a Block
 
 Functions can be used right out of the box by passing a block to the Cuprum::Function constructor, as follows:
 
     # A Function with a block
-    double_function = Function.new { |int| 2 * int }
+    double_function = Cuprum::Function.new { |int| 2 * int }
     result          = double_function.call(5)
 
     result.value #=> 10
 
 The constructor block will be called each time `Function#call` is executed, and will be passed all of the arguments given to `#call`. You can even define a block parameter, which will be passed along to the constructor block when `#call` is called with a block argument.
 
-#### Defining With a Subclass
+### Defining With a Subclass
 
 Larger applications will want to create Function subclasses that encapsulate their business logic in a reusable, composable fashion. The implementation for each subclass is handled by the `#process` private method. If a subclass or its ancestors does not implement `#process`, a `Cuprum::Function::NotImplementedError` will be raised.
 
     # A Function subclass
-    class MultiplyFunction
+    class MultiplyFunction < Cuprum::Function
       def initialize multiplier
         @multiplier = multiplier
       end # constructor
@@ -61,12 +182,12 @@ Larger applications will want to create Function subclasses that encapsulate the
 
 As with the block syntax, a Function whose implementation is defined via the `#process` method will call `#process` each time that `#call` is executed, and will pass all arguments from `#call` on to `#process`. The value returned by `#process` will be assigned to the result `#value`.
 
-#### Success, Failure, and Errors
+### Success, Failure, and Errors
 
 Whether defined with a block or in the `#process` method, the Function implementation can access an `#errors` object while in the `#call` method. Any errors added to the errors object will be exposed by the `#errors` method on the result object.
 
     # A Function with errors
-    class DivideFunction
+    class DivideFunction < Cuprum::Function
       def initialize divisor
         @divisor = divisor
       end # constructor
@@ -104,7 +225,75 @@ In addition, the result object defines `#success?` and `#failure?` predicates. I
     result.failure? #=> true
     result.value    #=> nil
 
-### Operations
+### Chaining Functions
+
+Because Cuprum::Function instances are proper objects, they can be composed like any other object. Cuprum::Function also defines methods for chaining functions together. When a chain of functions is called, each function in the chain is called in sequence and passed the value of the previous function. The result of the last function in the chain is returned from the chained call.
+
+    class AddFunction < Cuprum::Function
+      def initialize addend
+        @addend = addend
+      end # constructor
+
+      private
+
+      def process int
+        int + @addend
+      end # method process
+    end # class
+
+    double_and_add_one = MultiplyFunction.new(2).chain(AddFunction.new(1))
+    result             = double_and_add_one(5)
+
+    result.value #=> 5
+
+For finer control over the returned result, `#chain` can instead be called with a block that yields the most recent result. If the block returns a Cuprum::Result, that result is returned or passed to the next function.
+
+    MultiplyFunction.new(3).
+      chain { |result| Cuprum::Result.new(result + 1) }.
+      call(3)
+    #=> Returns a Cuprum::Result with a value of 10.
+
+Otherwise, the block is still called but the previous result is returned or passed to the next function in the chain.
+
+    AddFunction.new(2).
+      chain { |result| puts "There are #{result.value} lights!" }.
+      call(2)
+    #=> Writes "There are 4 lights!" to STDOUT.
+    #=> Returns a Cuprum::Result with a value of 4.
+
+#### Conditional Chaining
+
+The `#chain` method can be passed an optional `:on` keyword, with values of `:success` and `:failure` accepted. If `#chain` is called with `:on => :success`, then the chained function or block will **only** be called if the previous result `#success?` returns true. Conversely, if `#chain` is called with `:on => :failure`, then the chained function will only be called if the previous result `#failure?` returns true.
+
+In either case, execution will then pass to the next function in the chain, which may itself be called or not if it was conditionally chained. Calling a conditional function chain will return the result of the last called function.
+
+The methods `#then` and `#else` serve as shortcuts for `#chain` with `:on => :success` and `:on => :failure`, respectively.
+
+    class EvenFunction < Cuprum::Function
+      private
+
+      def process int
+        errors << 'errors.messages.not_even' unless int.even?
+
+        int
+      end # method process
+    end # class
+
+    # The next step in a Collatz sequence is determined as follows:
+    # - If the number is even, divide it by 2.
+    # - If the number is odd, multiply it by 3 and add 1.
+    collatz_function =
+      EvenFunction.new.
+        then(DivideFunction.new(2)).
+        else(MultiplyFunction.new(3).chain(AddFunction.new(1)))
+
+    result = collatz_function.new(5)
+    result.value #=> 16
+
+    result = collatz_function.new(16)
+    result.value #=> 8
+
+## Operations
 
 An Operation is like a Function, but with an additional trick of tracking its own most recent execution result. This allows us to simplify some conditional logic, especially boilerplate code used to interact with frameworks.
 
@@ -130,36 +319,80 @@ Like a Function, an Operation can be defined directly by passing an implementati
 
 An operation inherits the `#call` method from Cuprum::Function (see above), and delegates the `#value`, `#errors`, `#success?`, and `#failure` methods to the most recent result (see below). If the operation has not been called, the operation will return default values.
 
-In addition, an operation defines the following methods:
+### Methods
+
+A Cuprum::Operation inherits the methods from Cuprum::Function (see above), and defines the following additional methods:
 
 #### `#result`
 
+    result() #=> Cuprum::Result
+
 The most recent result, from the previous time `#call` was executed for the operation.
+
+Returns:
+:   `Cuprum::Result` - The most recent result.
 
 #### `#called?`
 
+    called?() #=> true, false
+
 True if the operation has been called and there is a result available by calling `#result` or one of the delegated methods, otherwise false.
+
+Returns:
+:   `true, false` - The called status of the operation.
 
 #### `#reset!`
 
+    reset!()
+
 Clears the most recent result and resets `#called?` to false. This frees the result and any linked data for garbage collection. It also clears any internal state from the operation.
 
-### Results
+## Results
 
-A Cuprum::Result is a data object that encapsulates the result of calling a Cuprum function - the returned value, the success or failure status, and any errors generated by the function. It defines the following methods:
+A Cuprum::Result is a data object that encapsulates the result of calling a Cuprum function - the returned value, the success or failure status, and any errors generated by the function.
+
+    value  = 'A result value'.freeze
+    result = Cuprum::Result.new(value)
+
+    result.value
+    #=> 'A result value'
+
+### Methods
+
+A Cuprum::Result defines the following methods:
 
 #### `#value`
 
+    value() #=> Object
+
 The value returned by the function. For example, for an increment function that added 1 to a given integer, the `#value` of the result object would be the incremented integer.
+
+Returns:
+:   `Object` - The value returned by the function.
 
 #### `#errors`
 
+    errors() #=> Array
+
 The errors generated by the function, or an empty array if no errors were generated.
+
+Returns:
+:   `Array` - The errors generated by the function.
 
 #### `#success?`
 
+    success?() #=> true, false
+
 True if the function did not generate any errors, otherwise false.
+
+Returns:
+:   `true, false` - The result status.
 
 #### `#failure?`
 
+    failure?() #=> true, false
+
 True if the function generated one or more errors, otherwise false.
+
+Returns:
+:   `true, false` - The result status.

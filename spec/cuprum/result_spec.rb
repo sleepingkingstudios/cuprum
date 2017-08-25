@@ -10,7 +10,42 @@ RSpec.describe Cuprum::Result do
   subject(:instance) { described_class.new }
 
   describe '::new' do
-    it { expect(described_class).to be_constructible.with(0).arguments }
+    it 'should define the constructor' do
+      expect(described_class).
+        to be_constructible.
+        with(0..1).arguments.
+        and_keywords(:errors)
+    end # it
+
+    describe 'with an errors object' do
+      let(:errors)   { ['errors.messages.unknown'] }
+      let(:instance) { described_class.new(:errors => errors) }
+
+      it { expect(instance.errors).to be errors }
+
+      it { expect(instance.failure?).to be true }
+    end # describe
+
+    describe 'with a value' do
+      let(:value)    { 'returned value'.freeze }
+      let(:instance) { described_class.new(value) }
+
+      it { expect(instance.value).to be value }
+
+      it { expect(instance.success?).to be true }
+    end # describe
+
+    describe 'with a value and an errors object' do
+      let(:value)    { 'returned value'.freeze }
+      let(:errors)   { ['errors.messages.unknown'] }
+      let(:instance) { described_class.new(value, :errors => errors) }
+
+      it { expect(instance.value).to be value }
+
+      it { expect(instance.errors).to be errors }
+
+      it { expect(instance.failure?).to be true }
+    end # describe
   end # describe
 
   describe '#errors' do

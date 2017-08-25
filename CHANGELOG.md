@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0
+
+The "Nothing To Lose But Your Chains" Update.
+
+## Functions
+
+Now support chaining via the `#chain`, `#then`, and `#else` methods.
+
+## Results
+
+Can pass a value and/or an errors object to the constructor.
+
 ## 0.2.0
 
 The "Fully Armed and Operational" Update.
