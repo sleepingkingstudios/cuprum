@@ -7,6 +7,12 @@ citizen of your application.
 
 Cuprum is tested against Ruby 2.4.
 
+## Documentation
+
+Method and class documentation is available courtesy of [RubyDoc](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master).
+
+Documentation is generated using [YARD](https://yardoc.org/), and can be generated locally using the `yard` gem.
+
 ## Contribute
 
 ### GitHub
@@ -18,6 +24,8 @@ The canonical repository for this gem is located at https://github.com/sleepingk
 Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached on GitHub (see above, and feel encouraged to submit bug reports or merge requests there) or via email at merlin@sleepingkingstudios.com. I look forward to hearing from you!
 
 ## Functions
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FFunction)
 
 Functions are the core feature of Cuprum. In a nutshell, each Cuprum::Function is a functional object that encapsulates a business logic operation. A Function provides a consistent interface and tracking of result value and status. This minimizes boilerplate and allows for interchangeability between different implementations or strategies for managing your data and processes.
 
@@ -33,12 +41,7 @@ A Cuprum::Function defines the following methods:
 
 Returns a new instance of Cuprum::Function. If a block is given, the `#call` method will wrap the block and set the result `#value` to the return value of the block. This overrides the implementation in `#process`, if any.
 
-Yields:
-:   `arguments (Array)` - Arguments passed from `#call`.
-    <br>
-    `keywords (Hash)` - Keywords passed from `#call`.
-    <br>
-    `block` - Block argument passed from `#call`.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#initialize-instance_method)
 
 #### #call
 
@@ -46,16 +49,7 @@ Yields:
 
 Executes the logic encoded in the constructor block, or the #process method if no block was passed to the constructor.
 
-Parameters:
-:   `arguments (Array)` - Arguments to be passed to the implementation.
-    <br>
-    `keywords (Hash)` - Keywords to be passed to the implementation.
-
-Returns:
-:   `Cuprum::Result` - The result object for the function.
-
-Raises:
-:   `NotImplementedError` - Unless a block was passed to the constructor or the #process method was overriden by a Function subclass.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#call-instance_method)
 
 #### #chain
 
@@ -65,30 +59,13 @@ Registers a function or block to run after the current function, or after the la
 
 The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
 
-Parameters:
-:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
-    <br>
-    `on (Symbol)` - Optional. If this argument is present, its value must be `:success` or `:failure`. Constrains the function to be called or not based on the result of the previous chained function. See Conditional Chaining, below.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
-
-<br>
-
     chain(on: nil) { |result| ... } #=> Cuprum::Function
 
 The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
 
 If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
 
-Parameters:
-:   `on (Symbol)` - Optional. If this argument is present, its value must be `:success` or `:failure`. Constrains the function to be called or not based on the result of the previous chained function. See Conditional Chaining, below.
-
-Yields:
-:   `result (Cuprum::Result)` - The `#result` of the previous function.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#chain-instance_method)
 
 #### `#then`
 
@@ -98,25 +75,13 @@ Shorthand for `function.chain(:on => :success)`. Registers a function or block t
 
 The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
 
-Parameters:
-:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
-
-<br>
-
     then() { |result| ... } #=> Cuprum::Function
 
 The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
 
 If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
 
-Yields:
-:   `result (Cuprum::Result)` - The `#result` of the previous function.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#then-instance_method)
 
 #### `#else`
 
@@ -126,25 +91,13 @@ Shorthand for `function.chain(:on => :failure)`. Registers a function or block t
 
 The function will be passed the `#value` of the previous function result as its parameter, and the result of the chained function will be returned (or passed to the next chained function, if any).
 
-Parameters:
-:   `function (Cuprum::Function)` - The function to call after the current or last chained function.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
-
-<br>
-
     else() { |result| ... } #=> Cuprum::Function
 
 The block will be passed the #result of the previous function as its parameter. If your use case depends on the status of the previous function or on any errors generated, use the block form of #chain.
 
 If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained function, if any). If the block returns any other value (including nil), the #result of the previous function will be returned or passed to the next function.
 
-Yields:
-:   `result (Cuprum::Result)` - The `#result` of the previous function.
-
-Returns:
-:   `Cuprum::Function` - The chained function.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#else-instance_method)
 
 ### Defining With a Block
 
@@ -295,6 +248,8 @@ The methods `#then` and `#else` serve as shortcuts for `#chain` with `:on => :su
 
 ## Operations
 
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
+
 An Operation is like a Function, but with an additional trick of tracking its own most recent execution result. This allows us to simplify some conditional logic, especially boilerplate code used to interact with frameworks.
 
     class CreateBookOperation < Cuprum::Operation
@@ -329,8 +284,7 @@ A Cuprum::Operation inherits the methods from Cuprum::Function (see above), and 
 
 The most recent result, from the previous time `#call` was executed for the operation.
 
-Returns:
-:   `Cuprum::Result` - The most recent result.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#result-instance_method)
 
 #### `#called?`
 
@@ -338,8 +292,7 @@ Returns:
 
 True if the operation has been called and there is a result available by calling `#result` or one of the delegated methods, otherwise false.
 
-Returns:
-:   `true, false` - The called status of the operation.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#called%3F-instance_method)
 
 #### `#reset!`
 
@@ -347,7 +300,11 @@ Returns:
 
 Clears the most recent result and resets `#called?` to false. This frees the result and any linked data for garbage collection. It also clears any internal state from the operation.
 
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#reset!-instance_method)
+
 ## Results
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FResult)
 
 A Cuprum::Result is a data object that encapsulates the result of calling a Cuprum function - the returned value, the success or failure status, and any errors generated by the function.
 
@@ -367,8 +324,7 @@ A Cuprum::Result defines the following methods:
 
 The value returned by the function. For example, for an increment function that added 1 to a given integer, the `#value` of the result object would be the incremented integer.
 
-Returns:
-:   `Object` - The value returned by the function.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#value-instance_method)
 
 #### `#errors`
 
@@ -376,8 +332,7 @@ Returns:
 
 The errors generated by the function, or an empty array if no errors were generated.
 
-Returns:
-:   `Array` - The errors generated by the function.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#errors-instance_method)
 
 #### `#success?`
 
@@ -385,8 +340,7 @@ Returns:
 
 True if the function did not generate any errors, otherwise false.
 
-Returns:
-:   `true, false` - The result status.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#success%3F-instance_method)
 
 #### `#failure?`
 
@@ -394,5 +348,4 @@ Returns:
 
 True if the function generated one or more errors, otherwise false.
 
-Returns:
-:   `true, false` - The result status.
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure%3F-instance_method)
