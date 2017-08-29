@@ -160,11 +160,14 @@ module Cuprum
     # function.
     #
     # @param on [Symbol] Sets a condition on when the chained function can run,
-    #   based on the status of the previous function. Valid values are :success
-    #   and :failure, and will constrain the function to run only if the
-    #   previous function succeeded or failed, respectively. If no value is
-    #   given, the function will run whether the previous function was a success
-    #   or a failure.
+    #   based on the status of the previous function. Valid values are :success,
+    #   :failure, and :always. A value of :success will constrain the function
+    #   to run only if the previous function succeeded. A value of :failure will
+    #   constrain the function to run only if the previous function failed. A
+    #   value of :always will ensure the function is always run, even if the
+    #   function chain has been halted. If no value is given, the function will
+    #   run whether the previous function was a success or a failure, but not if
+    #   the function chain has been halted.
     #
     # @overload chain(function, on: nil)
     #   The function will be passed the #value of the previous function result
@@ -305,6 +308,8 @@ module Cuprum
     end # method process
 
     def skip_chained_function? last_result, on:
+      return false if on == :always
+
       return true if last_result.respond_to?(:halted?) && last_result.halted?
 
       case on

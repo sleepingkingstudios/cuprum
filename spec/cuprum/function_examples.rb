@@ -596,6 +596,12 @@ module Spec::Examples
 
         include_examples 'should chain the function'
 
+        describe 'with :on => :always' do
+          let(:conditional) { :always }
+
+          include_examples 'should chain the function'
+        end # describe
+
         describe 'with :on => :failure' do
           let(:conditional) { :failure }
 
@@ -610,6 +616,12 @@ module Spec::Examples
 
         wrap_context 'when the function is failing' do
           include_examples 'should chain the function'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should chain the function'
+          end # describe
 
           describe 'with :on => :failure' do
             let(:conditional) { :failure }
@@ -627,6 +639,12 @@ module Spec::Examples
         wrap_context 'when the function is halted' do
           include_examples 'should chain but not call the function'
 
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should chain the function'
+          end # describe
+
           describe 'with :on => :failure' do
             let(:conditional) { :failure }
 
@@ -642,6 +660,12 @@ module Spec::Examples
 
         wrap_context 'when a previous function is failing' do
           include_examples 'should chain the function'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should chain the function'
+          end # describe
 
           describe 'with :on => :failure' do
             let(:conditional) { :failure }
