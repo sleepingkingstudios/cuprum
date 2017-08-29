@@ -125,6 +125,16 @@ module Spec::Examples
         end # let
       end # shared_context
 
+      shared_context 'when the function is executing the implementation' do
+        def call_with_implementation &block
+          example  = self
+          instance =
+            described_class.new { example.instance_exec(self, &block) }
+
+          instance.call
+        end # method implement_with
+      end # shared_context
+
       shared_examples 'should copy the function' do
         it 'should copy the function' do
           copy = chain_function(other_function)
@@ -675,6 +685,31 @@ module Spec::Examples
         wrap_context 'when the function has many chained functions' do
           include_examples 'should chain but not call the function'
         end # wrap_context
+      end # describe
+
+      describe '#errors' do
+        it 'should define the reader' do
+          expect(instance).
+            to have_reader(:errors, :allow_private => true).
+            with_value(nil)
+        end # it
+
+        wrap_context 'when the function is executing the implementation' do
+          let(:expected_errors) do
+            ['errors.messages.unknown']
+          end # let
+
+          it 'should update the result errors' do
+            result =
+              call_with_implementation do |instance|
+                expected_errors.each { |msg| instance.send(:errors) << msg }
+              end # call_with_implementation
+
+            expected_errors.each do |message|
+              expect(result.errors).to include message
+            end # each
+          end # it
+        end # context
       end # describe
 
       describe '#then' do
