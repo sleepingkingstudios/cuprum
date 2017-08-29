@@ -7,6 +7,8 @@
   - NullFunction
   - IdentityFunction
   - MapFunction
+  - RetryFunction
+- Handle calling #call or #process while calling a Function.
 
 ## Operation
 
