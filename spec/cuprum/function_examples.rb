@@ -369,6 +369,45 @@ module Spec::Examples
               expect(result.value).to be value
               expect(result.errors).to be_empty
             end # it
+
+            context 'when the implementation returns a result' do
+              let(:implementation) do
+                returned = value
+
+                ->() { Cuprum::Result.new(returned) }
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+              end # it
+            end # context
+
+            context 'when the implementation returns a result with errors' do
+              let(:implementation_errors) do
+                ['errors.messages.custom']
+              end # let
+              let(:implementation) do
+                errors   = implementation_errors
+                returned = value
+
+                lambda do
+                  Cuprum::Result.new(returned, :errors => errors)
+                end # lambda
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.value).to be value
+                expect(result.errors).to be == implementation_errors
+                expect(result.failure?).to be true
+              end # it
+            end # context
           end # context
 
           context 'when the operation generates errors' do
@@ -399,6 +438,64 @@ module Spec::Examples
                 expect(result.errors).to include message
               end # each
             end # it
+
+            context 'when the implementation returns a result' do
+              let(:implementation) do
+                messages = expected_errors
+                returned = value
+
+                lambda do
+                  messages.each do |message|
+                    errors << message
+                  end # each
+
+                  Cuprum::Result.new(returned)
+                end # lambda
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.value).to be value
+
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+              end # it
+            end # context
+
+            context 'when the implementation returns a result with errors' do
+              let(:implementation_errors) do
+                ['errors.messages.custom']
+              end # let
+              let(:implementation) do
+                messages = expected_errors
+                errors   = implementation_errors
+                returned = value
+
+                lambda do
+                  messages.each do |message|
+                    errors << message
+                  end # each
+
+                  Cuprum::Result.new(returned, :errors => errors)
+                end # lambda
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a Cuprum::Result
+                expect(result.value).to be value
+
+                [*expected_errors, *implementation_errors].each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.failure?).to be true
+              end # it
+            end # context
           end # context
         end # shared_examples
 

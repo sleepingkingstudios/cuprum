@@ -147,7 +147,7 @@ module Cuprum
         Cuprum::Result.new.tap do |result|
           @errors = result.errors
 
-          result.value = process(*args, &block)
+          merge_results(result, process(*args, &block))
 
           @errors = nil
         end # tap
@@ -275,6 +275,24 @@ module Cuprum
 
       ->(result) { function_or_proc.call(result) }
     end # method convert_function_or_proc_to_proc
+
+    def merge_errors result, other
+      return unless other.respond_to?(:errors)
+
+      result.errors += other.errors
+    end # method merge_errors
+
+    def merge_results result, other
+      if value_is_result?(other)
+        result.value = other.value
+
+        merge_errors(result, other)
+      else
+        result.value = other
+      end # if-else
+
+      result
+    end # method merge_results
 
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
