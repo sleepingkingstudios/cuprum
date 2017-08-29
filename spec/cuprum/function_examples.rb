@@ -39,6 +39,21 @@ module Spec::Examples
         end # let
       end # shared_context
 
+      shared_context 'when the function is halted' do
+        let(:implementation) do
+          called   = called_functions
+          returned = value
+
+          lambda do
+            called << 'first function'.freeze
+
+            halt!
+
+            [returned]
+          end # lambda
+        end # let
+      end # shared_context
+
       shared_context 'when a previous function is failing' do
         let(:expected_errors) do
           ['errors.messages.unknown']
@@ -609,6 +624,22 @@ module Spec::Examples
           end # describe
         end # wrap_context
 
+        wrap_context 'when the function is halted' do
+          include_examples 'should chain but not call the function'
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should chain but not call the function'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should chain but not call the function'
+          end # describe
+        end # wrap_context
+
         wrap_context 'when a previous function is failing' do
           include_examples 'should chain the function'
 
@@ -674,6 +705,10 @@ module Spec::Examples
           include_examples 'should chain the function'
         end # wrap_context
 
+        wrap_context 'when the function is halted' do
+          include_examples 'should chain but not call the function'
+        end # wrap_context
+
         wrap_context 'when a previous function is failing' do
           include_examples 'should chain but not call the function'
         end # wrap_context
@@ -694,6 +729,8 @@ module Spec::Examples
             with_value(nil)
         end # it
 
+        it { expect(instance.send(:errors)).to be_nil }
+
         wrap_context 'when the function is executing the implementation' do
           let(:expected_errors) do
             ['errors.messages.unknown']
@@ -710,6 +747,27 @@ module Spec::Examples
             end # each
           end # it
         end # context
+      end # describe
+
+      describe '#halt!' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:halt!)
+
+          expect(instance).to respond_to(:halt!, true).with(0).arguments
+        end # it
+
+        it { expect(instance.send(:halt!)).to be_nil }
+
+        wrap_context 'when the function is executing the implementation' do
+          it { expect(instance.send(:halt!)).to be_nil }
+
+          it 'should halt the result' do
+            result =
+              call_with_implementation { |instance| instance.send(:halt!) }
+
+            expect(result.halted?).to be true
+          end # it
+        end # method wrap_context
       end # describe
 
       describe '#then' do
@@ -749,6 +807,10 @@ module Spec::Examples
         include_examples 'should chain the function'
 
         wrap_context 'when the function is failing' do
+          include_examples 'should chain but not call the function'
+        end # wrap_context
+
+        wrap_context 'when the function is halted' do
           include_examples 'should chain but not call the function'
         end # wrap_context
 

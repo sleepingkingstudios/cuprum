@@ -36,6 +36,21 @@ RSpec.describe Cuprum::Operation do
     end # let
   end # shared_context
 
+  shared_context 'when the implementation halts the function chain' do
+    include_context 'when the function is initialized with a block'
+
+    let(:value) { 'returned value'.freeze }
+    let(:implementation) do
+      returned = value
+
+      lambda do
+        halt!
+
+        returned
+      end # lambda
+    end # let
+  end # shared_context
+
   subject(:instance) { described_class.new }
 
   let(:implementation) { ->() {} }
@@ -106,6 +121,18 @@ RSpec.describe Cuprum::Operation do
         expect(instance.failure?).to be true
       end # it
     end # wrap_context
+  end # describe
+
+  describe '#halted?' do
+    include_examples 'should have predicate', :halted?, false
+
+    wrap_context 'when the implementation halts the function chain' do
+      it 'should return true' do
+        instance.call
+
+        expect(instance.halted?).to be true
+      end # it
+    end # method wrap_context
   end # describe
 
   describe '#reset!' do

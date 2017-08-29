@@ -2,7 +2,6 @@
 
 ## Function
 
-- Handle when block or #process returns a Result instance.
 - #build_errors method
 - Predefined functions/operations:
   - NullFunction
@@ -15,7 +14,7 @@
 
 ## Result
 
-- Abort chaining with #halt!, #halted? methods.
+- Abort chaining with #halt!, #halted? methods, unless :on => :always.
 - Force success or failure status with #success!, #failure! methods.
 
 ## Documentation

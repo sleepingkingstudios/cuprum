@@ -57,6 +57,11 @@ module Cuprum
       called? ? result.failure? : false
     end # method success?
 
+    # @return [Boolean] true if the most recent was halted, otherwise false.
+    def halted?
+      called? ? result.halted? : false
+    end # method halted?
+
     # Clears the reference to the most recent call of the operation, if any.
     # This allows the result and any referenced data to be garbage collected.
     # Use this method to clear any instance variables or state internal to the

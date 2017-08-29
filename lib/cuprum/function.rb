@@ -145,11 +145,11 @@ module Cuprum
     def call *args, &block
       call_chained_functions do
         Cuprum::Result.new.tap do |result|
-          @errors = result.errors
+          @result = result
 
           merge_results(result, process(*args, &block))
 
-          @errors = nil
+          @result = nil
         end # tap
       end # call_chained_functions
     end # method call
@@ -268,13 +268,19 @@ module Cuprum
 
     private
 
-    attr_reader :errors
-
     def convert_function_or_proc_to_proc function_or_proc
       return function_or_proc if function_or_proc.is_a?(Proc)
 
       ->(result) { function_or_proc.call(result) }
     end # method convert_function_or_proc_to_proc
+
+    def errors
+      @result&.errors
+    end # method errors
+
+    def halt!
+      @result&.halt!
+    end # method halt!
 
     def merge_errors result, other
       return unless other.respond_to?(:errors)
@@ -299,6 +305,8 @@ module Cuprum
     end # method process
 
     def skip_chained_function? last_result, on:
+      return true if last_result.respond_to?(:halted?) && last_result.halted?
+
       case on
       when :success
         !last_result.success?
