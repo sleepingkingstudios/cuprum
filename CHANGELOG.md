@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0
+
+The "Halt And Catch Fire" Update.
+
+## Functions
+
+Can now call `#halt!` in a function block or `#process` method. If a function has been halted, then any subsequent chained functions will not be run unless they were chained with the `:on => :always` option.
+
+Fixed an inconsistency issue when a function block or `#process` method returned an instance of `Cuprum::Result`.
+
 ## 0.3.0
 
 The "Nothing To Lose But Your Chains" Update.

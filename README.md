@@ -99,6 +99,26 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#else-instance_method)
 
+#### `#errors`
+
+Only available while the Function is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
+
+    errors() #=> Array
+
+Inside of the Function block or the `#process` method, you can add errors to the result.
+
+    Cuprum::Function.new do
+      errors << "I'm sorry, something went wrong."
+
+      nil
+    end # function
+
+#### `#halt!`
+
+Only available while the Function is being called. If called, halts the function chain (see Chaining Functions, below). Subsequent chained functions will not be called unless they were chained with the `:on => :always` option.
+
+    halt!() #=> NilClass
+
 ### Defining With a Block
 
 Functions can be used right out of the box by passing a block to the Cuprum::Function constructor, as follows:
@@ -245,6 +265,28 @@ The methods `#then` and `#else` serve as shortcuts for `#chain` with `:on => :su
 
     result = collatz_function.new(16)
     result.value #=> 8
+
+#### Halting A Function Chain
+
+If the `#halt` method is called as part of a Function block or `#process` method, the function chain is halted. Any subsequent chained functions will not be called unless they were chained with the `:on => :always` option. This allows you to terminate a Function chain early without having to raise and rescue an exception.
+
+    panic_function =
+      Cuprum::Function.new do |value|
+        halt!
+
+        value
+      end # function
+
+    result =
+      double_function.
+        then(panic_function).
+        then(AddFunction.new(1)). #=> This is never executed.
+        chain(:on => :always) { |count| puts "There are #{count} lights!" }.
+        call(2)
+    #=> Writes "There are 4 lights!" to STDOUT.
+
+    result.value   #= 4
+    result.halted? #=> true
 
 ## Operations
 

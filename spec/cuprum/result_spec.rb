@@ -7,6 +7,10 @@ RSpec.describe Cuprum::Result do
     end # before example
   end # shared_context
 
+  shared_context 'when the result is halted' do
+    before(:example) { instance.halt! }
+  end # shared_context
+
   subject(:instance) { described_class.new }
 
   describe '::new' do
@@ -58,6 +62,30 @@ RSpec.describe Cuprum::Result do
     wrap_context 'when the result has many errors' do
       it { expect(instance.failure?).to be true }
     end # wrap_context
+
+    wrap_context 'when the result is halted' do
+      it { expect(instance.failure?).to be false }
+    end # wrap_context
+  end # describe
+
+  describe '#halt!' do
+    it { expect(instance).to respond_to(:halt!).with(0).arguments }
+
+    it { expect(instance.halt!).to be instance }
+
+    it 'should mark the result as halted' do
+      instance.halt!
+
+      expect(instance.halted?).to be true
+    end # it
+  end # describe
+
+  describe '#halted?' do
+    include_examples 'should have predicate', :halted?, false
+
+    wrap_context 'when the result is halted' do
+      it { expect(instance.halted?).to be true }
+    end # wrap_context
   end # describe
 
   describe '#success?' do
@@ -65,6 +93,10 @@ RSpec.describe Cuprum::Result do
 
     wrap_context 'when the result has many errors' do
       it { expect(instance.success?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result is halted' do
+      it { expect(instance.success?).to be true }
     end # wrap_context
   end # describe
 

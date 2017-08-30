@@ -145,11 +145,11 @@ module Cuprum
     def call *args, &block
       call_chained_functions do
         Cuprum::Result.new.tap do |result|
-          @errors = result.errors
+          @result = result
 
           merge_results(result, process(*args, &block))
 
-          @errors = nil
+          @result = nil
         end # tap
       end # call_chained_functions
     end # method call
@@ -160,11 +160,14 @@ module Cuprum
     # function.
     #
     # @param on [Symbol] Sets a condition on when the chained function can run,
-    #   based on the status of the previous function. Valid values are :success
-    #   and :failure, and will constrain the function to run only if the
-    #   previous function succeeded or failed, respectively. If no value is
-    #   given, the function will run whether the previous function was a success
-    #   or a failure.
+    #   based on the status of the previous function. Valid values are :success,
+    #   :failure, and :always. A value of :success will constrain the function
+    #   to run only if the previous function succeeded. A value of :failure will
+    #   constrain the function to run only if the previous function failed. A
+    #   value of :always will ensure the function is always run, even if the
+    #   function chain has been halted. If no value is given, the function will
+    #   run whether the previous function was a success or a failure, but not if
+    #   the function chain has been halted.
     #
     # @overload chain(function, on: nil)
     #   The function will be passed the #value of the previous function result
@@ -268,13 +271,19 @@ module Cuprum
 
     private
 
-    attr_reader :errors
-
     def convert_function_or_proc_to_proc function_or_proc
       return function_or_proc if function_or_proc.is_a?(Proc)
 
       ->(result) { function_or_proc.call(result) }
     end # method convert_function_or_proc_to_proc
+
+    def errors
+      @result&.errors
+    end # method errors
+
+    def halt!
+      @result&.halt!
+    end # method halt!
 
     def merge_errors result, other
       return unless other.respond_to?(:errors)
@@ -299,6 +308,10 @@ module Cuprum
     end # method process
 
     def skip_chained_function? last_result, on:
+      return false if on == :always
+
+      return true if last_result.respond_to?(:halted?) && last_result.halted?
+
       case on
       when :success
         !last_result.success?
