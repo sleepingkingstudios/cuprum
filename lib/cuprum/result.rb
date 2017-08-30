@@ -10,6 +10,7 @@ module Cuprum
     def initialize value = nil, errors: []
       @value  = value
       @errors = errors
+      @status = nil
       @halted = false
     end # constructor
 
@@ -20,10 +21,20 @@ module Cuprum
     #   called.
     attr_accessor :errors
 
+    # Marks the result as a failure, whether or not the function generated any
+    # errors.
+    #
+    # @return [Cuprum::Result] The result.
+    def failure!
+      @status = :failure
+
+      self
+    end # method failure!
+
     # @return [Boolean] false if the function did not generate any errors,
     #   otherwise true.
     def failure?
-      !errors.empty?
+      @status == :failure || (@status.nil? && !errors.empty?)
     end # method failure?
 
     # Marks the result as halted. Any subsequent chained functions will not be
@@ -42,10 +53,20 @@ module Cuprum
       @halted
     end # method halted?
 
+    # Marks the result as a success, whether or not the function generated any
+    # errors.
+    #
+    # @return [Cuprum::Result] The result.
+    def success!
+      @status = :success
+
+      self
+    end # method success!
+
     # @return [Boolean] true if the function did not generate any errors,
     #   otherwise false.
     def success?
-      errors.empty?
+      @status == :success || (@status.nil? && errors.empty?)
     end # method success?
   end # class
 end # module

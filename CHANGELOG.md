@@ -6,9 +6,17 @@ The "Halt And Catch Fire" Update.
 
 ## Functions
 
+Can now call `#success!` or `#failure!` in a function block or `#process` method to override the default, error-based status for the result. This allows for a passing result that still has errors, or a failing result that does not have explicit errors.
+
 Can now call `#halt!` in a function block or `#process` method. If a function has been halted, then any subsequent chained functions will not be run unless they were chained with the `:on => :always` option.
 
 Fixed an inconsistency issue when a function block or `#process` method returned an instance of `Cuprum::Result`.
+
+## Results
+
+Can now call `#success!` or `#failure!` to override the default, error-based status.
+
+Can now call `#halt!` and check the `#halted?` status. A halted result will prevent subsequent chained functions from being run.
 
 ## 0.3.0
 

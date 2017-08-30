@@ -7,6 +7,14 @@ RSpec.describe Cuprum::Result do
     end # before example
   end # shared_context
 
+  shared_context 'when the result status is set to failure' do
+    before(:example) { instance.failure! }
+  end # shared_context
+
+  shared_context 'when the result status is set to success' do
+    before(:example) { instance.success! }
+  end # shared_context
+
   shared_context 'when the result is halted' do
     before(:example) { instance.halt! }
   end # shared_context
@@ -56,11 +64,55 @@ RSpec.describe Cuprum::Result do
     include_examples 'should have property', :errors, []
   end # describe
 
+  describe '#failure!' do
+    it { expect(instance).to respond_to(:failure!).with(0).arguments }
+
+    it { expect(instance.failure!).to be instance }
+
+    it 'sets the result status to :failure' do
+      instance.failure!
+
+      expect(instance.failure?).to be true
+    end # it
+
+    wrap_context 'when the result has many errors' do
+      it 'sets the result status to :failure' do
+        instance.failure!
+
+        expect(instance.failure?).to be true
+      end # it
+    end # wrap_context
+
+    wrap_context 'when the result status is set to failure' do
+      it 'sets the result status to :failure' do
+        instance.failure!
+
+        expect(instance.failure?).to be true
+      end # it
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it 'sets the result status to :failure' do
+        instance.failure!
+
+        expect(instance.failure?).to be true
+      end # it
+    end # wrap_context
+  end # describe
+
   describe '#failure?' do
     include_examples 'should have predicate', :failure?, false
 
     wrap_context 'when the result has many errors' do
       it { expect(instance.failure?).to be true }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to failure' do
+      it { expect(instance.failure?).to be true }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it { expect(instance.failure?).to be false }
     end # wrap_context
 
     wrap_context 'when the result is halted' do
@@ -83,8 +135,52 @@ RSpec.describe Cuprum::Result do
   describe '#halted?' do
     include_examples 'should have predicate', :halted?, false
 
+    wrap_context 'when the result status is set to failure' do
+      it { expect(instance.halted?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it { expect(instance.halted?).to be false }
+    end # wrap_context
+
     wrap_context 'when the result is halted' do
       it { expect(instance.halted?).to be true }
+    end # wrap_context
+  end # describe
+
+  describe '#success!' do
+    it { expect(instance).to respond_to(:success!).with(0).arguments }
+
+    it { expect(instance.success!).to be instance }
+
+    it 'sets the result status to :success' do
+      instance.success!
+
+      expect(instance.success?).to be true
+    end # it
+
+    wrap_context 'when the result has many errors' do
+      it 'sets the result status to :success' do
+        instance.success!
+
+        expect(instance.success?).to be true
+      end # it
+    end # wrap_context
+
+    wrap_context 'when the result status is set to failure' do
+      it 'sets the result status to :success' do
+        instance.success!
+
+        expect(instance.success?).to be true
+      end # it
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it 'sets the result status to :success' do
+        instance.success!
+
+        expect(instance.success?).to be true
+      end # it
     end # wrap_context
   end # describe
 
@@ -93,6 +189,14 @@ RSpec.describe Cuprum::Result do
 
     wrap_context 'when the result has many errors' do
       it { expect(instance.success?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to failure' do
+      it { expect(instance.success?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it { expect(instance.success?).to be true }
     end # wrap_context
 
     wrap_context 'when the result is halted' do

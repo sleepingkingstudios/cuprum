@@ -281,6 +281,10 @@ module Cuprum
       @result&.errors
     end # method errors
 
+    def failure!
+      @result&.failure!
+    end # method failure!
+
     def halt!
       @result&.halt!
     end # method halt!
@@ -319,6 +323,10 @@ module Cuprum
         !last_result.failure?
       end # case
     end # method skip_chained_function?
+
+    def success!
+      @result&.success!
+    end # method success!
 
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)

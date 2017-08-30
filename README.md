@@ -113,6 +113,18 @@ Inside of the Function block or the `#process` method, you can add errors to the
       nil
     end # function
 
+#### `#success!`
+
+Only available while the Function is being called. If called, marks the result object as passing, even if the result has errors.
+
+    success!() #=> NilClass
+
+#### `#failure!`
+
+Only available while the Function is being called. If called, marks the result object as failing, even if the result does not have errors.
+
+    failure!() #=> NilClass
+
 #### `#halt!`
 
 Only available while the Function is being called. If called, halts the function chain (see Chaining Functions, below). Subsequent chained functions will not be called unless they were chained with the `:on => :always` option.
