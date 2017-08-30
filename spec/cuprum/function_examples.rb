@@ -773,6 +773,27 @@ module Spec::Examples
         end # context
       end # describe
 
+      describe '#failure!' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:failure!)
+
+          expect(instance).to respond_to(:failure!, true).with(0).arguments
+        end # it
+
+        it { expect(instance.send(:failure!)).to be_nil }
+
+        wrap_context 'when the function is executing the implementation' do
+          it { expect(instance.send(:halt!)).to be_nil }
+
+          it 'should mark the result as failing' do
+            result =
+              call_with_implementation { |instance| instance.send(:failure!) }
+
+            expect(result.failure?).to be true
+          end # it
+        end # method wrap_context
+      end # describe
+
       describe '#halt!' do
         it 'should define the private method' do
           expect(instance).not_to respond_to(:halt!)
@@ -790,6 +811,31 @@ module Spec::Examples
               call_with_implementation { |instance| instance.send(:halt!) }
 
             expect(result.halted?).to be true
+          end # it
+        end # method wrap_context
+      end # describe
+
+      describe '#success!' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:success!)
+
+          expect(instance).to respond_to(:success!, true).with(0).arguments
+        end # it
+
+        it { expect(instance.send(:success!)).to be_nil }
+
+        wrap_context 'when the function is executing the implementation' do
+          it { expect(instance.send(:success!)).to be_nil }
+
+          it 'should mark the result as failing' do
+            result =
+              call_with_implementation do |instance|
+                instance.send(:errors) << 'errors.messages.unknown'
+
+                instance.send(:success!)
+              end # call_with_implementation
+
+            expect(result.success?).to be true
           end # it
         end # method wrap_context
       end # describe
