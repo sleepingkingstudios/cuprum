@@ -8,16 +8,13 @@
   - IdentityFunction
   - MapFunction
   - RetryFunction
-- Handle calling #call or #process while calling a Function.
 
 ## Operation
 
+- #call should return self
 - #reset! should return self
 
 ## Result
-
-- Abort chaining with #halt!, #halted? methods, unless :on => :always.
-- Force success or failure status with #success!, #failure! methods.
 
 ## Documentation
 

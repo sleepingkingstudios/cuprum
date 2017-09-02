@@ -524,6 +524,28 @@ module Spec::Examples
           end # context
         end # shared_examples
 
+        shared_examples 'should support recursive calls' do
+          describe 'with an implementation that calls itself' do
+            let(:implementation) do
+              lambda do |int|
+                return 0 if int < 1
+
+                return 1 if int == 1
+
+                call(int - 1).value + call(int - 2).value
+              end # lambda
+            end # let
+
+            it 'should return a result', :aggregate_failures do
+              result = instance.call(10)
+
+              expect(result).to be_a Cuprum::Result
+              expect(result.value).to be 55
+              expect(result.errors).to be_empty
+            end # it
+          end # describe
+        end # shared_examples
+
         it 'should define the method' do
           expect(instance).
             to respond_to(:call).
@@ -545,6 +567,8 @@ module Spec::Examples
           include_examples 'should forward all arguments'
 
           include_examples 'should return a result'
+
+          include_examples 'should support recursive calls'
         end # wrap_context
 
         wrap_context 'when the #process method is defined' do
@@ -555,6 +579,8 @@ module Spec::Examples
           include_examples 'should forward all arguments'
 
           include_examples 'should return a result'
+
+          include_examples 'should support recursive calls'
         end # wrap_context
       end # describe
 
