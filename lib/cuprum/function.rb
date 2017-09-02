@@ -146,7 +146,7 @@ module Cuprum
     #     subclass.
     def call *args, &block
       call_chained_functions do
-        Cuprum::Result.new.tap do |result|
+        Cuprum::Result.new(:errors => build_errors).tap do |result|
           @result = result
 
           merge_results(result, process(*args, &block))
@@ -262,6 +262,10 @@ module Cuprum
     end # method chained_functions
 
     private
+
+    def build_errors
+      []
+    end # method build_errors
 
     def call_chained_functions
       chained_functions.reduce(yield) do |result, hsh|
