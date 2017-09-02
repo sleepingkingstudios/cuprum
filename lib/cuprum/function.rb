@@ -128,7 +128,9 @@ module Cuprum
 
     # @overload call(*arguments, **keywords, &block)
     #   Executes the logic encoded in the constructor block, or the #process
-    #   method if no block was passed to the constructor.
+    #   method if no block was passed to the constructor, and returns a
+    #   Cuprum::Result object with the return value of the block or #process,
+    #   the success or failure status, and any errors generated.
     #
     #   @param arguments [Array] Arguments to be passed to the implementation.
     #
@@ -246,16 +248,6 @@ module Cuprum
 
     protected
 
-    def call_chained_functions
-      chained_functions.reduce(yield) do |result, hsh|
-        next result if skip_chained_function?(result, :on => hsh[:on])
-
-        value = hsh.fetch(:proc).call(result)
-
-        value_is_result?(value) ? value : result
-      end # reduce
-    end # method call_chained_functions
-
     def chain_function proc, on: nil
       hsh = { :proc => proc }
       hsh[:on] = on if on
@@ -271,11 +263,31 @@ module Cuprum
 
     private
 
+    def call_chained_functions
+      chained_functions.reduce(yield) do |result, hsh|
+        next result if skip_chained_function?(result, :on => hsh[:on])
+
+        value = hsh.fetch(:proc).call(result)
+
+        convert_value_to_result(value) || result
+      end # reduce
+    end # method call_chained_functions
+
     def convert_function_or_proc_to_proc function_or_proc
       return function_or_proc if function_or_proc.is_a?(Proc)
 
       ->(result) { function_or_proc.call(result) }
     end # method convert_function_or_proc_to_proc
+
+    def convert_value_to_result value
+      return nil unless value_is_result?(value)
+
+      if value.respond_to?(:result) && value_is_result?(value.result)
+        return value.result
+      end # if
+
+      value
+    end # method convert_value_to_result
 
     def errors
       @result&.errors

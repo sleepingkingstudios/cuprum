@@ -7,6 +7,7 @@ RSpec.describe Cuprum::Function do
   subject(:instance) { described_class.new }
 
   let(:implementation) { ->() {} }
+  let(:result_class)   { Cuprum::Result }
 
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }

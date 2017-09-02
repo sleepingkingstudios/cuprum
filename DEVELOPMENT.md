@@ -11,9 +11,6 @@
 
 ## Operation
 
-- #call should return self
-- #reset! should return self
-
 ## Result
 
 ## Documentation

@@ -12,6 +12,10 @@ Can now call `#halt!` in a function block or `#process` method. If a function ha
 
 Fixed an inconsistency issue when a function block or `#process` method returned an instance of `Cuprum::Result`.
 
+## Operations
+
+Calling `#call` on an operation now returns the operation instance.
+
 ## Results
 
 Can now call `#success!` or `#failure!` to override the default, error-based status.

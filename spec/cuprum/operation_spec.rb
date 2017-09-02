@@ -54,6 +54,7 @@ RSpec.describe Cuprum::Operation do
   subject(:instance) { described_class.new }
 
   let(:implementation) { ->() {} }
+  let(:result_class)   { described_class }
 
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }
@@ -152,17 +153,26 @@ RSpec.describe Cuprum::Operation do
 
     wrap_context 'when the implementation returns a value' do
       it 'should return the last result' do
-        result = instance.call
+        instance.call
 
-        expect(instance.result).to be result
+        result = instance.result
+        expect(result).to be_a Cuprum::Result
+        expect(result.value).to be value
+        expect(result.errors).to be_empty
       end # it
     end # wrap_context
 
     wrap_context 'when the implementation generates errors' do
       it 'should return the last result' do
-        result = instance.call
+        instance.call
 
-        expect(instance.result).to be result
+        result = instance.result
+        expect(result).to be_a Cuprum::Result
+        expect(result.value).to be value
+
+        expected_errors.each do |error|
+          expect(result.errors).to include error
+        end # each
       end # it
     end # wrap_context
   end # describe
