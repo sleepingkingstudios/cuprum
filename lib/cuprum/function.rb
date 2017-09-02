@@ -146,7 +146,7 @@ module Cuprum
     #     subclass.
     def call *args, &block
       call_chained_functions do
-        Cuprum::Result.new.tap do |result|
+        Cuprum::Result.new(:errors => build_errors).tap do |result|
           @result = result
 
           merge_results(result, process(*args, &block))
@@ -263,6 +263,18 @@ module Cuprum
 
     private
 
+    # @!visibility public
+    #
+    # Generates an empty errors object. When the function is called, the result
+    # will have its #errors property initialized to the value returned by
+    # #build_errors.By default, this is an array. If you want to use a custom
+    # errors object type, override this method in a subclass.
+    #
+    # @return [Array] an empty errors object.
+    def build_errors
+      []
+    end # method build_errors
+
     def call_chained_functions
       chained_functions.reduce(yield) do |result, hsh|
         next result if skip_chained_function?(result, :on => hsh[:on])
@@ -289,10 +301,34 @@ module Cuprum
       value
     end # method convert_value_to_result
 
+    # @!visibility public
+    #
+    # Provides a reference to the current result's errors object. Messages or
+    # error objects added to this will be included in the #errors method of the
+    # returned result object.
+    #
+    # @return [Array, Object] the errors object.
+    #
+    # @see Cuprum::Result#errors.
+    #
+    # @note This is a private method, and only available when executing the
+    #   function implementation as defined in the constructor block or the
+    #   #process method.
     def errors
       @result&.errors
     end # method errors
 
+    # @!visibility public
+    #
+    # Marks the current result as failed. Calling #failure? on the returned
+    # result object will evaluate to true, whether or not the result has any
+    # errors.
+    #
+    # @see Cuprum::Result#failure!.
+    #
+    # @note This is a private method, and only available when executing the
+    #   function implementation as defined in the constructor block or the
+    #   #process method.
     def failure!
       @result&.failure!
     end # method failure!
@@ -319,6 +355,24 @@ module Cuprum
       result
     end # method merge_results
 
+    # @!visibility public
+    # @overload process(*arguments, **keywords, &block)
+    #   The implementation of the function, to be executed when the #call method
+    #   is called. Can add errors to or set the status of the result, and the
+    #   value of the result will be set to the value returned by #process. Do
+    #   not call this method directly.
+    #
+    #   @param arguments [Array] The arguments, if any, passed from #call.
+    #
+    #   @param keywords [Hash] The keywords, if any, passed from #call.
+    #
+    #   @yield The block, if any, passed from #call.
+    #
+    #   @return [Object] the value of the result object to be returned by #call.
+    #
+    #   @raise NotImplementedError
+    #
+    # @note This is a private method.
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
     end # method process
@@ -336,6 +390,17 @@ module Cuprum
       end # case
     end # method skip_chained_function?
 
+    # @!visibility public
+    #
+    # Marks the current result as passing. Calling #success? on the returned
+    # result object will evaluate to true, whether or not the result has any
+    # errors.
+    #
+    # @see Cuprum::Result#success!.
+    #
+    # @note This is a private method, and only available when executing the
+    #   function implementation as defined in the constructor block or the
+    #   #process method.
     def success!
       @result&.success!
     end # method success!

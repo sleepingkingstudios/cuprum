@@ -391,6 +391,27 @@ module Spec::Examples
         end # describe
       end # shared_examples
 
+      describe '#build_errors' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:build_errors)
+
+          expect(instance).to respond_to(:build_errors, true).with(0).arguments
+        end # it
+
+        it 'should return an empty array' do
+          errors = instance.send(:build_errors)
+
+          expect(errors).to be_a Array
+          expect(errors).to be_empty
+        end # it
+
+        it 'should return a new object each time it is called' do
+          errors = instance.send(:build_errors)
+
+          expect(instance.send :build_errors).not_to be errors
+        end # it
+      end # describe
+
       describe '#call' do
         shared_examples 'should forward all arguments' do
           context 'when the implementation does not support the given ' \
@@ -884,6 +905,15 @@ module Spec::Examples
             ['errors.messages.unknown']
           end # let
 
+          it 'should be an empty array' do
+            call_with_implementation do |instance|
+              errors = instance.send(:errors)
+
+              expect(errors).to be_a Array
+              expect(errors).to be_empty
+            end # call_with_implementation
+          end # it
+
           it 'should update the result errors' do
             result =
               call_with_implementation do |instance|
@@ -894,6 +924,45 @@ module Spec::Examples
               expect(result.errors).to include message
             end # each
           end # it
+
+          context 'when the function has a custom #build_errors method' do
+            let(:described_class) do
+              Class.new(super()) do
+                def build_errors
+                  Spec::Errors.new
+                end # method build_errors
+              end # class
+            end # let
+
+            example_constant 'Spec::Errors' do
+              # rubocop:disable RSpec/InstanceVariable
+              Class.new(Delegator) do
+                def initialize
+                  @errors = []
+
+                  super(@errors)
+                end # constructor
+
+                def __getobj__
+                  @errors
+                end # method
+
+                def __setobj__ ary
+                  @errors = ary
+                end # method __setobj__
+              end # class
+              # rubocop:enable RSpec/InstanceVariable
+            end # constant
+
+            it 'should be an empty errors object' do
+              call_with_implementation do |instance|
+                errors = instance.send(:errors)
+
+                expect(errors).to be_a Spec::Errors
+                expect(errors).to be_empty
+              end # call_with_implementation
+            end # it
+          end # context
         end # context
       end # describe
 
