@@ -10,6 +10,8 @@ Can now call `#success!` or `#failure!` in a function block or `#process` method
 
 Can now call `#halt!` in a function block or `#process` method. If a function has been halted, then any subsequent chained functions will not be run unless they were chained with the `:on => :always` option.
 
+Can now generate results with custom error objects by overriding the `#build_errors` method.
+
 Fixed an inconsistency issue when a function block or `#process` method returned an instance of `Cuprum::Result`.
 
 ## Operations

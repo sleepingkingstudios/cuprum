@@ -99,6 +99,18 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#else-instance_method)
 
+#### `#build_errors`
+
+*Private method*. Generates an empty errors object. When the function is called, the result will have its `#errors` property initialized to the value returned by `#build_errors`. By default, this is an array. If you want to use a custom errors object type, override this method in a subclass.
+
+    build_errors() #=> Array
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#build_errors-instance_method)
+
+### Implementation Hooks
+
+These methods are only available while the Function is being called, and allow the implementation to update the errors of and override the results of the result object.
+
 #### `#errors`
 
 Only available while the Function is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
@@ -107,11 +119,20 @@ Only available while the Function is being called. Provides access to the errors
 
 Inside of the Function block or the `#process` method, you can add errors to the result.
 
-    Cuprum::Function.new do
-      errors << "I'm sorry, something went wrong."
+    function =
+      Cuprum::Function.new do
+        errors << "I'm sorry, something went wrong."
 
-      nil
-    end # function
+        nil
+      end # function
+
+    result = function.call
+    result.failure?
+    #=> true
+    result.errors
+    #=> ["I'm sorry, something went wrong."]
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Function#errors-instance_method)
 
 #### `#success!`
 
