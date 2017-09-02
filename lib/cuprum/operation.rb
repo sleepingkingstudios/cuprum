@@ -3,10 +3,17 @@ require 'cuprum/function'
 module Cuprum
   # Functional object that with syntactic sugar for tracking the last result.
   #
-  # An Operation is like a Function, but with an additional trick of tracking
-  # its own most recent execution result. This allows us to simplify some
-  # conditional logic, especially boilerplate code used to interact with
-  # frameworks.
+  # An Operation is like a Function, but with two key differences. First, an
+  # Operation retains a reference to the result object from the most recent time
+  # the operation was called and delegates the methods defined by Cuprum::Result
+  # to the most recent result. This allows a called Operation to replace a
+  # Cuprum::Result in any code that expects or returns a result. Second, the
+  # #call method returns the operation instance, rather than the result itself.
+  #
+  # These two features allow developers to simplify logic around calling and
+  # using the results of operations, and reduce the need for boilerplate code
+  # (particularly when using an operation as part of an existing framework,
+  # such as inside of an asynchronous worker or a Rails controller action).
   #
   # @example
   #   def create
@@ -31,7 +38,25 @@ module Cuprum
     #   operation.
     attr_reader :result
 
-    # (see Cuprum::Function#call)
+    # @overload call(*arguments, **keywords, &block)
+    #   Executes the logic encoded in the constructor block, or the #process
+    #   method if no block was passed to the constructor, and returns the
+    #   operation object.
+    #
+    #   @param arguments [Array] Arguments to be passed to the implementation.
+    #
+    #   @param keywords [Hash] Keywords to be passed to the implementation.
+    #
+    #   @return [Cuprum::Operation] the called operation.
+    #
+    #   @yield If a block argument is given, it will be passed to the
+    #     implementation.
+    #
+    #   @raise [NotImplementedError] Unless a block was passed to the
+    #     constructor or the #process method was overriden by a Function
+    #     subclass.
+    #
+    # @see Cuprum::Function#call
     def call *args, &block
       reset! if called? # Clear reference to most recent result.
 

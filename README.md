@@ -304,7 +304,9 @@ If the `#halt` method is called as part of a Function block or `#process` method
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
 
-An Operation is like a Function, but with an additional trick of tracking its own most recent execution result. This allows us to simplify some conditional logic, especially boilerplate code used to interact with frameworks.
+An Operation is like a Function, but with two key differences. First, an Operation retains a reference to the result object from the most recent time the operation was called and delegates the methods defined by `Cuprum::Result` to the most recent result. This allows a called Operation to replace a `Cuprum::Result` in any code that expects or returns a result. Second, the `#call` method returns the operation instance, rather than the result itself.
+
+These two features allow developers to simplify logic around calling and using the results of operations, and reduce the need for boilerplate code (particularly when using an operation as part of an existing framework, such as inside of an asynchronous worker or a Rails controller action).
 
     class CreateBookOperation < Cuprum::Operation
       def process
