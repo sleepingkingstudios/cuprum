@@ -172,6 +172,32 @@ module Spec::Examples
           let(:other_value)     { 'last value'.freeze }
           let(:expected_called) { super() << 'last function'.freeze }
 
+          describe 'with a block that returns an operation' do
+            let(:expected_value) { super() << other_value }
+            let(:other_function) do
+              called   = called_functions
+              returned = other_value
+
+              lambda do |result|
+                called << 'last function'.freeze
+
+                Cuprum::Operation.new { result.value + [returned] }.call
+              end # lambda
+            end # let
+
+            include_examples 'should copy the function'
+
+            include_examples 'should call each chained function'
+
+            it 'should return the function result' do
+              result = chain_function(other_function).call
+
+              expect(result).to be_a result_class
+              expect(result.success?).to be true
+              expect(result.value).to be == expected_value
+            end # it
+          end # describe
+
           describe 'with a block that returns a result' do
             let(:expected_value) { super() << other_value }
             let(:other_function) do
@@ -192,7 +218,7 @@ module Spec::Examples
             it 'should return the function result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be true
               expect(result.value).to be == expected_value
             end # it
@@ -217,7 +243,7 @@ module Spec::Examples
             it 'should return the previous result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be last_success
               expect(result.value).to be == expected_value
             end # it
@@ -243,7 +269,7 @@ module Spec::Examples
             it 'should return the function result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be true
               expect(result.value).to be == expected_value
             end # it
@@ -255,6 +281,33 @@ module Spec::Examples
         describe 'should chain but not call the function' do
           let(:other_value) { 'last value'.freeze }
 
+          describe 'with a block that returns an operation' do
+            let(:other_function) do
+              called   = called_functions
+              returned = other_value
+
+              lambda do |result|
+                # :nocov:
+                called << 'last function'.freeze
+
+                Cuprum::Operation.new { result.value + [returned] }.call
+                # :nocov:
+              end # lambda
+            end # let
+
+            include_examples 'should copy the function'
+
+            include_examples 'should call each chained function'
+
+            it 'should return the previous result' do
+              result = chain_function(other_function).call
+
+              expect(result).to be_a result_class
+              expect(result.success?).to be last_success
+              expect(result.value).to be == expected_value
+            end # it
+          end # describe
+
           describe 'with a block that returns a result' do
             let(:other_function) do
               called   = called_functions
@@ -276,7 +329,7 @@ module Spec::Examples
             it 'should return the previous result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be last_success
               expect(result.value).to be == expected_value
             end # it
@@ -303,7 +356,7 @@ module Spec::Examples
             it 'should return the previous result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be last_success
               expect(result.value).to be == expected_value
             end # it
@@ -330,7 +383,7 @@ module Spec::Examples
             it 'should return the previous result' do
               result = chain_function(other_function).call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.success?).to be last_success
               expect(result.value).to be == expected_value
             end # it
@@ -390,10 +443,55 @@ module Spec::Examples
             it 'should return a result', :aggregate_failures do
               result = instance.call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.value).to be value
               expect(result.errors).to be_empty
             end # it
+
+            context 'when the implementation returns an operation' do
+              let(:implementation) do
+                returned = value
+
+                ->() { Cuprum::Operation.new { returned }.call }
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+              end # it
+            end # context
+
+            context 'when the implementation returns an operation with errors' \
+            do
+              let(:implementation_errors) do
+                ['errors.messages.custom']
+              end # let
+              let(:implementation) do
+                messages = implementation_errors
+                returned = value
+
+                lambda do
+                  Cuprum::Operation.new do
+                    send(:errors).concat(messages)
+
+                    returned
+                  end. # operation
+                    call
+                end # lambda
+              end # let
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be == implementation_errors
+                expect(result.failure?).to be true
+              end # it
+            end # context
 
             context 'when the implementation returns a result' do
               let(:implementation) do
@@ -405,7 +503,7 @@ module Spec::Examples
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
-                expect(result).to be_a Cuprum::Result
+                expect(result).to be_a result_class
                 expect(result.value).to be value
                 expect(result.errors).to be_empty
               end # it
@@ -427,7 +525,7 @@ module Spec::Examples
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
-                expect(result).to be_a Cuprum::Result
+                expect(result).to be_a result_class
                 expect(result.value).to be value
                 expect(result.errors).to be == implementation_errors
                 expect(result.failure?).to be true
@@ -456,7 +554,7 @@ module Spec::Examples
             it 'should return a result', :aggregate_failures do
               result = instance.call
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.value).to be value
 
               expected_errors.each do |message|
@@ -481,7 +579,7 @@ module Spec::Examples
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
-                expect(result).to be_a Cuprum::Result
+                expect(result).to be_a result_class
                 expect(result.value).to be value
 
                 expected_errors.each do |message|
@@ -511,7 +609,7 @@ module Spec::Examples
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
-                expect(result).to be_a Cuprum::Result
+                expect(result).to be_a result_class
                 expect(result.value).to be value
 
                 [*expected_errors, *implementation_errors].each do |message|
@@ -539,7 +637,7 @@ module Spec::Examples
             it 'should return a result', :aggregate_failures do
               result = instance.call(10)
 
-              expect(result).to be_a Cuprum::Result
+              expect(result).to be_a result_class
               expect(result.value).to be 55
               expect(result.errors).to be_empty
             end # it

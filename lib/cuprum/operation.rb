@@ -36,6 +36,8 @@ module Cuprum
       reset! if called? # Clear reference to most recent result.
 
       @result = super
+
+      self
     end # method call
 
     # @return [Boolean] true if the operation has been called and has a
