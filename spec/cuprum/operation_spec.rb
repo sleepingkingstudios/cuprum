@@ -62,6 +62,8 @@ RSpec.describe Cuprum::Operation do
 
   include_examples 'should implement the Function methods'
 
+  include_examples 'should implement the generic Function methods'
+
   describe '#called?' do
     include_examples 'should have predicate', :called?, false
 
