@@ -413,6 +413,7 @@ module Spec::Examples
     end # shared_context
 
     shared_examples 'should implement the Function methods' do
+      # :nocov:
       def chains_function? function, expected, on: :default
         function.send(:chained_functions).any? do |actual|
           next false unless [:default, actual[:on]].include?(on)
@@ -430,6 +431,7 @@ module Spec::Examples
           actual[:fn] == expected
         end # if
       end # method match_chained_function
+      # :nocov:
 
       describe '#call' do
         it { expect(instance).to respond_to(:call) }
