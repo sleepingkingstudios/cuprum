@@ -26,6 +26,8 @@ RSpec.describe Cuprum::Function do
 
   include_examples 'should implement the Function methods'
 
+  include_examples 'should implement the generic Function methods'
+
   describe '#errors' do
     include_examples 'should have private reader', :errors
   end # describe

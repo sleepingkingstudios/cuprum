@@ -28,3 +28,8 @@ Chaining Case Study: |
   Create Content
   Create ContentVersion
   Tags.each { FindOrCreate Tag }
+
+## Testing
+
+- assert_chained_function
+- have_chained_function() matcher

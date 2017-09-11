@@ -104,7 +104,7 @@ module Cuprum
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Function
+  class Function # rubocop:disable Metrics/ClassLength
     # Error class for calling a Function that was not given a definition block
     # or have a #process method defined.
     class NotImplementedError < StandardError
@@ -195,9 +195,9 @@ module Cuprum
     #
     # @return [Cuprum::Function] The chained function.
     def chain function = nil, on: nil, &block
-      proc = convert_function_or_proc_to_proc(block || function)
-
-      chain_function(proc, :on => on)
+      clone.tap do |fn|
+        fn.chained_functions << build_chain_link(block || function, :on => on)
+      end # tap
     end # method chain
 
     # Shorthand for function.chain(:on => :failure). Registers a function or
@@ -218,9 +218,10 @@ module Cuprum
     #
     # @see #chain
     def else function = nil, &block
-      proc = convert_function_or_proc_to_proc(block || function)
-
-      chain_function(proc, :on => :failure)
+      clone.tap do |fn|
+        fn.chained_functions <<
+          build_chain_link(block || function, :on => :failure)
+      end # tap
     end # method else
 
     # Shorthand for function.chain(:on => :success). Registers a function or
@@ -241,27 +242,26 @@ module Cuprum
     #
     # @see #chain
     def then function = nil, &block
-      proc = convert_function_or_proc_to_proc(block || function)
-
-      chain_function(proc, :on => :success)
+      clone.tap do |fn|
+        fn.chained_functions <<
+          build_chain_link(block || function, :on => :success)
+      end # tap
     end # method then
 
     protected
-
-    def chain_function proc, on: nil
-      hsh = { :proc => proc }
-      hsh[:on] = on if on
-
-      clone.tap do |fn|
-        fn.chained_functions << hsh
-      end # tap
-    end # method chain_function
 
     def chained_functions
       @chained_functions ||= []
     end # method chained_functions
 
     private
+
+    def build_chain_link function_or_proc, on: nil
+      {
+        :proc => convert_function_or_proc_to_proc(function_or_proc),
+        :on   => on
+      } # end hash
+    end # method build_chain_link
 
     # @!visibility public
     #
