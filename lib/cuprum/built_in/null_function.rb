@@ -1,7 +1,7 @@
+require 'cuprum/built_in'
 require 'cuprum/function'
-require 'cuprum/functions'
 
-module Cuprum::Functions
+module Cuprum::BuiltIn
   # A predefined function that does nothing when called.
   class NullFunction < Cuprum::Function
     private

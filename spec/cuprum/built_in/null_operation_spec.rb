@@ -1,8 +1,8 @@
+require 'cuprum/built_in/null_operation'
 require 'cuprum/function_examples'
 require 'cuprum/operation_examples'
-require 'cuprum/operations/null_operation'
 
-RSpec.describe Cuprum::Operations::NullOperation do
+RSpec.describe Cuprum::BuiltIn::NullOperation do
   include Spec::Examples::FunctionExamples
   include Spec::Examples::OperationExamples
 
