@@ -10,15 +10,21 @@ module Spec::Examples
       let(:value) { 'returned value'.freeze }
 
       def call_operation
-        params    = instance.method(:call).parameters
+        call_method = instance.method(:call)
+
+        instance.call(*generate_arguments(call_method))
+      end # method call_operation
+
+      def generate_arguments method
+        params    = method.parameters
         count     = params.select { |(type, _)| type == :req }.count
         keys      =
           params.select { |(type, _)| type == :keyreq }.map { |(_, key)| key }
         arguments = Array.new(count)
         keywords  = Hash[keys.map { |key| [key, nil] }]
 
-        instance.call(*arguments, **keywords)
-      end # method call_operation
+        keywords.empty? ? arguments : arguments << keywords
+      end # method generate_arguments
 
       before(:example) do
         allow(instance).to receive(:process).and_return(value)
