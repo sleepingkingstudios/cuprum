@@ -34,84 +34,121 @@ module Cuprum
   #
   # @see Cuprum::Function
   class Operation < Cuprum::Function
-    # @return [Cuprum::Result] The result from the most recent call of the
-    #   operation.
-    attr_reader :result
-
-    # @overload call(*arguments, **keywords, &block)
-    #   Executes the logic encoded in the constructor block, or the #process
-    #   method if no block was passed to the constructor, and returns the
-    #   operation object.
+    # Module-based implementation of the Operation methods. Use this to convert
+    # an already-defined function into an operation.
     #
-    #   @param arguments [Array] Arguments to be passed to the implementation.
-    #
-    #   @param keywords [Hash] Keywords to be passed to the implementation.
-    #
-    #   @return [Cuprum::Operation] the called operation.
-    #
-    #   @yield If a block argument is given, it will be passed to the
-    #     implementation.
-    #
-    #   @raise [NotImplementedError] Unless a block was passed to the
-    #     constructor or the #process method was overriden by a Function
-    #     subclass.
-    #
-    # @see Cuprum::Function#call
-    def call *args, &block
-      reset! if called? # Clear reference to most recent result.
+    # @example
+    #   class CustomOperation < CustomFunction
+    #     include Cuprum::Operation::Mixin
+    #   end # class
+    module Mixin
+      # @return [Cuprum::Result] The result from the most recent call of the
+      #   operation.
+      attr_reader :result
 
-      @result = super
+      # @overload call(*arguments, **keywords, &block)
+      #   Executes the logic encoded in the constructor block, or the #process
+      #   method if no block was passed to the constructor, and returns the
+      #   operation object.
+      #
+      #   @param arguments [Array] Arguments to be passed to the implementation.
+      #
+      #   @param keywords [Hash] Keywords to be passed to the implementation.
+      #
+      #   @return [Cuprum::Operation] the called operation.
+      #
+      #   @yield If a block argument is given, it will be passed to the
+      #     implementation.
+      #
+      #   @raise [NotImplementedError] Unless a block was passed to the
+      #     constructor or the #process method was overriden by a Function
+      #     subclass.
+      #
+      # @see Cuprum::Function#call
+      def call *args, &block
+        reset! if called? # Clear reference to most recent result.
 
-      self
-    end # method call
+        @result = super
 
-    # @return [Boolean] true if the operation has been called and has a
-    #   reference to the most recent result; otherwise false.
-    def called?
-      !result.nil?
-    end # method called?
+        self
+      end # method call
 
-    # @return [Array] the errors from the most recent result, or nil if the
-    #   operation has not been called.
-    def errors
-      super || (called? ? result.errors : nil)
-    end # method errors
+      # @return [Boolean] true if the operation has been called and has a
+      #   reference to the most recent result; otherwise false.
+      def called?
+        !result.nil?
+      end # method called?
 
-    # @return [Boolean] true if the most recent result had errors, or false if
-    #   the most recent result had no errors or if the operation has not been
-    #   called.
-    def failure?
-      called? ? result.failure? : false
-    end # method success?
+      # @return [Array] the errors from the most recent result, or nil if the
+      #   operation has not been called.
+      def errors
+        super || (called? ? result.errors : nil)
+      end # method errors
 
-    # @return [Boolean] true if the most recent was halted, otherwise false.
-    def halted?
-      called? ? result.halted? : false
-    end # method halted?
+      # @return [Boolean] true if the most recent result had errors, or false if
+      #   the most recent result had no errors or if the operation has not been
+      #   called.
+      def failure?
+        called? ? result.failure? : false
+      end # method success?
 
-    # Clears the reference to the most recent call of the operation, if any.
-    # This allows the result and any referenced data to be garbage collected.
-    # Use this method to clear any instance variables or state internal to the
-    # operation (an operation should never have external state apart from the
-    # last result).
-    #
-    # If the operation cannot be run more than once, this method should raise an
-    # error.
-    def reset!
-      @result = nil
-    end # method reset
+      # @return [Boolean] true if the most recent was halted, otherwise false.
+      def halted?
+        called? ? result.halted? : false
+      end # method halted?
 
-    # @return [Boolean] true if the most recent result had no errors, or false
-    #   if the most recent result had errors or if the operation has not been
-    #   called.
-    def success?
-      called? ? result.success? : false
-    end # method success?
+      # Clears the reference to the most recent call of the operation, if any.
+      # This allows the result and any referenced data to be garbage collected.
+      # Use this method to clear any instance variables or state internal to the
+      # operation (an operation should never have external state apart from the
+      # last result).
+      #
+      # If the operation cannot be run more than once, this method should raise
+      # an error.
+      def reset!
+        @result = nil
+      end # method reset
 
-    # @return [Object] the value of the most recent result, or nil if the
-    #   operation has not been called.
-    def value
-      called? ? result.value : nil
-    end # method value
+      # @return [Boolean] true if the most recent result had no errors, or false
+      #   if the most recent result had errors or if the operation has not been
+      #   called.
+      def success?
+        called? ? result.success? : false
+      end # method success?
+
+      # @return [Object] the value of the most recent result, or nil if the
+      #   operation has not been called.
+      def value
+        called? ? result.value : nil
+      end # method value
+    end # module
+    include Mixin
+
+    # @!method call
+    #   (see Cuprum::Operation::Mixin#call)
+
+    # @!method called?
+    #   (see Cuprum::Operation::Mixin#called?)
+
+    # @!method errors
+    #   (see Cuprum::Operation::Mixin#errors)
+
+    # @!method failure?
+    #   (see Cuprum::Operation::Mixin#failure?)
+
+    # @!method halted?
+    #   (see Cuprum::Operation::Mixin#halted?)
+
+    # @!method reset!
+    #   (see Cuprum::Operation::Mixin#reset!)
+
+    # @!method result
+    #   (see Cuprum::Operation::Mixin#result)
+
+    # @!method success?
+    #   (see Cuprum::Operation::Mixin#success?)
+
+    # @!method value
+    #   (see Cuprum::Operation::Mixin#value)
   end # class
 end # module
