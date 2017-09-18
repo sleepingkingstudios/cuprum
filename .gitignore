@@ -9,7 +9,6 @@ Gemfile.lock
 /coverage
 /doc
 .yardoc
-.yardopts
 
 # Ignore temporary files.
 *.gem
