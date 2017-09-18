@@ -25,6 +25,8 @@ Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use thes
 
 ## Functions
 
+    require 'cuprum/function'
+
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FFunction)
 
 Functions are the core feature of Cuprum. In a nutshell, each Cuprum::Function is a functional object that encapsulates a business logic operation. A Function provides a consistent interface and tracking of result value and status. This minimizes boilerplate and allows for interchangeability between different implementations or strategies for managing your data and processes.
@@ -323,6 +325,8 @@ If the `#halt` method is called as part of a Function block or `#process` method
 
 ## Operations
 
+    require 'cuprum/operation'
+
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
 
 An Operation is like a Function, but with two key differences. First, an Operation retains a reference to the result object from the most recent time the operation was called and delegates the methods defined by `Cuprum::Result` to the most recent result. This allows a called Operation to replace a `Cuprum::Result` in any code that expects or returns a result. Second, the `#call` method returns the operation instance, rather than the result itself.
@@ -379,6 +383,12 @@ Clears the most recent result and resets `#called?` to false. This frees the res
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#reset!-instance_method)
 
+### The Operation Mixin
+
+[Module Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation%2FMixin)
+
+The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any function class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
+
 ## Results
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FResult)
@@ -426,3 +436,36 @@ True if the function did not generate any errors, otherwise false.
 True if the function generated one or more errors, otherwise false.
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure%3F-instance_method)
+
+## Built In Functions
+
+Cuprum includes a small number of predefined functions and their equivalent operations.
+
+### NullFunction
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullFunction)
+
+A pregenerated function that does nothing when called.
+
+    require 'cuprum/built_in/null_function'
+
+    function = Cuprum::BuiltIn::NullFunction.new
+    result   = function.call
+    result.value
+    #=> nil
+    result.success?
+    #=> true
+
+### NullOperation
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullFunction)
+
+A pregenerated operation that does nothing when called.
+
+    require 'cuprum/built_in/null_operation'
+
+    operation = Cuprum::BuiltIn::NullOperation.new.call
+    operation.value
+    #=> nil
+    operation.success?
+    #=> true

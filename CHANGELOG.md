@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.0
+
+The "Name Not Found For NullFunction" Update.
+
+## Operations
+
+The implementation of `Cuprum::Operation` has been extracted to a module at `Cuprum::Operation::Mixin`, allowing users to easily convert an existing function class or instance to an operation.
+
+## Built In Functions
+
+Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.
+
 ## 0.4.0
 
 The "Halt And Catch Fire" Update.

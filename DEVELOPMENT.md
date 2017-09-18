@@ -2,7 +2,6 @@
 
 ## Function
 
-- #build_errors method
 - Predefined functions/operations:
   - NullFunction
   - IdentityFunction
