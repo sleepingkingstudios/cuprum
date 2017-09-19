@@ -68,5 +68,38 @@ module Cuprum
     def success?
       @status == :success || (@status.nil? && errors.empty?)
     end # method success?
+
+    # @api private
+    def update other_result
+      return self if other_result.nil?
+
+      self.value = other_result.value
+
+      update_status(other_result)
+
+      update_errors(other_result)
+
+      halt! if other_result.halted?
+
+      self
+    end # method update
+
+    protected
+
+    attr_reader :status
+
+    private
+
+    def update_errors other_result
+      return if other_result.errors.empty?
+
+      @errors += other_result.errors
+    end # method update_errors
+
+    def update_status other_result
+      return if status || !errors.empty?
+
+      @status = other_result.status
+    end # method update_status
   end # class
 end # module
