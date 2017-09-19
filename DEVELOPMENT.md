@@ -3,7 +3,6 @@
 ## Function
 
 - Predefined functions/operations:
-  - NullFunction
   - IdentityFunction
   - MapFunction
   - RetryFunction

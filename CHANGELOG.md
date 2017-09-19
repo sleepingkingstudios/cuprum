@@ -12,6 +12,8 @@ The implementation of `Cuprum::Operation` has been extracted to a module at `Cup
 
 Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.
 
+Added the `IdentityFunction` and `IdentityOperation` predefined classes, which return the value or result which which they were called.
+
 ## 0.4.0
 
 The "Halt And Catch Fire" Update.
