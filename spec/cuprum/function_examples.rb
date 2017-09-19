@@ -741,6 +741,79 @@ module Spec::Examples
       end # describe
 
       describe '#call' do
+        shared_context 'when the implementation returns an operation' do
+          let(:value_or_result) do
+            returned = value
+
+            Cuprum::Operation.new { returned }.call
+          end # let
+        end # shared_context
+
+        shared_context 'when the implementation returns a failing operation' do
+          let(:value_or_result) do
+            returned = value
+
+            Cuprum::Operation.new do
+              failure!
+
+              returned
+            end. # operation
+              call
+          end # let
+        end # shared_context
+
+        shared_context 'when the implementation returns an operation with ' \
+        'errors' do
+          let(:implementation_errors) do
+            ['errors.messages.custom']
+          end # let
+          let(:value_or_result) do
+            messages = implementation_errors
+            returned = value
+
+            Cuprum::Operation.new do
+              send(:errors).concat(messages)
+
+              returned
+            end. # operation
+              call
+          end # let
+        end # shared_context
+
+        shared_context 'when the implementation returns a halted operation' do
+          let(:value_or_result) do
+            returned = value
+
+            Cuprum::Operation.new do
+              halt!
+
+              returned
+            end. # operation
+              call
+          end # let
+        end # shared_context
+
+        shared_context 'when the implementation returns a result' do
+          let(:value_or_result) { Cuprum::Result.new(value) }
+        end # shared_context
+
+        shared_context 'when the implementation returns a failing result' do
+          let(:value_or_result) { Cuprum::Result.new(value).tap(&:failure!) }
+        end # shared_context
+
+        shared_context 'when the implementation returns a result with errors' do
+          let(:implementation_errors) do
+            ['errors.messages.custom']
+          end # let
+          let(:value_or_result) do
+            Cuprum::Result.new(value, :errors => implementation_errors)
+          end # let
+        end # shared_context
+
+        shared_context 'when the implementation returns a halted result' do
+          let(:value_or_result) { Cuprum::Result.new(value).halt! }
+        end # shared_context
+
         shared_examples 'should forward all arguments' do
           context 'when the implementation does not support the given ' \
                   'arguments' do
@@ -782,9 +855,10 @@ module Spec::Examples
 
         shared_examples 'should return a result' do
           context 'when the operation does not generate any errors' do
-            let(:value) { 'returned value'.freeze }
+            let(:value)           { 'returned value'.freeze }
+            let(:value_or_result) { value }
             let(:implementation) do
-              returned = value
+              returned = value_or_result
 
               ->() { returned }
             end # let
@@ -795,101 +869,128 @@ module Spec::Examples
               expect(result).to be_a result_class
               expect(result.value).to be value
               expect(result.errors).to be_empty
+              expect(result.success?).to be true
+              expect(result.failure?).to be false
+              expect(result.halted?).to be false
             end # it
 
-            context 'when the implementation returns an operation' do
-              let(:implementation) do
-                returned = value
-
-                ->() { Cuprum::Operation.new { returned }.call }
-              end # let
-
+            wrap_context 'when the implementation returns an operation' do
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
                 expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be false
               end # it
-            end # context
+            end # wrap_context
 
-            context 'when the implementation returns an operation with errors' \
+            wrap_context 'when the implementation returns a failing operation' \
             do
-              let(:implementation_errors) do
-                ['errors.messages.custom']
-              end # let
-              let(:implementation) do
-                messages = implementation_errors
-                returned = value
-
-                lambda do
-                  Cuprum::Operation.new do
-                    send(:errors).concat(messages)
-
-                    returned
-                  end. # operation
-                    call
-                end # lambda
-              end # let
-
-              it 'should return a result', :aggregate_failures do
-                result = instance.call
-
-                expect(result).to be_a result_class
-                expect(result.value).to be value
-                expect(result.errors).to be == implementation_errors
-                expect(result.failure?).to be true
-              end # it
-            end # context
-
-            context 'when the implementation returns a result' do
-              let(:implementation) do
-                returned = value
-
-                ->() { Cuprum::Result.new(returned) }
-              end # let
-
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
                 expect(result.errors).to be_empty
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
               end # it
-            end # context
+            end # wrap_context
 
-            context 'when the implementation returns a result with errors' do
-              let(:implementation_errors) do
-                ['errors.messages.custom']
-              end # let
-              let(:implementation) do
-                errors   = implementation_errors
-                returned = value
-
-                lambda do
-                  Cuprum::Result.new(returned, :errors => errors)
-                end # lambda
-              end # let
-
+            wrap_context 'when the implementation returns an operation with ' \
+            'errors' do
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
                 expect(result.errors).to be == implementation_errors
+                expect(result.success?).to be false
                 expect(result.failure?).to be true
+                expect(result.halted?).to be false
               end # it
-            end # context
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a halted operation' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be true
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a failing result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a result with errors'\
+            do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be == implementation_errors
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a halted result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be true
+              end # it
+            end # wrap_context
           end # context
 
           context 'when the operation generates errors' do
-            let(:value) { 'returned value'.freeze }
+            let(:value)           { 'returned value'.freeze }
+            let(:value_or_result) { value }
             let(:expected_errors) do
               ['errors.messages.unknown']
             end # let
             let(:implementation) do
               messages = expected_errors
-              returned = value
+              returned = value_or_result
 
               lambda do
                 messages.each do |message|
@@ -909,22 +1010,13 @@ module Spec::Examples
               expected_errors.each do |message|
                 expect(result.errors).to include message
               end # each
+
+              expect(result.success?).to be false
+              expect(result.failure?).to be true
+              expect(result.halted?).to be false
             end # it
 
-            context 'when the implementation returns a result' do
-              let(:implementation) do
-                messages = expected_errors
-                returned = value
-
-                lambda do
-                  messages.each do |message|
-                    errors << message
-                  end # each
-
-                  Cuprum::Result.new(returned)
-                end # lambda
-              end # let
-
+            wrap_context 'when the implementation returns an operation' do
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
@@ -934,26 +1026,35 @@ module Spec::Examples
                 expected_errors.each do |message|
                   expect(result.errors).to include message
                 end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
               end # it
-            end # context
+            end # wrap_context
 
-            context 'when the implementation returns a result with errors' do
-              let(:implementation_errors) do
-                ['errors.messages.custom']
-              end # let
-              let(:implementation) do
-                messages = expected_errors
-                errors   = implementation_errors
-                returned = value
+            wrap_context 'when the implementation returns a failing operation' \
+            do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
 
-                lambda do
-                  messages.each do |message|
-                    errors << message
-                  end # each
+                expect(result).to be_a result_class
+                expect(result.value).to be value
 
-                  Cuprum::Result.new(returned, :errors => errors)
-                end # lambda
-              end # let
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns an operation with ' \
+            'errors' do
+              let(:implementation_errors) { ['errors.messages.custom'] }
+              let(:expected_errors)       { super() + implementation_errors }
 
               it 'should return a result', :aggregate_failures do
                 result = instance.call
@@ -965,9 +1066,100 @@ module Spec::Examples
                   expect(result.errors).to include message
                 end # each
 
+                expect(result.success?).to be false
                 expect(result.failure?).to be true
+                expect(result.halted?).to be false
               end # it
-            end # context
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a halted operation' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be true
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a failing result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a result with errors'\
+            do
+              let(:implementation_errors) { ['errors.messages.custom'] }
+              let(:expected_errors)       { super() + implementation_errors }
+
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+
+                [*expected_errors, *implementation_errors].each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns a halted result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+
+                expected_errors.each do |message|
+                  expect(result.errors).to include message
+                end # each
+
+                expect(result.success?).to be false
+                expect(result.failure?).to be true
+                expect(result.halted?).to be true
+              end # it
+            end # wrap_context
           end # context
         end # shared_examples
 

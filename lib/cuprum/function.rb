@@ -104,7 +104,7 @@ module Cuprum
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Function # rubocop:disable Metrics/ClassLength
+  class Function
     # Error class for calling a Function that was not given a definition block
     # or have a #process method defined.
     class NotImplementedError < StandardError
@@ -337,17 +337,9 @@ module Cuprum
       @result&.halt!
     end # method halt!
 
-    def merge_errors result, other
-      return unless other.respond_to?(:errors)
-
-      result.errors += other.errors
-    end # method merge_errors
-
     def merge_results result, other
       if value_is_result?(other)
-        result.value = other.value
-
-        merge_errors(result, other)
+        result.update(other.respond_to?(:result) ? other.result : other)
       else
         result.value = other
       end # if-else
