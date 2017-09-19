@@ -441,13 +441,42 @@ True if the function generated one or more errors, otherwise false.
 
 Cuprum includes a small number of predefined functions and their equivalent operations.
 
+### IdentityFunction
+
+    require 'cuprum/built_in/identity_function'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityFunction)
+
+A pregenerated function that returns the value or result with which it was called.
+
+    function = Cuprum::BuiltIn::IdentityFunction.new
+    result   = function.call('expected value')
+    result.value
+    #=> 'expected value'
+    result.success?
+    #=> true
+
+### IdentityOperation
+
+    require 'cuprum/built_in/identity_operation'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityOperation)
+
+A pregenerated operation that sets its result to the value or result with which it was called.
+
+    operation = Cuprum::BuiltIn::IdentityFunction.new.call('expected value')
+    operation.value
+    #=> 'expected value'
+    operation.success?
+    #=> true
+
 ### NullFunction
+
+    require 'cuprum/built_in/null_function'
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullFunction)
 
 A pregenerated function that does nothing when called.
-
-    require 'cuprum/built_in/null_function'
 
     function = Cuprum::BuiltIn::NullFunction.new
     result   = function.call
@@ -458,11 +487,11 @@ A pregenerated function that does nothing when called.
 
 ### NullOperation
 
+    require 'cuprum/built_in/null_operation'
+
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullFunction)
 
 A pregenerated operation that does nothing when called.
-
-    require 'cuprum/built_in/null_operation'
 
     operation = Cuprum::BuiltIn::NullOperation.new.call
     operation.value
