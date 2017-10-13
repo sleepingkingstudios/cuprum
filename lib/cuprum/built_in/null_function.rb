@@ -13,6 +13,6 @@ module Cuprum::BuiltIn
   class NullFunction < Cuprum::Function
     private
 
-    def process; end
+    def process *_args; end
   end # class
 end # module
