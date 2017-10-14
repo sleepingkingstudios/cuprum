@@ -21,5 +21,18 @@ RSpec.describe Cuprum::BuiltIn::NullFunction do
       expect(result.failure?).to be false
       expect(result.halted?).to be false
     end # it
+
+    describe 'with arbitrary arguments' do
+      it 'should return a result', :aggregate_failures do
+        result = instance.call(1, 2, :san => 'san') { :yon }
+
+        expect(result).to be_a Cuprum::Result
+        expect(result.value).to be nil
+        expect(result.errors).to be_empty
+        expect(result.success?).to be true
+        expect(result.failure?).to be false
+        expect(result.halted?).to be false
+      end # it
+    end # describe
   end # describe
 end # describe
