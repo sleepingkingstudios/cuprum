@@ -1,3 +1,4 @@
+require 'cuprum/built_in/null_operation'
 require 'cuprum/result'
 
 RSpec.describe Cuprum::Result do
@@ -15,6 +16,11 @@ RSpec.describe Cuprum::Result do
 
   shared_context 'when the result status is set to success' do
     before(:example) { instance.success! }
+  end # shared_context
+
+  shared_context 'when the result has many errors and success status' do
+    include_context 'when the result has many errors'
+    include_context 'when the result status is set to success'
   end # shared_context
 
   shared_context 'when the result is halted' do
@@ -60,6 +66,770 @@ RSpec.describe Cuprum::Result do
 
       it { expect(instance.failure?).to be true }
     end # describe
+  end # describe
+
+  describe '#==' do
+    describe 'with nil' do
+      # rubocop:disable Style/NilComparison
+      it { expect(instance == nil).to be false }
+      # rubocop:enable Style/NilComparison
+    end # describe
+
+    describe 'with an empty result' do
+      let(:other) { described_class.new }
+
+      it { expect(instance == other).to be true }
+    end # describe
+
+    describe 'with a result with many errors' do
+      let(:other) do
+        described_class.new.
+          tap { |result| result.errors = ['errors.messages.unknown'] }
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a result with many errors and success status' do
+      let(:other) do
+        described_class.new.
+          tap { |result| result.errors = ['errors.messages.unknown'] }.
+          tap(&:success!)
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a result with status set to failure' do
+      let(:other) { described_class.new.tap(&:failure!) }
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a result with status set to success' do
+      let(:other) { described_class.new.tap(&:success!) }
+
+      it { expect(instance == other).to be true }
+    end # describe
+
+    describe 'with a halted result' do
+      let(:other) { described_class.new.tap(&:halt!) }
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with an uncalled operation' do
+      let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a called operation' do
+      let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+      it { expect(instance == other).to be true }
+    end # describe
+
+    describe 'with a called operation with many errors' do
+      let(:other) do
+        Cuprum::Operation.new do
+          errors << 'errors.messages.unknown'
+
+          nil
+        end.call
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a called operation with many errors and success status' do
+      let(:other) do
+        Cuprum::Operation.new do
+          errors << 'errors.messages.unknown'
+
+          success!
+
+          nil
+        end.call
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a called operation with status set to failure' do
+      let(:other) do
+        Cuprum::Operation.new do
+          failure!
+
+          nil
+        end.call
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    describe 'with a called operation with status set to success' do
+      let(:other) do
+        Cuprum::Operation.new do
+          success!
+
+          nil
+        end.call
+      end # let
+
+      it { expect(instance == other).to be true }
+    end # describe
+
+    describe 'with a called and halted operation' do
+      let(:other) do
+        Cuprum::Operation.new do
+          halt!
+
+          nil
+        end.call
+      end # let
+
+      it { expect(instance == other).to be false }
+    end # describe
+
+    wrap_context 'when the result has many errors' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with non-matching errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.other'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with matching errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a result with matching errors and success status' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }.
+            tap(&:success!)
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to failure' do
+        let(:other) { described_class.new.tap(&:failure!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to success' do
+        let(:other) { described_class.new.tap(&:success!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a halted result' do
+        let(:other) { described_class.new.tap(&:halt!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with an uncalled operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with non-matching errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.other'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with matching errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with matching errors and ' \
+               'success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+    end # wrap_context
+
+    wrap_context 'when the result has many errors and success status' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with non-matching errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.other'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with matching errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with matching errors and success status' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }.
+            tap(&:success!)
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a result with status set to failure' do
+        let(:other) { described_class.new.tap(&:failure!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to success' do
+        let(:other) { described_class.new.tap(&:success!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a halted result' do
+        let(:other) { described_class.new.tap(&:halt!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with an uncalled operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with non-matching errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.other'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with matching errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with matching errors and ' \
+               'success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+    end # context
+
+    wrap_context 'when the result status is set to failure' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with many errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with many errors and success status' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }.
+            tap(&:success!)
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to failure' do
+        let(:other) { described_class.new.tap(&:failure!) }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a result with status set to success' do
+        let(:other) { described_class.new.tap(&:success!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a halted result' do
+        let(:other) { described_class.new.tap(&:halt!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with an uncalled operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors and success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a result with many errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with many errors and success status' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }.
+            tap(&:success!)
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to failure' do
+        let(:other) { described_class.new.tap(&:failure!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to success' do
+        let(:other) { described_class.new.tap(&:success!) }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a halted result' do
+        let(:other) { described_class.new.tap(&:halt!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with an uncalled operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with many errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors and success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+    end # wrap_context
+
+    wrap_context 'when the result is halted' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with many errors' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with many errors and success status' do
+        let(:other) do
+          described_class.new.
+            tap { |result| result.errors = ['errors.messages.unknown'] }.
+            tap(&:success!)
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to failure' do
+        let(:other) { described_class.new.tap(&:failure!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with status set to success' do
+        let(:other) { described_class.new.tap(&:success!) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a halted result' do
+        let(:other) { described_class.new.tap(&:halt!) }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with an uncalled operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation' do
+        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors and success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be true }
+      end # describe
+    end # wrap_context
   end # describe
 
   describe '#errors' do
