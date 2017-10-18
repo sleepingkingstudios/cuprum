@@ -21,6 +21,41 @@ module Cuprum
     #   called.
     attr_accessor :errors
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/PerceivedComplexity
+
+    # Compares the other object to the result.
+    #
+    # @param other [#value, #success?] An object responding to, at minimum,
+    #   #value and #success?. If present, the #failure?, #errors and #halted
+    #   values will also be compared.
+    #
+    # @return [Boolean] True if all present values match the result, otherwise
+    #   false.
+    def == other
+      return false unless other.respond_to?(:value) && other.value == value
+
+      unless other.respond_to?(:success?) && other.success? == success?
+        return false
+      end # unless
+
+      if other.respond_to?(:errors) && other.errors != errors
+        return false
+      end # if
+
+      if other.respond_to?(:halted?) && other.halted? != halted?
+        return false
+      end # if
+
+      true
+    end # method ==
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
+
     # Marks the result as a failure, whether or not the function generated any
     # errors.
     #

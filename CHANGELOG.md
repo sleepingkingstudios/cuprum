@@ -8,6 +8,10 @@ The "Name Not Found For NullFunction" Update.
 
 The implementation of `Cuprum::Operation` has been extracted to a module at `Cuprum::Operation::Mixin`, allowing users to easily convert an existing function class or instance to an operation.
 
+## Results
+
+Implemented `Cuprum::Result#==` as a fuzzy comparison, allowing a result to be equal to any object with the same value and status.
+
 ## Built In Functions
 
 Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.
