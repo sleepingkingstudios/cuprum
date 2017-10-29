@@ -29,5 +29,6 @@ Chaining Case Study: |
 
 ## Testing
 
-- assert_chained_function
-- have_chained_function() matcher
+- Function::instance_spy - mirrors all calls to instances
+
+  expect(CustomFunction.function_spy).to receive(...).with(...)

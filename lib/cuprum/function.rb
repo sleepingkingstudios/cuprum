@@ -104,7 +104,7 @@ module Cuprum
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Function
+  class Function # rubocop:disable Metrics/ClassLength
     # Error class for calling a Function that was not given a definition block
     # or have a #process method defined.
     class NotImplementedError < StandardError
@@ -146,13 +146,9 @@ module Cuprum
     #     subclass.
     def call *args, &block
       call_chained_functions do
-        Cuprum::Result.new(:errors => build_errors).tap do |result|
-          @result = result
-
+        wrap_result do |result|
           merge_results(result, process(*args, &block))
-
-          @result = nil
-        end # tap
+        end # method wrap_result
       end # call_chained_functions
     end # method call
 
@@ -339,12 +335,12 @@ module Cuprum
 
     def merge_results result, other
       if value_is_result?(other)
-        result.update(other.respond_to?(:result) ? other.result : other)
+        convert_value_to_result(other)
       else
         result.value = other
-      end # if-else
 
-      result
+        result
+      end # if-else
     end # method merge_results
 
     # @!visibility public
@@ -400,5 +396,21 @@ module Cuprum
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
     end # method value
+
+    def wrap_result
+      value = nil
+
+      Cuprum::Result.new(:errors => build_errors).tap do |result|
+        begin
+          @result = result
+
+          value = yield result
+        ensure
+          @result = nil
+        end # begin-ensure
+      end # tap
+
+      value
+    end # method wrap_result
   end # class
 end # module

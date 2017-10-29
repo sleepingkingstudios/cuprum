@@ -1018,17 +1018,14 @@ module Spec::Examples
 
             wrap_context 'when the implementation returns an operation' do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
-                expect(result.success?).to be false
-                expect(result.failure?).to be true
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
                 expect(result.halted?).to be false
               end # it
             end # wrap_context
@@ -1036,15 +1033,12 @@ module Spec::Examples
             wrap_context 'when the implementation returns a failing operation' \
             do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
+                expect(result.errors).to be_empty
                 expect(result.success?).to be false
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
@@ -1054,15 +1048,15 @@ module Spec::Examples
             wrap_context 'when the implementation returns an operation with ' \
             'errors' do
               let(:implementation_errors) { ['errors.messages.custom'] }
-              let(:expected_errors)       { super() + implementation_errors }
 
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
 
-                [*expected_errors, *implementation_errors].each do |message|
+                implementation_errors.each do |message|
                   expect(result.errors).to include message
                 end # each
 
@@ -1074,49 +1068,40 @@ module Spec::Examples
 
             wrap_context 'when the implementation returns a halted operation' do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
-                expect(result.success?).to be false
-                expect(result.failure?).to be true
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
                 expect(result.halted?).to be true
               end # it
             end # wrap_context
 
             wrap_context 'when the implementation returns a result' do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
-                expect(result.success?).to be false
-                expect(result.failure?).to be true
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
                 expect(result.halted?).to be false
               end # it
             end # wrap_context
 
             wrap_context 'when the implementation returns a failing result' do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
+                expect(result.errors).to be_empty
                 expect(result.success?).to be false
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
@@ -1126,15 +1111,15 @@ module Spec::Examples
             wrap_context 'when the implementation returns a result with errors'\
             do
               let(:implementation_errors) { ['errors.messages.custom'] }
-              let(:expected_errors)       { super() + implementation_errors }
 
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
 
-                [*expected_errors, *implementation_errors].each do |message|
+                implementation_errors.each do |message|
                   expect(result.errors).to include message
                 end # each
 
@@ -1146,17 +1131,14 @@ module Spec::Examples
 
             wrap_context 'when the implementation returns a halted result' do
               it 'should return a result', :aggregate_failures do
+                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
                 expect(result.value).to be value
-
-                expected_errors.each do |message|
-                  expect(result.errors).to include message
-                end # each
-
-                expect(result.success?).to be false
-                expect(result.failure?).to be true
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
                 expect(result.halted?).to be true
               end # it
             end # wrap_context
