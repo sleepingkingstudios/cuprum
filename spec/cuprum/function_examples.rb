@@ -983,6 +983,16 @@ module Spec::Examples
           end # context
 
           context 'when the operation generates errors' do
+            shared_examples 'should display a warning' do
+              it 'should display a warning' do
+                allow(Cuprum).to receive(:warn)
+
+                instance.call
+
+                expect(Cuprum).to have_received(:warn).with(warning_message)
+              end # it
+            end # shared_examples
+
             let(:value)           { 'returned value'.freeze }
             let(:value_or_result) { value }
             let(:expected_errors) do
@@ -999,6 +1009,10 @@ module Spec::Examples
 
                 returned
               end # lambda
+            end # let
+            let(:warning_message) do
+              '#process returned a result, but there were already errors ' \
+              "#{expected_errors.inspect}"
             end # let
 
             it 'should return a result', :aggregate_failures do
@@ -1018,7 +1032,6 @@ module Spec::Examples
 
             wrap_context 'when the implementation returns an operation' do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1028,12 +1041,13 @@ module Spec::Examples
                 expect(result.failure?).to be false
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a failing operation' \
             do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1043,6 +1057,8 @@ module Spec::Examples
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns an operation with ' \
@@ -1050,7 +1066,6 @@ module Spec::Examples
               let(:implementation_errors) { ['errors.messages.custom'] }
 
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1064,11 +1079,12 @@ module Spec::Examples
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a halted operation' do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1078,11 +1094,12 @@ module Spec::Examples
                 expect(result.failure?).to be false
                 expect(result.halted?).to be true
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a result' do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1092,11 +1109,12 @@ module Spec::Examples
                 expect(result.failure?).to be false
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a failing result' do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1106,6 +1124,8 @@ module Spec::Examples
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a result with errors'\
@@ -1113,7 +1133,6 @@ module Spec::Examples
               let(:implementation_errors) { ['errors.messages.custom'] }
 
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1127,11 +1146,12 @@ module Spec::Examples
                 expect(result.failure?).to be true
                 expect(result.halted?).to be false
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
 
             wrap_context 'when the implementation returns a halted result' do
               it 'should return a result', :aggregate_failures do
-                # TODO: This should display a warning.
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1141,6 +1161,8 @@ module Spec::Examples
                 expect(result.failure?).to be false
                 expect(result.halted?).to be true
               end # it
+
+              include_examples 'should display a warning'
             end # wrap_context
           end # context
         end # shared_examples
