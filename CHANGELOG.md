@@ -4,6 +4,8 @@
 
 The "Name Not Found For NullFunction" Update.
 
+Added the `Cuprum::warn` helper, which prints a warning message. By default, `::warn` delegates to `Kernel#warn`, but can be configured (e.g. to call a Logger) by setting `Cuprum::warning_proc=` with a Proc that accepts one argument (the message to display).
+
 ## Operations
 
 The implementation of `Cuprum::Operation` has been extracted to a module at `Cuprum::Operation::Mixin`, allowing users to easily convert an existing function class or instance to an operation.
@@ -11,6 +13,8 @@ The implementation of `Cuprum::Operation` has been extracted to a module at `Cup
 ## Results
 
 Implemented `Cuprum::Result#==` as a fuzzy comparison, allowing a result to be equal to any object with the same value and status.
+
+Implemented `Cuprum::Result#empty?`, which returns true for a new result and false for a result with a value, with non-empty errors, a result with set status, or a halted result.
 
 ## Built In Functions
 

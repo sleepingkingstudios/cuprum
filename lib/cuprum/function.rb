@@ -104,7 +104,7 @@ module Cuprum
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Function
+  class Function # rubocop:disable Metrics/ClassLength
     # Error class for calling a Function that was not given a definition block
     # or have a #process method defined.
     class NotImplementedError < StandardError
@@ -146,13 +146,9 @@ module Cuprum
     #     subclass.
     def call *args, &block
       call_chained_functions do
-        Cuprum::Result.new(:errors => build_errors).tap do |result|
-          @result = result
-
+        wrap_result do |result|
           merge_results(result, process(*args, &block))
-
-          @result = nil
-        end # tap
+        end # method wrap_result
       end # call_chained_functions
     end # method call
 
@@ -337,14 +333,28 @@ module Cuprum
       @result&.halt!
     end # method halt!
 
+    # :nocov:
+    def humanize_list list, empty_value: ''
+      return empty_value if list.size.zero?
+
+      return list.first.to_s if list.size == 1
+
+      return "#{list.first} and #{list.last}" if list.size == 2
+
+      "#{list[0...-1].join ', '}, and #{list.last}"
+    end # method humanize_list
+    # :nocov:
+
     def merge_results result, other
       if value_is_result?(other)
-        result.update(other.respond_to?(:result) ? other.result : other)
+        Cuprum.warn(result_not_empty_warning) unless result.empty?
+
+        convert_value_to_result(other)
       else
         result.value = other
-      end # if-else
 
-      result
+        result
+      end # if-else
     end # method merge_results
 
     # @!visibility public
@@ -368,6 +378,29 @@ module Cuprum
     def process *_args
       raise NotImplementedError, nil, caller(1..-1)
     end # method process
+
+    def result_not_empty_warning # rubocop:disable Metrics/MethodLength
+      warnings = []
+
+      unless @result.errors.empty?
+        warnings << "there were already errors #{@result.errors.inspect}"
+      end # unless
+
+      status = @result.send(:status)
+      unless status.nil?
+        warnings << "the status was set to #{status.inspect}"
+      end # unless
+
+      if @result.halted?
+        warnings << 'the function was halted'
+      end # if
+
+      message = '#process returned a result, but '
+      message <<
+        humanize_list(warnings, :empty_value => 'the result was not empty')
+
+      message
+    end # method result_not_empty_warning
 
     def skip_chained_function? last_result, on:
       return false if on == :always
@@ -400,5 +433,21 @@ module Cuprum
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
     end # method value
+
+    def wrap_result
+      value = nil
+
+      Cuprum::Result.new(:errors => build_errors).tap do |result|
+        begin
+          @result = result
+
+          value = yield result
+        ensure
+          @result = nil
+        end # begin-ensure
+      end # tap
+
+      value
+    end # method wrap_result
   end # class
 end # module

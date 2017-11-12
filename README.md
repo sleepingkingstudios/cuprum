@@ -437,6 +437,18 @@ True if the function generated one or more errors, otherwise false.
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure%3F-instance_method)
 
+#### `#==`
+
+    ==(other) #=> true, false
+
+Performs a fuzzy comparison with the other object. At a minimum, the other object must respond to `#value` and `#success?`, and the values of `other.value` and `other.success?` must be equal to the corresponding value on the result. In addition, if the `#failure?`, `#errors`, or `#halted?` methods are defined on the other object, then the value of each defined method is compared to the value on the result. Returns true if all values match, otherwise returns false.
+
+#### `#empty?`
+
+    empty?() #=> true, false
+
+Helper method that returns true for a new result. The method returns false if `result.value` is not nil, if `result.errors` is not empty, if the status has been manually set with `#success!` or `#failure!`, or if the result has been halted.
+
 ## Built In Functions
 
 Cuprum includes a small number of predefined functions and their equivalent operations.
