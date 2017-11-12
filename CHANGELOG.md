@@ -14,6 +14,8 @@ The implementation of `Cuprum::Operation` has been extracted to a module at `Cup
 
 Implemented `Cuprum::Result#==` as a fuzzy comparison, allowing a result to be equal to any object with the same value and status.
 
+Implemented `Cuprum::Result#empty?`, which returns true for a new result and false for a result with a value, with non-empty errors, a result with set status, or a halted result.
+
 ## Built In Functions
 
 Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.

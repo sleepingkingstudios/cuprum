@@ -29,7 +29,7 @@ module Cuprum
     # Compares the other object to the result.
     #
     # @param other [#value, #success?] An object responding to, at minimum,
-    #   #value and #success?. If present, the #failure?, #errors and #halted
+    #   #value and #success?. If present, the #failure?, #errors and #halted?
     #   values will also be compared.
     #
     # @return [Boolean] True if all present values match the result, otherwise
@@ -40,6 +40,10 @@ module Cuprum
       unless other.respond_to?(:success?) && other.success? == success?
         return false
       end # unless
+
+      if other.respond_to?(:failure?) && other.failure? != failure?
+        return false
+      end # if
 
       if other.respond_to?(:errors) && other.errors != errors
         return false
@@ -55,6 +59,12 @@ module Cuprum
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/PerceivedComplexity
+
+    # @return [Boolean] true if the result is empty, i.e. has no value or errors
+    #   and does not have its status set or is halted.
+    def empty?
+      value.nil? && errors.empty? && @status.nil? && !halted?
+    end # method empty?
 
     # Marks the result as a failure, whether or not the function generated any
     # errors.

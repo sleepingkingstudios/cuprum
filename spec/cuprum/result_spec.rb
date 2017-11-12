@@ -2,6 +2,12 @@ require 'cuprum/built_in/null_operation'
 require 'cuprum/result'
 
 RSpec.describe Cuprum::Result do
+  shared_context 'when the result has a value' do
+    let(:value) { 'returned value'.freeze }
+
+    before(:example) { instance.value = value }
+  end # shared_context
+
   shared_context 'when the result has many errors' do
     let(:errors) { ['errors.messages.unknown'] }
 
@@ -81,6 +87,12 @@ RSpec.describe Cuprum::Result do
       it { expect(instance == other).to be true }
     end # describe
 
+    describe 'with a result with a value' do
+      let(:other) { described_class.new('other value'.freeze) }
+
+      it { expect(instance == other).to be false }
+    end # describe
+
     describe 'with a result with many errors' do
       let(:other) do
         described_class.new.
@@ -128,6 +140,16 @@ RSpec.describe Cuprum::Result do
       let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
 
       it { expect(instance == other).to be true }
+    end # describe
+
+    describe 'with a called operation with a value' do
+      let(:other) do
+        Cuprum::Operation.new do
+          'other value'.freeze
+        end.call
+      end # let
+
+      it { expect(instance == other).to be false }
     end # describe
 
     describe 'with a called operation with many errors' do
@@ -192,9 +214,97 @@ RSpec.describe Cuprum::Result do
       it { expect(instance == other).to be false }
     end # describe
 
+    wrap_context 'when the result has a value' do
+      describe 'with an empty result' do
+        let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with a non-matching value' do
+        let(:other) { described_class.new('other value'.freeze) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with a matching value' do
+        let(:other) { described_class.new(value) }
+
+        it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with many errors' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with many errors and success status' do
+        let(:other) do
+          Cuprum::Operation.new do
+            errors << 'errors.messages.unknown'
+
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to failure' do
+        let(:other) do
+          Cuprum::Operation.new do
+            failure!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with status set to success' do
+        let(:other) do
+          Cuprum::Operation.new do
+            success!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called and halted operation' do
+        let(:other) do
+          Cuprum::Operation.new do
+            halt!
+
+            nil
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
+      end # describe
+    end # wrap_context
+
     wrap_context 'when the result has many errors' do
       describe 'with an empty result' do
         let(:other) { described_class.new }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a result with a value' do
+        let(:other) { described_class.new('other value'.freeze) }
 
         it { expect(instance == other).to be false }
       end # describe
@@ -253,6 +363,16 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation' do
         let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with a value' do
+        let(:other) do
+          Cuprum::Operation.new do
+            'other value'.freeze
+          end.call
+        end # let
 
         it { expect(instance == other).to be false }
       end # describe
@@ -340,6 +460,12 @@ RSpec.describe Cuprum::Result do
         it { expect(instance == other).to be false }
       end # describe
 
+      describe 'with a result with a value' do
+        let(:other) { described_class.new('other value'.freeze) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
       describe 'with a result with non-matching errors' do
         let(:other) do
           described_class.new.
@@ -394,6 +520,16 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation' do
         let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with a value' do
+        let(:other) do
+          Cuprum::Operation.new do
+            'other value'.freeze
+          end.call
+        end # let
 
         it { expect(instance == other).to be false }
       end # describe
@@ -481,6 +617,12 @@ RSpec.describe Cuprum::Result do
         it { expect(instance == other).to be false }
       end # describe
 
+      describe 'with a result with a value' do
+        let(:other) { described_class.new('other value'.freeze) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
       describe 'with a result with many errors' do
         let(:other) do
           described_class.new.
@@ -526,6 +668,16 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation' do
         let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with a value' do
+        let(:other) do
+          Cuprum::Operation.new do
+            'other value'.freeze
+          end.call
+        end # let
 
         it { expect(instance == other).to be false }
       end # describe
@@ -600,6 +752,12 @@ RSpec.describe Cuprum::Result do
         it { expect(instance == other).to be true }
       end # describe
 
+      describe 'with a result with a value' do
+        let(:other) { described_class.new('other value'.freeze) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
       describe 'with a result with many errors' do
         let(:other) do
           described_class.new.
@@ -647,6 +805,16 @@ RSpec.describe Cuprum::Result do
         let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
 
         it { expect(instance == other).to be true }
+      end # describe
+
+      describe 'with a called operation with a value' do
+        let(:other) do
+          Cuprum::Operation.new do
+            'other value'.freeze
+          end.call
+        end # let
+
+        it { expect(instance == other).to be false }
       end # describe
 
       describe 'with a called operation with many errors' do
@@ -719,6 +887,12 @@ RSpec.describe Cuprum::Result do
         it { expect(instance == other).to be false }
       end # describe
 
+      describe 'with a result with a value' do
+        let(:other) { described_class.new('other value'.freeze) }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
       describe 'with a result with many errors' do
         let(:other) do
           described_class.new.
@@ -764,6 +938,16 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation' do
         let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
+
+        it { expect(instance == other).to be false }
+      end # describe
+
+      describe 'with a called operation with a value' do
+        let(:other) do
+          Cuprum::Operation.new do
+            'other value'.freeze
+          end.call
+        end # let
 
         it { expect(instance == other).to be false }
       end # describe
@@ -829,6 +1013,30 @@ RSpec.describe Cuprum::Result do
 
         it { expect(instance == other).to be true }
       end # describe
+    end # wrap_context
+  end # describe
+
+  describe '#empty?' do
+    include_examples 'should have predicate', :empty?, true
+
+    wrap_context 'when the result has a value' do
+      it { expect(instance.empty?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result has many errors' do
+      it { expect(instance.empty?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to failure' do
+      it { expect(instance.empty?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result status is set to success' do
+      it { expect(instance.empty?).to be false }
+    end # wrap_context
+
+    wrap_context 'when the result is halted' do
+      it { expect(instance.empty?).to be false }
     end # wrap_context
   end # describe
 
