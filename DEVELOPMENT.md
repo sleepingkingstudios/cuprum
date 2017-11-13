@@ -1,6 +1,7 @@
 # Development
 
 - Rename Cuprum::Function to Cuprum::Command.
+- Extract Cuprum::BasicCommand (excludes chaining functionality).
 
 ## Core
 
