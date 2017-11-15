@@ -306,6 +306,39 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       end # it
     end # describe
 
+    describe 'with a module' do
+      let(:function_class)    { Spec::ExampleOperation }
+      let(:function_instance) { function_class.new }
+
+      it 'should return a spy' do
+        spy = described_class.spy_on(Cuprum::Operation::Mixin)
+
+        expect(spy).to be_a described_class::Spy
+      end # it
+
+      it 'should instrument calls to #call' do
+        spy = described_class.spy_on(Cuprum::Operation::Mixin)
+
+        allow(spy).to receive(:call)
+
+        function_instance.call(*function_arguments)
+
+        expect(spy).to have_received(:call).with(*function_arguments)
+      end # it
+
+      it 'should execute the function implementation' do
+        allow(function_instance).to receive(:process)
+
+        described_class.spy_on(Cuprum::Operation::Mixin)
+
+        function_instance.call(*function_arguments)
+
+        expect(function_instance).
+          to have_received(:process).
+          with(*function_arguments)
+      end # it
+    end # describe
+
     wrap_context 'when there is an instance spy on a function class' do
       describe 'with a function subclass' do
         let(:function_subclass) { Class.new(function_class) }

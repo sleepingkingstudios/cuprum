@@ -47,6 +47,8 @@ module Cuprum::Utils
       end # method call_spies_for
 
       def guard_spy_class! function_class
+        return if function_class.is_a?(Module) && !function_class.is_a?(Class)
+
         return if function_class.is_a?(Class) &&
                   function_class <= Cuprum::Function
 
