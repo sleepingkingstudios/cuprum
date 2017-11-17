@@ -41,7 +41,7 @@ RSpec.describe Cuprum do
       expect(described_class).to respond_to(:warn).with(1).argument
     end # it
 
-    it 'should delegate to Kernel#warn' do
+    it 'should delegate to Kernel#warn', :allow_warnings do
       allow(Kernel).to receive(:warn)
 
       described_class.warn(message)
