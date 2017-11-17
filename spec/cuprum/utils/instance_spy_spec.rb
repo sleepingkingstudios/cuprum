@@ -43,6 +43,14 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
         expect(instance_spy).not_to have_received(:call)
       end # it
+
+      it 'should not clear instance spies in other threads' do
+        Thread.new { described_class.clear_spies }.join
+
+        function_instance.call
+
+        expect(instance_spy).to have_received(:call)
+      end # it
     end # context
   end # describe
 
@@ -365,6 +373,14 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
           expect(instance_spy).to have_received(:call).with(*function_arguments)
           expect(spy).to have_received(:call).with(*function_arguments)
+        end # it
+
+        it 'should not instrument calls in other threads' do
+          allow(instance_spy).to receive(:call)
+
+          Thread.new { function_instance.call(*function_arguments) }.join
+
+          expect(instance_spy).not_to have_received(:call)
         end # it
       end # describe
     end # wrap_context

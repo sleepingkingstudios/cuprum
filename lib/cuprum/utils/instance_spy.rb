@@ -42,8 +42,7 @@ module Cuprum::Utils
       # Retires all spies. Subsequent calls to the #call method on function
       # instances will not be mirrored to existing spy objects.
       def clear_spies
-        # TODO: This is not thread-safe.
-        @spies = {}
+        Thread.current[:cuprum_instance_spies] = nil
 
         nil
       end # method clear_spies
@@ -122,8 +121,7 @@ module Cuprum::Utils
       end # method instrument_call!
 
       def spies
-        # TODO: This is not thread-safe.
-        @spies ||= {}
+        Thread.current[:cuprum_instance_spies] ||= {}
       end # method spies
 
       def spies_for function
