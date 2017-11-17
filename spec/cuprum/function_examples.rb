@@ -1,7 +1,5 @@
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
-require 'cuprum/function/instrument_chaining'
-
 module Spec::Examples
   module FunctionExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
@@ -413,36 +411,34 @@ module Spec::Examples
     end # shared_context
 
     shared_examples 'should implement the Function methods' do
-      # :nocov:
-      def chains_function? function, expected, on: :default
-        function.send(:chained_functions).any? do |actual|
-          next false unless [:default, actual[:on]].include?(on)
-
-          match_chained_function(expected, actual)
-        end # any?
-      end # method chains_function?
-
-      def match_chained_function expected, actual
-        if expected.is_a?(Class)
-          actual[:fn].is_a?(expected)
-        elsif expected.is_a?(Proc)
-          actual[:proc] == expected
-        else
-          actual[:fn] == expected
-        end # if
-      end # method match_chained_function
-      # :nocov:
-
       describe '#call' do
         it { expect(instance).to respond_to(:call) }
       end # describe
 
       describe '#chain' do
-        let(:conditional) { nil }
+        shared_examples 'should chain and call the function' do
+          it 'should chain and call the operation' do
+            allow(chained).to receive(:process)
+            allow(other_function).to receive(:call)
 
-        before(:example) do
-          instance.extend(Cuprum::Function::InstrumentChaining)
-        end # before example
+            chained.call
+
+            expect(other_function).to have_received(:call)
+          end # it
+        end # shared_examples
+
+        shared_examples 'should chain but not call the function' do
+          it 'should chain but not call the operation' do
+            allow(chained).to receive(:process)
+            allow(other_function).to receive(:call)
+
+            chained.call
+
+            expect(other_function).not_to have_received(:call)
+          end # it
+        end # shared_examples
+
+        let(:conditional) { nil }
 
         it 'should define the method' do
           expect(instance).
@@ -458,11 +454,7 @@ module Spec::Examples
             instance.chain(:on => conditional, &other_function)
           end # let
 
-          it 'should chain the operation' do
-            expect(
-              chains_function? chained, other_function, :on => conditional
-            ).to be true
-          end # it
+          include_examples 'should chain and call the function'
         end # describe
 
         describe 'with a function' do
@@ -471,11 +463,7 @@ module Spec::Examples
             instance.chain(other_function, :on => conditional)
           end # let
 
-          it 'should chain the operation' do
-            expect(
-              chains_function? chained, other_function, :on => conditional
-            ).to be true
-          end # it
+          include_examples 'should chain and call the function'
         end # describe
 
         describe 'with an operation' do
@@ -484,11 +472,7 @@ module Spec::Examples
             instance.chain(other_function, :on => conditional)
           end # let
 
-          it 'should chain the operation' do
-            expect(
-              chains_function? chained, other_function, :on => conditional
-            ).to be true
-          end # it
+          include_examples 'should chain and call the function'
         end # describe
 
         describe 'with :on => :always' do
@@ -500,11 +484,7 @@ module Spec::Examples
               instance.chain(:on => conditional, &other_function)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
 
           describe 'with a function' do
@@ -513,11 +493,7 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
 
           describe 'with an operation' do
@@ -526,11 +502,7 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
         end # describe
 
@@ -543,11 +515,7 @@ module Spec::Examples
               instance.chain(:on => conditional, &other_function)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain but not call the function'
           end # describe
 
           describe 'with a function' do
@@ -556,11 +524,7 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain but not call the function'
           end # describe
 
           describe 'with an operation' do
@@ -569,11 +533,7 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain but not call the function'
           end # describe
         end # describe
 
@@ -586,11 +546,7 @@ module Spec::Examples
               instance.chain(:on => conditional, &other_function)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
 
           describe 'with a function' do
@@ -599,11 +555,7 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
 
           describe 'with an operation' do
@@ -612,20 +564,12 @@ module Spec::Examples
               instance.chain(other_function, :on => conditional)
             end # let
 
-            it 'should chain the operation' do
-              expect(
-                chains_function? chained, other_function, :on => conditional
-              ).to be true
-            end # it
+            include_examples 'should chain and call the function'
           end # describe
         end # describe
       end # describe
 
       describe '#else' do
-        before(:example) do
-          instance.extend(Cuprum::Function::InstrumentChaining)
-        end # before example
-
         it 'should define the method' do
           expect(instance).
             to respond_to(:else).
@@ -635,40 +579,51 @@ module Spec::Examples
 
         describe 'with a block' do
           let(:other_function) { ->() {} }
-          let(:chained)        { instance.else(&other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :failure).
-              to be true
+          it 'should chain the block on failure' do
+            allow(instance).to receive(:chain)
+
+            instance.else(&other_function)
+
+            expect(instance).
+              to have_received(:chain) do |function, on:, &block|
+                expect(function).to be nil
+                expect(on).to be == :failure
+                expect(block).to be other_function
+              end # have_received
           end # it
         end # describe
 
         describe 'with a function' do
           let(:other_function) { Cuprum::Function.new }
-          let(:chained)        { instance.else(other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :failure).
-              to be true
+          it 'should chain the operation on failure' do
+            allow(instance).to receive(:chain)
+
+            instance.else(other_function)
+
+            expect(instance).
+              to have_received(:chain).
+              with(other_function, :on => :failure)
           end # it
         end # describe
 
         describe 'with an operation' do
           let(:other_function) { Cuprum::Operation.new }
-          let(:chained)        { instance.else(other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :failure).
-              to be true
+          it 'should chain the operation on failure' do
+            allow(instance).to receive(:chain)
+
+            instance.else(other_function)
+
+            expect(instance).
+              to have_received(:chain).
+              with(other_function, :on => :failure)
           end # it
         end # describe
       end # describe
 
       describe '#then' do
-        before(:example) do
-          instance.extend(Cuprum::Function::InstrumentChaining)
-        end # before example
-
         it 'should define the method' do
           expect(instance).
             to respond_to(:then).
@@ -678,31 +633,46 @@ module Spec::Examples
 
         describe 'with a block' do
           let(:other_function) { ->() {} }
-          let(:chained)        { instance.then(&other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :success).
-              to be true
+          it 'should chain the block on success' do
+            allow(instance).to receive(:chain)
+
+            instance.then(&other_function)
+
+            expect(instance).
+              to have_received(:chain) do |function, on:, &block|
+                expect(function).to be nil
+                expect(on).to be == :success
+                expect(block).to be other_function
+              end # have_received
           end # it
         end # describe
 
         describe 'with a function' do
           let(:other_function) { Cuprum::Function.new }
-          let(:chained)        { instance.then(other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :success).
-              to be true
+          it 'should chain the function on success' do
+            allow(instance).to receive(:chain)
+
+            instance.then(other_function)
+
+            expect(instance).
+              to have_received(:chain).
+              with(other_function, :on => :success)
           end # it
         end # describe
 
         describe 'with an operation' do
           let(:other_function) { Cuprum::Operation.new }
-          let(:chained)        { instance.then(other_function) }
 
-          it 'should chain the operation' do
-            expect(chains_function? chained, other_function, :on => :success).
-              to be true
+          it 'should chain the operation on success' do
+            allow(instance).to receive(:chain)
+
+            instance.then(other_function)
+
+            expect(instance).
+              to have_received(:chain).
+              with(other_function, :on => :success)
           end # it
         end # describe
       end # describe
