@@ -1,7 +1,5 @@
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
-require 'cuprum/function/instrument_chaining'
-
 module Spec::Examples
   module OperationExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup

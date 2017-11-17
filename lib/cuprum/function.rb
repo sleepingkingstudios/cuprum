@@ -214,10 +214,7 @@ module Cuprum
     #
     # @see #chain
     def else function = nil, &block
-      clone.tap do |fn|
-        fn.chained_functions <<
-          build_chain_link(block || function, :on => :failure)
-      end # tap
+      chain(function, :on => :failure, &block)
     end # method else
 
     # Shorthand for function.chain(:on => :success). Registers a function or
@@ -238,10 +235,7 @@ module Cuprum
     #
     # @see #chain
     def then function = nil, &block
-      clone.tap do |fn|
-        fn.chained_functions <<
-          build_chain_link(block || function, :on => :success)
-      end # tap
+      chain(function, :on => :success, &block)
     end # method then
 
     protected
