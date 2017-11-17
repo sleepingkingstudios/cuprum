@@ -29,8 +29,12 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
   describe '::clear_spies' do
     it { expect(described_class).to respond_to(:clear_spies).with(0).arguments }
 
+    it { expect(described_class.clear_spies).to be nil }
+
     wrap_context 'when there is an instance spy on a function class' do
       let(:function_instance) { function_class.new }
+
+      it { expect(described_class.clear_spies).to be nil }
 
       it 'should clear the instance spy' do
         described_class.clear_spies

@@ -16,6 +16,10 @@ Implemented `Cuprum::Result#==` as a fuzzy comparison, allowing a result to be e
 
 Implemented `Cuprum::Result#empty?`, which returns true for a new result and false for a result with a value, with non-empty errors, a result with set status, or a halted result.
 
+## Utilities
+
+Added the `Cuprum::Utils::InstanceSpy` module to empower testing of code that calls a function without providing a reference, such as some chained functions.
+
 ## Built In Functions
 
 Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.
