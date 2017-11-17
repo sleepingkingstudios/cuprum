@@ -954,7 +954,7 @@ module Spec::Examples
 
           context 'when the operation generates errors' do
             shared_examples 'should display a warning' do
-              it 'should display a warning' do
+              it 'should display a warning', :allow_warnings do
                 allow(Cuprum).to receive(:warn)
 
                 instance.call
@@ -1001,7 +1001,10 @@ module Spec::Examples
             end # it
 
             wrap_context 'when the implementation returns an operation' do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1017,7 +1020,10 @@ module Spec::Examples
 
             wrap_context 'when the implementation returns a failing operation' \
             do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1035,7 +1041,10 @@ module Spec::Examples
             'errors' do
               let(:implementation_errors) { ['errors.messages.custom'] }
 
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result', # rubocop:disable RSpec/ExampleLength
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1054,7 +1063,10 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns a halted operation' do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1069,7 +1081,10 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns a result' do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1084,7 +1099,10 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns a failing result' do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1102,7 +1120,10 @@ module Spec::Examples
             do
               let(:implementation_errors) { ['errors.messages.custom'] }
 
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result', # rubocop:disable RSpec/ExampleLength
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1121,7 +1142,10 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns a halted result' do
-              it 'should return a result', :aggregate_failures do
+              it 'should return a result',
+                :aggregate_failures,
+                :suppress_warnings \
+              do
                 result = instance.call
 
                 expect(result).to be_a result_class
@@ -1463,7 +1487,11 @@ module Spec::Examples
 
           it 'should mark the result as failing' do
             result =
-              call_with_implementation { |instance| instance.send(:failure!) }
+              call_with_implementation do |instance|
+                instance.send(:failure!)
+
+                nil
+              end # call_with_implementation
 
             expect(result.failure?).to be true
           end # it
@@ -1484,7 +1512,11 @@ module Spec::Examples
 
           it 'should halt the result' do
             result =
-              call_with_implementation { |instance| instance.send(:halt!) }
+              call_with_implementation do |instance|
+                instance.send(:halt!)
+
+                nil
+              end # call_with_implementation
 
             expect(result.halted?).to be true
           end # it
@@ -1503,12 +1535,14 @@ module Spec::Examples
         wrap_context 'when the function is executing the implementation' do
           it { expect(instance.send(:success!)).to be_nil }
 
-          it 'should mark the result as failing' do
+          it 'should mark the result as successful' do
             result =
               call_with_implementation do |instance|
                 instance.send(:errors) << 'errors.messages.unknown'
 
                 instance.send(:success!)
+
+                nil
               end # call_with_implementation
 
             expect(result.success?).to be true
