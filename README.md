@@ -449,6 +449,60 @@ Performs a fuzzy comparison with the other object. At a minimum, the other objec
 
 Helper method that returns true for a new result. The method returns false if `result.value` is not nil, if `result.errors` is not empty, if the status has been manually set with `#success!` or `#failure!`, or if the result has been halted.
 
+## Utilities
+
+Cuprum provides these utility modules to grant additional functionality under specific circumstances.
+
+### InstanceSpy
+
+    require 'cuprum/utils/instance_spy'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FUtils%2FInstanceSpy)
+
+Utility module for instrumenting calls to the #call method of any instance of a function class. This can be used to unobtrusively test the functionality of code that calls a function without providing a reference to the function instance, such as chained functions or methods that create and call a function instance.
+
+#### `::spy_on`
+
+    spy_on(function_class) #=> InstanceSpy
+    spy_on(function_class) { |spy| ... } #=> nil
+
+Finds or creates a spy object for the given module or class. Each time that the #call method is called for an object of the given type, the spy's #call method will be invoked with the same arguments and block. If `#spy_on` is called with a block, the instance spy will be yielded to the block; otherwise, the spy will be returned.
+
+    # Observing calls to instances of a function.
+    spy = Cuprum::Utils::InstanceSpy.spy_on(CustomFunction)
+
+    expect(spy).to receive(:call).with(1, 2, 3, :four => '4')
+
+    CustomFunction.new.call(1, 2, 3, :four => '4')
+
+    # Observing calls to a chained function.
+    spy = Cuprum::Utils::InstanceSpy.spy_on(ChainedFunction)
+
+    expect(spy).to receive(:call)
+
+    Cuprum::Function.new {}.
+      chain { |result| ChainedFunction.new.call(result) }.
+      call
+
+    # Block syntax
+    Cuprum::Utils::InstanceSpy.spy_on(CustomFunction) do |spy|
+      expect(spy).to receive(:call)
+
+      CustomFunction.new.call
+    end # spy_on
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Utils/InstanceSpy#spy_on%3F-instance_method)
+
+#### `::clear_spies`
+
+    clear_spies() #=> nil
+
+Retires all spies. Subsequent calls to the #call method on function instances will not be mirrored to existing spy objects. Calling this method after each test or example that uses an instance spy is recommended.
+
+    after(:example) { Cuprum::Utils::InstanceSpy.clear_spies }
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Utils/InstanceSpy#clear_spies%3F-instance_method)
+
 ## Built In Functions
 
 Cuprum includes a small number of predefined functions and their equivalent operations.

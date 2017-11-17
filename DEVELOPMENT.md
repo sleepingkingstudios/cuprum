@@ -1,13 +1,11 @@
 # Development
 
 - Rename Cuprum::Function to Cuprum::Command.
+- Extract Cuprum::BasicCommand (excludes chaining functionality).
 
 ## Core
 
-- Cuprum::warn(message): |
-
-  delegates to Cuprum::display_warning [Proc]
-  defaults to ->(m) { STDERR.puts m }
+- raise error for unexpected warnings in specs
 
 ## Function
 
@@ -21,9 +19,6 @@
 ## Operation
 
 ## Result
-
-- #empty? - true if value.nil?, errors.nil? || errors.empty?, @status.nil?,
-  @halted != true
 
 ## Documentation
 
