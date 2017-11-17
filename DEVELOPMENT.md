@@ -5,8 +5,6 @@
 
 ## Core
 
-- raise error for unexpected warnings in specs
-
 ## Function
 
 - Predefined functions/operations:
