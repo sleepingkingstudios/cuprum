@@ -168,7 +168,7 @@ The constructor block will be called each time `Function#call` is executed, and 
 
 ### Defining With a Subclass
 
-Larger applications will want to create Function subclasses that encapsulate their business logic in a reusable, composable fashion. The implementation for each subclass is handled by the `#process` private method. If a subclass or its ancestors does not implement `#process`, a `Cuprum::Function::NotImplementedError` will be raised.
+Larger applications will want to create Function subclasses that encapsulate their business logic in a reusable, composable fashion. The implementation for each subclass is handled by the `#process` private method. If a subclass or its ancestors does not implement `#process`, a `Cuprum::NotImplementedError` will be raised.
 
     # A Function subclass
     class MultiplyFunction < Cuprum::Function

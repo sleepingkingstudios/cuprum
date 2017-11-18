@@ -1192,8 +1192,8 @@ module Spec::Examples
 
         it 'should raise an error' do
           expect { instance.call }.
-            to raise_error described_class::NotImplementedError,
-              'no implementation defined for function'
+            to raise_error Cuprum::NotImplementedError,
+              'no implementation defined for command'
         end # it
 
         wrap_context 'when the function is initialized with a block' do

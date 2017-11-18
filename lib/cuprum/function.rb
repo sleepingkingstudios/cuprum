@@ -1,3 +1,4 @@
+require 'cuprum/not_implemented_error'
 require 'cuprum/result'
 
 module Cuprum
@@ -105,17 +106,6 @@ module Cuprum
   #   result = collatz_function.new(16)
   #   result.value #=> 8
   class Function # rubocop:disable Metrics/ClassLength
-    # Error class for calling a Function that was not given a definition block
-    # or have a #process method defined.
-    class NotImplementedError < StandardError
-      # Error message for a NotImplementedError.
-      DEFAULT_MESSAGE = 'no implementation defined for function'.freeze
-
-      def initialize message = nil
-        super(message || DEFAULT_MESSAGE)
-      end # constructor
-    end # class
-
     # Returns a new instance of Cuprum::Function.
     #
     # @yield [*arguments, **keywords, &block] If a block is given, the
@@ -366,11 +356,13 @@ module Cuprum
     #
     #   @return [Object] the value of the result object to be returned by #call.
     #
-    #   @raise NotImplementedError
+    #   @raise [Cuprum::NotImplementedError] Unless a block was passed to the
+    #     constructor or the #process method was overriden by a Command
+    #     subclass.
     #
     # @note This is a private method.
     def process *_args
-      raise NotImplementedError, nil, caller(1..-1)
+      raise Cuprum::NotImplementedError, nil, caller(1..-1)
     end # method process
 
     def result_not_empty_warning # rubocop:disable Metrics/MethodLength

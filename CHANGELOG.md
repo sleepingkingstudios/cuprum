@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+The "By Your Command" Update.
+
 ## 0.5.0
 
 The "Name Not Found For NullFunction" Update.
