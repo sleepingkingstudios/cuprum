@@ -1,5 +1,7 @@
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
+require 'cuprum/command'
+
 module Spec::Examples
   module ChainingExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
@@ -232,7 +234,7 @@ module Spec::Examples
             called   = called_functions
             returned = other_value
 
-            Cuprum::Function.new do |result|
+            Cuprum::Command.new do |result|
               called << 'last function'.freeze
 
               result.value << returned
@@ -370,7 +372,7 @@ module Spec::Examples
             called   = called_functions
             returned = other_value
 
-            Cuprum::Function.new do |result|
+            Cuprum::Command.new do |result|
               # :nocov:
               called << 'last function'.freeze
 

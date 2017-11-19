@@ -1,9 +1,9 @@
-require 'cuprum/function'
+require 'cuprum/command'
 
 require 'support/examples/chaining_examples'
 require 'support/examples/command_examples'
 
-RSpec.describe Cuprum::Function do
+RSpec.describe Cuprum::Command do
   include Spec::Examples::ChainingExamples
   include Spec::Examples::CommandExamples
 

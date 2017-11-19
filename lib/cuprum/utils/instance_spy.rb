@@ -9,26 +9,26 @@ module Cuprum::Utils
   # call a function instance.
   #
   # @example Observing calls to instances of a function.
-  #   spy = Cuprum::Utils::InstanceSpy.spy_on(CustomFunction)
+  #   spy = Cuprum::Utils::InstanceSpy.spy_on(CustomCommand)
   #
   #   expect(spy).to receive(:call).with(1, 2, 3, :four => '4')
   #
-  #   CustomFunction.new.call(1, 2, 3, :four => '4')
+  #   CustomCommand.new.call(1, 2, 3, :four => '4')
   #
   # @example Observing calls to a chained function.
-  #   spy = Cuprum::Utils::InstanceSpy.spy_on(ChainedFunction)
+  #   spy = Cuprum::Utils::InstanceSpy.spy_on(ChainedCommand)
   #
   #   expect(spy).to receive(:call)
   #
-  #   Cuprum::Function.new {}.
-  #     chain { |result| ChainedFunction.new.call(result) }.
+  #   Cuprum::Command.new {}.
+  #     chain { |result| ChainedCommand.new.call(result) }.
   #     call
   #
   # @example Block syntax
-  #   Cuprum::Utils::InstanceSpy.spy_on(CustomFunction) do |spy|
+  #   Cuprum::Utils::InstanceSpy.spy_on(CustomCommand) do |spy|
   #     expect(spy).to receive(:call)
   #
-  #     CustomFunction.new.call
+  #     CustomCommand.new.call
   #   end # spy_on
   module InstanceSpy
     # Minimal class that implements a #call method to mirror method calls to
@@ -52,13 +52,13 @@ module Cuprum::Utils
       # spy's #call method will be invoked with the same arguments and block.
       #
       # @param function_class [Class, Module] The type of function to spy on.
-      #   Must be either a Module, or a Class that extends Cuprum::Function.
+      #   Must be either a Module, or a Class that extends Cuprum::Command.
       #
       # @raise [ArgumentError] If the argument is neither a Module nor a Class
-      #   that extends Cuprum::Function.
+      #   that extends Cuprum::Command.
       #
       # @note Calling this method for the first time will prepend the
-      #   Cuprum::Utils::InstanceSpy module to Cuprum::Function.
+      #   Cuprum::Utils::InstanceSpy module to Cuprum::Command.
       #
       # @overload spy_on(function_class)
       #   @return [Cuprum::Utils::InstanceSpy::Spy] The instance spy.
@@ -107,17 +107,17 @@ module Cuprum::Utils
         return if function_class.is_a?(Module) && !function_class.is_a?(Class)
 
         return if function_class.is_a?(Class) &&
-                  function_class <= Cuprum::Function
+                  function_class <= Cuprum::Command
 
         raise ArgumentError,
-          'must be a class inheriting from Cuprum::Function',
+          'must be a class inheriting from Cuprum::Command',
           caller(1..-1)
       end # method guard_spy_class!
 
       def instrument_call!
-        return if Cuprum::Function < Cuprum::Utils::InstanceSpy
+        return if Cuprum::Command < Cuprum::Utils::InstanceSpy
 
-        Cuprum::Function.prepend(Cuprum::Utils::InstanceSpy)
+        Cuprum::Command.prepend(Cuprum::Utils::InstanceSpy)
       end # method instrument_call!
 
       def spies
@@ -129,7 +129,7 @@ module Cuprum::Utils
       end # method spies_for
     end # eigenclass
 
-    # (see Cuprum::Function#call)
+    # (see Cuprum::Command#call)
     def call *args, &block
       Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
 

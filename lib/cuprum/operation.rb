@@ -1,4 +1,4 @@
-require 'cuprum/function'
+require 'cuprum/command'
 
 module Cuprum
   # Functional object that with syntactic sugar for tracking the last result.
@@ -32,13 +32,13 @@ module Cuprum
   # implementation block to the constructor or by creating a subclass that
   # overwrites the #process method.
   #
-  # @see Cuprum::Function
-  class Operation < Cuprum::Function
+  # @see Cuprum::Command
+  class Operation < Cuprum::Command
     # Module-based implementation of the Operation methods. Use this to convert
     # an already-defined function into an operation.
     #
     # @example
-    #   class CustomOperation < CustomFunction
+    #   class CustomOperation < CustomCommand
     #     include Cuprum::Operation::Mixin
     #   end # class
     module Mixin
@@ -61,10 +61,10 @@ module Cuprum
       #     implementation.
       #
       #   @raise [Cuprum::NotImplementedError] Unless a block was passed to the
-      #     constructor or the #process method was overriden by a Function
+      #     constructor or the #process method was overriden by a Command
       #     subclass.
       #
-      # @see Cuprum::Function#call
+      # @see Cuprum::Command#call
       def call *args, &block
         reset! if called? # Clear reference to most recent result.
 

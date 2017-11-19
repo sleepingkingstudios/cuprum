@@ -5,7 +5,7 @@ module Cuprum
   # Chaining commands allows you to define complex logic by composing it from
   # simpler commands, including branching logic and error handling.
   #
-  # @see Cuprum::Function
+  # @see Cuprum::Command
   module Chaining
     # (see Cuprum::BasicCommand#call)
     def call *args, &block
@@ -32,7 +32,7 @@ module Cuprum
     #   as its parameter, and the result of the chained function will be
     #   returned (or passed to the next chained function, if any).
     #
-    #   @param function [Cuprum::Function] The function to call after the
+    #   @param function [Cuprum::Command] The function to call after the
     #     current or last chained function.
     #
     # @overload chain(on: :nil, &block)
@@ -49,7 +49,7 @@ module Cuprum
     #   @yieldparam result [Cuprum::Result] The #result of the previous
     #     function.
     #
-    # @return [Cuprum::Function] The chained function.
+    # @return [Cuprum::Command] The chained function.
     def chain function = nil, on: nil, &block
       clone.tap do |fn|
         fn.chained_functions <<
@@ -66,7 +66,7 @@ module Cuprum
     #
     # @overload else(function)
     #
-    #   @param function [Cuprum::Function] The function to call after the
+    #   @param function [Cuprum::Command] The function to call after the
     #     current or last chained function.
     #
     # @overload else(&block)
@@ -74,7 +74,7 @@ module Cuprum
     #   @yieldparam result [Cuprum::Result] The #result of the previous
     #     function.
     #
-    # @return [Cuprum::Function] The chained function.
+    # @return [Cuprum::Command] The chained function.
     #
     # @see #chain
     def else function = nil, &block
@@ -87,7 +87,7 @@ module Cuprum
     #
     # @overload then(function)
     #
-    #   @param function [Cuprum::Function] The function to call after the
+    #   @param function [Cuprum::Command] The function to call after the
     #     current or last chained function.
     #
     # @overload then(&block)
@@ -95,7 +95,7 @@ module Cuprum
     #   @yieldparam result [Cuprum::Result] The #result of the previous
     #     function.
     #
-    # @return [Cuprum::Function] The chained function.
+    # @return [Cuprum::Command] The chained function.
     #
     # @see #chain
     def then function = nil, &block

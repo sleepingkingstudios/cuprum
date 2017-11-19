@@ -1,5 +1,5 @@
 require 'cuprum/built_in'
-require 'cuprum/function'
+require 'cuprum/command'
 
 module Cuprum::BuiltIn
   # A predefined function that returns the value or result it was called with.
@@ -21,7 +21,7 @@ module Cuprum::BuiltIn
   #   #=> false
   #   result.errors
   #   #=> ['errors.messages.unknown']
-  class IdentityFunction < Cuprum::Function
+  class IdentityFunction < Cuprum::Command
     private
 
     def process value = nil

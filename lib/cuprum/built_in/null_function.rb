@@ -1,5 +1,5 @@
 require 'cuprum/built_in'
-require 'cuprum/function'
+require 'cuprum/command'
 
 module Cuprum::BuiltIn
   # A predefined function that does nothing when called.
@@ -10,7 +10,7 @@ module Cuprum::BuiltIn
   #   #=> nil
   #   result.success?
   #   #=> true
-  class NullFunction < Cuprum::Function
+  class NullFunction < Cuprum::Command
     private
 
     def process *_args; end

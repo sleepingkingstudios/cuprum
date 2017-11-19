@@ -7,17 +7,17 @@ module Cuprum
   # Functional object that encapsulates a business logic operation with a
   # consistent interface and tracking of result value and status.
   #
-  # A Function can be defined either by passing a block to the constructor, or
-  # by defining a subclass of Function and implementing the #process method.
+  # A Command can be defined either by passing a block to the constructor, or
+  # by defining a subclass of Command and implementing the #process method.
   #
-  # @example A Function with a block
-  #   double_function = Cuprum::Function.new { |int| 2 * int }
+  # @example A Command with a block
+  #   double_function = Cuprum::Command.new { |int| 2 * int }
   #   result          = double_function.call(5)
   #
   #   result.value #=> 10
   #
-  # @example A Function subclass
-  #   class MultiplyFunction < Cuprum::Function
+  # @example A Command subclass
+  #   class MultiplyCommand < Cuprum::Command
   #     def initialize multiplier
   #       @multiplier = multiplier
   #     end # constructor
@@ -29,13 +29,13 @@ module Cuprum
   #     end # method process
   #   end # class
   #
-  #   triple_function = MultiplyFunction.new(3)
+  #   triple_function = MultiplyCommand.new(3)
   #   result          = triple_function.call(5)
   #
   #   result.value #=> 15
   #
-  # @example A Function with errors
-  #   class DivideFunction < Cuprum::Function
+  # @example A Command with errors
+  #   class DivideCommand < Cuprum::Command
   #     def initialize divisor
   #       @divisor = divisor
   #     end # constructor
@@ -53,20 +53,20 @@ module Cuprum
   #     end # method process
   #   end # class
   #
-  #   halve_function = DivideFunction.new(2)
+  #   halve_function = DivideCommand.new(2)
   #   result         = halve_function.call(10)
   #
   #   result.errors #=> []
   #   result.value  #=> 5
   #
-  #   function_with_errors = DivideFunction.new(0)
+  #   function_with_errors = DivideCommand.new(0)
   #   result               = function_with_errors.call(10)
   #
   #   result.errors #=> ['errors.messages.divide_by_zero']
   #   result.value  #=> nil
   #
-  # @example Function Chaining
-  #   class AddFunction < Cuprum::Function
+  # @example Command Chaining
+  #   class AddCommand < Cuprum::Command
   #     def initialize addend
   #       @addend = addend
   #     end # constructor
@@ -78,13 +78,13 @@ module Cuprum
   #     end # method process
   #   end # class
   #
-  #   double_and_add_one = MultiplyFunction.new(2).chain(AddFunction.new(1))
+  #   double_and_add_one = MultiplyCommand.new(2).chain(AddCommand.new(1))
   #   result             = double_and_add_one(5)
   #
   #   result.value #=> 5
   #
   # @example Conditional Chaining With #then And #else
-  #   class EvenFunction < Cuprum::Function
+  #   class EvenCommand < Cuprum::Command
   #     private
   #
   #     def process int
@@ -98,16 +98,16 @@ module Cuprum
   #   # - If the number is even, divide it by 2.
   #   # - If the number is odd, multiply it by 3 and add 1.
   #   collatz_function =
-  #     EvenFunction.new.
-  #       then(DivideFunction.new(2)).
-  #       else(MultiplyFunction.new(3).chain(AddFunction.new(1)))
+  #     EvenCommand.new.
+  #       then(DivideCommand.new(2)).
+  #       else(MultiplyCommand.new(3).chain(AddCommand.new(1)))
   #
   #   result = collatz_function.new(5)
   #   result.value #=> 16
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Function < Cuprum::BasicCommand
+  class Command < Cuprum::BasicCommand
     include Cuprum::Chaining
   end # class
 end # module
