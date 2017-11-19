@@ -1,10 +1,15 @@
 require 'cuprum/built_in/null_function'
 require 'cuprum/function_examples'
 
+require 'support/examples/command_examples'
+
 RSpec.describe Cuprum::BuiltIn::NullFunction do
+  include Spec::Examples::CommandExamples
   include Spec::Examples::FunctionExamples
 
   subject(:instance) { described_class.new }
+
+  include_examples 'should implement the Command methods'
 
   include_examples 'should implement the Function methods'
 

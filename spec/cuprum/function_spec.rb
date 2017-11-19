@@ -1,7 +1,10 @@
 require 'cuprum/function'
 require 'cuprum/function_examples'
 
+require 'support/examples/command_examples'
+
 RSpec.describe Cuprum::Function do
+  include Spec::Examples::CommandExamples
   include Spec::Examples::FunctionExamples
 
   subject(:instance) { described_class.new }
@@ -12,6 +15,10 @@ RSpec.describe Cuprum::Function do
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }
   end # describe
+
+  include_examples 'should implement the Command methods'
+
+  include_examples 'should implement the Command methods for any implementation'
 
   include_examples 'should implement the Function methods'
 

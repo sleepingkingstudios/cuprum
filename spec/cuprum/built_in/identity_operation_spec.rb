@@ -2,7 +2,10 @@ require 'cuprum/built_in/identity_operation'
 require 'cuprum/function_examples'
 require 'cuprum/operation_examples'
 
+require 'support/examples/command_examples'
+
 RSpec.describe Cuprum::BuiltIn::IdentityOperation do
+  include Spec::Examples::CommandExamples
   include Spec::Examples::FunctionExamples
   include Spec::Examples::OperationExamples
 
@@ -11,6 +14,8 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   let(:value)  { 'returned value'.freeze }
   let(:errors) { ['errors.messages.unknown'] }
   let(:result) { Cuprum::Result.new(value, :errors => errors) }
+
+  include_examples 'should implement the Command methods'
 
   include_examples 'should implement the Function methods'
 
