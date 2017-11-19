@@ -1,3 +1,5 @@
+require 'cuprum/command'
+require 'cuprum/operation'
 require 'cuprum/utils/instance_spy'
 
 RSpec.describe Cuprum::Utils::InstanceSpy do

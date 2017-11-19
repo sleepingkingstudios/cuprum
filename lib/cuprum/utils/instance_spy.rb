@@ -1,4 +1,3 @@
-require 'cuprum/built_in/null_function'
 require 'cuprum/utils'
 
 module Cuprum::Utils

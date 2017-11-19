@@ -1,8 +1,8 @@
-require 'cuprum/built_in/null_function'
+require 'cuprum/built_in/null_command'
 
 require 'support/examples/command_examples'
 
-RSpec.describe Cuprum::BuiltIn::NullFunction do
+RSpec.describe Cuprum::BuiltIn::NullCommand do
   include Spec::Examples::CommandExamples
 
   subject(:instance) { described_class.new }

@@ -1,8 +1,8 @@
-require 'cuprum/built_in/identity_function'
+require 'cuprum/built_in/identity_command'
 
 require 'support/examples/command_examples'
 
-RSpec.describe Cuprum::BuiltIn::IdentityFunction do
+RSpec.describe Cuprum::BuiltIn::IdentityCommand do
   include Spec::Examples::CommandExamples
 
   subject(:instance) { described_class.new }

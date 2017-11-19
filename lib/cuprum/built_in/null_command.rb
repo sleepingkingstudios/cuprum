@@ -2,15 +2,15 @@ require 'cuprum/built_in'
 require 'cuprum/command'
 
 module Cuprum::BuiltIn
-  # A predefined function that does nothing when called.
+  # A predefined command that does nothing when called.
   #
   # @example
-  #   result = NullFunction.new.call
+  #   result = NullCommand.new.call
   #   result.value
   #   #=> nil
   #   result.success?
   #   #=> true
-  class NullFunction < Cuprum::Command
+  class NullCommand < Cuprum::Command
     private
 
     def process *_args; end

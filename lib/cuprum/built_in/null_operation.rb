@@ -1,4 +1,4 @@
-require 'cuprum/built_in/null_function'
+require 'cuprum/built_in/null_command'
 require 'cuprum/operation'
 
 module Cuprum::BuiltIn
@@ -10,7 +10,7 @@ module Cuprum::BuiltIn
   #   #=> nil
   #   operation.success?
   #   #=> true
-  class NullOperation < Cuprum::BuiltIn::NullFunction
+  class NullOperation < Cuprum::BuiltIn::NullCommand
     include Cuprum::Operation::Mixin
   end # class
 end # module
