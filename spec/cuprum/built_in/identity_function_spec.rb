@@ -1,17 +1,13 @@
 require 'cuprum/built_in/identity_function'
-require 'cuprum/function_examples'
 
 require 'support/examples/command_examples'
 
 RSpec.describe Cuprum::BuiltIn::IdentityFunction do
   include Spec::Examples::CommandExamples
-  include Spec::Examples::FunctionExamples
 
   subject(:instance) { described_class.new }
 
   include_examples 'should implement the Command methods'
-
-  include_examples 'should implement the Function methods'
 
   describe '#call' do
     it { expect(instance).to respond_to(:call).with(0..1).arguments }

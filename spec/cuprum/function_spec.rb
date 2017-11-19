@@ -1,11 +1,11 @@
 require 'cuprum/function'
-require 'cuprum/function_examples'
 
+require 'support/examples/chaining_examples'
 require 'support/examples/command_examples'
 
 RSpec.describe Cuprum::Function do
+  include Spec::Examples::ChainingExamples
   include Spec::Examples::CommandExamples
-  include Spec::Examples::FunctionExamples
 
   subject(:instance) { described_class.new }
 
@@ -20,9 +20,7 @@ RSpec.describe Cuprum::Function do
 
   include_examples 'should implement the Command methods for any implementation'
 
-  include_examples 'should implement the Function methods'
-
-  include_examples 'should implement the generic Function methods'
+  include_examples 'should implement the Command chaining methods'
 
   describe '#errors' do
     include_examples 'should have private reader', :errors
