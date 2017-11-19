@@ -1,7 +1,7 @@
 require 'cuprum/operation'
-require 'cuprum/operation_examples'
 
 require 'support/examples/command_examples'
+require 'support/examples/operation_examples'
 
 RSpec.describe Cuprum::Operation do
   include Spec::Examples::CommandExamples

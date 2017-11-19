@@ -1,7 +1,7 @@
 require 'cuprum/built_in/identity_operation'
-require 'cuprum/operation_examples'
 
 require 'support/examples/command_examples'
+require 'support/examples/operation_examples'
 
 RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   include Spec::Examples::CommandExamples
