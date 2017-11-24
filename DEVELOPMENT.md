@@ -11,11 +11,16 @@
 ## Command
 
 - Predefined commands/operations:
+  - MapCommand - wraps a command (or proc) and returns Result with value, errors
+    as array
   - RetryCommand
 - allow_result_argument? - defaults to false. if false, there is one argument,
   and the argument is a Result, process the value instead.
-- #chain!, #else!, #then! - adds chained function to current command instead of
+- #chain!, #else!, #then! - adds chained command to current command instead of
   a clone.
+- optional #reverse_process method
+- private #build_result
+- protected #reuse_result do ...; end - used for map
 
 ### DSL
 
