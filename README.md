@@ -1,27 +1,61 @@
 # Cuprum
 
-A lightweight, functional-lite toolkit for making business logic a first-class
-citizen of your application.
+An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a composable, consistent interface and features status and error management, composability and control flow management.
 
-## Support
+It defines the following concepts:
 
-Cuprum is tested against Ruby 2.4.
+- [Commands](#label-Commands) - A function-like object that responds to `#call` and returns a `Result`.
+- [Operations](#label-Operations) - A stateful `Command` that wraps and delegates to its most recent `Result`.
+- [Results](#label-Results) - A data object with a `#value`, an `#errors` object, and `#success?` and `#failure?` status methods.
 
-## Documentation
+## About
+
+[comment]: # "Status Badges will go here."
+
+Traditional frameworks such as Rails focus on the objects of your application - the "nouns" such as User, Post, or Item. Using Cuprum or a similar library allows you the developer to make your business logic - the "verbs" such as Create User, Update Post or Ship Item - a first-class citizen of your project. This provides several advantages:
+
+- **Consistency:** Use the same Commands to underlie controller actions, worker processes and test factories.
+- **Encapsulation:** Each Command is defined and run in isolation, and dependencies must be explicitly provided to the command when it is initialized or run. This makes it easier to reason about the command's behavior and keep it insulated from changes elsewhere in the code.
+- **Testability:** Because the logic is extracted from unnecessary context, testing its behavior is much cleaner and easier.
+- **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [Chaining](#label-Chaining) feature allows for complex control flows.
+- **Reusability:** Logic common to multiple data models or instances in your code, such as "persist an object to the database" or "find all records with a given user and created in a date range" can be refactored into parameterized commands.
+
+### Alternatives
+
+If you want to extract your logic but Cuprum is not the right solution for you, here are several alternatives:
+
+- Service objects. A common pattern used when first refactoring an application that has outgrown its abstractions. Service objects are simple and let you group related functionality, but they are harder to compose and require firm conventions to tame.
+- The [Interactor](https://github.com/collectiveidea/interactor) gem. Provides an `Action` module to implement logic and an `Organizer` module to manage control flow. Supports before, around, and after hooks.
+- The [Waterfall](https://github.com/apneadiving/waterfall) gem. Focused more on control flow.
+- [Trailblazer](http://trailblazer.to/) Operations. A pipeline-based approach to control flow, and can integrate tightly with other Trailblazer elements.
+
+### Compatibility
+
+Cuprum is tested against Ruby (MRI) 2.4.
+
+### Documentation
 
 Method and class documentation is available courtesy of [RubyDoc](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master).
 
 Documentation is generated using [YARD](https://yardoc.org/), and can be generated locally using the `yard` gem.
 
-## Contribute
+### License
 
-### GitHub
+Copyright (c) 2017 Rob Smith
+
+Cuprum is released under the [MIT License](https://opensource.org/licenses/MIT).
+
+### Contribute
 
 The canonical repository for this gem is located at https://github.com/sleepingkingstudios/cuprum.
 
-### A Note From The Developer
+To report a bug or submit a feature request, please use the [Issue Tracker](https://github.com/sleepingkingstudios/cuprum/issues).
 
-Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached on GitHub (see above, and feel encouraged to submit bug reports or merge requests there) or via email at merlin@sleepingkingstudios.com. I look forward to hearing from you!
+To contribute code, please fork the repository, make the desired updates, and then provide a [Pull Request](https://github.com/sleepingkingstudios/cuprum/pulls). Pull requests must include appropriate tests for consideration, and all code must be properly formatted.
+
+### Credits
+
+Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached [on GitHub](https://github.com/sleepingkingstudios/cuprum) or [via email](mailto:merlin@sleepingkingstudios.com). I look forward to hearing from you!
 
 ## Commands
 
