@@ -1,4 +1,4 @@
-require 'cuprum/built_in/identity_function'
+require 'cuprum/built_in/identity_command'
 require 'cuprum/operation'
 
 module Cuprum::BuiltIn
@@ -21,7 +21,7 @@ module Cuprum::BuiltIn
   #   #=> false
   #   operation.errors
   #   #=> ['errors.messages.unknown']
-  class IdentityOperation < Cuprum::BuiltIn::IdentityFunction
+  class IdentityOperation < Cuprum::BuiltIn::IdentityCommand
     include Cuprum::Operation::Mixin
   end # class
 end # module

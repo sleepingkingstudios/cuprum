@@ -1,14 +1,15 @@
 require 'cuprum/built_in/null_operation'
-require 'cuprum/function_examples'
-require 'cuprum/operation_examples'
+
+require 'support/examples/command_examples'
+require 'support/examples/operation_examples'
 
 RSpec.describe Cuprum::BuiltIn::NullOperation do
-  include Spec::Examples::FunctionExamples
+  include Spec::Examples::CommandExamples
   include Spec::Examples::OperationExamples
 
   subject(:instance) { described_class.new }
 
-  include_examples 'should implement the Function methods'
+  include_examples 'should implement the Command methods'
 
   include_examples 'should implement the Operation methods'
 

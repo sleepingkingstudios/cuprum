@@ -1,12 +1,13 @@
-require 'cuprum/built_in/null_function'
-require 'cuprum/function_examples'
+require 'cuprum/built_in/null_command'
 
-RSpec.describe Cuprum::BuiltIn::NullFunction do
-  include Spec::Examples::FunctionExamples
+require 'support/examples/command_examples'
+
+RSpec.describe Cuprum::BuiltIn::NullCommand do
+  include Spec::Examples::CommandExamples
 
   subject(:instance) { described_class.new }
 
-  include_examples 'should implement the Function methods'
+  include_examples 'should implement the Command methods'
 
   describe '#call' do
     it { expect(instance).to respond_to(:call).with(0).arguments }

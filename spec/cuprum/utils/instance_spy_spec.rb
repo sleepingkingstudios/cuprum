@@ -1,3 +1,5 @@
+require 'cuprum/command'
+require 'cuprum/operation'
 require 'cuprum/utils/instance_spy'
 
 RSpec.describe Cuprum::Utils::InstanceSpy do
@@ -12,7 +14,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
     end # before example
   end # shared_context
 
-  options = { :base_class => Cuprum::Function }
+  options = { :base_class => Cuprum::Command }
   example_class 'Spec::ExampleFunction', options do |klass|
     klass.send :define_method, :process do |*_args|
       'returned_value'.freeze
@@ -180,18 +182,18 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       end # wrap_context
     end # describe
 
-    describe 'with Cuprum::Function' do
+    describe 'with Cuprum::Command' do
       let(:function_class)    { Spec::ExampleFunction }
       let(:function_instance) { function_class.new }
 
       it 'should return a spy' do
-        spy = described_class.spy_on(Cuprum::Function)
+        spy = described_class.spy_on(Cuprum::Command)
 
         expect(spy).to be_a described_class::Spy
       end # it
 
       it 'should instrument calls to #call on a subclass' do
-        spy = described_class.spy_on(Cuprum::Function)
+        spy = described_class.spy_on(Cuprum::Command)
 
         allow(spy).to receive(:call)
 

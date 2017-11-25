@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.6.0
+
+The "By Your Command" Update.
+
+### Commands
+
+Refactored `Cuprum::Function` to `Cuprum::Command` to better reflect its role as an implementation of the Command pattern.
+
+Extracted `Cuprum::BasicCommand` as a base class for all commands, implementing `#call` and its associated methods but not including methods or functionality related to command chains.
+
+Extracted the `Cuprum::Chaining` mixin, which encapsulates all of the methods and functionality necessary to implement command chaining.
+
+## Built In Commands
+
+Refactored `Cuprum::BuiltIn::IdentityFunction` to `Cuprum::BuiltIn::IdentityCommand`.
+
+Refactored `Cuprum::BuiltIn::NullFunction` to `Cuprum::BuiltIn::NullCommand`.
+
 ## 0.5.0
 
 The "Name Not Found For NullFunction" Update.
