@@ -196,19 +196,17 @@ module Cuprum
     end # method value
 
     def wrap_result
-      value = nil
+      result = Cuprum::Result.new(:errors => build_errors)
 
-      Cuprum::Result.new(:errors => build_errors).tap do |result|
-        begin
-          @result = result
+      begin
+        @result = result
 
-          value = yield result
-        ensure
-          @result = nil
-        end # begin-ensure
-      end # tap
+        result = yield result
+      ensure
+        @result = nil
+      end # begin-ensure
 
-      value
+      result
     end # method wrap_result
   end # class
 end # module
