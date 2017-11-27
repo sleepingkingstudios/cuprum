@@ -57,215 +57,119 @@ To contribute code, please fork the repository, make the desired updates, and th
 
 Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached [on GitHub](https://github.com/sleepingkingstudios/cuprum) or [via email](mailto:merlin@sleepingkingstudios.com). I look forward to hearing from you!
 
-## Commands
+## Concepts
 
-    require 'cuprum/command'
+### Commands
 
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommand)
+    require 'cuprum'
 
 Commands are the core feature of Cuprum. In a nutshell, each Cuprum::Command is a functional object that encapsulates a business logic operation. A Command provides a consistent interface and tracking of result value and status. This minimizes boilerplate and allows for interchangeability between different implementations or strategies for managing your data and processes.
 
-Each Command implements a `#call` method that wraps your defined business logic and returns an instance of Cuprum::Result. The result wraps the returned data (with the `#value` method), any `#errors` generated when running the Command, and the overall status with the `#success?` and `#failure` methods. For more details about Cuprum::Result, see below.
+Each Command implements a `#call` method that wraps your defined business logic and returns an instance of Cuprum::Result. The result wraps the returned data (with the `#value` method), any `#errors` generated when running the Command, and the overall status with the `#success?` and `#failure` methods. For more details about Cuprum::Result, [see below](#label-Results).
 
-### Methods
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommand)
 
-A Cuprum::Command defines the following methods:
+#### Defining Commands
 
-#### #initialize
+The recommended way to define commands is to create a subclass of `Cuprum::Command` and override the `#process` method.
 
-    initialize { |*arguments, **keywords, &block| ... } #=> Cuprum::Command
+```ruby
+class BuildBookCommand < Cuprum::Command
+  def process attributes
+    Book.new(attributes)
+  end # method process
+end # class
 
-Returns a new instance of Cuprum::Command. If a block is given, the `#call` method will wrap the block and set the result `#value` to the return value of the block. This overrides the implementation in `#process`, if any.
+command = BuildPostCommand.new
+result  = command.call(:title => 'The Hobbit') # an instance of Cuprum::Result
+result.value #=> an instance of Book with title 'The Hobbit'
+```
 
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#initialize-instance_method)
+There are several takeaways from this example. First, we are defining a custom command class that inherits from `Cuprum::Command`. We are defining the `#process` method, which takes a single `attributes` parameter and returns an instance of `Book`. Then, we are creating an instance of the command, and invoking the `#call` method with an attributes hash. These attributes are passed to our `#process` implementation. Invoking `#call` returns a result, and the `#value` of the result is our new Book.
 
-#### #call
+Because a command is just a Ruby object, we can also pass values to the constructor.
 
-    call(*arguments, **keywords) { ... } #=> Cuprum::Result
+```ruby
+class SaveBookCommand < Cuprum::Command
+  def initialize repository
+    @repository = repository
+  end # constructor
 
-Executes the logic encoded in the constructor block, or the #process method if no block was passed to the constructor.
+  def process book
+    @repository.persist(book)
+  end # method process
+end # class
 
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#call-instance_method)
+books = [
+  Book.new(:title => 'The Fellowship of the Ring'),
+  Book.new(:title => 'The Two Towers'),
+  Book.new(:title => 'The Return of the King')
+]
+command = SaveBookCommand.new(books_repository)
+books.each { |book| command.call(book) }
+```
 
-#### #chain
+Here, we are reusing the same command three times, rather than creating a new save command for each book. Each book is persisted to the `books_repository`. This is also an example of how using commands can simplify code - notice that nothing about the `SaveBookCommand` is specific to the `Book` model. Thus, we could refactor this into a generic `SaveModelCommand`.
 
-Registers a command or block to run after the current command, or after the last chained command if the current command already has one or more chained command(s). This creates and modifies a copy of the current command. See Chaining Commands, below.
+A command can also be defined by passing block to `Cuprum::Command.new`.
 
-    chain(command, on: nil) #=> Cuprum::Command
+```ruby
+increment_command = Cuprum::Command.new { |int| int + 1 }
 
-The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
+increment_command.call(2).value #=> 3
+```
 
-    chain(on: nil) { |result| ... } #=> Cuprum::Command
+Commands defined using `Cuprum::Command.new` are quick to use, but more difficult to read and to reuse. Defining your own command class is recommended if a command definition takes up more than one line, or if the command will be used in more than one place.
 
-The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
-
-If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#chain-instance_method)
-
-#### `#then`
-
-Shorthand for `command.chain(:on => :success)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was successfully run.
-
-    then(command) #=> Cuprum::Command
-
-The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
-
-    then() { |result| ... } #=> Cuprum::Command
-
-The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
-
-If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#then-instance_method)
-
-#### `#else`
-
-Shorthand for `command.chain(:on => :failure)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was unsuccessfully run.
-
-    else(command) #=> Cuprum::Command
-
-The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
-
-    else() { |result| ... } #=> Cuprum::Command
-
-The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
-
-If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#else-instance_method)
-
-#### `#build_errors`
-
-*Private method*. Generates an empty errors object. When the command is called, the result will have its `#errors` property initialized to the value returned by `#build_errors`. By default, this is an array. If you want to use a custom errors object type, override this method in a subclass.
-
-    build_errors() #=> Array
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#build_errors-instance_method)
-
-### Implementation Hooks
-
-These methods are only available while the Command is being called, and allow the implementation to update the errors of and override the results of the result object.
-
-#### `#errors`
-
-Only available while the Command is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
-
-    errors() #=> Array
-
-Inside of the Command block or the `#process` method, you can add errors to the result.
-
-    command =
-      Cuprum::Command.new do
-        errors << "I'm sorry, something went wrong."
-
-        nil
-      end # command
-
-    result = command.call
-    result.failure?
-    #=> true
-    result.errors
-    #=> ["I'm sorry, something went wrong."]
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#errors-instance_method)
-
-#### `#success!`
-
-Only available while the Command is being called. If called, marks the result object as passing, even if the result has errors.
-
-    success!() #=> NilClass
-
-#### `#failure!`
-
-Only available while the Command is being called. If called, marks the result object as failing, even if the result does not have errors.
-
-    failure!() #=> NilClass
-
-#### `#halt!`
-
-Only available while the Command is being called. If called, halts the command chain (see Chaining Commands, below). Subsequent chained commands will not be called unless they were chained with the `:on => :always` option.
-
-    halt!() #=> NilClass
-
-### Defining With a Block
-
-Commands can be used right out of the box by passing a block to the Cuprum::Command constructor, as follows:
-
-    # A Command with a block
-    double_command = Cuprum::Command.new { |int| 2 * int }
-    result          = double_command.call(5)
-
-    result.value #=> 10
-
-The constructor block will be called each time `Command#call` is executed, and will be passed all of the arguments given to `#call`. You can even define a block parameter, which will be passed along to the constructor block when `#call` is called with a block argument.
-
-### Defining With a Subclass
-
-Larger applications will want to create Command subclasses that encapsulate their business logic in a reusable, composable fashion. The implementation for each subclass is handled by the `#process` private method. If a subclass or its ancestors does not implement `#process`, a `Cuprum::NotImplementedError` will be raised.
-
-    # A Command subclass
-    class MultiplyCommand < Cuprum::Command
-      def initialize multiplier
-        @multiplier = multiplier
-      end # constructor
-
-      private
-
-      def process int
-        int * @multiplier
-      end # method process
-    end # class
-
-    triple_command = MultiplyCommand.new(3)
-    result          = triple_command.call(5)
-
-    result.value #=> 15
-
-As with the block syntax, a Command whose implementation is defined via the `#process` method will call `#process` each time that `#call` is executed, and will pass all arguments from `#call` on to `#process`. The value returned by `#process` will be assigned to the result `#value`.
-
-### Success, Failure, and Errors
+#### Success, Failure, and Errors
 
 Whether defined with a block or in the `#process` method, the Command implementation can access an `#errors` object while in the `#call` method. Any errors added to the errors object will be exposed by the `#errors` method on the result object.
 
-    # A Command with errors
-    class DivideCommand < Cuprum::Command
-      def initialize divisor
-        @divisor = divisor
-      end # constructor
+```ruby
+class PublishBookCommand < Cuprum::Command
+  private
 
-      private
+  def process book
+    if book.cover.nil?
+      errors << 'This book does not have a cover.'
 
-      def process int
-        if @divisor.zero?
-          errors << 'errors.messages.divide_by_zero'
+      return
+    end # if
 
-          return
-        end # if
+    book.published = true
 
-        int / @divisor
-      end # method process
-    end # class
+    book
+  end # method process
+end # class
+```
 
 In addition, the result object defines `#success?` and `#failure?` predicates. If the result has no errors, then `#success?` will return true and `#failure?` will return false.
 
-    halve_command = DivideCommand.new(2)
-    result         = halve_command.call(10)
+```ruby
+book = Book.new(:title => 'The Silmarillion', :cover => Cover.new)
+book.published? #=> false
 
-    result.errors   #=> []
-    result.success? #=> true
-    result.failure? #=> false
-    result.value    #=> 5
+result = PublishBookCommand.new.call(book)
+result.errors   #=> []
+result.success? #=> true
+result.failure? #=> false
+result.value    #=> book
+book.published? #=> true
+```
 
- If the result does have errors, `#success?` will return false and `#failure?` will return true.
+If the result does have errors, `#success?` will return false and `#failure?` will return true.
 
-    command_with_errors = DivideCommand.new(0)
-    result               = command_with_errors.call(10)
+```ruby
+book = Book.new(:title => 'The Silmarillion', :cover => nil)
+book.published? #=> false
 
-    result.errors   #=> ['errors.messages.divide_by_zero']
-    result.success? #=> false
-    result.failure? #=> true
-    result.value    #=> nil
+result = PublishBookCommand.new.call(book)
+result.errors   #=> ['This book does not have a cover.']
+result.success? #=> false
+result.failure? #=> true
+result.value    #=> book
+book.published? #=> false
+```
 
 ### Chaining Commands
 
@@ -356,6 +260,145 @@ If the `#halt` method is called as part of a Command block or `#process` method,
 
     result.value   #= 4
     result.halted? #=> true
+
+## Reference
+
+### Commands
+
+    require 'cuprum'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommand)
+
+A Cuprum::Command defines the following methods:
+
+#### #initialize
+
+    initialize { |*arguments, **keywords, &block| ... } #=> Cuprum::Command
+
+Returns a new instance of Cuprum::Command. If a block is given, the `#call` method will wrap the block and set the result `#value` to the return value of the block. This overrides the implementation in `#process`, if any.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#initialize-instance_method)
+
+#### `#build_errors`
+
+*(Private Method)*
+
+Generates an empty errors object. When the command is called, the result will have its `#errors` property initialized to the value returned by `#build_errors`. By default, this is an array. If you want to use a custom errors object type, override this method in a subclass.
+
+    build_errors() #=> Array
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#build_errors-instance_method)
+
+#### #call
+
+    call(*arguments, **keywords) { ... } #=> Cuprum::Result
+
+Executes the logic encoded in the constructor block, or the #process method if no block was passed to the constructor.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#call-instance_method)
+
+#### #chain
+
+Registers a command or block to run after the current command, or after the last chained command if the current command already has one or more chained command(s). This creates and modifies a copy of the current command. See Chaining Commands, below.
+
+    chain(command, on: nil) #=> Cuprum::Command
+
+The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
+
+    chain(on: nil) { |result| ... } #=> Cuprum::Command
+
+The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#chain-instance_method)
+
+#### `#else`
+
+Shorthand for `command.chain(:on => :failure)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was unsuccessfully run.
+
+    else(command) #=> Cuprum::Command
+
+The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
+
+    else() { |result| ... } #=> Cuprum::Command
+
+The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#else-instance_method)
+
+#### `#errors`
+
+*(Private Method)*
+
+Only available while the Command is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
+
+    errors() #=> Array
+
+Inside of the Command block or the `#process` method, you can add errors to the result.
+
+    command =
+      Cuprum::Command.new do
+        errors << "I'm sorry, something went wrong."
+
+        nil
+      end # command
+
+    result = command.call
+    result.failure?
+    #=> true
+    result.errors
+    #=> ["I'm sorry, something went wrong."]
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#errors-instance_method)
+
+#### `#failure!`
+
+*(Private Method)*
+
+Only available while the Command is being called. If called, marks the result object as failing, even if the result does not have errors.
+
+    failure!() #=> NilClass
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#failure!-instance_method)
+
+#### `#halt!`
+
+*(Private Method)*
+
+Only available while the Command is being called. If called, halts the command chain (see Chaining Commands, below). Subsequent chained commands will not be called unless they were chained with the `:on => :always` option.
+
+    halt!() #=> NilClass
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#halt!-instance_method)
+
+#### `#success!`
+
+*(Private Method)*
+
+Only available while the Command is being called. If called, marks the result object as passing, even if the result has errors.
+
+    success!() #=> NilClass
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#success!-instance_method)
+
+#### `#then`
+
+Shorthand for `command.chain(:on => :success)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was successfully run.
+
+    then(command) #=> Cuprum::Command
+
+The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
+
+    then() { |result| ... } #=> Cuprum::Command
+
+The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
+
+If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#then-instance_method)
 
 ## Operations
 
