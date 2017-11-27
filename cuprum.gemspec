@@ -6,11 +6,13 @@ Gem::Specification.new do |gem|
   gem.name        = 'cuprum'
   gem.version     = Cuprum::VERSION
   gem.date        = Time.now.utc.strftime '%Y-%m-%d'
-  gem.summary     = 'A lightweight, functional-lite toolkit.'
+  gem.summary     = 'An opinionated implementation of the Command pattern.'
 
   description = <<-DESCRIPTION
-    A lightweight, functional-lite toolkit for making business logic a
-    first-class citizen of your application.
+    An opinionated implementation of the Command pattern for Ruby applications.
+    Cuprum wraps your business logic in a consistent, object-oriented interface
+    and features status and error management, composability and control flow
+    management.
   DESCRIPTION
   gem.description = description.strip.gsub(/\n +/, ' ')
   gem.authors     = ['Rob "Merlin" Smith']

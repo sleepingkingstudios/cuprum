@@ -1,6 +1,6 @@
 # Cuprum
 
-An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a composable, consistent interface and features status and error management, composability and control flow management.
+An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a consistent, object-oriented interface and features status and error management, composability and control flow management.
 
 It defines the following concepts:
 
@@ -261,9 +261,211 @@ If the `#halt` method is called as part of a Command block or `#process` method,
     result.value   #= 4
     result.halted? #=> true
 
+### Results
+
+    require 'cuprum'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FResult)
+
+A Cuprum::Result is a data object that encapsulates the result of calling a Cuprum command. Each result has a `#value`, an `#errors` object (defaults to an Array), and status methods `#success?`, `#failure?`, and `#halted?`.
+
+```ruby
+value  = 'A result value'.freeze
+result = Cuprum::Result.new(value)
+
+result.value    #=> 'A result value'
+result.errors   #=> []
+result.success? #=> true
+result.failure? #=> false
+result.halted?  #=> false
+```
+
+Adding errors to the `#errors` object will change the status of the result.
+
+```ruby
+result.errors << "I'm sorry, something went wrong."
+result.success? #=> false
+result.failure? #=> true
+```
+
+The status can also be overriden with the `#success!` and `#failure!` methods, which will set the status regardless of the presence or absence of errors.
+
+```ruby
+result.success!
+result.errors   #=> ["I'm sorry, something went wrong."]
+result.success? #=> true
+result.failure? #=> false
+```
+
+### Operations
+
+    require 'cuprum'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
+
+An Operation is like a Command, but with two key differences. First, an Operation retains a reference to the result object from the most recent time the operation was called, and delegates the methods defined by `Cuprum::Result` to the most recent result. This allows a called Operation to replace a `Cuprum::Result` in any code that expects or returns a result. Second, the `#call` method returns the operation instance, rather than the result itself.
+
+These two features allow developers to simplify logic around calling and using the results of operations, and reduce the need for boilerplate code (particularly when using an operation as part of an existing framework, such as inside of an asynchronous worker or a Rails controller action).
+
+```ruby
+class CreateBookOperation < Cuprum::Operation
+  def process
+    # Implementation here.
+  end # method process
+end # class
+
+# Defining a controller action using an operation.
+def create
+  operation = CreateBookOperation.new.call(book_params)
+
+  if operation.success?
+    redirect_to(operation.value)
+  else
+    @book = operation.value
+
+    render :new
+  end # if-else
+end # create
+```
+
+Like a Command, an Operation can be defined directly by passing an implementation block to the constructor or by creating a subclass that overwrites the #process method.
+
+An operation inherits the `#call` method from Cuprum::Command (see above), and delegates the `#value`, `#errors`, `#success?`, and `#failure` methods to the most recent result. If the operation has not been called, these methods will return default values.
+
+#### The Operation Mixin
+
+[Module Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation%2FMixin)
+
+The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
+
+Finally, the result can be halted using the `#halt` method, which indicates that further chained commands should not be executed.
+
+```ruby
+result.halt!
+result.halted? #=> true
+```
+
+### Built In Commands
+
+Cuprum includes a small number of predefined commands and their equivalent operations.
+
+#### IdentityCommand
+
+    require 'cuprum/built_in/identity_command'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityCommand)
+
+A pregenerated command that returns the value or result with which it was called.
+
+```ruby
+command = Cuprum::BuiltIn::IdentityCommand.new
+result  = command.call('expected value')
+result.value    #=> 'expected value'
+result.success? #=> true
+```
+
+#### IdentityOperation
+
+    require 'cuprum/built_in/identity_operation'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityOperation)
+
+A pregenerated operation that sets its result to the value or result with which it was called.
+
+```ruby
+operation = Cuprum::BuiltIn::IdentityOperation.new.call('expected value')
+operation.value    #=> 'expected value'
+operation.success? #=> true
+```
+
+#### NullCommand
+
+    require 'cuprum/built_in/null_command'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullCommand)
+
+A pregenerated command that does nothing when called. Accepts any arguments.
+
+```ruby
+command = Cuprum::BuiltIn::NullCommand.new
+result  = command.call
+result.value    #=> nil
+result.success? #=> true
+```
+
+#### NullOperation
+
+    require 'cuprum/built_in/null_operation'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullOperation)
+
+A pregenerated operation that does nothing when called. Accepts any arguments.
+
+```ruby
+operation = Cuprum::BuiltIn::NullOperation.new.call
+operation.value    #=> nil
+operation.success? #=> true
+```
+
 ## Reference
 
-### Commands
+### Cuprum::BuiltIn::IdentityCommand
+
+    require 'cuprum/built_in/identity_command'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityCommand)
+
+Cuprum::BuiltIn::IdentityCommand defines the following methods:
+
+#### `#call`
+
+    call(value) #=> Cuprum::Result
+
+Returns a result, whose `#value` is equal to the given value.
+
+### Cuprum::BuiltIn::IdentityOperation
+
+    require 'cuprum/built_in/identity_operation'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityOperation)
+
+Cuprum::BuiltIn::IdentityOperation defines the following methods:
+
+#### `#call`
+
+    call(value) #=> Cuprum::BuiltIn::IdentityOperation
+
+Sets the last result to a new result, whose `#value` is equal to the given value.
+
+### Cuprum::BuiltIn::NullCommand
+
+    require 'cuprum/built_in/null_command'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullCommand)
+
+Cuprum::BuiltIn::NullCommand defines the following methods:
+
+#### `#call`
+
+    call(*args, **keywords) { ... } #=> Cuprum::Result
+
+Returns a result with nil value. Any arguments or keywords are ignored.
+
+### Cuprum::BuiltIn::NullOperation
+
+    require 'cuprum/built_in/null_operation'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullOperation)
+
+Cuprum::BuiltIn::NullOperation defines the following methods:
+
+#### `#call`
+
+    call(*args, **keywords) { ... } #=> Cuprum::BuiltIn::NullOperation
+
+Sets the last result to a result with nil value. Any arguments or keywords are ignored.
+
+### Cuprum::Command
 
     require 'cuprum'
 
@@ -271,7 +473,7 @@ If the `#halt` method is called as part of a Command block or `#process` method,
 
 A Cuprum::Command defines the following methods:
 
-#### #initialize
+#### `#initialize`
 
     initialize { |*arguments, **keywords, &block| ... } #=> Cuprum::Command
 
@@ -283,9 +485,9 @@ Returns a new instance of Cuprum::Command. If a block is given, the `#call` meth
 
 *(Private Method)*
 
-Generates an empty errors object. When the command is called, the result will have its `#errors` property initialized to the value returned by `#build_errors`. By default, this is an array. If you want to use a custom errors object type, override this method in a subclass.
-
     build_errors() #=> Array
+
+Generates an empty errors object. When the command is called, the result will have its `#errors` property initialized to the value returned by `#build_errors`. By default, this is an array. If you want to use a custom errors object type, override this method in a subclass.
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#build_errors-instance_method)
 
@@ -299,13 +501,13 @@ Executes the logic encoded in the constructor block, or the #process method if n
 
 #### #chain
 
+    chain(on: nil) { |result| ... } #=> Cuprum::Command
+
 Registers a command or block to run after the current command, or after the last chained command if the current command already has one or more chained command(s). This creates and modifies a copy of the current command. See Chaining Commands, below.
 
     chain(command, on: nil) #=> Cuprum::Command
 
 The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
-
-    chain(on: nil) { |result| ... } #=> Cuprum::Command
 
 The block will be passed the #result of the previous command as its parameter. If your use case depends on the status of the previous command or on any errors generated, use the block form of #chain.
 
@@ -315,9 +517,9 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 #### `#else`
 
-Shorthand for `command.chain(:on => :failure)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was unsuccessfully run.
-
     else(command) #=> Cuprum::Command
+
+Shorthand for `command.chain(:on => :failure)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was unsuccessfully run.
 
 The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
 
@@ -333,9 +535,9 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 *(Private Method)*
 
-Only available while the Command is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
-
     errors() #=> Array
+
+Only available while the Command is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
 
 Inside of the Command block or the `#process` method, you can add errors to the result.
 
@@ -356,39 +558,39 @@ Inside of the Command block or the `#process` method, you can add errors to the 
 
 #### `#failure!`
 
+    failure!() #=> NilClass
+
 *(Private Method)*
 
 Only available while the Command is being called. If called, marks the result object as failing, even if the result does not have errors.
-
-    failure!() #=> NilClass
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#failure!-instance_method)
 
 #### `#halt!`
 
+    halt!() #=> NilClass
+
 *(Private Method)*
 
 Only available while the Command is being called. If called, halts the command chain (see Chaining Commands, below). Subsequent chained commands will not be called unless they were chained with the `:on => :always` option.
-
-    halt!() #=> NilClass
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#halt!-instance_method)
 
 #### `#success!`
 
+    success!() #=> NilClass
+
 *(Private Method)*
 
 Only available while the Command is being called. If called, marks the result object as passing, even if the result has errors.
-
-    success!() #=> NilClass
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#success!-instance_method)
 
 #### `#then`
 
-Shorthand for `command.chain(:on => :success)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was successfully run.
-
     then(command) #=> Cuprum::Command
+
+Shorthand for `command.chain(:on => :success)`. Registers a command or block to run after the current command. The chained command will only run if the previous command was successfully run.
 
 The command will be passed the `#value` of the previous command result as its parameter, and the result of the chained command will be returned (or passed to the next chained command, if any).
 
@@ -400,49 +602,13 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#then-instance_method)
 
-## Operations
+### Cuprum::Operation
 
-    require 'cuprum/operation'
+    require 'cuprum'
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
 
-An Operation is like a Command, but with two key differences. First, an Operation retains a reference to the result object from the most recent time the operation was called and delegates the methods defined by `Cuprum::Result` to the most recent result. This allows a called Operation to replace a `Cuprum::Result` in any code that expects or returns a result. Second, the `#call` method returns the operation instance, rather than the result itself.
-
-These two features allow developers to simplify logic around calling and using the results of operations, and reduce the need for boilerplate code (particularly when using an operation as part of an existing framework, such as inside of an asynchronous worker or a Rails controller action).
-
-    class CreateBookOperation < Cuprum::Operation
-      def process
-        # Implementation here.
-      end # method process
-    end # class
-
-    def create
-      operation = CreateBookOperation.new.call(book_params)
-
-      if operation.success?
-        redirect_to(operation.value)
-      else
-        @book = operation.value
-
-        render :new
-      end # if-else
-    end # create
-
-Like a Command, an Operation can be defined directly by passing an implementation block to the constructor or by creating a subclass that overwrites the #process method.
-
-An operation inherits the `#call` method from Cuprum::Command (see above), and delegates the `#value`, `#errors`, `#success?`, and `#failure` methods to the most recent result (see below). If the operation has not been called, the operation will return default values.
-
-### Methods
-
 A Cuprum::Operation inherits the methods from Cuprum::Command (see above), and defines the following additional methods:
-
-#### `#result`
-
-    result() #=> Cuprum::Result
-
-The most recent result, from the previous time `#call` was executed for the operation.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#result-instance_method)
 
 #### `#called?`
 
@@ -460,59 +626,19 @@ Clears the most recent result and resets `#called?` to false. This frees the res
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#reset!-instance_method)
 
-### The Operation Mixin
+#### `#result`
 
-[Module Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation%2FMixin)
+    result() #=> Cuprum::Result
 
-The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
+The most recent result, from the previous time `#call` was executed for the operation.
 
-## Results
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Operation#result-instance_method)
+
+### Cuprum::Result
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FResult)
 
-A Cuprum::Result is a data object that encapsulates the result of calling a Cuprum command - the returned value, the success or failure status, and any errors generated by the command.
-
-    value  = 'A result value'.freeze
-    result = Cuprum::Result.new(value)
-
-    result.value
-    #=> 'A result value'
-
-### Methods
-
 A Cuprum::Result defines the following methods:
-
-#### `#value`
-
-    value() #=> Object
-
-The value returned by the command. For example, for an increment command that added 1 to a given integer, the `#value` of the result object would be the incremented integer.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#value-instance_method)
-
-#### `#errors`
-
-    errors() #=> Array
-
-The errors generated by the command, or an empty array if no errors were generated.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#errors-instance_method)
-
-#### `#success?`
-
-    success?() #=> true, false
-
-True if the command did not generate any errors, otherwise false.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#success%3F-instance_method)
-
-#### `#failure?`
-
-    failure?() #=> true, false
-
-True if the command generated one or more errors, otherwise false.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure%3F-instance_method)
 
 #### `#==`
 
@@ -526,17 +652,85 @@ Performs a fuzzy comparison with the other object. At a minimum, the other objec
 
 Helper method that returns true for a new result. The method returns false if `result.value` is not nil, if `result.errors` is not empty, if the status has been manually set with `#success!` or `#failure!`, or if the result has been halted.
 
-## Utilities
+#### `#errors`
 
-Cuprum provides these utility modules to grant additional functionality under specific circumstances.
+    errors() #=> Array
 
-### InstanceSpy
+The errors generated by the command, or an empty array if no errors were generated.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#errors-instance_method)
+
+#### `#failure!`
+
+    failure!() #=> Cuprum::Result
+
+Marks the result as failing and returns the result. Calling `#failure?` will return true, even if the result has no errors.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure!-instance_method)
+
+#### `#failure?`
+
+    failure?() #=> true, false
+
+True if the command generated one or more errors or was marked as failing. Otherwise false.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#failure%3F-instance_method)
+
+#### `#halt!`
+
+    halt!() #=> Cuprum::Result
+
+Marks the result as halted and returns the result. Calling `#halted?` will return true.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#halt!-instance_method)
+
+#### `#halted?`
+
+    halted?() #=> true, false
+
+True if the result is halted, which prevents chained commands from executing.
+
+#### `#success!`
+
+    success!() #=> Cuprum::Result
+
+Marks the result as passing and returns the result. Calling `#success?` will return true, even if the result has errors.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#success!-instance_method)
+
+#### `#success?`
+
+    success?() #=> true, false
+
+True if the command did not generate any errors, or the result has errors but was marked as passing. Otherwise false.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#success%3F-instance_method)
+
+#### `#value`
+
+    value() #=> Object
+
+The value returned by the command. For example, for an increment command that added 1 to a given integer, the `#value` of the result object would be the incremented integer.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Result#value-instance_method)
+
+### Cuprum::Utilities::InstanceSpy
 
     require 'cuprum/utils/instance_spy'
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FUtils%2FInstanceSpy)
 
 Utility module for instrumenting calls to the #call method of any instance of a command class. This can be used to unobtrusively test the functionality of code that calls a command without providing a reference to the command instance, such as chained commands or methods that create and call a command instance.
+
+#### `::clear_spies`
+
+    clear_spies() #=> nil
+
+Retires all spies. Subsequent calls to the #call method on command instances will not be mirrored to existing spy objects. Calling this method after each test or example that uses an instance spy is recommended.
+
+    after(:example) { Cuprum::Utils::InstanceSpy.clear_spies }
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Utils/InstanceSpy#clear_spies%3F-instance_method)
 
 #### `::spy_on`
 
@@ -569,75 +763,3 @@ Finds or creates a spy object for the given module or class. Each time that the 
     end # spy_on
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Utils/InstanceSpy#spy_on%3F-instance_method)
-
-#### `::clear_spies`
-
-    clear_spies() #=> nil
-
-Retires all spies. Subsequent calls to the #call method on command instances will not be mirrored to existing spy objects. Calling this method after each test or example that uses an instance spy is recommended.
-
-    after(:example) { Cuprum::Utils::InstanceSpy.clear_spies }
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Utils/InstanceSpy#clear_spies%3F-instance_method)
-
-## Built In Commands
-
-Cuprum includes a small number of predefined commands and their equivalent operations.
-
-### IdentityCommand
-
-    require 'cuprum/built_in/identity_command'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityCommand)
-
-A pregenerated command that returns the value or result with which it was called.
-
-    command = Cuprum::BuiltIn::IdentityCommand.new
-    result   = command.call('expected value')
-    result.value
-    #=> 'expected value'
-    result.success?
-    #=> true
-
-### IdentityOperation
-
-    require 'cuprum/built_in/identity_operation'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityOperation)
-
-A pregenerated operation that sets its result to the value or result with which it was called.
-
-    operation = Cuprum::BuiltIn::IdentityCommand.new.call('expected value')
-    operation.value
-    #=> 'expected value'
-    operation.success?
-    #=> true
-
-### NullCommand
-
-    require 'cuprum/built_in/null_command'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullCommand)
-
-A pregenerated command that does nothing when called.
-
-    command = Cuprum::BuiltIn::NullCommand.new
-    result   = command.call
-    result.value
-    #=> nil
-    result.success?
-    #=> true
-
-### NullOperation
-
-    require 'cuprum/built_in/null_operation'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullCommand)
-
-A pregenerated operation that does nothing when called.
-
-    operation = Cuprum::BuiltIn::NullOperation.new.call
-    operation.value
-    #=> nil
-    operation.success?
-    #=> true
