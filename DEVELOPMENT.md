@@ -1,10 +1,6 @@
 # Development
 
 - Update documentation.
-  - Similar gems:
-    interactor: https://github.com/collectiveidea/interactor
-    trailblazer-operation: http://trailblazer.to
-    waterfall: https://github.com/apneadiving/waterfall
 
 ## Core
 
@@ -14,6 +10,9 @@
   - MapCommand - wraps a command (or proc) and returns Result with value, errors
     as array
   - RetryCommand
+- #chain with a block creates anonymous command?
+  - will always return Result
+  - to ignore return, explicitly return the passed result or use #tap
 - allow_result_argument? - defaults to false. if false, there is one argument,
   and the argument is a Result, process the value instead.
 - #chain!, #else!, #then! - adds chained command to current command instead of
