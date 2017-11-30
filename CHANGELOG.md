@@ -12,7 +12,7 @@ Extracted `Cuprum::BasicCommand` as a base class for all commands, implementing 
 
 Extracted the `Cuprum::Chaining` mixin, which encapsulates all of the methods and functionality necessary to implement command chaining.
 
-## Built In Commands
+### Built In Commands
 
 Refactored `Cuprum::BuiltIn::IdentityFunction` to `Cuprum::BuiltIn::IdentityCommand`.
 
