@@ -50,15 +50,9 @@ module Cuprum
       []
     end # method build_errors
 
-    def convert_value_to_result value
-      return nil unless value_is_result?(value)
-
-      if value.respond_to?(:result) && value_is_result?(value.result)
-        return value.result
-      end # if
-
-      value
-    end # method convert_value_to_result
+    def build_result value, errors:
+      Cuprum::Result.new(value, :errors => errors)
+    end # method build_result
 
     # @!visibility public
     #
@@ -117,11 +111,21 @@ module Cuprum
     end # method humanize_list
     # :nocov:
 
+    def join_result value
+      # Value is an object that wraps a result.
+      if value.respond_to?(:result) && value_is_result?(value.result)
+        return value.result
+      end # if
+
+      # Value is a result.
+      value
+    end # method join_result
+
     def merge_results result, other
       if value_is_result?(other)
         Cuprum.warn(result_not_empty_warning) unless result.empty?
 
-        convert_value_to_result(other)
+        join_result(other)
       else
         result.value = other
 
@@ -196,7 +200,7 @@ module Cuprum
     end # method value
 
     def wrap_result
-      result = Cuprum::Result.new(:errors => build_errors)
+      result = build_result(nil, :errors => build_errors)
 
       begin
         @result = result
