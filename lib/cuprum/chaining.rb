@@ -116,7 +116,7 @@ module Cuprum
 
         value = hsh.fetch(:proc).call(result)
 
-        convert_value_to_result(value) || result
+        value_is_result?(value) ? join_result(value) : result
       end # reduce
     end # method call_chained_functions
 
