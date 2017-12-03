@@ -602,6 +602,14 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#then-instance_method)
 
+#### `#yield_result`
+
+    yield_result(on: nil) { |previous_result| } #=> Cuprum::Result
+
+Appends the block to the command chain. When the command is called, the block will be yielded the result of the command (or the last result, if one or more other blocks are chained before). The value returned by the block will be wrapped in a Cuprum::Result and returned by `#call`, or passed to the next block if any blocks are chained after.
+
+If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
+
 ### Cuprum::Operation
 
     require 'cuprum'

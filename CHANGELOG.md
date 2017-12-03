@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0
+
+The "To Strive, To Seek, To Find, And Not To Yield" Update.
+
+### Commands
+
+Implemented the `#yield_result` method, which takes a block, yields the last result, and wraps the return value of the block in a result.
+
 ## 0.6.0
 
 The "By Your Command" Update.

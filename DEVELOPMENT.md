@@ -4,6 +4,8 @@
 
 ## Core
 
+- integration specs
+
 ## Command
 
 - Chaining Methods:
@@ -28,6 +30,7 @@
   - #chain!, #success!, #failure!, #tap_chain!, #yield_result!
   - adds chained command to current command instead of a clone.
 - private #build_result
+- Command#to_proc
 
 ### Built In
 

@@ -686,6 +686,188 @@ module Spec::Examples
           include_examples 'should chain the function'
         end # wrap_context
       end # describe
+
+      describe '#yield_result' do
+        shared_examples 'should call the block' do
+          it 'should yield the previous result to the block' do
+            expect do |block|
+              instance.yield_result(:on => conditional, &block).call
+            end.
+              to yield_with_args(first_result)
+          end # it
+
+          context 'when the block returns a value' do
+            it 'should wrap the value in a result' do
+              value   = 'final value'.freeze
+              chained = instance.yield_result(:on => conditional) { value }
+              result  = chained.call
+
+              expect(result).to be_a Cuprum::Result
+              expect(result.value).to be value
+            end # it
+          end # context
+
+          context 'when the block returns an operation' do
+            it 'should return the result' do
+              result    = Cuprum::Result.new('final value'.freeze)
+              operation = Cuprum::Operation.new { result }
+              chained   =
+                instance.yield_result(:on => conditional) { operation.call }
+
+              expect(chained.call).to be result
+            end # it
+          end # context
+
+          context 'when the block returns a result' do
+            it 'should return the result' do
+              result  = Cuprum::Result.new('final value'.freeze)
+              chained = instance.yield_result(:on => conditional) { result }
+
+              expect(chained.call).to be result
+            end # it
+          end # context
+        end # shared_examples
+
+        shared_examples 'should not call the block' do
+          it 'should not yield to the block' do
+            expect do |block|
+              instance.yield_result(:on => conditional, &block).call
+            end.
+              not_to yield_control
+          end # it
+
+          it 'should return the previous result' do
+            chained = instance.yield_result(:on => conditional) {}
+
+            expect(chained.call).to be first_result
+          end # it
+        end # shared_examples
+
+        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:chained_block) { ->() {} }
+        let(:conditional)   { nil }
+
+        before(:example) do
+          allow(instance).to receive(:process).and_return(first_result)
+        end # before example
+
+        it 'should define the method' do
+          expect(instance).
+            to respond_to(:yield_result).
+            with(0).arguments.
+            and_keywords(:on).
+            and_a_block
+        end # it
+
+        it 'should clone the command' do
+          chained = instance.yield_result(:on => conditional) {}
+
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
+
+        include_examples 'should call the block'
+
+        describe 'with :on => :always' do
+          let(:conditional) { :always }
+
+          include_examples 'should call the block'
+        end # describe
+
+        describe 'with :on => :failure' do
+          let(:conditional) { :failure }
+
+          include_examples 'should not call the block'
+        end # describe
+
+        describe 'with :on => :success' do
+          let(:conditional) { :success }
+
+          include_examples 'should call the block'
+        end # describe
+
+        context 'when the previous result is failing' do
+          let(:first_result) { super().failure! }
+
+          include_examples 'should call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should not call the block'
+          end # describe
+        end # context
+
+        context 'when the previous result is halted' do
+          let(:first_result) { super().halt! }
+
+          include_examples 'should not call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should not call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should not call the block'
+          end # describe
+        end # context
+
+        context 'when multiple results are yielded' do
+          let(:results) do
+            %w[first second third].
+              map { |str| "#{str} value".freeze }.
+              map { |str| Cuprum::Result.new(str) }
+          end # let
+          let(:chained) do
+            instance.
+              yield_result do |result|
+                yielded << result
+                results[0]
+              end.
+              yield_result do |result|
+                yielded << result
+                results[1]
+              end.
+              yield_result do |result|
+                yielded << result
+                results[2]
+              end
+          end # let
+          let(:yielded) { [] }
+
+          it 'should yield each result to the next block' do
+            chained.call
+
+            expect(yielded).to be == [first_result, results[0], results[1]]
+          end # it
+
+          it 'should return the final result' do
+            expect(chained.call).to be results.last
+          end # it
+        end # context
+      end # describe
     end # shared_examples
   end # module
 end # module
