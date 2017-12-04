@@ -8,6 +8,8 @@ The "To Strive, To Seek, To Find, And Not To Yield" Update.
 
 Implemented the `#yield_result` method, which takes a block, yields the last result, and wraps the return value of the block in a result.
 
+Refactored internal logic for returning result objects.
+
 ## 0.6.0
 
 The "By Your Command" Update.
