@@ -1184,6 +1184,10 @@ RSpec.describe Cuprum::Result do
     end # wrap_context
   end # describe
 
+  describe '#to_result' do
+    include_examples 'should have reader', :to_result, ->() { instance }
+  end # describe
+
   describe '#update' do
     let(:other_value)  { 'other value'.freeze }
     let(:other_errors) { [] }
