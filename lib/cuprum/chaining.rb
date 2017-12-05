@@ -75,6 +75,28 @@ module Cuprum
       chain(function, :on => :failure, &block)
     end # method else
 
+    # As #yield_result, but always returns the previous result when the block is
+    # called. The return value of the block is discarded.
+    #
+    # @param (see #yield_result)
+    #
+    # @yieldparam result [Cuprum::Result] The #result of the previous command.
+    #
+    # @return (see #yield_result)
+    #
+    # @see #yield_result
+    def tap_result on: nil, &block
+      tapped = ->(result) { result.tap { block.call(result) } }
+
+      clone.tap do |fn|
+        fn.chained_procs <<
+          {
+            :proc => tapped,
+            :on   => on
+          } # end hash
+      end # tap
+    end # method tap_result
+
     # Shorthand for function.chain(:on => :success). Registers a function or
     # block to run after the current function. The chained function will only
     # run if the previous function was successfully run.
