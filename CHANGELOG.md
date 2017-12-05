@@ -6,7 +6,9 @@ The "To Strive, To Seek, To Find, And Not To Yield" Update.
 
 ### Commands
 
-Implemented the `#yield_result` method, which takes a block, yields the last result, and wraps the return value of the block in a result.
+Implemented the `#yield_result` method, which takes a block, yields the previous result, and wraps the return value of the block in a result.
+
+Implemented the `#tap_result` method, which functions as `#yield_result` but always returns the previous result.
 
 Refactored internal logic for returning result objects.
 

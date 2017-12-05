@@ -586,6 +586,14 @@ Only available while the Command is being called. If called, marks the result ob
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#success!-instance_method)
 
+#### `#tap_result`
+
+    tap_result(on: nil) { |previous_result| } #=> Cuprum::Result
+
+Creates a copy of the command, and then chains the block to execute after the command implementation. When #call is executed, each chained block will be yielded the previous result, and the previous result returned or yielded to the next block. The return value of the block is discarded.
+
+If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
+
 #### `#then`
 
     then(command) #=> Cuprum::Command
@@ -606,7 +614,7 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
     yield_result(on: nil) { |previous_result| } #=> Cuprum::Result
 
-Appends the block to the command chain. When the command is called, the block will be yielded the result of the command (or the last result, if one or more other blocks are chained before). The value returned by the block will be wrapped in a Cuprum::Result and returned by `#call`, or passed to the next block if any blocks are chained after.
+Creates a copy of the command, and then chains the block to execute after the command implementation. When #call is executed, each chained block will be yielded the previous result, and the return value wrapped in a result and returned or yielded to the next block.
 
 If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
 
