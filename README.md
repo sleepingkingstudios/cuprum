@@ -610,6 +610,8 @@ Appends the block to the command chain. When the command is called, the block wi
 
 If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
 
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#yield_result-instance_method)
+
 ### Cuprum::Operation
 
     require 'cuprum'

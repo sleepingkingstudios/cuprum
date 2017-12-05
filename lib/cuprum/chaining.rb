@@ -118,7 +118,7 @@ module Cuprum
       lambda do |result|
         value = command.call(result)
 
-        value_is_result?(value) ? join_result(value) : result
+        value_is_result?(value) ? value.to_result : result
       end # lambda
     end # method chain_command
 
@@ -142,7 +142,7 @@ module Cuprum
         value = hsh.fetch(:proc).call(result)
 
         if value_is_result?(value)
-          join_result(value)
+          value.to_result
         else
           build_result(value, :errors => build_errors)
         end # if-else

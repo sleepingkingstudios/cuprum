@@ -114,6 +114,11 @@ module Cuprum
       @status == :success || (@status.nil? && errors.empty?)
     end # method success?
 
+    # @return [Cuprum::Result] The result.
+    def to_result
+      self
+    end # method to_result
+
     # @api private
     def update other_result
       return self if other_result.nil?

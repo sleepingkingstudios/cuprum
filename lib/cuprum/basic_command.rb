@@ -111,21 +111,11 @@ module Cuprum
     end # method humanize_list
     # :nocov:
 
-    def join_result value
-      # Value is an object that wraps a result.
-      if value.respond_to?(:result) && value_is_result?(value.result)
-        return value.result
-      end # if
-
-      # Value is a result.
-      value
-    end # method join_result
-
     def merge_results result, other
       if value_is_result?(other)
         Cuprum.warn(result_not_empty_warning) unless result.empty?
 
-        join_result(other)
+        other.to_result
       else
         result.value = other
 
