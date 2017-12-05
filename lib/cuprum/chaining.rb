@@ -75,6 +75,28 @@ module Cuprum
       chain(function, :on => :failure, &block)
     end # method else
 
+    # As #yield_result, but always returns the previous result when the block is
+    # called. The return value of the block is discarded.
+    #
+    # @param (see #yield_result)
+    #
+    # @yieldparam result [Cuprum::Result] The #result of the previous command.
+    #
+    # @return (see #yield_result)
+    #
+    # @see #yield_result
+    def tap_result on: nil, &block
+      tapped = ->(result) { result.tap { block.call(result) } }
+
+      clone.tap do |fn|
+        fn.chained_procs <<
+          {
+            :proc => tapped,
+            :on   => on
+          } # end hash
+      end # tap
+    end # method tap_result
+
     # Shorthand for function.chain(:on => :success). Registers a function or
     # block to run after the current function. The chained function will only
     # run if the previous function was successfully run.
@@ -96,6 +118,26 @@ module Cuprum
       chain(function, :on => :success, &block)
     end # method then
 
+    # Creates a copy of the command, and then chains the block to execute after
+    # the command implementation. When #call is executed, each chained block
+    # will be yielded the previous result, and the return value wrapped in a
+    # result and returned or yielded to the next block.
+    #
+    # @param on [Symbol] Sets a condition on when the chained block can run,
+    #   based on the previous result. Valid values are :success, :failure, and
+    #   :always. If the value is :success, the block will be called only if the
+    #   previous result succeeded and is not halted. If the value is :failure,
+    #   the block will be called only if the previous result failed and is not
+    #   halted. If the value is :always, the block will be called regardless of
+    #   the previous result status, even if the previous result is halted. If no
+    #   value is given, the command will run whether the previous command was a
+    #   success or a failure, but not if the command chain has been halted.
+    #
+    # @yieldparam result [Cuprum::Result] The #result of the previous command.
+    #
+    # @return [Cuprum::Chaining] A copy of the command, with the chained block.
+    #
+    # @see #tap_result
     def yield_result on: nil, &block
       clone.tap do |fn|
         fn.chained_procs <<
