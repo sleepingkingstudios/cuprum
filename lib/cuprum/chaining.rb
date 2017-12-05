@@ -7,11 +7,6 @@ module Cuprum
   #
   # @see Cuprum::Command
   module Chaining
-    # (see Cuprum::BasicCommand#call)
-    def call *args, &block
-      yield_chain(super)
-    end # method call
-
     # Registers a command or block to run after the current command, or after
     # the last chained command if the current command already has one or more
     # chained command(s). This creates and modifies a copy of the current
@@ -163,6 +158,10 @@ module Cuprum
         value_is_result?(value) ? value.to_result : result
       end # lambda
     end # method chain_command
+
+    def process_with_result *args, &block
+      yield_chain(super)
+    end # method call
 
     def skip_chained_proc? last_result, on:
       return false if on == :always
