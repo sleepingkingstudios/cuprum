@@ -123,14 +123,6 @@ module Cuprum
 
     private
 
-    def chain_command command
-      lambda do |result|
-        value = command.call(result)
-
-        value_is_result?(value) ? value.to_result : result
-      end # lambda
-    end # method chain_command
-
     def skip_chained_proc? last_result, on:
       return false if on == :always
 
