@@ -114,7 +114,7 @@ module Cuprum
     # :nocov:
 
     def merge_results result, other
-      if value_is_result?(other)
+      if value_is_result?(other) && other != result
         Cuprum.warn(result_not_empty_warning) unless result.empty?
 
         other.to_result

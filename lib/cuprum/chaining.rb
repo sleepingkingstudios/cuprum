@@ -7,68 +7,57 @@ module Cuprum
   #
   # @see Cuprum::Command
   module Chaining
-    # Registers a command or block to run after the current command, or after
-    # the last chained command if the current command already has one or more
-    # chained command(s). This creates and modifies a copy of the current
-    # command.
+    # Creates a copy of the command, and then chains the command to execute
+    # after the first command's implementation. In the block form, creates an
+    # anonymous command from the block. When #call is executed, each chained
+    # command will be called with the previous result value, and its result
+    # property will be set to the previous result. The return value will be
+    # wrapped in a result and returned or yielded to the next block.
     #
-    # @param on [Symbol] Sets a condition on when the chained command can run,
-    #   based on the status of the previous command. Valid values are :success,
-    #   :failure, and :always. A value of :success will constrain the command
-    #   to run only if the previous command succeeded. A value of :failure will
-    #   constrain the command to run only if the previous command failed. A
-    #   value of :always will ensure the command is always run, even if the
-    #   command chain has been halted. If no value is given, the command will
-    #   run whether the previous command was a success or a failure, but not if
-    #   the command chain has been halted.
+    # @return [Cuprum::Chaining] A copy of the command, with the chained
+    #   command.
+    #
+    # @see #yield_result
     #
     # @overload chain(command, on: nil)
-    #   The command will be passed the #value of the previous command result
-    #   as its parameter, and the result of the chained command will be
-    #   returned (or passed to the next chained command, if any).
+    #   @param command [Cuprum::Command] The command to chain.
     #
-    #   @param command [Cuprum::Command] The command to call after the
-    #     current or last chained command.
+    #   @param on [Symbol] Sets a condition on when the chained block can run,
+    #     based on the previous result. Valid values are :success, :failure, and
+    #     :always. If the value is :success, the block will be called only if
+    #     the previous result succeeded and is not halted. If the value is
+    #     :failure, the block will be called only if the previous result failed
+    #     and is not halted. If the value is :always, the block will be called
+    #     regardless of the previous result status, even if the previous result
+    #     is halted. If no value is given, the command will run whether the
+    #     previous command was a success or a failure, but not if the command
+    #     chain has been halted.
     #
-    # @overload chain(on: :nil, &block)
-    #   The block will be passed the #result of the previous command as its
-    #   parameter. If your use case depends on the status of the previous
-    #   command or on any errors generated, use the block form of #chain.
+    # @overload chain(on: nil) { |value| }
+    #   @param on [Symbol] Sets a condition on when the chained block can run,
+    #     based on the previous result. Valid values are :success, :failure, and
+    #     :always. If the value is :success, the block will be called only if
+    #     the previous result succeeded and is not halted. If the value is
+    #     :failure, the block will be called only if the previous result failed
+    #     and is not halted. If the value is :always, the block will be called
+    #     regardless of the previous result status, even if the previous result
+    #     is halted. If no value is given, the command will run whether the
+    #     previous command was a success or a failure, but not if the command
+    #     chain has been halted.
     #
-    #   If the block returns a Cuprum::Result (or an object responding to #value
-    #   and #success?), the block result will be returned (or passed to the next
-    #   chained command, if any). If the block returns any other value
-    #   (including nil), the #result of the previous command will be returned
-    #   or passed to the next command.
-    #
-    #   @yieldparam result [Cuprum::Result] The #result of the previous
-    #     command.
-    #
-    # @return [Cuprum::Command] The chained command.
+    #   @yieldparam value [Object] The value of the previous command.
     def chain command = nil, on: nil, &block
-      yield_result(:on => on, &chain_command(command || block))
-    end # method chain
+      command ||= Cuprum::Command.new(&block)
+      chained = ->(result) { command.process_with_result(result, result.value) }
 
-    # Shorthand for function.chain(:on => :failure). Registers a function or
-    # block to run after the current function. The chained function will only
-    # run if the previous function was unsuccessfully run.
-    #
-    # @overload else(function)
-    #
-    #   @param function [Cuprum::Command] The function to call after the
-    #     current or last chained function.
-    #
-    # @overload else(&block)
-    #
-    #   @yieldparam result [Cuprum::Result] The #result of the previous
-    #     function.
-    #
-    # @return [Cuprum::Command] The chained function.
-    #
-    # @see #chain
-    def else function = nil, &block
-      chain(function, :on => :failure, &block)
-    end # method else
+      clone.tap do |fn|
+        fn.chained_procs <<
+          {
+            :proc => chained,
+            :on   => on
+          } # end hash
+      end # tap
+    end # method chain
 
     # As #yield_result, but always returns the previous result when the block is
     # called. The return value of the block is discarded.
@@ -91,27 +80,6 @@ module Cuprum
           } # end hash
       end # tap
     end # method tap_result
-
-    # Shorthand for function.chain(:on => :success). Registers a function or
-    # block to run after the current function. The chained function will only
-    # run if the previous function was successfully run.
-    #
-    # @overload then(function)
-    #
-    #   @param function [Cuprum::Command] The function to call after the
-    #     current or last chained function.
-    #
-    # @overload then(&block)
-    #
-    #   @yieldparam result [Cuprum::Result] The #result of the previous
-    #     function.
-    #
-    # @return [Cuprum::Command] The chained function.
-    #
-    # @see #chain
-    def then function = nil, &block
-      chain(function, :on => :success, &block)
-    end # method then
 
     # Creates a copy of the command, and then chains the block to execute after
     # the command implementation. When #call is executed, each chained block
@@ -149,6 +117,10 @@ module Cuprum
       @chained_procs ||= []
     end # method chained_procs
 
+    def process_with_result *args, &block
+      yield_chain(super)
+    end # method call
+
     private
 
     def chain_command command
@@ -158,10 +130,6 @@ module Cuprum
         value_is_result?(value) ? value.to_result : result
       end # lambda
     end # method chain_command
-
-    def process_with_result *args, &block
-      yield_chain(super)
-    end # method call
 
     def skip_chained_proc? last_result, on:
       return false if on == :always
