@@ -6,97 +6,103 @@ module Spec::Examples
   module ChainingExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
+    module ChainMethodExamples
+      extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
+
+      shared_examples 'should call the block' do
+        it 'should return the previous result' do
+          result = chained.call
+
+          expect(result).to be first_result
+        end # it
+
+        include_examples \
+          'should call the block with the previous result value'
+
+        describe 'when the block returns a value' do
+          let(:expected_value) { 'last value'.freeze }
+          let(:chained_implementation) do
+            value = expected_value
+
+            ->(_) { value }
+          end # let
+
+          it 'should set the value of the result' do
+            result = chained.call
+
+            expect(result.value).to be == expected_value
+          end # it
+        end # describe
+
+        describe 'when the block sets an error' do
+          let(:expected_errors) do
+            ['errors.messages.unknown']
+          end # let
+          let(:chained_implementation) do
+            ary = expected_errors
+
+            ->(_) { ary.each { |error| errors << error } }
+          end # let
+
+          it 'should set the errors of the result' do
+            result = chained.call
+
+            expected_errors.each do |error|
+              expect(result.errors).to include error
+            end # each
+          end # it
+        end # describe
+
+        describe 'when the block sets the result status' do
+          let(:chained_implementation) { ->(_) { failure! } }
+
+          it 'should set the status of the result' do
+            result = chained.call
+
+            expect(result.failure?).to be true
+          end # it
+        end # describe
+
+        describe 'when the block halts the result' do
+          let(:chained_implementation) { ->(_) { halt! } }
+
+          it 'should set the status of the result' do
+            result = chained.call
+
+            expect(result.halted?).to be true
+          end # it
+        end # describe
+      end # shared_examples
+
+      shared_examples 'should not call the block' do
+        it 'should return the previous result' do
+          result = chained.call
+
+          expect(result).to be first_result
+        end # it
+
+        include_examples 'should not call the block with any args'
+
+        describe 'when the block returns a value' do
+          let(:expected_value) { 'last value'.freeze }
+          let(:chained_implementation) do
+            value = expected_value
+
+            ->(_) { value }
+          end # let
+
+          it 'should not change the value of the result' do
+            result = chained.call
+
+            expect(result.value).to be == first_value
+          end # it
+        end # describe
+      end # shared_examples
+    end # module
+
     shared_examples 'should implement the Command chaining methods' do
       describe '#chain' do
-        shared_examples 'should call the block' do
-          it 'should return the previous result' do
-            result = chained.call
-
-            expect(result).to be first_result
-          end # it
-
-          include_examples \
-            'should call the block with the previous result value'
-
-          describe 'when the block returns a value' do
-            let(:expected_value) { 'last value'.freeze }
-            let(:chained_implementation) do
-              value = expected_value
-
-              ->(_) { value }
-            end # let
-
-            it 'should set the value of the result' do
-              result = chained.call
-
-              expect(result.value).to be == expected_value
-            end # it
-          end # describe
-
-          describe 'when the block sets an error' do
-            let(:expected_errors) do
-              ['errors.messages.unknown']
-            end # let
-            let(:chained_implementation) do
-              ary = expected_errors
-
-              ->(_) { ary.each { |error| errors << error } }
-            end # let
-
-            it 'should set the errors of the result' do
-              result = chained.call
-
-              expected_errors.each do |error|
-                expect(result.errors).to include error
-              end # each
-            end # it
-          end # describe
-
-          describe 'when the block sets the result status' do
-            let(:chained_implementation) { ->(_) { failure! } }
-
-            it 'should set the status of the result' do
-              result = chained.call
-
-              expect(result.failure?).to be true
-            end # it
-          end # describe
-
-          describe 'when the block halts the result' do
-            let(:chained_implementation) { ->(_) { halt! } }
-
-            it 'should set the status of the result' do
-              result = chained.call
-
-              expect(result.halted?).to be true
-            end # it
-          end # describe
-        end # shared_examples
-
-        shared_examples 'should not call the block' do
-          it 'should return the previous result' do
-            result = chained.call
-
-            expect(result).to be first_result
-          end # it
-
-          include_examples 'should not call the block with any args'
-
-          describe 'when the block returns a value' do
-            let(:expected_value) { 'last value'.freeze }
-            let(:chained_implementation) do
-              value = expected_value
-
-              ->(_) { value }
-            end # let
-
-            it 'should not change the value of the result' do
-              result = chained.call
-
-              expect(result.value).to be == first_value
-            end # it
-          end # describe
-        end # shared_examples
+        include ChainMethodExamples
 
         let(:first_value)  { 'first value'.freeze }
         let(:first_result) { Cuprum::Result.new(first_value) }
@@ -147,13 +153,6 @@ module Spec::Examples
           let(:chained) do
             instance.chain(:on => conditional, &chained_implementation)
           end # let
-
-          it 'should call the block with the previous result value' do
-            expect do |block|
-              instance.chain(:on => conditional, &block).call
-            end.
-              to yield_with_args(first_value)
-          end # it
 
           include_examples 'should call the block'
 
