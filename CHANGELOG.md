@@ -6,9 +6,13 @@ The "To Strive, To Seek, To Find, And Not To Yield" Update.
 
 ### Commands
 
+Refactored the `#chain` method. If given a block, will create an anonymous command. The command will be called with the value of the previous result, and additionally the previous result errors, success/failure status, and halted status will be available in the command.
+
 Implemented the `#yield_result` method, which takes a block, yields the previous result, and wraps the return value of the block in a result.
 
 Implemented the `#tap_result` method, which functions as `#yield_result` but always returns the previous result.
+
+Renamed the `#else` method to `#failure`, and the `#then` method to `#success` to avoid overloading reserved words.
 
 Refactored internal logic for returning result objects.
 
