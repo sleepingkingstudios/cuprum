@@ -6,457 +6,175 @@ module Spec::Examples
   module ChainingExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
-    shared_context 'when the function is failing' do
-      let(:expected_errors) do
-        ['errors.messages.unknown']
-      end # let
-      let(:last_success) { false }
-      let(:implementation) do
-        called   = called_functions
-        messages = expected_errors
-        returned = value
+    module ChainMethodExamples
+      extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
-        lambda do
-          called << 'first function'.freeze
+      shared_context 'with a block' do
+        shared_examples 'should call the block with the previous result value' \
+        do
+          it 'should call the block with the previous result value' do
+            expect do |block|
+              chain_block(&block).call
+            end.
+              to yield_with_args(first_value)
+          end # it
+        end # shared_examples
 
-          messages.each do |message|
-            errors << message
-          end # each
+        shared_examples 'should not call the block with any args' do
+          it 'should not call the block with any args' do
+            expect do |block|
+              chain_block(&block).call
+            end.
+              not_to yield_control
+          end # it
+        end # shared_examples
 
-          [returned]
-        end # lambda
-      end # let
-    end # shared_context
+        let(:chained) { chain_block(&chained_implementation) }
+      end # shared_context
 
-    shared_context 'when the function is halted' do
-      let(:implementation) do
-        called   = called_functions
-        returned = value
+      shared_context 'with a command' do
+        shared_examples 'should call the block with the previous result value' \
+        do
+          it 'should call the block with the previous result value' do
+            allow(chained_command).to receive(:process)
 
-        lambda do
-          called << 'first function'.freeze
+            chain_command(chained_command).call
 
-          halt!
+            expect(chained_command).
+              to have_received(:process).
+              with(first_value)
+          end # it
+        end # shared_examples
 
-          [returned]
-        end # lambda
-      end # let
-    end # shared_context
+        shared_examples 'should not call the block with any args' do
+          it 'should not call the block with any args' do
+            allow(chained_command).to receive(:process)
 
-    shared_context 'when a previous function is failing' do
-      let(:expected_errors) do
-        ['errors.messages.unknown']
-      end # let
-      let(:expected_called) { super() << 'rescue function'.freeze }
-      let(:expected_value)  { super() << 'rescue value'.freeze }
-      let(:last_success) { true }
-      let(:implementation) do
-        called   = called_functions
-        messages = expected_errors
-        returned = value
+            chain_command(chained_command).call
 
-        lambda do
-          called << 'first function'.freeze
+            expect(chained_command).not_to have_received(:process)
+          end # it
+        end # shared_examples
 
-          messages.each do |message|
-            errors << message
-          end # each
+        let(:chained_command) do
+          Cuprum::Command.new(&chained_implementation)
+        end # let
+        let(:chained) { chain_command(chained_command) }
+      end # shared_context
 
-          [returned]
-        end # lambda
-      end # let
-      let(:instance) do
-        called = called_functions
+      shared_examples 'should call the block' do
+        it 'should return the previous result' do
+          result = chained.call
 
-        super().chain do |result|
-          called << 'rescue function'.freeze
+          expect(result).to be first_result
+        end # it
 
-          Cuprum::Result.new(result.value + ['rescue value'.freeze])
-        end # chain
-      end # let
-    end # shared_context
+        include_examples \
+          'should call the block with the previous result value'
 
-    shared_context 'when the function has one chained function' do
-      let(:expected_called) do
-        super() << 'second function'.freeze
-      end # let
-      let(:expected_value) do
-        super() << 'second value'.freeze
-      end # let
-      let(:instance) do
-        called = called_functions
+        describe 'when the block returns a value' do
+          let(:expected_value) { 'last value'.freeze }
+          let(:chained_implementation) do
+            value = expected_value
 
-        super().chain do |result|
-          called << 'second function'.freeze
-
-          Cuprum::Result.new(result.value + ['second value'.freeze])
-        end # result
-      end # let
-    end # shared_context
-
-    shared_context 'when the function has many chained functions' do
-      let(:expected_called) do
-        super() <<
-          'second function'.freeze <<
-          'third function'.freeze <<
-          'fourth function'.freeze
-      end # let
-      let(:expected_value) do
-        super() <<
-          'second value'.freeze <<
-          'third value'.freeze <<
-          'fourth value'.freeze
-      end # let
-      let(:instance) do
-        called = called_functions
-
-        super().
-          chain do |result|
-            called << 'second function'.freeze
-
-            Cuprum::Result.new(result.value + ['second value'.freeze])
-          end. # result
-          chain do |result|
-            called << 'third function'.freeze
-
-            Cuprum::Result.new(result.value + ['third value'.freeze])
-          end. # result
-          chain do |result|
-            called << 'fourth function'.freeze
-
-            Cuprum::Result.new(result.value + ['fourth value'.freeze])
-          end # result
-      end # let
-    end # shared_context
-
-    shared_examples 'should copy the function' do
-      it 'should copy the function' do
-        copy = chained_function
-
-        expect(copy).to be_a described_class
-        expect(copy).not_to be instance
-      end # it
-    end # shared_examples
-
-    shared_examples 'should call each chained function' do
-      it 'should call each chained function' do
-        chained_function.call
-
-        expect(called_functions).to be == expected_called
-      end # it
-    end # shared_examples
-
-    shared_examples 'should chain the function' do
-      describe 'should chain the function' do
-        let(:other_value)     { 'last value'.freeze }
-        let(:expected_called) { super() << 'last function'.freeze }
-
-        describe 'with a block that returns an operation' do
-          let(:expected_value) { super() << other_value }
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            lambda do |result|
-              called << 'last function'.freeze
-
-              Cuprum::Operation.new { result.value + [returned] }.call
-            end # lambda
+            ->(_) { value }
           end # let
 
-          include_examples 'should copy the function'
+          it 'should set the value of the result' do
+            result = chained.call
 
-          include_examples 'should call each chained function'
-
-          it 'should return the function result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be true
             expect(result.value).to be == expected_value
           end # it
         end # describe
 
-        describe 'with a block that returns a result' do
-          let(:expected_value) { super() << other_value }
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
+        describe 'when the block sets an error' do
+          let(:expected_errors) do
+            ['errors.messages.unknown']
+          end # let
+          let(:chained_implementation) do
+            ary = expected_errors
 
-            lambda do |result|
-              called << 'last function'.freeze
-
-              Cuprum::Result.new(result.value + [returned])
-            end # lambda
+            ->(_) { ary.each { |error| errors << error } }
           end # let
 
-          include_examples 'should copy the function'
+          it 'should set the errors of the result' do
+            result = chained.call
 
-          include_examples 'should call each chained function'
-
-          it 'should return the function result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be true
-            expect(result.value).to be == expected_value
+            expected_errors.each do |error|
+              expect(result.errors).to include error
+            end # each
           end # it
         end # describe
 
-        describe 'with a block that returns a value' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
+        describe 'when the block sets the result status' do
+          let(:chained_implementation) { ->(_) { failure! } }
 
-            lambda do |result|
-              called << 'last function'.freeze
+          it 'should set the status of the result' do
+            result = chained.call
 
-              result.value + [returned]
-            end # lambda
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
+            expect(result.failure?).to be true
           end # it
         end # describe
 
-        describe 'with a function' do
-          let(:expected_value) { super() << other_value }
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
+        describe 'when the block halts the result' do
+          let(:chained_implementation) { ->(_) { halt! } }
 
-            Cuprum::Command.new do |result|
-              called << 'last function'.freeze
+          it 'should set the status of the result' do
+            result = chained.call
 
-              result.value << returned
-            end # function
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the function result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be true
-            expect(result.value).to be == expected_value
+            expect(result.halted?).to be true
           end # it
         end # describe
+      end # shared_examples
 
-        describe 'with an operation' do
-          let(:expected_value) { super() << other_value }
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
+      shared_examples 'should not call the block' do
+        it 'should return the previous result' do
+          result = chained.call
 
-            Cuprum::Operation.new do |result|
-              called << 'last function'.freeze
+          expect(result).to be first_result
+        end # it
 
-              result.value << returned
-            end # function
+        include_examples 'should not call the block with any args'
+
+        describe 'when the block returns a value' do
+          let(:expected_value) { 'last value'.freeze }
+          let(:chained_implementation) do
+            value = expected_value
+
+            ->(_) { value }
           end # let
 
-          include_examples 'should copy the function'
+          it 'should not change the value of the result' do
+            result = chained.call
 
-          include_examples 'should call each chained function'
-
-          it 'should return the function result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be true
-            expect(result.value).to be == expected_value
+            expect(result.value).to be == first_value
           end # it
         end # describe
-      end # describe
-    end # shared_examples
-
-    shared_examples 'should chain but not call the function' do
-      describe 'should chain but not call the function' do
-        let(:other_value) { 'last value'.freeze }
-
-        describe 'with a block that returns an operation' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            lambda do |result|
-              # :nocov:
-              called << 'last function'.freeze
-
-              Cuprum::Operation.new { result.value + [returned] }.call
-              # :nocov:
-            end # lambda
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
-          end # it
-        end # describe
-
-        describe 'with a block that returns a result' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            lambda do |result|
-              # :nocov:
-              called << 'last function'.freeze
-
-              Cuprum::Result.new(result.value + [returned])
-              # :nocov:
-            end # lambda
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
-          end # it
-        end # describe
-
-        describe 'with a block that returns a value' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            lambda do |result|
-              # :nocov:
-              called << 'last function'.freeze
-
-              result.value + [returned]
-              # :nocov:
-            end # lambda
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
-          end # it
-        end # describe
-
-        describe 'with a function' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            Cuprum::Command.new do |result|
-              # :nocov:
-              called << 'last function'.freeze
-
-              result.value << returned
-              # :nocov:
-            end # function
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
-          end # it
-        end # describe
-
-        describe 'with an operation' do
-          let(:other_function) do
-            called   = called_functions
-            returned = other_value
-
-            Cuprum::Operation.new do |result|
-              # :nocov:
-              called << 'last function'.freeze
-
-              result.value << returned
-              # :nocov:
-            end # function
-          end # let
-
-          include_examples 'should copy the function'
-
-          include_examples 'should call each chained function'
-
-          it 'should return the previous result' do
-            result = chained_function.call
-
-            expect(result).to be_a result_class
-            expect(result.success?).to be last_success
-            expect(result.value).to be == expected_value
-          end # it
-        end # describe
-      end # describe
-    end # shared_examples
+      end # shared_examples
+    end # module
 
     shared_examples 'should implement the Command chaining methods' do
       describe '#chain' do
-        let(:called_functions) { [] }
-        let(:other_function)   { ->() {} }
-        let(:chained_function) { chain_function(other_function) }
-        let(:value)            { 'first value'.freeze }
-        let(:expected_value)   { [value] }
-        let(:expected_called)  { ['first function'.freeze] }
-        let(:conditional)      { nil }
-        let(:last_success)     { true }
-        let(:implementation) do
-          called   = called_functions
-          returned = value
+        include ChainMethodExamples
 
-          lambda do
-            called << 'first function'.freeze
-
-            [returned]
-          end # lambda
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->(_) {}
         end # let
 
         before(:example) do
-          allow(chained_function).to receive(:process) do
-            chained_function.instance_exec(&implementation)
-          end # allow
+          allow(instance).to receive(:process).and_return(first_result)
         end # before example
 
-        def chain_function other_function
-          if other_function.is_a?(Proc)
-            instance.chain(:on => conditional, &other_function)
-          else
-            instance.chain(other_function, :on => conditional)
-          end # if-else
-        end # method chain_function
+        def chain_block &block
+          instance.chain(:on => conditional, &block)
+        end # method chain_block
+
+        def chain_command command
+          instance.chain(command, :on => conditional)
+        end # method chain_command
 
         it 'should define the method' do
           expect(instance).
@@ -466,224 +184,369 @@ module Spec::Examples
             and_a_block
         end # it
 
-        include_examples 'should chain the function'
+        it 'should clone the command' do
+          chained = instance.chain(:on => conditional) {}
 
-        describe 'with :on => :always' do
-          let(:conditional) { :always }
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
 
-          include_examples 'should chain the function'
-        end # describe
-
-        describe 'with :on => :failure' do
-          let(:conditional) { :failure }
-
-          include_examples 'should chain but not call the function'
-        end # describe
-
-        describe 'with :on => :success' do
-          let(:conditional) { :success }
-
-          include_examples 'should chain the function'
-        end # describe
-
-        wrap_context 'when the function is failing' do
-          include_examples 'should chain the function'
+        wrap_context 'with a block' do
+          include_examples 'should call the block'
 
           describe 'with :on => :always' do
             let(:conditional) { :always }
 
-            include_examples 'should chain the function'
+            include_examples 'should call the block'
           end # describe
 
           describe 'with :on => :failure' do
             let(:conditional) { :failure }
 
-            include_examples 'should chain the function'
+            include_examples 'should not call the block'
           end # describe
 
           describe 'with :on => :success' do
             let(:conditional) { :success }
 
-            include_examples 'should chain but not call the function'
+            include_examples 'should call the block'
           end # describe
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should not call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when multiple blocks are chained' do
+            let(:values) do
+              %w[second third fourth].map { |str| "#{str} value".freeze }
+            end # let
+            let(:blocks) do
+              ary = arguments
+
+              values.map do |value|
+                lambda do |arg|
+                  ary << arg
+
+                  value
+                end # lambda
+              end # results
+            end # let
+            let(:chained) do
+              instance.
+                chain(&blocks[0]).
+                chain(&blocks[1]).
+                chain(&blocks[2])
+            end # let
+            let(:arguments) { [] }
+
+            it 'should call each command with the previous result value' do
+              chained.call
+
+              expect(arguments).to be == [first_value, values[0], values[1]]
+            end # it
+
+            it 'should return the first result' do
+              expect(chained.call).to be first_result
+            end # it
+
+            it 'should set the value of the result' do
+              result = chained.call
+
+              expect(result.value).to be == values.last
+            end # it
+          end # context
         end # wrap_context
 
-        wrap_context 'when the function is halted' do
-          include_examples 'should chain but not call the function'
+        wrap_context 'with a command' do
+          include_examples 'should call the block'
 
           describe 'with :on => :always' do
             let(:conditional) { :always }
 
-            include_examples 'should chain the function'
+            include_examples 'should call the block'
           end # describe
 
           describe 'with :on => :failure' do
             let(:conditional) { :failure }
 
-            include_examples 'should chain but not call the function'
+            include_examples 'should not call the block'
           end # describe
 
           describe 'with :on => :success' do
             let(:conditional) { :success }
 
-            include_examples 'should chain but not call the function'
-          end # describe
-        end # wrap_context
-
-        wrap_context 'when a previous function is failing' do
-          include_examples 'should chain the function'
-
-          describe 'with :on => :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should chain the function'
+            include_examples 'should call the block'
           end # describe
 
-          describe 'with :on => :failure' do
-            let(:conditional) { :failure }
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
 
-            include_examples 'should chain but not call the function'
-          end # describe
+            include_examples 'should call the block'
 
-          describe 'with :on => :success' do
-            let(:conditional) { :success }
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
 
-            include_examples 'should chain the function'
-          end # describe
-        end # wrap_context
+              include_examples 'should call the block'
+            end # describe
 
-        wrap_context 'when the function has one chained function' do
-          include_examples 'should chain the function'
-        end # wrap_context
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
 
-        wrap_context 'when the function has many chained functions' do
-          include_examples 'should chain the function'
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should not call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when multiple commands are chained' do
+            let(:values) do
+              %w[second third fourth].map { |str| "#{str} value".freeze }
+            end # let
+            let(:commands) do
+              ary = arguments
+
+              values.map do |value|
+                Cuprum::Command.new do |arg|
+                  ary << arg
+
+                  value
+                end # command
+              end # results
+            end # let
+            let(:chained) do
+              instance.
+                chain(commands[0]).
+                chain(commands[1]).
+                chain(commands[2])
+            end # let
+            let(:arguments) { [] }
+
+            it 'should call each command with the previous result value' do
+              chained.call
+
+              expect(arguments).to be == [first_value, values[0], values[1]]
+            end # it
+
+            it 'should return the first result' do
+              expect(chained.call).to be first_result
+            end # it
+
+            it 'should set the value of the result' do
+              result = chained.call
+
+              expect(result.value).to be == values.last
+            end # it
+          end # context
         end # wrap_context
       end # describe
 
-      describe '#else' do
-        let(:called_functions) { [] }
-        let(:other_function)   { ->() {} }
-        let(:chained_function) { chain_function(other_function) }
-        let(:value)            { 'first value'.freeze }
-        let(:expected_value)   { [value] }
-        let(:expected_called)  { ['first function'.freeze] }
-        let(:last_success)     { true }
-        let(:implementation) do
-          called   = called_functions
-          returned = value
+      describe '#failure' do
+        include ChainMethodExamples
 
-          lambda do
-            called << 'first function'.freeze
-
-            [returned]
-          end # lambda
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->(_) {}
         end # let
 
         before(:example) do
-          allow(chained_function).to receive(:process) do
-            chained_function.instance_exec(&implementation)
-          end # allow
+          allow(instance).to receive(:process).and_return(first_result)
         end # before example
 
-        def chain_function other_function
-          if other_function.is_a?(Proc)
-            instance.else(&other_function)
-          else
-            instance.else(other_function)
-          end # if-else
-        end # method chain_function
+        def chain_block &block
+          instance.failure(&block)
+        end # method chain_block
+
+        def chain_command command
+          instance.failure(command)
+        end # method chain_command
 
         it 'should define the method' do
           expect(instance).
-            to respond_to(:else).
+            to respond_to(:failure).
             with(0..1).arguments.
             and_a_block
         end # it
 
-        include_examples 'should chain but not call the function'
+        it 'should clone the command' do
+          chained = instance.failure {}
 
-        wrap_context 'when the function is failing' do
-          include_examples 'should chain the function'
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
+
+        wrap_context 'with a block' do
+          include_examples 'should not call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
         end # wrap_context
 
-        wrap_context 'when the function is halted' do
-          include_examples 'should chain but not call the function'
-        end # wrap_context
+        wrap_context 'with a command' do
+          include_examples 'should not call the block'
 
-        wrap_context 'when a previous function is failing' do
-          include_examples 'should chain but not call the function'
-        end # wrap_context
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
 
-        wrap_context 'when the function has one chained function' do
-          include_examples 'should chain but not call the function'
-        end # wrap_context
+            include_examples 'should call the block'
+          end # context
 
-        wrap_context 'when the function has many chained functions' do
-          include_examples 'should chain but not call the function'
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
         end # wrap_context
       end # describe
 
-      describe '#then' do
-        let(:called_functions) { [] }
-        let(:other_function)   { ->() {} }
-        let(:chained_function) { chain_function(other_function) }
-        let(:value)            { 'first value'.freeze }
-        let(:expected_value)   { [value] }
-        let(:expected_called)  { ['first function'.freeze] }
-        let(:last_success)     { true }
-        let(:implementation) do
-          called   = called_functions
-          returned = value
+      describe '#success' do
+        include ChainMethodExamples
 
-          lambda do
-            called << 'first function'.freeze
-
-            [returned]
-          end # lambda
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->(_) {}
         end # let
 
         before(:example) do
-          allow(chained_function).to receive(:process) do
-            chained_function.instance_exec(&implementation)
-          end # allow
+          allow(instance).to receive(:process).and_return(first_result)
         end # before example
 
-        def chain_function other_function
-          if other_function.is_a?(Proc)
-            instance.then(&other_function)
-          else
-            instance.then(other_function)
-          end # if-else
-        end # method chain_function
+        def chain_block &block
+          instance.success(&block)
+        end # method chain_block
+
+        def chain_command command
+          instance.success(command)
+        end # method chain_command
 
         it 'should define the method' do
           expect(instance).
-            to respond_to(:then).
+            to respond_to(:success).
             with(0..1).arguments.
             and_a_block
         end # it
 
-        include_examples 'should chain the function'
+        it 'should clone the command' do
+          chained = instance.success {}
 
-        wrap_context 'when the function is failing' do
-          include_examples 'should chain but not call the function'
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
+
+        wrap_context 'with a block' do
+          include_examples 'should call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should not call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
         end # wrap_context
 
-        wrap_context 'when the function is halted' do
-          include_examples 'should chain but not call the function'
-        end # wrap_context
+        wrap_context 'with a command' do
+          include_examples 'should call the block'
 
-        wrap_context 'when a previous function is failing' do
-          include_examples 'should chain the function'
-        end # wrap_context
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
 
-        wrap_context 'when the function has one chained function' do
-          include_examples 'should chain the function'
-        end # wrap_context
+            include_examples 'should not call the block'
+          end # context
 
-        wrap_context 'when the function has many chained functions' do
-          include_examples 'should chain the function'
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
         end # wrap_context
       end # describe
 
@@ -812,7 +675,7 @@ module Spec::Examples
 
         context 'when multiple results are tapped' do
           let(:results) do
-            %w[first second third].
+            %w[second third fourth].
               map { |str| "#{str} value".freeze }.
               map { |str| Cuprum::Result.new(str) }
           end # let
@@ -994,7 +857,7 @@ module Spec::Examples
 
         context 'when multiple results are yielded' do
           let(:results) do
-            %w[first second third].
+            %w[second third fourth].
               map { |str| "#{str} value".freeze }.
               map { |str| Cuprum::Result.new(str) }
           end # let

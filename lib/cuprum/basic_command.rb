@@ -33,7 +33,9 @@ module Cuprum
     #     constructor or the #process method was overriden by a Command
     #     subclass.
     def call *args, &block
-      wrap_result { |result| merge_results(result, process(*args, &block)) }
+      result = build_result(nil, :errors => build_errors)
+
+      process_with_result(result, *args, &block)
     end # method call
 
     private
@@ -112,7 +114,7 @@ module Cuprum
     # :nocov:
 
     def merge_results result, other
-      if value_is_result?(other)
+      if value_is_result?(other) && other != result
         Cuprum.warn(result_not_empty_warning) unless result.empty?
 
         other.to_result
@@ -146,6 +148,15 @@ module Cuprum
     def process *_args
       raise Cuprum::NotImplementedError, nil, caller(1..-1)
     end # method process
+
+    def process_with_result result, *args, &block
+      @result = result
+      value   = process(*args, &block)
+
+      merge_results(result, value)
+    ensure
+      @result = nil
+    end # method process_with_result
 
     def result_not_empty_warning # rubocop:disable Metrics/MethodLength
       warnings = []
@@ -188,19 +199,5 @@ module Cuprum
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
     end # method value
-
-    def wrap_result
-      result = build_result(nil, :errors => build_errors)
-
-      begin
-        @result = result
-
-        result = yield result
-      ensure
-        @result = nil
-      end # begin-ensure
-
-      result
-    end # method wrap_result
   end # class
 end # module

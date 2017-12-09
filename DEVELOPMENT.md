@@ -4,7 +4,11 @@
 
 ## Core
 
-- integration specs
+- Integration specs.
+- Refactor Cuprum::BasicCommand to Cuprum::Processing module.
+- Extract helpers #errors, #failure!, #success!, #halt! to
+  Cuprum::ResultHelpers module.
+- Refactor Cuprum::Command to module.
 
 ## Command
 
@@ -16,9 +20,9 @@
     - with a block creates anonymous command, then see above
     - if the command does not accept any arguments (or keywords if #value is a
       Hash), does not pass #value. Requires #arity, #apply_chained?
-    - one argument (on), values nil (default), :success, :failure, :always
-  - #success - as chain(:success)
-  - #failure - as chain(:failure)
+    - one keyword (on), values nil (default), :success, :failure, :always
+  - #success - as chain(:on => :success)
+  - #failure - as chain(:on => :failure)
   - #tap_result:
     - block form only, block is yielded and returns the last result
     - same argument as #chain
@@ -29,7 +33,6 @@
 - Protected Chaining Methods:
   - #chain!, #success!, #failure!, #tap_chain!, #yield_result!
   - adds chained command to current command instead of a clone.
-- private #build_result
 - Command#to_proc
 
 ### Built In

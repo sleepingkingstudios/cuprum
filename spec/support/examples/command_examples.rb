@@ -78,7 +78,7 @@ module Spec::Examples
         end # shared_context
 
         shared_context 'when the implementation returns an operation with ' \
-        'errors' do
+                       'errors' do
           let(:implementation_errors) do
             ['errors.messages.custom']
           end # let
