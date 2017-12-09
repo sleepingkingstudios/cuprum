@@ -14,6 +14,16 @@ module Cuprum
       define_singleton_method :process, &implementation if implementation
     end # method initialize
 
+    # Returns an indication of the number of arguments accepted by the command.
+    # Returns a nonnegative integer for commands that take a fixed number of
+    # arguments. For commands that take a variable number of arguments, returns
+    # -n-1, where n is the number of required arguments.
+    #
+    # @return [Integer] The number of arguments.
+    def arity
+      method(:process).arity
+    end # method arity
+
     # @overload call(*arguments, **keywords, &block)
     #   Executes the logic encoded in the constructor block, or the #process
     #   method if no block was passed to the constructor, and returns a

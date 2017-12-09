@@ -35,22 +35,41 @@ module Spec::Examples
       shared_context 'with a command' do
         shared_examples 'should call the block with the previous result value' \
         do
-          it 'should call the block with the previous result value' do
-            allow(chained_command).to receive(:process)
+          context 'when the chained implementation takes no arguments' do
+            let(:chained_implementation) { ->() {} }
+            let!(:chained)               { super() }
 
-            chain_command(chained_command).call
+            it 'should call the block with the no arguments' do
+              allow(chained_command).to receive(:process)
 
-            expect(chained_command).
-              to have_received(:process).
-              with(first_value)
-          end # it
+              chained.call
+
+              expect(chained_command).to have_received(:process).with(no_args)
+            end # it
+          end # context
+
+          context 'when the chained implementation takes at least one argument'\
+          do
+            let(:chained_implementation) { ->(_) {} }
+            let!(:chained)               { super() }
+
+            it 'should call the block with the previous result value' do
+              allow(chained_command).to receive(:process)
+
+              chained.call
+
+              expect(chained_command).
+                to have_received(:process).
+                with(first_value)
+            end # it
+          end # context
         end # shared_examples
 
         shared_examples 'should not call the block with any args' do
           it 'should not call the block with any args' do
             allow(chained_command).to receive(:process)
 
-            chain_command(chained_command).call
+            chained.call
 
             expect(chained_command).not_to have_received(:process)
           end # it
@@ -77,7 +96,7 @@ module Spec::Examples
           let(:chained_implementation) do
             value = expected_value
 
-            ->(_) { value }
+            ->() { value }
           end # let
 
           it 'should set the value of the result' do
@@ -94,7 +113,7 @@ module Spec::Examples
           let(:chained_implementation) do
             ary = expected_errors
 
-            ->(_) { ary.each { |error| errors << error } }
+            ->() { ary.each { |error| errors << error } }
           end # let
 
           it 'should set the errors of the result' do
@@ -107,7 +126,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block sets the result status' do
-          let(:chained_implementation) { ->(_) { failure! } }
+          let(:chained_implementation) { ->() { failure! } }
 
           it 'should set the status of the result' do
             result = chained.call
@@ -117,7 +136,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block halts the result' do
-          let(:chained_implementation) { ->(_) { halt! } }
+          let(:chained_implementation) { ->() { halt! } }
 
           it 'should set the status of the result' do
             result = chained.call
@@ -141,7 +160,7 @@ module Spec::Examples
           let(:chained_implementation) do
             value = expected_value
 
-            ->(_) { value }
+            ->() { value }
           end # let
 
           it 'should not change the value of the result' do
@@ -161,7 +180,7 @@ module Spec::Examples
         let(:first_result) { Cuprum::Result.new(first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
-          ->(_) {}
+          ->() {}
         end # let
 
         before(:example) do
@@ -419,7 +438,7 @@ module Spec::Examples
         let(:first_result) { Cuprum::Result.new(first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
-          ->(_) {}
+          ->() {}
         end # let
 
         before(:example) do
@@ -488,7 +507,7 @@ module Spec::Examples
         let(:first_result) { Cuprum::Result.new(first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
-          ->(_) {}
+          ->() {}
         end # let
 
         before(:example) do

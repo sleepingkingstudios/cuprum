@@ -51,12 +51,11 @@ module Cuprum
     #   @yieldparam value [Object] The value of the previous result.
     def chain command = nil, on: nil, &block
       command ||= Cuprum::Command.new(&block)
-      chained = ->(result) { command.process_with_result(result, result.value) }
 
       clone.tap do |fn|
         fn.chained_procs <<
           {
-            :proc => chained,
+            :proc => chain_command(command),
             :on   => on
           } # end hash
       end # tap
@@ -169,6 +168,14 @@ module Cuprum
     end # method call
 
     private
+
+    def chain_command command
+      if command.arity.zero?
+        ->(result) { command.process_with_result(result) }
+      else
+        ->(result) { command.process_with_result(result, result.value) }
+      end # if-else
+    end # method chain_command
 
     def skip_chained_proc? last_result, on:
       return false if on == :always

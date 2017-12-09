@@ -17,6 +17,12 @@ module Spec::Examples
     end # shared_context
 
     shared_examples 'should implement the Command methods' do
+      describe '#arity' do
+        include_examples 'should have reader',
+          :arity,
+          ->() { instance.method(:process).arity }
+      end # describe
+
       describe '#call' do
         it { expect(instance).to respond_to(:call) }
       end # describe

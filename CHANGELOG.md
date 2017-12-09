@@ -14,6 +14,8 @@ Implemented the `#tap_result` method, which functions as `#yield_result` but alw
 
 Renamed the `#else` method to `#failure`, and the `#then` method to `#success` to avoid overloading reserved words.
 
+Implemented the `#arity` method, which returns an indication of the number of arguments accepted by the command.
+
 Refactored internal logic for returning result objects.
 
 ## 0.6.0
