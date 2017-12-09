@@ -481,6 +481,75 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
+      describe '#success' do
+        include ChainMethodExamples
+
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->(_) {}
+        end # let
+
+        before(:example) do
+          allow(instance).to receive(:process).and_return(first_result)
+        end # before example
+
+        def chain_block &block
+          instance.success(&block)
+        end # method chain_block
+
+        def chain_command command
+          instance.success(command)
+        end # method chain_command
+
+        it 'should define the method' do
+          expect(instance).
+            to respond_to(:success).
+            with(0..1).arguments.
+            and_a_block
+        end # it
+
+        it 'should clone the command' do
+          chained = instance.success {}
+
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
+
+        wrap_context 'with a block' do
+          include_examples 'should call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should not call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
+        end # wrap_context
+
+        wrap_context 'with a command' do
+          include_examples 'should call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should not call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
+        end # wrap_context
+      end # describe
+
       describe '#tap_result' do
         shared_examples 'should call the block' do
           it 'should yield the previous result to the block' do
