@@ -9,6 +9,59 @@ module Spec::Examples
     module ChainMethodExamples
       extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
+      shared_context 'with a block' do
+        shared_examples 'should call the block with the previous result value' \
+        do
+          it 'should call the block with the previous result value' do
+            expect do |block|
+              chain_block(&block).call
+            end.
+              to yield_with_args(first_value)
+          end # it
+        end # shared_examples
+
+        shared_examples 'should not call the block with any args' do
+          it 'should not call the block with any args' do
+            expect do |block|
+              chain_block(&block).call
+            end.
+              not_to yield_control
+          end # it
+        end # shared_examples
+
+        let(:chained) { chain_block(&chained_implementation) }
+      end # shared_context
+
+      shared_context 'with a command' do
+        shared_examples 'should call the block with the previous result value' \
+        do
+          it 'should call the block with the previous result value' do
+            allow(chained_command).to receive(:process)
+
+            chain_command(chained_command).call
+
+            expect(chained_command).
+              to have_received(:process).
+              with(first_value)
+          end # it
+        end # shared_examples
+
+        shared_examples 'should not call the block with any args' do
+          it 'should not call the block with any args' do
+            allow(chained_command).to receive(:process)
+
+            chain_command(chained_command).call
+
+            expect(chained_command).not_to have_received(:process)
+          end # it
+        end # shared_examples
+
+        let(:chained_command) do
+          Cuprum::Command.new(&chained_implementation)
+        end # let
+        let(:chained) { chain_command(chained_command) }
+      end # shared_context
+
       shared_examples 'should call the block' do
         it 'should return the previous result' do
           result = chained.call
@@ -115,6 +168,14 @@ module Spec::Examples
           allow(instance).to receive(:process).and_return(first_result)
         end # before example
 
+        def chain_block &block
+          instance.chain(:on => conditional, &block)
+        end # method chain_block
+
+        def chain_command command
+          instance.chain(command, :on => conditional)
+        end # method chain_command
+
         it 'should define the method' do
           expect(instance).
             to respond_to(:chain).
@@ -130,30 +191,7 @@ module Spec::Examples
           expect(chained).not_to be instance
         end # it
 
-        describe 'with a block' do
-          shared_examples 'should call the block with the previous result ' \
-                          'value' do
-            it 'should call the block with the previous result value' do
-              expect do |block|
-                instance.chain(:on => conditional, &block).call
-              end.
-                to yield_with_args(first_value)
-            end # it
-          end # shared_examples
-
-          shared_examples 'should not call the block with any args' do
-            it 'should not call the block with any args' do
-              expect do |block|
-                instance.chain(:on => conditional, &block).call
-              end.
-                not_to yield_control
-            end # it
-          end # shared_examples
-
-          let(:chained) do
-            instance.chain(:on => conditional, &chained_implementation)
-          end # let
-
+        wrap_context 'with a block' do
           include_examples 'should call the block'
 
           describe 'with :on => :always' do
@@ -261,39 +299,9 @@ module Spec::Examples
               expect(result.value).to be == values.last
             end # it
           end # context
-        end # describe
+        end # wrap_context
 
-        describe 'with a command' do
-          shared_examples 'should call the block with the previous result ' \
-                          'value' do
-            it 'should call the block with the previous result value' do
-              allow(chained_command).to receive(:process)
-
-              chained.call
-
-              expect(chained_command).
-                to have_received(:process).
-                with(first_value)
-            end # it
-          end # shared_examples
-
-          shared_examples 'should not call the block with any args' do
-            it 'should not call the block with any args' do
-              allow(chained_command).to receive(:process)
-
-              chained.call
-
-              expect(chained_command).not_to have_received(:process)
-            end # it
-          end # shared_examples
-
-          let(:chained_command) do
-            Cuprum::Command.new(&chained_implementation)
-          end # let
-          let(:chained) do
-            instance.chain(chained_command, :on => conditional)
-          end # let
-
+        wrap_context 'with a command' do
           include_examples 'should call the block'
 
           describe 'with :on => :always' do
@@ -401,7 +409,76 @@ module Spec::Examples
               expect(result.value).to be == values.last
             end # it
           end # context
-        end # describe
+        end # wrap_context
+      end # describe
+
+      describe '#failure' do
+        include ChainMethodExamples
+
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->(_) {}
+        end # let
+
+        before(:example) do
+          allow(instance).to receive(:process).and_return(first_result)
+        end # before example
+
+        def chain_block &block
+          instance.failure(&block)
+        end # method chain_block
+
+        def chain_command command
+          instance.failure(command)
+        end # method chain_command
+
+        it 'should define the method' do
+          expect(instance).
+            to respond_to(:failure).
+            with(0..1).arguments.
+            and_a_block
+        end # it
+
+        it 'should clone the command' do
+          chained = instance.failure {}
+
+          expect(chained).to be_a described_class
+          expect(chained).not_to be instance
+        end # it
+
+        wrap_context 'with a block' do
+          include_examples 'should not call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
+        end # wrap_context
+
+        wrap_context 'with a command' do
+          include_examples 'should not call the block'
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+          end # context
+        end # wrap_context
       end # describe
 
       describe '#tap_result' do
