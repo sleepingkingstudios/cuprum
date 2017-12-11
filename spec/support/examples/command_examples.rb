@@ -1093,6 +1093,27 @@ module Spec::Examples
         end # method wrap_context
       end # describe
 
+      describe '#result' do
+        it 'should define the reader' do
+          expect(instance).
+            to have_reader(:result, :allow_private => true).
+            with_value(nil)
+        end # it
+
+        wrap_context 'when the function is executing the implementation' do
+          it 'should return the current result' do
+            inner_result = nil
+            outer_result =
+              call_with_implementation do |instance|
+                inner_result = instance.send(:result)
+              end # call_with_implementation
+
+            expect(inner_result).to be_a Cuprum::Result
+            expect(inner_result).to be == outer_result.to_result
+          end # it
+        end # wrap_context
+      end # describe
+
       describe '#success!' do
         it 'should define the private method' do
           expect(instance).not_to respond_to(:success!)

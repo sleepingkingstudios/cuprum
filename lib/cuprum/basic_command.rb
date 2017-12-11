@@ -50,6 +50,10 @@ module Cuprum
 
     private
 
+    # @return [Cuprum::Result] The current result. Only available while #process
+    #   is being called.
+    attr_reader :result
+
     # @!visibility public
     #
     # Generates an empty errors object. When the function is called, the result
