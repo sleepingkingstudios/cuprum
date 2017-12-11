@@ -135,6 +135,14 @@ module Spec::Examples
           let(:value_or_result) { Cuprum::Result.new(value).halt! }
         end # shared_context
 
+        shared_context 'when the implementation returns the current result' do
+          let(:implementation) do
+            returned_value = value
+
+            ->() { result.tap { |obj| obj.value = returned_value } }
+          end # let
+        end # shared_context
+
         shared_examples 'should forward all arguments' do
           context 'when the implementation does not support the given ' \
                   'arguments' do
@@ -233,7 +241,7 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns an operation with ' \
-            'errors' do
+                         'errors' do
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
@@ -309,6 +317,19 @@ module Spec::Examples
                 expect(result.success?).to be true
                 expect(result.failure?).to be false
                 expect(result.halted?).to be true
+              end # it
+            end # wrap_context
+
+            wrap_context 'when the implementation returns the current result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be false
               end # it
             end # wrap_context
           end # context
