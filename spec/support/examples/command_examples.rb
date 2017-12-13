@@ -346,7 +346,7 @@ module Spec::Examples
 
               lambda do
                 messages.each do |message|
-                  errors << message
+                  result.errors << message
                 end # each
 
                 returned
@@ -1129,7 +1129,7 @@ module Spec::Examples
           it 'should mark the result as successful' do
             result =
               call_with_implementation do |instance|
-                instance.send(:errors) << 'errors.messages.unknown'
+                instance.send(:result).errors << 'errors.messages.unknown'
 
                 instance.send(:success!)
 

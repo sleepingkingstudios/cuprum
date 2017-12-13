@@ -113,7 +113,7 @@ module Spec::Examples
           let(:chained_implementation) do
             ary = expected_errors
 
-            ->() { ary.each { |error| errors << error } }
+            ->() { ary.each { |error| result.errors << error } }
           end # let
 
           it 'should set the errors of the result' do
