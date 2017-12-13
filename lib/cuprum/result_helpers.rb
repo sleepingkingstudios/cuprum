@@ -37,5 +37,18 @@ module Cuprum
     def failure!
       @result&.failure!
     end # method failure!
+
+    # @!visibility public
+    #
+    # Marks the current result as halted.
+    #
+    # @see Cuprum::Result#halt!.
+    #
+    # @note This is a private method, and only available when executing the
+    #   function implementation as defined in the constructor block or the
+    #   #process method.
+    def halt!
+      @result&.halt!
+    end # method halt!
   end # module
 end # module

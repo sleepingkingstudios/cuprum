@@ -114,6 +114,31 @@ module Spec::Examples
           end # it
         end # method wrap_context
       end # describe
+
+      describe '#halt!' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:halt!)
+
+          expect(instance).to respond_to(:halt!, true).with(0).arguments
+        end # it
+
+        it { expect(instance.send(:halt!)).to be_nil }
+
+        wrap_context 'when the instance is executing the implementation' do
+          it { expect(instance.send(:halt!)).to be_nil }
+
+          it 'should halt the result' do
+            result =
+              call_with_implementation do |instance|
+                instance.send(:halt!)
+
+                nil
+              end # call_with_implementation
+
+            expect(result.halted?).to be true
+          end # it
+        end # method wrap_context
+      end # describe
     end # shared_examples
   end # module
 end # module
