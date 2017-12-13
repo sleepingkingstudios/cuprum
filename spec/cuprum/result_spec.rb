@@ -181,7 +181,7 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with status set to failure' do
       let(:other) do
         Cuprum::Operation.new do
-          failure!
+          result.failure!
 
           nil
         end.call
@@ -262,7 +262,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call
@@ -419,7 +419,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call
@@ -576,7 +576,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call
@@ -711,7 +711,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call
@@ -846,7 +846,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call
@@ -981,7 +981,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            failure!
+            result.failure!
 
             nil
           end.call

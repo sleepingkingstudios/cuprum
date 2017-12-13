@@ -75,7 +75,7 @@ module Spec::Examples
             returned = value
 
             Cuprum::Operation.new do
-              failure!
+              result.failure!
 
               returned
             end. # operation
@@ -540,7 +540,7 @@ module Spec::Examples
               returned = value_or_result
 
               lambda do
-                failure!
+                result.failure!
 
                 returned
               end # lambda

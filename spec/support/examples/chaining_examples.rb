@@ -126,7 +126,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block sets the result status' do
-          let(:chained_implementation) { ->() { failure! } }
+          let(:chained_implementation) { ->() { result.failure! } }
 
           it 'should set the status of the result' do
             result = chained.call
