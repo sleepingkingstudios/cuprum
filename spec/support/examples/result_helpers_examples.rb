@@ -100,7 +100,7 @@ module Spec::Examples
         it { expect(instance.send(:failure!)).to be_nil }
 
         wrap_context 'when the instance is executing the implementation' do
-          it { expect(instance.send(:halt!)).to be_nil }
+          it { expect(instance.send(:failure!)).to be_nil }
 
           it 'should mark the result as failing' do
             result =

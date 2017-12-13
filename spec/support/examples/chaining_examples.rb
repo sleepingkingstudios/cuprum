@@ -136,7 +136,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block halts the result' do
-          let(:chained_implementation) { ->() { halt! } }
+          let(:chained_implementation) { ->() { result.halt! } }
 
           it 'should set the status of the result' do
             result = chained.call

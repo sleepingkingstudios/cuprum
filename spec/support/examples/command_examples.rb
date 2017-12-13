@@ -106,7 +106,7 @@ module Spec::Examples
             returned = value
 
             Cuprum::Operation.new do
-              halt!
+              result.halt!
 
               returned
             end. # operation
@@ -727,7 +727,7 @@ module Spec::Examples
               returned = value_or_result
 
               lambda do
-                halt!
+                result.halt!
 
                 returned
               end # lambda

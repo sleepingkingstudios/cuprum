@@ -205,7 +205,7 @@ RSpec.describe Cuprum::Result do
     describe 'with a called and halted operation' do
       let(:other) do
         Cuprum::Operation.new do
-          halt!
+          result.halt!
 
           nil
         end.call
@@ -286,7 +286,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
@@ -443,7 +443,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
@@ -600,7 +600,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
@@ -735,7 +735,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
@@ -870,7 +870,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
@@ -1005,7 +1005,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            halt!
+            result.halt!
 
             nil
           end.call
