@@ -169,7 +169,7 @@ RSpec.describe Cuprum::Result do
         Cuprum::Operation.new do
           errors << 'errors.messages.unknown'
 
-          success!
+          result.success!
 
           nil
         end.call
@@ -193,7 +193,7 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with status set to success' do
       let(:other) do
         Cuprum::Operation.new do
-          success!
+          result.success!
 
           nil
         end.call
@@ -250,7 +250,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -274,7 +274,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
@@ -407,7 +407,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -431,7 +431,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
@@ -564,7 +564,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -588,7 +588,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
@@ -699,7 +699,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -723,7 +723,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
@@ -834,7 +834,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -858,7 +858,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
@@ -969,7 +969,7 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             errors << 'errors.messages.unknown'
 
-            success!
+            result.success!
 
             nil
           end.call
@@ -993,7 +993,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            success!
+            result.success!
 
             nil
           end.call
