@@ -151,21 +151,6 @@ module Cuprum
       message
     end # method result_not_empty_warning
 
-    # @!visibility public
-    #
-    # Marks the current result as passing. Calling #success? on the returned
-    # result object will evaluate to true, whether or not the result has any
-    # errors.
-    #
-    # @see Cuprum::Result#success!.
-    #
-    # @note This is a private method, and only available when executing the
-    #   function implementation as defined in the constructor block or the
-    #   #process method.
-    def success!
-      @result&.success!
-    end # method success!
-
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
     end # method value

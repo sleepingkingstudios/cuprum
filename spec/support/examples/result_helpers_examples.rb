@@ -139,6 +139,33 @@ module Spec::Examples
           end # it
         end # method wrap_context
       end # describe
+
+      describe '#success!' do
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:success!)
+
+          expect(instance).to respond_to(:success!, true).with(0).arguments
+        end # it
+
+        it { expect(instance.send(:success!)).to be_nil }
+
+        wrap_context 'when the instance is executing the implementation' do
+          it { expect(instance.send(:success!)).to be_nil }
+
+          it 'should mark the result as successful' do
+            result =
+              call_with_implementation do |instance|
+                instance.send(:result).errors << 'errors.messages.unknown'
+
+                instance.send(:success!)
+
+                nil
+              end # call_with_implementation
+
+            expect(result.success?).to be true
+          end # it
+        end # wrap_context
+      end # describe
     end # shared_examples
   end # module
 end # module
