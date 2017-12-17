@@ -1,4 +1,5 @@
 require 'cuprum/not_implemented_error'
+require 'cuprum/utils/result_not_empty_warning'
 
 module Cuprum
   # Functional object that encapsulates a business logic operation with a
@@ -69,23 +70,13 @@ module Cuprum
       Cuprum::Result.new(value, :errors => errors)
     end # method build_result
 
-    # :nocov:
-    def humanize_list list, empty_value: ''
-      return empty_value if list.size.zero?
-
-      return list.first.to_s if list.size == 1
-
-      return "#{list.first} and #{list.last}" if list.size == 2
-
-      "#{list[0...-1].join ', '}, and #{list.last}"
-    end # method humanize_list
-    # :nocov:
-
     def merge_results result, other
       if value_is_result?(other)
         return result if result == other
 
-        Cuprum.warn(result_not_empty_warning) unless result.empty?
+        unless result.empty?
+          Cuprum.warn(Cuprum::Utils::ResultNotEmptyWarning.new(result).message)
+        end # unless
 
         other.to_result
       else
@@ -127,29 +118,6 @@ module Cuprum
     ensure
       @result = nil
     end # method process_with_result
-
-    def result_not_empty_warning # rubocop:disable Metrics/MethodLength
-      warnings = []
-
-      unless @result.errors.empty?
-        warnings << "there were already errors #{@result.errors.inspect}"
-      end # unless
-
-      status = @result.send(:status)
-      unless status.nil?
-        warnings << "the status was set to #{status.inspect}"
-      end # unless
-
-      if @result.halted?
-        warnings << 'the function was halted'
-      end # if
-
-      message = '#process returned a result, but '
-      message <<
-        humanize_list(warnings, :empty_value => 'the result was not empty')
-
-      message
-    end # method result_not_empty_warning
 
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)
