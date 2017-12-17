@@ -20,7 +20,7 @@ module Cuprum
     #   function implementation as defined in the constructor block or the
     #   #process method.
     def errors
-      @result&.errors
+      result&.errors
     end # method errors
 
     # @!visibility public
@@ -35,7 +35,7 @@ module Cuprum
     #   function implementation as defined in the constructor block or the
     #   #process method.
     def failure!
-      @result&.failure!
+      result&.failure!
     end # method failure!
 
     # @!visibility public
@@ -48,7 +48,7 @@ module Cuprum
     #   function implementation as defined in the constructor block or the
     #   #process method.
     def halt!
-      @result&.halt!
+      result&.halt!
     end # method halt!
 
     # @!visibility public
@@ -63,7 +63,7 @@ module Cuprum
     #   function implementation as defined in the constructor block or the
     #   #process method.
     def success!
-      @result&.success!
+      result&.success!
     end # method success!
   end # module
 end # module
