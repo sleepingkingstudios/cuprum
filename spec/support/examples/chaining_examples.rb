@@ -113,7 +113,7 @@ module Spec::Examples
           let(:chained_implementation) do
             ary = expected_errors
 
-            ->() { ary.each { |error| errors << error } }
+            ->() { ary.each { |error| result.errors << error } }
           end # let
 
           it 'should set the errors of the result' do
@@ -126,7 +126,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block sets the result status' do
-          let(:chained_implementation) { ->() { failure! } }
+          let(:chained_implementation) { ->() { result.failure! } }
 
           it 'should set the status of the result' do
             result = chained.call
@@ -136,7 +136,7 @@ module Spec::Examples
         end # describe
 
         describe 'when the block halts the result' do
-          let(:chained_implementation) { ->() { halt! } }
+          let(:chained_implementation) { ->() { result.halt! } }
 
           it 'should set the status of the result' do
             result = chained.call

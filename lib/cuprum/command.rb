@@ -2,6 +2,7 @@ require 'cuprum/basic_command'
 require 'cuprum/chaining'
 require 'cuprum/not_implemented_error'
 require 'cuprum/result'
+require 'cuprum/result_helpers'
 
 module Cuprum
   # Functional object that encapsulates a business logic operation with a
@@ -109,5 +110,6 @@ module Cuprum
   #   result.value #=> 8
   class Command < Cuprum::BasicCommand
     include Cuprum::Chaining
+    include Cuprum::ResultHelpers
   end # class
 end # module

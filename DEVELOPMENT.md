@@ -9,27 +9,10 @@
 - Extract helpers #errors, #failure!, #success!, #halt! to
   Cuprum::ResultHelpers module.
 - Refactor Cuprum::Command to module.
+- Extract #result_not_empty_warning from BasicCommand.
 
 ## Command
 
-- Chaining Methods:
-  - #chain:
-    - with a command, sets the command's #result to the last result and calls
-      #process with the last result's #value; returns result of calling chained
-      command.
-    - with a block creates anonymous command, then see above
-    - if the command does not accept any arguments (or keywords if #value is a
-      Hash), does not pass #value. Requires #arity, #apply_chained?
-    - one keyword (on), values nil (default), :success, :failure, :always
-  - #success - as chain(:on => :success)
-  - #failure - as chain(:on => :failure)
-  - #tap_result:
-    - block form only, block is yielded and returns the last result
-    - same argument as #chain
-  - #yield_result:
-    - block form only, block is yielded the last result, returns the return
-      value of the block (wrapped in a result if needed)
-    - same argument as #chain
 - Protected Chaining Methods:
   - #chain!, #success!, #failure!, #tap_chain!, #yield_result!
   - adds chained command to current command instead of a clone.

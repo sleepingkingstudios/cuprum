@@ -14,7 +14,6 @@ module Cuprum
       define_singleton_method :process, &implementation if implementation
     end # method initialize
 
-    # Returns an indication of the number of arguments accepted by the command.
     # Returns a nonnegative integer for commands that take a fixed number of
     # arguments. For commands that take a variable number of arguments, returns
     # -n-1, where n is the number of required arguments.
@@ -50,6 +49,10 @@ module Cuprum
 
     private
 
+    # @return [Cuprum::Result] The current result. Only available while #process
+    #   is being called.
+    attr_reader :result
+
     # @!visibility public
     #
     # Generates an empty errors object. When the function is called, the result
@@ -66,51 +69,6 @@ module Cuprum
       Cuprum::Result.new(value, :errors => errors)
     end # method build_result
 
-    # @!visibility public
-    #
-    # Provides a reference to the current result's errors object. Messages or
-    # error objects added to this will be included in the #errors method of the
-    # returned result object.
-    #
-    # @return [Array, Object] The errors object.
-    #
-    # @see Cuprum::Result#errors.
-    #
-    # @note This is a private method, and only available when executing the
-    #   function implementation as defined in the constructor block or the
-    #   #process method.
-    def errors
-      @result&.errors
-    end # method errors
-
-    # @!visibility public
-    #
-    # Marks the current result as failed. Calling #failure? on the returned
-    # result object will evaluate to true, whether or not the result has any
-    # errors.
-    #
-    # @see Cuprum::Result#failure!.
-    #
-    # @note This is a private method, and only available when executing the
-    #   function implementation as defined in the constructor block or the
-    #   #process method.
-    def failure!
-      @result&.failure!
-    end # method failure!
-
-    # @!visibility public
-    #
-    # Marks the current result as halted.
-    #
-    # @see Cuprum::Result#halt!.
-    #
-    # @note This is a private method, and only available when executing the
-    #   function implementation as defined in the constructor block or the
-    #   #process method.
-    def halt!
-      @result&.halt!
-    end # method halt!
-
     # :nocov:
     def humanize_list list, empty_value: ''
       return empty_value if list.size.zero?
@@ -124,7 +82,9 @@ module Cuprum
     # :nocov:
 
     def merge_results result, other
-      if value_is_result?(other) && other != result
+      if value_is_result?(other)
+        return result if result == other
+
         Cuprum.warn(result_not_empty_warning) unless result.empty?
 
         other.to_result
@@ -190,21 +150,6 @@ module Cuprum
 
       message
     end # method result_not_empty_warning
-
-    # @!visibility public
-    #
-    # Marks the current result as passing. Calling #success? on the returned
-    # result object will evaluate to true, whether or not the result has any
-    # errors.
-    #
-    # @see Cuprum::Result#success!.
-    #
-    # @note This is a private method, and only available when executing the
-    #   function implementation as defined in the constructor block or the
-    #   #process method.
-    def success!
-      @result&.success!
-    end # method success!
 
     def value_is_result? value
       value.respond_to?(:value) && value.respond_to?(:success?)

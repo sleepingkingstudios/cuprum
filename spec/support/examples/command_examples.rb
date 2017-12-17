@@ -30,7 +30,7 @@ module Spec::Examples
 
     shared_examples 'should implement the Command methods for any ' \
                     'implementation' do
-      shared_context 'when the function is executing the implementation' do
+      shared_context 'when the command is executing the implementation' do
         def call_with_implementation &block
           example  = self
           instance =
@@ -75,7 +75,7 @@ module Spec::Examples
             returned = value
 
             Cuprum::Operation.new do
-              failure!
+              result.failure!
 
               returned
             end. # operation
@@ -106,7 +106,7 @@ module Spec::Examples
             returned = value
 
             Cuprum::Operation.new do
-              halt!
+              result.halt!
 
               returned
             end. # operation
@@ -133,6 +133,14 @@ module Spec::Examples
 
         shared_context 'when the implementation returns a halted result' do
           let(:value_or_result) { Cuprum::Result.new(value).halt! }
+        end # shared_context
+
+        shared_context 'when the implementation returns the current result' do
+          let(:implementation) do
+            returned_value = value
+
+            ->() { result.tap { |obj| obj.value = returned_value } }
+          end # let
         end # shared_context
 
         shared_examples 'should forward all arguments' do
@@ -233,7 +241,7 @@ module Spec::Examples
             end # wrap_context
 
             wrap_context 'when the implementation returns an operation with ' \
-            'errors' do
+                         'errors' do
               it 'should return a result', :aggregate_failures do
                 result = instance.call
 
@@ -311,6 +319,19 @@ module Spec::Examples
                 expect(result.halted?).to be true
               end # it
             end # wrap_context
+
+            wrap_context 'when the implementation returns the current result' do
+              it 'should return a result', :aggregate_failures do
+                result = instance.call
+
+                expect(result).to be_a result_class
+                expect(result.value).to be value
+                expect(result.errors).to be_empty
+                expect(result.success?).to be true
+                expect(result.failure?).to be false
+                expect(result.halted?).to be false
+              end # it
+            end # wrap_context
           end # context
 
           context 'when the operation generates errors' do
@@ -325,7 +346,7 @@ module Spec::Examples
 
               lambda do
                 messages.each do |message|
-                  errors << message
+                  result.errors << message
                 end # each
 
                 returned
@@ -519,7 +540,7 @@ module Spec::Examples
               returned = value_or_result
 
               lambda do
-                failure!
+                result.failure!
 
                 returned
               end # lambda
@@ -706,7 +727,7 @@ module Spec::Examples
               returned = value_or_result
 
               lambda do
-                halt!
+                result.halt!
 
                 returned
               end # lambda
@@ -947,156 +968,25 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
-      describe '#errors' do
+      describe '#result' do
         it 'should define the reader' do
           expect(instance).
-            to have_reader(:errors, :allow_private => true).
+            to have_reader(:result, :allow_private => true).
             with_value(nil)
         end # it
 
-        it { expect(instance.send(:errors)).to be_nil }
-
-        wrap_context 'when the function is executing the implementation' do
-          let(:expected_errors) do
-            ['errors.messages.unknown']
-          end # let
-
-          it 'should be an empty array' do
-            call_with_implementation do |instance|
-              errors = instance.send(:errors)
-
-              expect(errors).to be_a Array
-              expect(errors).to be_empty
-            end # call_with_implementation
-          end # it
-
-          it 'should update the result errors' do
-            result =
+        wrap_context 'when the command is executing the implementation' do
+          it 'should return the current result' do
+            inner_result = nil
+            outer_result =
               call_with_implementation do |instance|
-                expected_errors.each { |msg| instance.send(:errors) << msg }
+                inner_result = instance.send(:result)
               end # call_with_implementation
 
-            expected_errors.each do |message|
-              expect(result.errors).to include message
-            end # each
+            expect(inner_result).to be_a Cuprum::Result
+            expect(inner_result).to be == outer_result.to_result
           end # it
-
-          context 'when the function has a custom #build_errors method' do
-            let(:described_class) do
-              Class.new(super()) do
-                def build_errors
-                  Spec::Errors.new
-                end # method build_errors
-              end # class
-            end # let
-
-            example_constant 'Spec::Errors' do
-              # rubocop:disable RSpec/InstanceVariable
-              Class.new(Delegator) do
-                def initialize
-                  @errors = []
-
-                  super(@errors)
-                end # constructor
-
-                def __getobj__
-                  @errors
-                end # method
-
-                def __setobj__ ary
-                  @errors = ary
-                end # method __setobj__
-              end # class
-              # rubocop:enable RSpec/InstanceVariable
-            end # constant
-
-            it 'should be an empty errors object' do
-              call_with_implementation do |instance|
-                errors = instance.send(:errors)
-
-                expect(errors).to be_a Spec::Errors
-                expect(errors).to be_empty
-              end # call_with_implementation
-            end # it
-          end # context
-        end # context
-      end # describe
-
-      describe '#failure!' do
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:failure!)
-
-          expect(instance).to respond_to(:failure!, true).with(0).arguments
-        end # it
-
-        it { expect(instance.send(:failure!)).to be_nil }
-
-        wrap_context 'when the function is executing the implementation' do
-          it { expect(instance.send(:halt!)).to be_nil }
-
-          it 'should mark the result as failing' do
-            result =
-              call_with_implementation do |instance|
-                instance.send(:failure!)
-
-                nil
-              end # call_with_implementation
-
-            expect(result.failure?).to be true
-          end # it
-        end # method wrap_context
-      end # describe
-
-      describe '#halt!' do
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:halt!)
-
-          expect(instance).to respond_to(:halt!, true).with(0).arguments
-        end # it
-
-        it { expect(instance.send(:halt!)).to be_nil }
-
-        wrap_context 'when the function is executing the implementation' do
-          it { expect(instance.send(:halt!)).to be_nil }
-
-          it 'should halt the result' do
-            result =
-              call_with_implementation do |instance|
-                instance.send(:halt!)
-
-                nil
-              end # call_with_implementation
-
-            expect(result.halted?).to be true
-          end # it
-        end # method wrap_context
-      end # describe
-
-      describe '#success!' do
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:success!)
-
-          expect(instance).to respond_to(:success!, true).with(0).arguments
-        end # it
-
-        it { expect(instance.send(:success!)).to be_nil }
-
-        wrap_context 'when the function is executing the implementation' do
-          it { expect(instance.send(:success!)).to be_nil }
-
-          it 'should mark the result as successful' do
-            result =
-              call_with_implementation do |instance|
-                instance.send(:errors) << 'errors.messages.unknown'
-
-                instance.send(:success!)
-
-                nil
-              end # call_with_implementation
-
-            expect(result.success?).to be true
-          end # it
-        end # method wrap_context
+        end # wrap_context
       end # describe
     end # shared_examples
   end # module

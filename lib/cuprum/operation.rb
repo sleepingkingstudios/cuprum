@@ -1,7 +1,7 @@
 require 'cuprum/command'
 
 module Cuprum
-  # Functional object that with syntactic sugar for tracking the last result.
+  # Functional object with syntactic sugar for tracking the last result.
   #
   # An Operation is like a Function, but with two key differences. First, an
   # Operation retains a reference to the result object from the most recent time
@@ -83,7 +83,7 @@ module Cuprum
       # @return [Array] the errors from the most recent result, or nil if the
       #   operation has not been called.
       def errors
-        super || (called? ? result.errors : nil)
+        called? ? result.errors : nil
       end # method errors
 
       # @return [Boolean] true if the most recent result had errors, or false if
