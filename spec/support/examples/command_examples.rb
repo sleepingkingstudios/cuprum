@@ -733,7 +733,7 @@ module Spec::Examples
               end # lambda
             end # let
             let(:warning_message) do
-              '#process returned a result, but the function was halted'
+              '#process returned a result, but the command was halted'
             end # let
 
             it 'should return a result', :aggregate_failures do

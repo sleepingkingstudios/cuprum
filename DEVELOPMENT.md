@@ -6,9 +6,6 @@
 
 - Integration specs.
 - Refactor Cuprum::BasicCommand to Cuprum::Processing module.
-- Extract helpers #errors, #failure!, #success!, #halt! to
-  Cuprum::ResultHelpers module.
-- Refactor Cuprum::Command to module.
 - Extract #result_not_empty_warning from BasicCommand.
 
 ## Command
