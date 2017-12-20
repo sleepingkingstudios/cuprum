@@ -1,4 +1,4 @@
-require 'cuprum/basic_command'
+require 'cuprum/processing'
 require 'cuprum/result_helpers'
 
 require 'support/examples/result_helpers_examples'
@@ -9,7 +9,8 @@ RSpec.describe Cuprum::ResultHelpers do
   subject(:instance) { described_class.new }
 
   let(:described_class) do
-    Class.new(Cuprum::BasicCommand) do
+    Class.new do
+      include Cuprum::Processing
       include Cuprum::ResultHelpers
 
       def process *_args; end
