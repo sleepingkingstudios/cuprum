@@ -1,10 +1,12 @@
 require 'cuprum/operation'
 
+require 'support/examples/chaining_examples'
 require 'support/examples/operation_examples'
 require 'support/examples/processing_examples'
 require 'support/examples/result_helpers_examples'
 
 RSpec.describe Cuprum::Operation do
+  include Spec::Examples::ChainingExamples
   include Spec::Examples::OperationExamples
   include Spec::Examples::ProcessingExamples
   include Spec::Examples::ResultHelpersExamples
@@ -17,6 +19,8 @@ RSpec.describe Cuprum::Operation do
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }
   end # describe
+
+  include_examples 'should implement the Chaining methods'
 
   include_examples 'should implement the Operation methods'
 
