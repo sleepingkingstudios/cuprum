@@ -172,7 +172,7 @@ module Spec::Examples
       end # shared_examples
     end # module
 
-    shared_examples 'should implement the Command chaining methods' do
+    shared_examples 'should implement the Chaining methods' do
       describe '#chain' do
         include ChainMethodExamples
 

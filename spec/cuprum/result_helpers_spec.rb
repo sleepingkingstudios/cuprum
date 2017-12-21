@@ -18,4 +18,8 @@ RSpec.describe Cuprum::ResultHelpers do
   end # let
 
   include_examples 'should implement the ResultHelpers methods'
+
+  describe '#errors' do
+    include_examples 'should have private reader', :errors
+  end # describe
 end # describe

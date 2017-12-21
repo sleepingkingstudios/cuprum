@@ -1,7 +1,5 @@
 require 'cuprum/chaining'
-require 'cuprum/not_implemented_error'
 require 'cuprum/processing'
-require 'cuprum/result'
 require 'cuprum/result_helpers'
 
 module Cuprum
