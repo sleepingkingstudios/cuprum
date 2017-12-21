@@ -82,9 +82,9 @@ module Spec::Examples
       end # shared_context
 
       shared_examples 'should call the block' do
-        it 'should return the previous result' do
-          result = chained.call
+        let(:result) { chained.call.to_result }
 
+        it 'should return the previous result' do
           expect(result).to be first_result
         end # it
 
@@ -100,8 +100,6 @@ module Spec::Examples
           end # let
 
           it 'should set the value of the result' do
-            result = chained.call
-
             expect(result.value).to be == expected_value
           end # it
         end # describe
@@ -117,8 +115,6 @@ module Spec::Examples
           end # let
 
           it 'should set the errors of the result' do
-            result = chained.call
-
             expected_errors.each do |error|
               expect(result.errors).to include error
             end # each
@@ -129,8 +125,6 @@ module Spec::Examples
           let(:chained_implementation) { ->() { result.failure! } }
 
           it 'should set the status of the result' do
-            result = chained.call
-
             expect(result.failure?).to be true
           end # it
         end # describe
@@ -139,17 +133,15 @@ module Spec::Examples
           let(:chained_implementation) { ->() { result.halt! } }
 
           it 'should set the status of the result' do
-            result = chained.call
-
             expect(result.halted?).to be true
           end # it
         end # describe
       end # shared_examples
 
       shared_examples 'should not call the block' do
-        it 'should return the previous result' do
-          result = chained.call
+        let(:result) { chained.call.to_result }
 
+        it 'should return the previous result' do
           expect(result).to be first_result
         end # it
 
@@ -164,15 +156,13 @@ module Spec::Examples
           end # let
 
           it 'should not change the value of the result' do
-            result = chained.call
-
             expect(result.value).to be == first_value
           end # it
         end # describe
       end # shared_examples
     end # module
 
-    shared_examples 'should implement the Command chaining methods' do
+    shared_examples 'should implement the Chaining methods' do
       describe '#chain' do
         include ChainMethodExamples
 
@@ -301,6 +291,7 @@ module Spec::Examples
                 chain(&blocks[2])
             end # let
             let(:arguments) { [] }
+            let(:result)    { chained.call.to_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -309,12 +300,10 @@ module Spec::Examples
             end # it
 
             it 'should return the first result' do
-              expect(chained.call).to be first_result
+              expect(result).to be first_result
             end # it
 
             it 'should set the value of the result' do
-              result = chained.call
-
               expect(result.value).to be == values.last
             end # it
           end # context
@@ -411,6 +400,7 @@ module Spec::Examples
                 chain(commands[2])
             end # let
             let(:arguments) { [] }
+            let(:result)    { chained.call.to_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -419,12 +409,10 @@ module Spec::Examples
             end # it
 
             it 'should return the first result' do
-              expect(chained.call).to be first_result
+              expect(result).to be first_result
             end # it
 
             it 'should set the value of the result' do
-              result = chained.call
-
               expect(result.value).to be == values.last
             end # it
           end # context
@@ -582,7 +570,7 @@ module Spec::Examples
             value   = 'final value'.freeze
             chained = instance.tap_result(:on => conditional) { value }
 
-            expect(chained.call).to be first_result
+            expect(chained.call.to_result).to be first_result
           end # it
         end # shared_examples
 
@@ -597,7 +585,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.tap_result(:on => conditional) {}
 
-            expect(chained.call).to be first_result
+            expect(chained.call.to_result).to be first_result
           end # it
         end # shared_examples
 
@@ -722,7 +710,7 @@ module Spec::Examples
           end # it
 
           it 'should return the first result' do
-            expect(chained.call).to be first_result
+            expect(chained.call.to_result).to be first_result
           end # it
         end # context
       end # describe
@@ -740,7 +728,7 @@ module Spec::Examples
             it 'should wrap the value in a result' do
               value   = 'final value'.freeze
               chained = instance.yield_result(:on => conditional) { value }
-              result  = chained.call
+              result  = chained.call.to_result
 
               expect(result).to be_a Cuprum::Result
               expect(result.value).to be value
@@ -754,7 +742,7 @@ module Spec::Examples
               chained   =
                 instance.yield_result(:on => conditional) { operation.call }
 
-              expect(chained.call).to be result
+              expect(chained.call.to_result).to be result
             end # it
           end # context
 
@@ -763,7 +751,7 @@ module Spec::Examples
               result  = Cuprum::Result.new('final value'.freeze)
               chained = instance.yield_result(:on => conditional) { result }
 
-              expect(chained.call).to be result
+              expect(chained.call.to_result).to be result
             end # it
           end # context
         end # shared_examples
@@ -779,7 +767,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.yield_result(:on => conditional) {}
 
-            expect(chained.call).to be first_result
+            expect(chained.call.to_result).to be first_result
           end # it
         end # shared_examples
 
@@ -904,7 +892,7 @@ module Spec::Examples
           end # it
 
           it 'should return the final result' do
-            expect(chained.call).to be results.last
+            expect(chained.call.to_result).to be results.last
           end # it
         end # context
       end # describe

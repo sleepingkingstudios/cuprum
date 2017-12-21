@@ -1,7 +1,5 @@
-require 'cuprum/basic_command'
 require 'cuprum/chaining'
-require 'cuprum/not_implemented_error'
-require 'cuprum/result'
+require 'cuprum/processing'
 require 'cuprum/result_helpers'
 
 module Cuprum
@@ -108,8 +106,19 @@ module Cuprum
   #
   #   result = collatz_function.new(16)
   #   result.value #=> 8
-  class Command < Cuprum::BasicCommand
+  class Command
+    include Cuprum::Processing
     include Cuprum::Chaining
     include Cuprum::ResultHelpers
+
+    # Returns a new instance of Cuprum::Command.
+    #
+    # @yield [*arguments, **keywords, &block] If a block is given, the
+    #   #call method will wrap the block and set the result #value to the return
+    #   value of the block. This overrides the implementation in #process, if
+    #   any.
+    def initialize &implementation
+      define_singleton_method :process, &implementation if implementation
+    end # method initialize
   end # class
 end # module

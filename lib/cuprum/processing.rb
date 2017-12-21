@@ -2,18 +2,12 @@ require 'cuprum/not_implemented_error'
 require 'cuprum/utils/result_not_empty_warning'
 
 module Cuprum
-  # Functional object that encapsulates a business logic operation with a
-  # standardized interface and returns a result object.
-  class BasicCommand
-    # Returns a new instance of Cuprum::BasicCommand.
-    #
-    # @yield [*arguments, **keywords, &block] If a block is given, the
-    #   #call method will wrap the block and set the result #value to the return
-    #   value of the block. This overrides the implementation in #process, if
-    #   any.
-    def initialize &implementation
-      define_singleton_method :process, &implementation if implementation
-    end # method initialize
+  # Functional implementation for creating a command object. Cuprum::Processing
+  # defines a #call method, which performs the implementation defined by
+  # #process and returns an instance of Cuprum::Result.
+  module Processing
+    VALUE_METHODS = %i[to_result value success?].freeze
+    private_constant :VALUE_METHODS
 
     # Returns a nonnegative integer for commands that take a fixed number of
     # arguments. For commands that take a variable number of arguments, returns
@@ -74,9 +68,9 @@ module Cuprum
       if value_is_result?(other)
         return result if result == other
 
-        unless result.empty?
+        if result.respond_to?(:empty?) && !result.empty?
           Cuprum.warn(Cuprum::Utils::ResultNotEmptyWarning.new(result).message)
-        end # unless
+        end # if
 
         other.to_result
       else
@@ -120,7 +114,7 @@ module Cuprum
     end # method process_with_result
 
     def value_is_result? value
-      value.respond_to?(:value) && value.respond_to?(:success?)
+      VALUE_METHODS.all? { |method_name| value.respond_to?(method_name) }
     end # method value
-  end # class
+  end # module
 end # module
