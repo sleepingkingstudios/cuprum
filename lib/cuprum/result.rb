@@ -1,11 +1,10 @@
 require 'cuprum'
 
 module Cuprum
-  # Data object that encapsulates the result of calling a Cuprum function or
-  # operation.
+  # Data object that encapsulates the result of calling a Cuprum command.
   class Result
-    # @param value [Object] The value returned by calling the function.
-    # @param errors [Array] The errors (if any) generated when the function was
+    # @param value [Object] The value returned by calling the command.
+    # @param errors [Array] The errors (if any) generated when the command was
     #   called.
     def initialize value = nil, errors: []
       @value  = value
@@ -14,10 +13,10 @@ module Cuprum
       @halted = false
     end # constructor
 
-    # @return [Object] the value returned by calling the function.
+    # @return [Object] the value returned by calling the command.
     attr_accessor :value
 
-    # @return [Array] the errors (if any) generated when the function was
+    # @return [Array] the errors (if any) generated when the command was
     #   called.
     attr_accessor :errors
 
@@ -66,7 +65,7 @@ module Cuprum
       value.nil? && errors.empty? && @status.nil? && !halted?
     end # method empty?
 
-    # Marks the result as a failure, whether or not the function generated any
+    # Marks the result as a failure, whether or not the command generated any
     # errors.
     #
     # @return [Cuprum::Result] The result.
@@ -76,13 +75,13 @@ module Cuprum
       self
     end # method failure!
 
-    # @return [Boolean] false if the function did not generate any errors,
+    # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
       @status == :failure || (@status.nil? && !errors.empty?)
     end # method failure?
 
-    # Marks the result as halted. Any subsequent chained functions will not be
+    # Marks the result as halted. Any subsequent chained commands will not be
     #   run.
     #
     # @return [Cuprum::Result] The result.
@@ -92,13 +91,13 @@ module Cuprum
       self
     end # method halt!
 
-    # @return [Boolean] true if the function has been halted, and will not run
-    #   any subsequent chained functions.
+    # @return [Boolean] true if the command has been halted, and will not run
+    #   any subsequent chained commands.
     def halted?
       @halted
     end # method halted?
 
-    # Marks the result as a success, whether or not the function generated any
+    # Marks the result as a success, whether or not the command generated any
     # errors.
     #
     # @return [Cuprum::Result] The result.
@@ -108,7 +107,7 @@ module Cuprum
       self
     end # method success!
 
-    # @return [Boolean] true if the function did not generate any errors,
+    # @return [Boolean] true if the command did not generate any errors,
     #   otherwise false.
     def success?
       @status == :success || (@status.nil? && errors.empty?)

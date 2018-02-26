@@ -7,9 +7,6 @@ AllCops:
     - 'spec/**/*.rb'
   Exclude:
     - 'tmp/**/*'
-    - 'gemfiles/vendor/**/*'
-    - 'spec/rails*/bin/*'
-    - 'spec/rails*/config/**/*'
     - 'vendor/**/*'
 
 Layout/AlignParameters:
