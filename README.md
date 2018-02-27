@@ -81,8 +81,12 @@ class BuildBookCommand < Cuprum::Command
 end # class
 
 command = BuildPostCommand.new
-result  = command.call(:title => 'The Hobbit') # an instance of Cuprum::Result
-result.value #=> an instance of Book with title 'The Hobbit'
+result  = command.call(:title => 'The Hobbit')
+result.class #=> Cuprum::Result
+
+book = result.value
+book.class #=> Book
+book.title #=> 'The Hobbit'
 ```
 
 There are several takeaways from this example. First, we are defining a custom command class that inherits from `Cuprum::Command`. We are defining the `#process` method, which takes a single `attributes` parameter and returns an instance of `Book`. Then, we are creating an instance of the command, and invoking the `#call` method with an attributes hash. These attributes are passed to our `#process` implementation. Invoking `#call` returns a result, and the `#value` of the result is our new Book.
@@ -117,6 +121,13 @@ A command can also be defined by passing block to `Cuprum::Command.new`.
 increment_command = Cuprum::Command.new { |int| int + 1 }
 
 increment_command.call(2).value #=> 3
+```
+
+If the command is wrapping a method on the receiver, the syntax is even simpler:
+
+```ruby
+inspect_command = Cuprum::Command.new { |obj| obj.inspect }
+inspect_command = Cuprum::Command.new(&:inspect) # Equivalent to above.
 ```
 
 Commands defined using `Cuprum::Command.new` are quick to use, but more difficult to read and to reuse. Defining your own command class is recommended if a command definition takes up more than one line, or if the command will be used in more than one place.
@@ -171,41 +182,174 @@ result.value    #=> book
 book.published? #=> false
 ```
 
+#### Composing Commands
+
+Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
+
+```ruby
+increment_command = Cuprum::Command.new { |i| i + 1 }
+increment_command.call(1).value #=> 2
+increment_command.call(2).value #=> 3
+increment_command.call(3).value #=> 4
+
+add_command = Cuprum::Command.new do |addend, i|
+  addend.times { i = increment_command(i).value }
+
+  i
+end # command
+
+add_command.call(1, 1).value #=> 2
+add_command.call(1, 2).value #=> 3
+add_command.call(2, 1).value #=> 3
+add_command.call(2, 2).value #=> 4
+```
+
+This can also be done using command classes.
+
+```ruby
+class IncrementCommand < Cuprum::Command
+  private
+
+  def process i
+    i + 1
+  end
+end
+
+class AddCommand < Cuprum::Command
+  def initialize addend
+    @addend = addend
+  end
+
+  private
+
+  def process i
+    addend.times { i = IncrementCommand.new.call(i).value }
+
+    i
+  end
+end
+
+add_two_command = AddCommand.new(2)
+add_two_command.call(0).value #=> 2
+add_two_command.call(1).value #=> 3
+add_two_command.call(8).value #=> 10
+```
+
 ### Chaining Commands
 
-Because Cuprum::Command instances are proper objects, they can be composed like any other object. Cuprum::Command also defines methods for chaining commands together. When a chain of commands is called, each command in the chain is called in sequence and passed the value of the previous command. The result of the last command in the chain is returned from the chained call.
+Cuprum::Command also defines methods for chaining commands together. When a chain of commands is called, each command in the chain is called in sequence and passed the value of the previous command. The result of the last command in the chain is returned from the chained call.
 
-    class AddCommand < Cuprum::Command
-      def initialize addend
-        @addend = addend
-      end # constructor
+```ruby
+name_command       = Cuprum::Command.new { |klass| klass.name }
+pluralize_command  = Cuprum::Command.new { |str| str.pluralize }
+underscore_command = Cuprum::Command.new { |str| str.underscore }
 
-      private
+table_name_command =
+  name_command
+    .chain(pluralize_command)
+    .chain(underscore_command)
 
-      def process int
-        int + @addend
-      end # method process
-    end # class
+result = table_name_command.call(LibraryCard)
+result.class #=> Cuprum::Result
+result.value #=> 'library_cards'
+```
 
-    double_and_add_one = MultiplyCommand.new(2).chain(AddCommand.new(1))
-    result             = double_and_add_one(5)
+When the `table_name_command` is called, the class (in our case `LibraryCard`) is passed to the first command in the chain, which is the `name_command`. This produces a Result with a value of 'LibraryCard'. This value is then passed to `pluralize_command`, which returns a Result with a value of 'LibraryCards'. Finally, `underscore_command` is called and returns a Result with a value of 'library_cards'. Since there are no more commands in the chain, this final result is then returned.
 
-    result.value #=> 5
+Chained commands can also be defined with a block. This creates an anonymous command, equivalent to `Cuprum::Command.new {}`. Thus, the `table_name_command` could have been defined as either of these:
 
-For finer control over the returned result, `#chain` can instead be called with a block that yields the most recent result. If the block returns a Cuprum::Result, that result is returned or passed to the next command.
+```ruby
+table_name_command =
+  Cuprum::Command.new { |klass| klass.name }
+    .chain { |str| str.pluralize }
+    .chain { |str| str.underscore }
 
-    MultiplyCommand.new(3).
-      chain { |result| Cuprum::Result.new(result + 1) }.
-      call(3)
-    #=> Returns a Cuprum::Result with a value of 10.
+table_name_command =
+  Cuprum::Command.new(&:name).chain(&:pluralize).chain(&:underscore)
+```
 
-Otherwise, the block is still called but the previous result is returned or passed to the next command in the chain.
+#### Chaining Details
 
-    AddCommand.new(2).
-      chain { |result| puts "There are #{result.value} lights!" }.
-      call(2)
-    #=> Writes "There are 4 lights!" to STDOUT.
-    #=> Returns a Cuprum::Result with a value of 4.
+The `#chain` method is defined for instances of `Cuprum::Command` (or object that extend `Cuprum::Chaining`). Calling `#chain` on a command will always create a copy of the command. The given command is then added to the command chain for the copied command. The original command is unchanged. Thus:
+
+```ruby
+first_command = Cuprum::Command.new { puts 'First command!' }
+first_command.call #=> Outputs 'First command!' to STDOUT.
+
+second_command = first_command.chain { puts 'Second command!' }
+second_command.call #=> Outputs 'First command!' then 'Second command!'.
+
+# The original command is unchanged.
+first_command.call #=> Outputs 'First command!' to STDOUT.
+```
+
+When a chained command is called, the original command is called with whatever parameters are passed in to the `#call` method, and the command executes the `#process` method as normal, generating a `Cuprum::Result` and assigning it a value and optionally errors or a status. Rather than returning this result, however, it is passed on to the next command in the chain. In the context of a chained command, this means two things.
+
+First, the next command is called. If the next command does not take any arguments, it is not passed any arguments. If the next command takes one or more arguments, it is passed the `#value` of that previous result.
+
+```ruby
+double_command    = Cuprum::Command.new { |i| 2 * i }
+increment_command = Cuprum::Command.new { |i| 1 + i }
+square_command    = Cuprum::Command.new { |i| i * i }
+chained_command   =
+  double_command
+    .chain(increment_command)
+    .chain(square_command)
+
+# First, the double_commmand is called with 2. This returns a Cuprum::Result
+# with a value of 4.
+#
+# Next, the increment_command is called with 4, returning a result with value 5.
+#
+# Finally, the square_command is called with 5, returning a result with a value
+# of 25. This final result is returned by #call.
+result = chained_command.call(2)
+result.class #=> Cuprum::Result
+result.value #=> 25
+```
+
+Second, the previous result is set as the result of the next command (before it is evaluated). This makes it available to the next command during execution as the `#result` method, and makes available the value, errors, and status of the previous command (and avoids unnecessary object allocation). The value of the result will be updated to reflect the return value of the next command execution.
+
+```ruby
+validate_command =
+  Cuprum::Command.new do |object|
+    result.errors << 'Object is invalid!' unless object.valid?
+
+    object
+  end
+persist_command =
+  Cuprum::Command.new do |object|
+    object.save if result.success?
+
+    object
+  end
+chained_command = validate_command.chain(persist_command)
+
+# First, validate_command is called with a valid object. This creates a result
+# with no errors and whose value is the valid object.
+#
+# Then, persist_command is called with the object, and its result is assigned to
+# the previous result. Since there are no errors on the result, the object is
+# saved. Finally, the value of the result is set to the object, and the result
+# is returned.
+result = chained_command.call(a_valid_object) #=> Saves the object.
+result.value              #=> a_valid_object
+result.errors             #=> []
+a_valid_object.persisted? #=> true
+
+# First, validate_command is called with an invalid object. This creates a
+# result whose value is the invalid object, and with errors 'Object is
+# invalid!'.
+#
+# Then, persist_command is called with the object, and its result is assigned to
+# the previous result. Since the result has an error, the object is not saved.
+# Finally, the value of the result is set to the object, and the result
+# is returned.
+result = chained_command.call(an_invalid_object) #=> Does not save the object.
+result.value                 #=> an_invalid_object
+result.errors                #=> ['Object is invalid!']
+an_invalid_object.persisted? #=> false
+```
 
 #### Conditional Chaining
 
@@ -260,6 +404,14 @@ If the `#halt` method is called as part of a Command block or `#process` method,
 
     result.value   #= 4
     result.halted? #=> true
+
+#### Tap Results
+
+TODO
+
+#### Yield Results
+
+TODO
 
 ### Results
 
