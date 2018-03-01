@@ -17,7 +17,7 @@ Traditional frameworks such as Rails focus on the objects of your application - 
 - **Consistency:** Use the same Commands to underlie controller actions, worker processes and test factories.
 - **Encapsulation:** Each Command is defined and run in isolation, and dependencies must be explicitly provided to the command when it is initialized or run. This makes it easier to reason about the command's behavior and keep it insulated from changes elsewhere in the code.
 - **Testability:** Because the logic is extracted from unnecessary context, testing its behavior is much cleaner and easier.
-- **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [Chaining](#label-Chaining) feature allows for complex control flows.
+- **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [Chaining](#label-Chaining+Commands) feature allows for complex control flows.
 - **Reusability:** Logic common to multiple data models or instances in your code, such as "persist an object to the database" or "find all records with a given user and created in a date range" can be refactored into parameterized commands.
 
 ### Alternatives
@@ -131,6 +131,10 @@ inspect_command = Cuprum::Command.new(&:inspect) # Equivalent to above.
 ```
 
 Commands defined using `Cuprum::Command.new` are quick to use, but more difficult to read and to reuse. Defining your own command class is recommended if a command definition takes up more than one line, or if the command will be used in more than one place.
+
+#### Result Values
+
+TODO
 
 #### Success, Failure, and Errors
 
@@ -353,57 +357,104 @@ an_invalid_object.persisted? #=> false
 
 #### Conditional Chaining
 
-The `#chain` method can be passed an optional `:on` keyword, with values of `:success` and `:failure` accepted. If `#chain` is called with `:on => :success`, then the chained command or block will **only** be called if the previous result `#success?` returns true. Conversely, if `#chain` is called with `:on => :failure`, then the chained command will only be called if the previous result `#failure?` returns true.
+The `#chain` method can be passed an optional `:on => value` keyword. This keyword determines whether or not the chained command will execute, based on the previous result status. Possible values are `:success`, `:failure`, `:always`, or `nil`. The default value is `nil`.
 
-In either case, execution will then pass to the next command in the chain, which may itself be called or not if it was conditionally chained. Calling a conditional command chain will return the result of the last called command.
+If the `:on` keyword is omitted, the chained command will always be executed after the previous command unless the result is halted (see [Halting A Command Chain](#label-Commands))
 
-The methods `#then` and `#else` serve as shortcuts for `#chain` with `:on => :success` and `:on => :failure`, respectively.
+If the command is chained with `:on => :success`, then the chained command will only execute if the previous result is passing, e.g. the `#success?` method returns true and the command is not halted. A result is passing if there are no errors, or if the status is set to `:success`.
 
-    class EvenCommand < Cuprum::Command
-      private
+If the command is chained with `:on => :failure`, then the chained command will only execute if the previous result is failing, e.g. the `#success?` method returns false and the command is not halted. A result is failing if the errors object is not empty, or if the status is set to `:failure`.
 
-      def process int
-        errors << 'errors.messages.not_even' unless int.even?
+If the command is chained with `:on => always`, then the chained command will always be executed, even if the previous result is halted.
 
-        int
-      end # method process
-    end # class
+```ruby
+find_command =
+  Cuprum::Command.new do |attributes|
+    book = Book.where(:id => attributes[:id]).first
 
-    # The next step in a Collatz sequence is determined as follows:
-    # - If the number is even, divide it by 2.
-    # - If the number is odd, multiply it by 3 and add 1.
-    collatz_command =
-      EvenCommand.new.
-        then(DivideCommand.new(2)).
-        else(MultiplyCommand.new(3).chain(AddCommand.new(1)))
+    result.errors << 'Book not found' unless book
 
-    result = collatz_command.new(5)
-    result.value #=> 16
+    book
+  end
+create_command =
+  Cuprum::Command.new do |attributes|
+    book = Book.new(attributes)
 
-    result = collatz_command.new(16)
-    result.value #=> 8
+    if book.save
+      result.success!
+    else
+      book.errors.full_messages.each { |message| result.errors << message }
+    end
+
+    book
+  end
+
+find_or_create_command = find_command.chain(create_command, :on => :failure)
+
+# With a book that exists in the database, the find_command is called and
+# returns a result with no errors and a value of the found book. The
+# create_command is not called.
+hsh    = { id: 0, title: 'Journey to the West' }
+result = find_or_create_command.call(hsh)
+book   = result.value
+book.id         #=> 0
+book.title      #=> 'Journey to the West'
+result.success? #=> true
+result.errors   #=> []
+
+# With a book that does not exist but with valid attributes, the find command
+# returns a failing result with a value of nil. The create_command is called and
+# creates a new book with the attributes, returning a passing result but
+# preserving the errors.
+hsh    = { id: 1, title: 'The Ramayana' }
+result = find_or_create_command.call(hsh)
+book   = result.value
+book.id         #=> 1
+book.title      #=> 'The Ramayana'
+result.success? #=> true
+result.errors   #=> ['Book not found']
+
+# With a book that does not exist and with invalid attributes, the find command
+# returns a failing result with a value of nil. The create_command is called and
+# is unable to create a new book with the attributes, returning the
+# (non-persisted) book and adding the validation errors.
+hsh    = { id: 2, title: nil }
+result = find_or_create_command.call(hsh)
+book   = result.value
+book.id         #=> 2
+book.title      #=> nil
+result.success? #=> false
+result.errors   #=> ['Book not found', "Title can't be blank"]
+```
+
+The `#success` method can be used as shorthand for `chain(command, :on => :success)`. Likewise, the `#failure` method can be used in place of `chain(command, :on => :failure)`.
 
 #### Halting A Command Chain
 
 If the `#halt` method is called as part of a Command block or `#process` method, the command chain is halted. Any subsequent chained commands will not be called unless they were chained with the `:on => :always` option. This allows you to terminate a Command chain early without having to raise and rescue an exception.
 
-    panic_command =
-      Cuprum::Command.new do |value|
-        halt!
+```ruby
+double_command  = Cuprum::Command.new { |i| 2 * i }
+halt_command    = Cuprum::Command.new { |value| value.tap { result.halt! } }
+add_one_command = Cuprum::Command.new { |i| i + 1 }
 
-        value
-      end # command
+chained_command =
+  double_command
+    .chain(halt_command)
+    .chain(add_one_command)
+    .chain(:on => :always) { |count| "There are #{count} lights!" }
 
-    result =
-      double_command.
-        then(panic_command).
-        then(AddCommand.new(1)). #=> This is never executed.
-        chain(:on => :always) { |count| puts "There are #{count} lights!" }.
-        call(2)
-    #=> Writes "There are 4 lights!" to STDOUT.
-
-    result.value   #= 4
-    result.halted? #=> true
+# First, double_command is called with 2, returning a result with no errors and
+# a value of 4. Then, halt_command is called, which marks the result as halted.
+# Because the result is now halted, the add_one_command is not called. Finally,
+# the last command is called (even though the result is halted, the command is
+# chained :on => :always), which returns a result with the string value. The
+# result is passing, but is still halted.
+result = chained_command.call(2)
+result.value    #=> 'There are 4 lights!'
+result.success? #=> true
+result.halted?  #=> true
+```
 
 #### Tap Results
 

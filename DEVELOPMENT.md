@@ -17,6 +17,7 @@
   - #chain!, #success!, #failure!, #tap_chain!, #yield_result!
   - adds chained command to current command instead of a clone.
 - Command#to_proc
+- :clear_errors => true option on #chain
 
 #### Cuprum::DSL
 
