@@ -10,6 +10,7 @@
 'The "Look On My Works, Ye Mighty, and Despair" Update'
 
 - Integration specs.
+- Configuration option to raise, warn, ignore discarded results.
 
 ### Commands
 
@@ -18,6 +19,7 @@
   - adds chained command to current command instead of a clone.
 - Command#to_proc
 - :clear_errors => true option on #chain
+- #context object
 
 #### Cuprum::DSL
 

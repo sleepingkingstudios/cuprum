@@ -134,7 +134,55 @@ Commands defined using `Cuprum::Command.new` are quick to use, but more difficul
 
 #### Result Values
 
-TODO
+Calling the `#call` method on a `Cuprum::Command` instance will always return an instance of `Cuprum::Result`. The result's `#value` property is determined by the object returned by the `#process` method (if the command is defined as a class) or the block (if the command is defined by passing a block to `Cuprum::Command.new`).
+
+The `#value` depends on whether or not the returned object is a result or is compatible with the result interface. Specifically, any object that responds to the methods `#to_result`, `#value`, and `#success?` is considered to be a result.
+
+If the object returned is **not** a result, then the `#value` of the returned result is set to the object.
+
+```ruby
+command = Cuprum::Command.new { 'Greetings, programs!' }
+result  = command.call
+result.class #=> Cuprum::Result
+result.value #=> 'Greetings, programs!'
+```
+
+If the object returned is the command's own result object, then the `#value` of the returned result is unchanged. For convenience, methods to set the result status or mark the result as halted will return the result.
+
+```ruby
+command = Cuprum::Command.new { result.failure! }
+result  = command.call
+result.class    #=> Cuprum::Result
+result.value    #=> nil
+result.success? #=> false
+```
+
+If the object returned is another result or compatible object, then `#call` will call the `#to_result` method on the result and return the resulting object.
+
+```ruby
+command = Cuprum::Command.new { |value| Cuprum::Result.new(value) }
+result  = command.call('Greetings, starfighter!')
+result.class #=> Cuprum::Result
+result.value #=> 'Greetings, starfighter!'
+```
+
+In some cases, returning a result directly will discard information on the command's own result object. When this occurs, Cuprum will display a warning.
+
+```ruby
+command =
+  Cuprum::Command.new do
+    result.errors << 'Oops! We are throwing away this result.'
+
+    Cuprum::Result.new
+  end
+
+#=> This calls Kernel#warn with a warning message.
+result = command.call
+result.class    #=> Cuprum::Result
+result.value    #=> nil
+result.success? #=> true
+result.errors   #=> []
+```
 
 #### Success, Failure, and Errors
 
@@ -456,11 +504,35 @@ result.success? #=> true
 result.halted?  #=> true
 ```
 
-#### Tap Results
+### Advanced Chaining
 
-TODO
+The `#tap_result` and `#yield_result` methods provide advanced control over the flow of chained commands.
 
-#### Yield Results
+#### Tap Result
+
+The `#tap_result` method allows you to insert arbitrary code into a command chain without affecting later commands. The method takes a block and yields the previous result, which is then returned and passed to the next command, or returned by `#call` if `#tap_result` is the last item in the chain.
+
+Like `#chain`, `#tap_result` can be given an `:on => value` keyword.
+
+```ruby
+chained_command =
+  find_command
+    .tap_result(:on => :success) do |result|
+      record = result.value
+
+      log("Found #{record.class} with id #{record.id}")
+    end
+    .chain(some_other_command)
+
+# First, the find_command is called with some_id, returning a result. If the
+# result is passing, it is yielded to the block in tap_result, which logs the
+# message. If the result is not passing, the tap_result block is skipped,
+# because of the :on => :success keyword. Either way, the result from
+# find_command is then passed on to some_other_command as normal.
+chained_command.call(some_id)
+```
+
+#### Yield Result
 
 TODO
 
