@@ -1,11 +1,13 @@
 # Build Options
 language: ruby
 rvm:
-- 2.4.2
+  - 2.3.6
+  - 2.4.3
+  - 2.5.0
 before_script:
-- cp .rspec.example .rspec
+  - cp .rspec.example .rspec
 script:
-- bundle exec thor ci:steps
+  - bundle exec thor ci:steps
 
 # Travis-CI Configuration
 cache: bundler
