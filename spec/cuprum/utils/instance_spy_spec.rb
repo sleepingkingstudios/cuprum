@@ -3,11 +3,11 @@ require 'cuprum/operation'
 require 'cuprum/utils/instance_spy'
 
 RSpec.describe Cuprum::Utils::InstanceSpy do
-  shared_context 'when there is an instance spy on a function class' do
-    let(:function_class) do
-      defined?(super()) ? super() : Spec::ExampleFunction
+  shared_context 'when there is an instance spy on a command class' do
+    let(:command_class) do
+      defined?(super()) ? super() : Spec::ExampleCommand
     end # let
-    let(:instance_spy) { described_class.spy_on(function_class) }
+    let(:instance_spy) { described_class.spy_on(command_class) }
 
     before(:example) do
       allow(instance_spy).to receive(:call)
@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
   end # shared_context
 
   options = { :base_class => Cuprum::Command }
-  example_class 'Spec::ExampleFunction', options do |klass|
+  example_class 'Spec::ExampleCommand', options do |klass|
     klass.send :define_method, :process do |*_args|
       'returned_value'.freeze
     end # define_method
@@ -33,15 +33,15 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
     it { expect(described_class.clear_spies).to be nil }
 
-    wrap_context 'when there is an instance spy on a function class' do
-      let(:function_instance) { function_class.new }
+    wrap_context 'when there is an instance spy on a command class' do
+      let(:command_instance) { command_class.new }
 
       it { expect(described_class.clear_spies).to be nil }
 
       it 'should clear the instance spy' do
         described_class.clear_spies
 
-        function_instance.call
+        command_instance.call
 
         expect(instance_spy).not_to have_received(:call)
       end # it
@@ -49,7 +49,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       it 'should not clear instance spies in other threads' do
         Thread.new { described_class.clear_spies }.join
 
-        function_instance.call
+        command_instance.call
 
         expect(instance_spy).to have_received(:call)
       end # it
@@ -57,7 +57,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
   end # describe
 
   describe '::spy_on' do
-    let(:function_arguments) do
+    let(:command_arguments) do
       ['ichi', 'ni', 'san', { 'yon' => 4, 'go' => 5 }]
     end # let
 
@@ -77,64 +77,64 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       end # it
     end # describe
 
-    describe 'with a function instance' do
-      let(:function_class) { Spec::ExampleFunction.new }
+    describe 'with a command instance' do
+      let(:command_class) { Spec::ExampleCommand.new }
 
       it 'should raise an error' do
-        expect { described_class.spy_on function_class }.
+        expect { described_class.spy_on command_class }.
           to raise_error ArgumentError
       end # it
     end # describe
 
-    describe 'with a function class' do
-      let(:function_class)    { Spec::ExampleFunction }
-      let(:function_instance) { function_class.new }
+    describe 'with a command class' do
+      let(:command_class)    { Spec::ExampleCommand }
+      let(:command_instance) { command_class.new }
 
       it 'should return a spy' do
-        spy = described_class.spy_on(function_class)
+        spy = described_class.spy_on(command_class)
 
         expect(spy).to be_a described_class::Spy
       end # it
 
       it 'should instrument calls to #call' do
-        spy = described_class.spy_on(function_class)
+        spy = described_class.spy_on(command_class)
 
         allow(spy).to receive(:call)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(spy).to have_received(:call).with(*function_arguments)
+        expect(spy).to have_received(:call).with(*command_arguments)
       end # it
 
-      it 'should execute the function implementation' do
-        allow(function_instance).to receive(:process)
+      it 'should execute the command implementation' do
+        allow(command_instance).to receive(:process)
 
-        described_class.spy_on(function_class)
+        described_class.spy_on(command_class)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(function_instance).
+        expect(command_instance).
           to have_received(:process).
-          with(*function_arguments)
+          with(*command_arguments)
       end # it
 
-      wrap_context 'when there is an instance spy on a function class' do
+      wrap_context 'when there is an instance spy on a command class' do
         it 'should return the existing spy' do
-          expect(described_class.spy_on(function_class)).to be instance_spy
+          expect(described_class.spy_on(command_class)).to be instance_spy
         end # it
       end # wrap_context
     end # describe
 
-    describe 'with a function class and a block' do
-      let(:function_class)    { Spec::ExampleFunction }
-      let(:function_instance) { function_class.new }
+    describe 'with a command class and a block' do
+      let(:command_class)    { Spec::ExampleCommand }
+      let(:command_instance) { command_class.new }
 
-      it { expect(described_class.spy_on(function_class) {}).to be nil }
+      it { expect(described_class.spy_on(command_class) {}).to be nil }
 
       it 'should yield a spy' do
         block_called = false
 
-        described_class.spy_on(function_class) do |spy|
+        described_class.spy_on(command_class) do |spy|
           block_called = true
 
           expect(spy).to be_a described_class::Spy
@@ -144,34 +144,34 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       end # it
 
       it 'should instrument calls to #call' do
-        described_class.spy_on(function_class) do |spy|
+        described_class.spy_on(command_class) do |spy|
           allow(spy).to receive(:call)
 
-          function_instance.call(*function_arguments)
+          command_instance.call(*command_arguments)
 
-          expect(spy).to have_received(:call).with(*function_arguments)
+          expect(spy).to have_received(:call).with(*command_arguments)
         end # spy_on
       end # it
 
-      it 'should execute the function implementation' do
-        allow(function_instance).to receive(:process)
+      it 'should execute the command implementation' do
+        allow(command_instance).to receive(:process)
 
-        described_class.spy_on(function_class) do
-          function_instance.call(*function_arguments)
+        described_class.spy_on(command_class) do
+          command_instance.call(*command_arguments)
         end # spy_on
 
-        expect(function_instance).
+        expect(command_instance).
           to have_received(:process).
-          with(*function_arguments)
+          with(*command_arguments)
       end # it
 
-      wrap_context 'when there is an instance spy on a function class' do
-        it { expect(described_class.spy_on(function_class) {}).to be nil }
+      wrap_context 'when there is an instance spy on a command class' do
+        it { expect(described_class.spy_on(command_class) {}).to be nil }
 
         it 'should yield the existing spy' do
           block_called = false
 
-          described_class.spy_on(function_class) do |spy|
+          described_class.spy_on(command_class) do |spy|
             block_called = true
 
             expect(spy).to be instance_spy
@@ -183,8 +183,8 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
     end # describe
 
     describe 'with Cuprum::Command' do
-      let(:function_class)    { Spec::ExampleFunction }
-      let(:function_instance) { function_class.new }
+      let(:command_class)    { Spec::ExampleCommand }
+      let(:command_instance) { command_class.new }
 
       it 'should return a spy' do
         spy = described_class.spy_on(Cuprum::Command)
@@ -197,61 +197,61 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
         allow(spy).to receive(:call)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(spy).to have_received(:call).with(*function_arguments)
+        expect(spy).to have_received(:call).with(*command_arguments)
       end # it
     end # describe
 
     describe 'with an operation class' do
-      let(:function_class)    { Spec::ExampleOperation }
-      let(:function_instance) { function_class.new }
+      let(:command_class)    { Spec::ExampleOperation }
+      let(:command_instance) { command_class.new }
 
       it 'should return a spy' do
-        spy = described_class.spy_on(function_class)
+        spy = described_class.spy_on(command_class)
 
         expect(spy).to be_a described_class::Spy
       end # it
 
       it 'should instrument calls to #call' do
-        spy = described_class.spy_on(function_class)
+        spy = described_class.spy_on(command_class)
 
         allow(spy).to receive(:call)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(spy).to have_received(:call).with(*function_arguments)
+        expect(spy).to have_received(:call).with(*command_arguments)
       end # it
 
-      it 'should execute the function implementation' do
-        allow(function_instance).to receive(:process)
+      it 'should execute the command implementation' do
+        allow(command_instance).to receive(:process)
 
-        described_class.spy_on(function_class)
+        described_class.spy_on(command_class)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(function_instance).
+        expect(command_instance).
           to have_received(:process).
-          with(*function_arguments)
+          with(*command_arguments)
       end # it
 
-      wrap_context 'when there is an instance spy on a function class' do
+      wrap_context 'when there is an instance spy on a command class' do
         it 'should return the existing spy' do
-          expect(described_class.spy_on(function_class)).to be instance_spy
+          expect(described_class.spy_on(command_class)).to be instance_spy
         end # it
       end # wrap_context
     end # describe
 
     describe 'with an operation class and a block' do
-      let(:function_class)    { Spec::ExampleOperation }
-      let(:function_instance) { function_class.new }
+      let(:command_class)    { Spec::ExampleOperation }
+      let(:command_instance) { command_class.new }
 
-      it { expect(described_class.spy_on(function_class) {}).to be nil }
+      it { expect(described_class.spy_on(command_class) {}).to be nil }
 
       it 'should yield a spy' do
         block_called = false
 
-        described_class.spy_on(function_class) do |spy|
+        described_class.spy_on(command_class) do |spy|
           block_called = true
 
           expect(spy).to be_a described_class::Spy
@@ -261,34 +261,34 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
       end # it
 
       it 'should instrument calls to #call' do
-        described_class.spy_on(function_class) do |spy|
+        described_class.spy_on(command_class) do |spy|
           allow(spy).to receive(:call)
 
-          function_instance.call(*function_arguments)
+          command_instance.call(*command_arguments)
 
-          expect(spy).to have_received(:call).with(*function_arguments)
+          expect(spy).to have_received(:call).with(*command_arguments)
         end # spy_on
       end # it
 
-      it 'should execute the function implementation' do
-        allow(function_instance).to receive(:process)
+      it 'should execute the command implementation' do
+        allow(command_instance).to receive(:process)
 
-        described_class.spy_on(function_class) do
-          function_instance.call(*function_arguments)
+        described_class.spy_on(command_class) do
+          command_instance.call(*command_arguments)
         end # spy_on
 
-        expect(function_instance).
+        expect(command_instance).
           to have_received(:process).
-          with(*function_arguments)
+          with(*command_arguments)
       end # it
 
-      wrap_context 'when there is an instance spy on a function class' do
-        it { expect(described_class.spy_on(function_class) {}).to be nil }
+      wrap_context 'when there is an instance spy on a command class' do
+        it { expect(described_class.spy_on(command_class) {}).to be nil }
 
         it 'should yield the existing spy' do
           block_called = false
 
-          described_class.spy_on(function_class) do |spy|
+          described_class.spy_on(command_class) do |spy|
             block_called = true
 
             expect(spy).to be instance_spy
@@ -300,8 +300,8 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
     end # describe
 
     describe 'with Cuprum::Operation' do
-      let(:function_class)    { Spec::ExampleOperation }
-      let(:function_instance) { function_class.new }
+      let(:command_class)    { Spec::ExampleOperation }
+      let(:command_instance) { command_class.new }
 
       it 'should return a spy' do
         spy = described_class.spy_on(Cuprum::Operation)
@@ -314,15 +314,15 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
         allow(spy).to receive(:call)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(spy).to have_received(:call).with(*function_arguments)
+        expect(spy).to have_received(:call).with(*command_arguments)
       end # it
     end # describe
 
     describe 'with a module' do
-      let(:function_class)    { Spec::ExampleOperation }
-      let(:function_instance) { function_class.new }
+      let(:command_class)    { Spec::ExampleOperation }
+      let(:command_instance) { command_class.new }
 
       it 'should return a spy' do
         spy = described_class.spy_on(Cuprum::Operation::Mixin)
@@ -335,52 +335,52 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
 
         allow(spy).to receive(:call)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(spy).to have_received(:call).with(*function_arguments)
+        expect(spy).to have_received(:call).with(*command_arguments)
       end # it
 
-      it 'should execute the function implementation' do
-        allow(function_instance).to receive(:process)
+      it 'should execute the command implementation' do
+        allow(command_instance).to receive(:process)
 
         described_class.spy_on(Cuprum::Operation::Mixin)
 
-        function_instance.call(*function_arguments)
+        command_instance.call(*command_arguments)
 
-        expect(function_instance).
+        expect(command_instance).
           to have_received(:process).
-          with(*function_arguments)
+          with(*command_arguments)
       end # it
     end # describe
 
-    wrap_context 'when there is an instance spy on a function class' do
-      describe 'with a function subclass' do
-        let(:function_subclass) { Class.new(function_class) }
-        let(:function_instance) { function_subclass.new }
+    wrap_context 'when there is an instance spy on a command class' do
+      describe 'with a command subclass' do
+        let(:command_subclass) { Class.new(command_class) }
+        let(:command_instance) { command_subclass.new }
 
         it 'should return a spy' do
-          spy = described_class.spy_on(function_subclass)
+          spy = described_class.spy_on(command_subclass)
 
           expect(spy).to be_a described_class::Spy
           expect(spy).not_to be instance_spy
         end # it
 
         it 'should instrument calls to #call on the subclass' do
-          spy = described_class.spy_on(function_subclass)
+          spy = described_class.spy_on(command_subclass)
 
           allow(instance_spy).to receive(:call)
           allow(spy).to receive(:call)
 
-          function_instance.call(*function_arguments)
+          command_instance.call(*command_arguments)
 
-          expect(instance_spy).to have_received(:call).with(*function_arguments)
-          expect(spy).to have_received(:call).with(*function_arguments)
+          expect(instance_spy).to have_received(:call).with(*command_arguments)
+          expect(spy).to have_received(:call).with(*command_arguments)
         end # it
 
         it 'should not instrument calls in other threads' do
           allow(instance_spy).to receive(:call)
 
-          Thread.new { function_instance.call(*function_arguments) }.join
+          Thread.new { command_instance.call(*command_arguments) }.join
 
           expect(instance_spy).not_to have_received(:call)
         end # it

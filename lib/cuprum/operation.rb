@@ -3,7 +3,7 @@ require 'cuprum/command'
 module Cuprum
   # Functional object with syntactic sugar for tracking the last result.
   #
-  # An Operation is like a Function, but with two key differences. First, an
+  # An Operation is like a Command, but with two key differences. First, an
   # Operation retains a reference to the result object from the most recent time
   # the operation was called and delegates the methods defined by Cuprum::Result
   # to the most recent result. This allows a called Operation to replace a
@@ -28,14 +28,14 @@ module Cuprum
   #     end # if-else
   #   end # create
   #
-  # Like a Function, an Operation can be defined directly by passing an
+  # Like a Command, an Operation can be defined directly by passing an
   # implementation block to the constructor or by creating a subclass that
   # overwrites the #process method.
   #
   # @see Cuprum::Command
   class Operation < Cuprum::Command
     # Module-based implementation of the Operation methods. Use this to convert
-    # an already-defined function into an operation.
+    # an already-defined command into an operation.
     #
     # @example
     #   class CustomOperation < CustomCommand

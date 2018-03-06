@@ -10,8 +10,8 @@ module Cuprum
   # by defining a subclass of Command and implementing the #process method.
   #
   # @example A Command with a block
-  #   double_function = Cuprum::Command.new { |int| 2 * int }
-  #   result          = double_function.call(5)
+  #   double_command = Cuprum::Command.new { |int| 2 * int }
+  #   result         = double_command.call(5)
   #
   #   result.value #=> 10
   #
@@ -28,8 +28,8 @@ module Cuprum
   #     end # method process
   #   end # class
   #
-  #   triple_function = MultiplyCommand.new(3)
-  #   result          = triple_function.call(5)
+  #   triple_command = MultiplyCommand.new(3)
+  #   result         = command_command.call(5)
   #
   #   result.value #=> 15
   #
@@ -52,14 +52,14 @@ module Cuprum
   #     end # method process
   #   end # class
   #
-  #   halve_function = DivideCommand.new(2)
-  #   result         = halve_function.call(10)
+  #   halve_command = DivideCommand.new(2)
+  #   result        = halve_command.call(10)
   #
   #   result.errors #=> []
   #   result.value  #=> 5
   #
-  #   function_with_errors = DivideCommand.new(0)
-  #   result               = function_with_errors.call(10)
+  #   command_with_errors = DivideCommand.new(0)
+  #   result              = command_with_errors.call(10)
   #
   #   result.errors #=> ['errors.messages.divide_by_zero']
   #   result.value  #=> nil
@@ -82,7 +82,7 @@ module Cuprum
   #
   #   result.value #=> 5
   #
-  # @example Conditional Chaining With #then And #else
+  # @example Conditional Chaining
   #   class EvenCommand < Cuprum::Command
   #     private
   #
@@ -96,16 +96,23 @@ module Cuprum
   #   # The next step in a Collatz sequence is determined as follows:
   #   # - If the number is even, divide it by 2.
   #   # - If the number is odd, multiply it by 3 and add 1.
-  #   collatz_function =
+  #   collatz_command =
   #     EvenCommand.new.
-  #       then(DivideCommand.new(2)).
-  #       else(MultiplyCommand.new(3).chain(AddCommand.new(1)))
+  #       chain(DivideCommand.new(2), :on => :success).
+  #       chain(
+  #         MultiplyCommand.new(3).chain(AddCommand.new(1),
+  #         :on => :failure
+  #       )
   #
-  #   result = collatz_function.new(5)
+  #   result = collatz_command.new(5)
   #   result.value #=> 16
   #
-  #   result = collatz_function.new(16)
+  #   result = collatz_command.new(16)
   #   result.value #=> 8
+  #
+  # @see Cuprum::Chaining
+  # @see Cuprum::Processing
+  # @see Cuprum::ResultHelpers
   class Command
     include Cuprum::Processing
     include Cuprum::Chaining

@@ -2,7 +2,7 @@ require 'cuprum/built_in'
 require 'cuprum/command'
 
 module Cuprum::BuiltIn
-  # A predefined function that returns the value or result it was called with.
+  # A predefined command that returns the value or result it was called with.
   #
   # @example With a value.
   #   result = IdentityCommand.new.call('custom value')

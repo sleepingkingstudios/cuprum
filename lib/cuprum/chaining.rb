@@ -5,6 +5,149 @@ module Cuprum
   # Chaining commands allows you to define complex logic by composing it from
   # simpler commands, including branching logic and error handling.
   #
+  # @example Chaining Commands
+  #   # By chaining commands together with the #chain instance method, we set up
+  #   # a series of commands to run in sequence. Each chained command is passed
+  #   # the value of the previous command.
+  #
+  #   class GenerateUrlCommand
+  #     include Cuprum::Processing
+  #
+  #     private
+  #
+  #     # Acts as a pipeline, taking a value (the title of the given post) and
+  #     # calling the underscore, URL safe, and prepend date commands. By
+  #     # passing parameters to PrependDateCommand, we can customize the command
+  #     # in the pipeline to the current context (in this case, the Post).
+  #     def process post
+  #       UnderscoreCommand.new.
+  #         chain(UrlSafeCommand.new).
+  #         chain(PrependDateCommand.new(post.created_at)).
+  #         call(post.title)
+  #     end # method process
+  #   end # class
+  #
+  #   title = 'Greetings, programs!'
+  #   date  = '1982-07-09'
+  #   post  = Post.new(:title => title, :created_at => date)
+  #   url   = GenerateUrlCommand.new.call(post).value
+  #   #=> '1982_07_09_greetings_programs'
+  #
+  #   title = 'Plasma-based Einhanders in Popular Media'
+  #   date  = '1977-05-25'
+  #   post  = Post.new(:title => title, :created_at => date)
+  #   url   = GenerateUrlCommand.new.call(post).value
+  #   #=> '1977_05_25_plasma_based_einhanders_in_popular_media'
+  #
+  # @example Conditional Chaining
+  #   # Commands can be conditionally chained based on the success or failure of
+  #   # the previous command using the on: keyword. If the command is chained
+  #   # using on: :success, it will only be called if the result is passing.
+  #   # If the command is chained using on: :failure, it will only be called if
+  #   # the command is failing. This can be used to perform error handling.
+  #
+  #   class CreateTaggingCommand
+  #     include Cuprum::Processing
+  #
+  #     private
+  #
+  #     # Tries to find the tag with the given name. If that fails, creates a
+  #     # new tag with the given name. If the tag is found, or if the new tag is
+  #     # successfully created, then creates a tagging using the tag. If the tag
+  #     # is not found and cannot be created, then the tagging is not created
+  #     # and the result of the CreateTaggingCommand is a failure with the
+  #     # appropriate error messages.
+  #     def process taggable, tag_name
+  #       FindTag.new.call(tag_name).
+  #         # The chained command is called with the value of the previous
+  #         # command, in this case the Tag or nil returned by FindTag.
+  #         chain(:on => :failure) do |tag|
+  #           # Chained commands share a result object, including errors. To
+  #           # rescue a command chain and return the execution to the "happy
+  #           # path", use on: :failure and clear the errors.
+  #           result.errors.clear
+  #
+  #           Tag.create(tag_name)
+  #         end.
+  #         chain(:on => :success) do |tag|
+  #           tag.create_tagging(taggable)
+  #         end
+  #     end # method process
+  #   end # method class
+  #
+  #   post        = Post.create(:title => 'Tagging Example')
+  #   example_tag = Tag.create(:name => 'Example Tag')
+  #
+  #   result = CreateTaggingCommand.new.call(post, 'Example Tag')
+  #   result.success? #=> true
+  #   result.errors   #=> []
+  #   result.value    #=> an instance of Tagging
+  #   post.tags.map(&:name)
+  #   #=> ['Example Tag']
+  #
+  #   result = CreateTaggingCommand.new.call(post, 'Another Tag')
+  #   result.success? #=> true
+  #   result.errors   #=> []
+  #   result.value    #=> an instance of Tagging
+  #   post.tags.map(&:name)
+  #   #=> ['Example Tag', 'Another Tag']
+  #
+  #   result = CreateTaggingCommand.new.call(post, 'An Invalid Tag Name')
+  #   result.success? #=> false
+  #   result.errors   #=> [{ tag: { name: ['is invalid'] }}]
+  #   post.tags.map(&:name)
+  #   #=> ['Example Tag', 'Another Tag']
+  #
+  # @example Yield Result and Tap Result
+  #   # The #yield_result method allows for advanced control over a step in the
+  #   # command chain. The block will be yielded the result at that point in the
+  #   # chain, and will wrap the returned value in a result to the next chained
+  #   # command (or return it directly if the returned value is a result).
+  #   #
+  #   # The #tap_result method inserts arbitrary code into the command chain
+  #   # without interrupting it. The block will be yielded the result at that
+  #   # point in the chain and will pass that same result to the next chained
+  #   # command after executing the block. The return value of the block is
+  #   # ignored.
+  #
+  #   class UpdatePostCommand
+  #     include Cuprum::Processing
+  #
+  #     private
+  #
+  #     def process id, attributes
+  #       # First, find the referenced post.
+  #       Find.new(Post).call(id).
+  #         yield_result(:on => :failure) do |result|
+  #           redirect_to posts_path
+  #
+  #           # A halted result prevents further :on => :failure commands from
+  #           # being called.
+  #           result.halt!
+  #         end.
+  #         yield_result do |result|
+  #           # Assign our attributes and save the post.
+  #           UpdateAttributes.new.call(result.value, attributes)
+  #         end.
+  #         tap_result(:on => :success) do |result|
+  #           # Create our tags, but still return the result of our update.
+  #           attributes[:tags].each do |tag_name|
+  #             CreateTaggingCommand.new.call(result.value, tag_name)
+  #           end
+  #         end.
+  #         tap_result(:on => :always) do |result|
+  #           # Chaining :on => :always ensures that the command will be run,
+  #           # even if the previous result is failing or halted.
+  #           if result.failure?
+  #             log_errors(
+  #               :command => UpdatePostCommand,
+  #               :errors => result.errors
+  #             )
+  #           end
+  #         end
+  #     end
+  #   end
+  #
   # @see Cuprum::Command
   module Chaining
     # Creates a copy of the first command, and then chains the given command or

@@ -1,7 +1,7 @@
 # A lightweight, functional-lite toolkit for making business logic a first-class
 # citizen of your application.
 module Cuprum
-  autoload :Function,  'cuprum/function'
+  autoload :Command,   'cuprum/command'
   autoload :Operation, 'cuprum/operation'
   autoload :Result,    'cuprum/result'
 
