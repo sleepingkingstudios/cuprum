@@ -512,29 +512,143 @@ The `#tap_result` and `#yield_result` methods provide advanced control over the 
 
 The `#tap_result` method allows you to insert arbitrary code into a command chain without affecting later commands. The method takes a block and yields the previous result, which is then returned and passed to the next command, or returned by `#call` if `#tap_result` is the last item in the chain.
 
+```ruby
+command =
+  Cuprum::Command.new do
+    result.errors << 'Example error'
+
+    'Example value'
+  end
+chained_command =
+  command
+    .tap_result do |result|
+      puts "The result value was #{result.inspect}"
+    end
+
+# Prints 'The result value was "Example value"' to STDOUT.
+result = chained_command.call
+result.class    #=> Cuprum::Result
+result.value    #=> 'Example value'
+result.success? #=> false
+result.errors   #=> ['Example error']
+```
+
 Like `#chain`, `#tap_result` can be given an `:on => value` keyword.
 
 ```ruby
+find_book_command =
+  Cuprum::Command.new do |book_id|
+    book = Book.where(:id => book_id).first
+
+    result.errors << "Unable to find book with id #{book_id}" unless book
+
+    book
+  end
+
 chained_command =
-  find_command
+  find_book_command
     .tap_result(:on => :success) do |result|
-      record = result.value
-
-      log("Found #{record.class} with id #{record.id}")
+      render :show, :locals => { :book => result.value }
     end
-    .chain(some_other_command)
+    .tap_result(:on => :failure) do
+      redirect_to books_path
+    end
 
-# First, the find_command is called with some_id, returning a result. If the
-# result is passing, it is yielded to the block in tap_result, which logs the
-# message. If the result is not passing, the tap_result block is skipped,
-# because of the :on => :success keyword. Either way, the result from
-# find_command is then passed on to some_other_command as normal.
-chained_command.call(some_id)
+# Calls find_book_command with the id, which queries for the book and returns a
+# result with a value of the book and no errors. Then, the first tap_result
+# block is evaluated, calling the render method and passing it the book via the
+# result.value method. Because the result is passing, the next block is skipped.
+# Finally, the result of find_book_command is returned unchanged.
+result = chained_command.call(valid_id)
+result.class    #=> Cuprum::Result
+result.value    #=> an instance of Book
+result.success? #=> true
+result.errors   #=> []
+
+# Calls find_book_command with the id, which queries for the book and returns a
+# result with a value of nil and the error message. Because the result is
+# failing, the first block is skipped. The second block is then evaluated,
+# calling the redirect_to method. Finally, the result of find_book_command is
+# returned unchanged.
+result = chained_command.call(invalid_id)
+result.class    #=> Cuprum::Result
+result.value    #=> nil
+result.success? #=> false
+result.errors   #=> ['Unable to find book with id invalid_id']
 ```
 
 #### Yield Result
 
-TODO
+The `#yield_result` method offers advanced control over a chained command step. The method takes a block and yields the previous result. If the object returned by the block is not a result, a new result is created with a value equal to the returned object. In either case, the result is returned and passed to the next command, or returned by `#call` if `#tap_result` is the last item in the chain.
+
+Unlike `#chain`, the block in `#yield_result` yields the previous result, not the previous value. In addition, `#yield_result` does not automatically carry over any errors from the previous result, the result status, or whether the result was marked as halted.
+
+```ruby
+chained_command =
+  Cuprum::Command.new do
+    'Example value'
+  end
+  .yield_result do |result|
+    result.errors << 'Example error'
+
+    result
+  end
+  .yield_result do |result|
+    "The last result was a #{result.success? ? 'success' : 'failure'}."
+  end
+
+# The first command creates a passing result with a value of 'Example value'.
+#
+# This is passed to the first yield_result block, which adds the 'Example error'
+# string to the result errors, and then returns the result. Because the
+# yield_result block returns the previous result, it is then passed to the next
+# item in the chain.
+#
+# Finally, the second yield_result block is called, which checks the status of
+# the passed result. Since the second block does not return the previous result,
+# the previous result is discarded and a new result is created with the string
+# value starting with 'The last result was ...'.
+result = chained_command.call
+result.class    #=> Cuprum::Result
+result.value    #=> 'The last result was a failure.'
+result.success? #=> true
+result.errors   #=> []
+```
+
+Like `#chain`, `#yield_result` can be given an `:on => value` keyword.
+
+```ruby
+# The Collatz conjecture in mathematics concerns a sequence of numbers defined
+# as follows. Start with any positive integer. If the number is even, then
+# divide the number by two. If the number is odd, multiply by three and add one.
+# These steps are repeated until the value is one or the numbers loop.
+step_command =
+  Cuprum::Command.new do |i|
+    result.failure! unless i.even?
+
+    i
+  end
+    .yield_result(:on => :success) { |result| result.value / 2 }
+    .yield_result(:on => :failure) { |result| 1 + 3 * result.value }
+
+# Because the value is even, the first command returns a passing result with a
+# value of 8. The first yield_result block is then called with that result,
+# returning a new result with a value of 4. The result is passing, so the second
+# yield_result block is skipped and the result is returned.
+result = collatz_command.call(8)
+result.value    #=> 4
+result.success? #=> true
+
+# Because the value is odd, the first command returns a failing result with a
+# value of 5. Because the result is failing, the first yield_result block is
+# skipped. The second yield_result block is then called with the result,
+# returning a new (passing) result with a value of 16.
+result = collatz_command.call(5)
+result.value    #=> 16
+result.success? #=> true
+```
+
+Under the hood, both `#chain` and `#tap_result` are implemented on top of `#yield_result`.
 
 ### Results
 
