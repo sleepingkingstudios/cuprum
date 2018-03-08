@@ -1,10 +1,5 @@
 # Development
 
-## Version 0.7.0
-
-- Update documentation.
-- Add additional Ruby versions to test matrix.
-
 ## Version 1.0.0+
 
 'The "Look On My Works, Ye Mighty, and Despair" Update'
