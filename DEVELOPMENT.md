@@ -15,6 +15,7 @@
 - Command#to_proc
 - :clear_errors => true option on #chain
 - #context object
+- command currying
 
 #### Cuprum::DSL
 

@@ -18,6 +18,8 @@ Implemented the `#arity` method, which returns an indication of the number of ar
 
 Refactored internal logic for returning result objects.
 
+Fixed a bug causing an erroneous warning to be displayed when `#process` discards an old result with a value.
+
 ## 0.6.0
 
 The "By Your Command" Update.
