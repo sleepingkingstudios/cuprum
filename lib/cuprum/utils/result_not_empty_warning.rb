@@ -16,9 +16,15 @@ module Cuprum::Utils
 
     # @return [String] The warning message for the given result.
     def message
-      # byebug
+      return ''.freeze if warnings.empty?
+
       MESSAGE + humanize_list(warnings).freeze
     end # method message
+
+    # @return [Boolean] True if a warning is generated, otherwise false.
+    def warning?
+      !warnings.empty?
+    end # method warning?
 
     private
 
@@ -55,11 +61,12 @@ module Cuprum::Utils
     end # method status_set_warning
 
     def warnings
-      [
-        errors_not_empty_warning,
-        status_set_warning,
-        halted_warning
-      ].compact
+      @warnings ||=
+        [
+          errors_not_empty_warning,
+          status_set_warning,
+          halted_warning
+        ].compact
     end # method warnings
   end # class
 end # module

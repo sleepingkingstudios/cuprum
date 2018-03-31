@@ -128,9 +128,7 @@ module Cuprum
       if value_is_result?(other)
         return result if result == other
 
-        if result.respond_to?(:empty?) && !result.empty?
-          Cuprum.warn(Cuprum::Utils::ResultNotEmptyWarning.new(result).message)
-        end # if
+        warn_unless_empty!(result)
 
         other.to_result
       else
@@ -176,5 +174,13 @@ module Cuprum
     def value_is_result? value
       VALUE_METHODS.all? { |method_name| value.respond_to?(method_name) }
     end # method value
+
+    def warn_unless_empty! result
+      return unless result.respond_to?(:empty?) && !result.empty?
+
+      not_empty = Cuprum::Utils::ResultNotEmptyWarning.new(result)
+
+      Cuprum.warn(not_empty.message) if not_empty.warning?
+    end # method warn_unless_empty!
   end # module
 end # module
