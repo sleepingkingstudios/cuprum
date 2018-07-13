@@ -419,6 +419,261 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
+      describe '#chain!' do
+        include ChainMethodExamples
+
+        let(:first_value)  { 'first value'.freeze }
+        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:conditional)  { nil }
+        let(:chained_implementation) do
+          ->() {}
+        end # let
+
+        before(:example) do
+          allow(instance).to receive(:process).and_return(first_result)
+        end # before example
+
+        def chain_block &block
+          instance.send(:chain!, :on => conditional, &block)
+        end # method chain_block
+
+        def chain_command command
+          instance.send(:chain!, command, :on => conditional)
+        end # method chain_command
+
+        it 'should define the method' do
+          expect(instance).
+            to respond_to(:chain!, true).
+            with(0..1).arguments.
+            and_keywords(:on).
+            and_a_block
+        end # it
+
+        it 'should return the command' do
+          chained = instance.send(:chain!, :on => conditional) {}
+
+          expect(chained).to be instance
+        end # it
+
+        wrap_context 'with a block' do
+          include_examples 'should call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should not call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should call the block'
+          end # describe
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should not call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when multiple blocks are chained' do
+            let(:values) do
+              %w[second third fourth].map { |str| "#{str} value".freeze }
+            end # let
+            let(:blocks) do
+              ary = arguments
+
+              values.map do |value|
+                lambda do |arg|
+                  ary << arg
+
+                  value
+                end # lambda
+              end # results
+            end # let
+            let(:chained) do
+              instance.
+                chain(&blocks[0]).
+                chain(&blocks[1]).
+                chain(&blocks[2])
+            end # let
+            let(:arguments) { [] }
+            let(:result)    { chained.call.to_result }
+
+            it 'should call each command with the previous result value' do
+              chained.call
+
+              expect(arguments).to be == [first_value, values[0], values[1]]
+            end # it
+
+            it 'should return the first result' do
+              expect(result).to be first_result
+            end # it
+
+            it 'should set the value of the result' do
+              expect(result.value).to be == values.last
+            end # it
+          end # context
+        end # wrap_context
+
+        wrap_context 'with a command' do
+          include_examples 'should call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should not call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should call the block'
+          end # describe
+
+          context 'when the previous result is failing' do
+            let(:first_result) { super().failure! }
+
+            include_examples 'should call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when the previous result is halted' do
+            let(:first_result) { super().halt! }
+
+            include_examples 'should not call the block'
+
+            describe 'with :on => :always' do
+              let(:conditional) { :always }
+
+              include_examples 'should call the block'
+            end # describe
+
+            describe 'with :on => :failure' do
+              let(:conditional) { :failure }
+
+              include_examples 'should not call the block'
+            end # describe
+
+            describe 'with :on => :success' do
+              let(:conditional) { :success }
+
+              include_examples 'should not call the block'
+            end # describe
+          end # context
+
+          context 'when multiple commands are chained' do
+            let(:values) do
+              %w[second third fourth].map { |str| "#{str} value".freeze }
+            end # let
+            let(:commands) do
+              ary = arguments
+
+              values.map do |value|
+                Cuprum::Command.new do |arg|
+                  ary << arg
+
+                  value
+                end # command
+              end # results
+            end # let
+            let(:chained) do
+              instance.
+                chain(commands[0]).
+                chain(commands[1]).
+                chain(commands[2])
+            end # let
+            let(:arguments) { [] }
+            let(:result)    { chained.call.to_result }
+
+            it 'should call each command with the previous result value' do
+              chained.call
+
+              expect(arguments).to be == [first_value, values[0], values[1]]
+            end # it
+
+            it 'should return the first result' do
+              expect(result).to be first_result
+            end # it
+
+            it 'should set the value of the result' do
+              expect(result.value).to be == values.last
+            end # it
+          end # context
+        end # wrap_context
+      end # describe
+
       describe '#failure' do
         include ChainMethodExamples
 

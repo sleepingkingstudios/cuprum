@@ -193,15 +193,7 @@ module Cuprum
     #
     #   @yieldparam value [Object] The value of the previous result.
     def chain command = nil, on: nil, &block
-      command ||= Cuprum::Command.new(&block)
-
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => chain_command(command),
-            :on   => on
-          } # end hash
-      end # tap
+      clone.chain!(command, :on => on, &block)
     end # method chain
 
     # Shorthand for command.chain(:on => :failure). Creates a copy of the first
@@ -287,6 +279,18 @@ module Cuprum
     end # method yield_result
 
     protected
+
+    def chain! command = nil, on: nil, &block
+      command ||= Cuprum::Command.new(&block)
+
+      chained_procs <<
+        {
+          :proc => chain_command(command),
+          :on   => on
+        } # end hash
+
+      self
+    end # method chain!
 
     def chained_procs
       @chained_procs ||= []
