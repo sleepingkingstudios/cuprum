@@ -715,6 +715,163 @@ module Spec::Examples
         end # context
       end # describe
 
+      describe '#tap_result!' do
+        shared_examples 'should call the block' do
+          it 'should yield the previous result to the block' do
+            expect do |block|
+              instance.send(:tap_result!, :on => conditional, &block).call
+            end.
+              to yield_with_args(first_result)
+          end # it
+
+          it 'should return the previous result' do
+            value   = 'final value'.freeze
+            chained = instance.send(:tap_result!, :on => conditional) { value }
+
+            expect(chained.call.to_result).to be first_result
+          end # it
+        end # shared_examples
+
+        shared_examples 'should not call the block' do
+          it 'should not yield to the block' do
+            expect do |block|
+              instance.send(:tap_result!, :on => conditional, &block).call
+            end.
+              not_to yield_control
+          end # it
+
+          it 'should return the previous result' do
+            chained = instance.send(:tap_result!, :on => conditional) {}
+
+            expect(chained.call.to_result).to be first_result
+          end # it
+        end # shared_examples
+
+        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:chained_block) { ->() {} }
+        let(:conditional)   { nil }
+
+        before(:example) do
+          allow(instance).to receive(:process).and_return(first_result)
+        end # before example
+
+        it 'should define the method' do
+          expect(instance).
+            to respond_to(:tap_result!, true).
+            with(0).arguments.
+            and_keywords(:on).
+            and_a_block
+        end # it
+
+        it 'should return the command' do
+          chained = instance.send(:tap_result!, :on => conditional) {}
+
+          expect(chained).to be instance
+        end # it
+
+        include_examples 'should call the block'
+
+        describe 'with :on => :always' do
+          let(:conditional) { :always }
+
+          include_examples 'should call the block'
+        end # describe
+
+        describe 'with :on => :failure' do
+          let(:conditional) { :failure }
+
+          include_examples 'should not call the block'
+        end # describe
+
+        describe 'with :on => :success' do
+          let(:conditional) { :success }
+
+          include_examples 'should call the block'
+        end # describe
+
+        context 'when the previous result is failing' do
+          let(:first_result) { super().failure! }
+
+          include_examples 'should call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should not call the block'
+          end # describe
+        end # context
+
+        context 'when the previous result is halted' do
+          let(:first_result) { super().halt! }
+
+          include_examples 'should not call the block'
+
+          describe 'with :on => :always' do
+            let(:conditional) { :always }
+
+            include_examples 'should call the block'
+          end # describe
+
+          describe 'with :on => :failure' do
+            let(:conditional) { :failure }
+
+            include_examples 'should not call the block'
+          end # describe
+
+          describe 'with :on => :success' do
+            let(:conditional) { :success }
+
+            include_examples 'should not call the block'
+          end # describe
+        end # context
+
+        context 'when multiple results are tapped' do
+          let(:results) do
+            %w[second third fourth].
+              map { |str| "#{str} value".freeze }.
+              map { |str| Cuprum::Result.new(str) }
+          end # let
+          let(:chained) do
+            instance.
+              send(:tap_result!) do |result|
+                yielded << result
+                results[0]
+              end.
+              send(:tap_result!) do |result|
+                yielded << result
+                results[1]
+              end.
+              send(:tap_result!) do |result|
+                yielded << result
+                results[2]
+              end
+          end # let
+          let(:yielded) { [] }
+
+          it 'should yield the first result to each block' do
+            chained.call
+
+            expect(yielded).to be == Array.new(3) { first_result }
+          end # it
+
+          it 'should return the first result' do
+            expect(chained.call.to_result).to be first_result
+          end # it
+        end # context
+      end # describe
+
       describe '#yield_result' do
         shared_examples 'should call the block' do
           it 'should yield the previous result to the block' do

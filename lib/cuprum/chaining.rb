@@ -259,15 +259,7 @@ module Cuprum
     #
     # @see #yield_result
     def tap_result on: nil, &block
-      tapped = ->(result) { result.tap { block.call(result) } }
-
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => tapped,
-            :on   => on
-          } # end hash
-      end # tap
+      clone.tap_result!(:on => on, &block)
     end # method tap_result
 
     # Creates a copy of the command, and then chains the block to execute after
@@ -303,6 +295,18 @@ module Cuprum
     def process_with_result *args, &block
       yield_chain(super)
     end # method call
+
+    def tap_result! on: nil, &block
+      tapped = ->(result) { result.tap { block.call(result) } }
+
+      chained_procs <<
+        {
+          :proc => tapped,
+          :on   => on
+        } # end hash
+
+      self
+    end # method tap_result!
 
     def yield_result! on: nil, &block
       chained_procs <<
