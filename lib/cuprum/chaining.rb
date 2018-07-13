@@ -291,13 +291,7 @@ module Cuprum
     #
     # @see #tap_result
     def yield_result on: nil, &block
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => block,
-            :on   => on
-          } # end hash
-      end # tap
+      clone.yield_result!(:on => on, &block)
     end # method yield_result
 
     protected
@@ -309,6 +303,16 @@ module Cuprum
     def process_with_result *args, &block
       yield_chain(super)
     end # method call
+
+    def yield_result! on: nil, &block
+      chained_procs <<
+        {
+          :proc => block,
+          :on   => on
+        } # end hash
+
+      self
+    end # method yield_result!
 
     private
 
