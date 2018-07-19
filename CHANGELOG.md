@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0
+
+The "We Have The Technology" Update.
+
+### Commands
+
+Added protected chaining methods `#chain!`, `#tap_result!` and `#yield_result!`. These methods function as their non-imperative counterparts, but add the chained command or block to the current command instead of a clone.
+
 ## 0.7.0
 
 The "To Strive, To Seek, To Find, And Not To Yield" Update.

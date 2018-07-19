@@ -11,6 +11,7 @@ module Cuprum
   #   # the value of the previous command.
   #
   #   class GenerateUrlCommand
+  #     include Cuprum::Chaining
   #     include Cuprum::Processing
   #
   #     private
@@ -47,6 +48,7 @@ module Cuprum
   #   # the command is failing. This can be used to perform error handling.
   #
   #   class CreateTaggingCommand
+  #     include Cuprum::Chaining
   #     include Cuprum::Processing
   #
   #     private
@@ -111,6 +113,7 @@ module Cuprum
   #   # ignored.
   #
   #   class UpdatePostCommand
+  #     include Cuprum::Chaining
   #     include Cuprum::Processing
   #
   #     private
@@ -145,6 +148,25 @@ module Cuprum
   #             )
   #           end
   #         end
+  #     end
+  #   end
+  #
+  # @example Protected Chaining Methods
+  #   # Using the protected chaining methods #chain!, #tap_result!, and
+  #   # #yield_result!, you can create a command class that composes other
+  #   # commands.
+  #
+  #   # We subclass the build command, which will be executed first.
+  #   class CreateCommentCommand < BuildCommentCommand
+  #     include Cuprum::Chaining
+  #     include Cuprum::Processing
+  #
+  #     def initialize
+  #       # After the build step is run, we validate the comment.
+  #       chain!(ValidateCommentCommand.new)
+  #
+  #       # If the validation passes, we then save the comment.
+  #       chain!(SaveCommentCommand.new, on: :success)
   #     end
   #   end
   #
@@ -193,15 +215,7 @@ module Cuprum
     #
     #   @yieldparam value [Object] The value of the previous result.
     def chain command = nil, on: nil, &block
-      command ||= Cuprum::Command.new(&block)
-
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => chain_command(command),
-            :on   => on
-          } # end hash
-      end # tap
+      clone.chain!(command, :on => on, &block)
     end # method chain
 
     # Shorthand for command.chain(:on => :failure). Creates a copy of the first
@@ -223,7 +237,7 @@ module Cuprum
     #
     #   @yieldparam value [Object] The value of the previous result.
     def failure command = nil, &block
-      chain(command, :on => :failure, &block)
+      clone.chain!(command, :on => :failure, &block)
     end # method failure
 
     # Shorthand for command.chain(:on => :success). Creates a copy of the first
@@ -245,7 +259,7 @@ module Cuprum
     #
     #   @yieldparam value [Object] The value of the previous result.
     def success command = nil, &block
-      chain(command, :on => :success, &block)
+      clone.chain!(command, :on => :success, &block)
     end # method success
 
     # As #yield_result, but always returns the previous result when the block is
@@ -259,15 +273,7 @@ module Cuprum
     #
     # @see #yield_result
     def tap_result on: nil, &block
-      tapped = ->(result) { result.tap { block.call(result) } }
-
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => tapped,
-            :on   => on
-          } # end hash
-      end # tap
+      clone.tap_result!(:on => on, &block)
     end # method tap_result
 
     # Creates a copy of the command, and then chains the block to execute after
@@ -291,16 +297,62 @@ module Cuprum
     #
     # @see #tap_result
     def yield_result on: nil, &block
-      clone.tap do |fn|
-        fn.chained_procs <<
-          {
-            :proc => block,
-            :on   => on
-          } # end hash
-      end # tap
+      clone.yield_result!(:on => on, &block)
     end # method yield_result
 
     protected
+
+    # @!visibility public
+    #
+    # As #chain, but modifies the current command instead of creating a clone.
+    # This is a protected method, and is meant to be called by the command to be
+    # chained, such as during #initialize.
+    #
+    # @return [Cuprum::Chaining] The current command.
+    #
+    # @see #chain
+    #
+    # @overload chain!(command, on: nil)
+    #   @param command [Cuprum::Command] The command to chain.
+    #
+    #   @param on [Symbol] Sets a condition on when the chained block can run,
+    #     based on the previous result. Valid values are :success, :failure, and
+    #     :always. If the value is :success, the block will be called only if
+    #     the previous result succeeded and is not halted. If the value is
+    #     :failure, the block will be called only if the previous result failed
+    #     and is not halted. If the value is :always, the block will be called
+    #     regardless of the previous result status, even if the previous result
+    #     is halted. If no value is given, the command will run whether the
+    #     previous command was a success or a failure, but not if the command
+    #     chain has been halted.
+    #
+    # @overload chain!(on: nil) { |value| }
+    #   Creates an anonymous command from the given block. The command will be
+    #   passed the value of the previous result.
+    #
+    #   @param on [Symbol] Sets a condition on when the chained block can run,
+    #     based on the previous result. Valid values are :success, :failure, and
+    #     :always. If the value is :success, the block will be called only if
+    #     the previous result succeeded and is not halted. If the value is
+    #     :failure, the block will be called only if the previous result failed
+    #     and is not halted. If the value is :always, the block will be called
+    #     regardless of the previous result status, even if the previous result
+    #     is halted. If no value is given, the command will run whether the
+    #     previous command was a success or a failure, but not if the command
+    #     chain has been halted.
+    #
+    #   @yieldparam value [Object] The value of the previous result.
+    def chain! command = nil, on: nil, &block
+      command ||= Cuprum::Command.new(&block)
+
+      chained_procs <<
+        {
+          :proc => chain_command(command),
+          :on   => on
+        } # end hash
+
+      self
+    end # method chain!
 
     def chained_procs
       @chained_procs ||= []
@@ -309,6 +361,54 @@ module Cuprum
     def process_with_result *args, &block
       yield_chain(super)
     end # method call
+
+    # @!visibility public
+    #
+    # As #tap_result, but modifies the current command instead of creating a
+    # clone. This is a protected method, and is meant to be called by the
+    # command to be chained, such as during #initialize.
+    #
+    # @param (see #tap_result)
+    #
+    # @yieldparam result [Cuprum::Result] The #result of the previous command.
+    #
+    # @return (see #tap_result)
+    #
+    # @see #tap_result
+    def tap_result! on: nil, &block
+      tapped = ->(result) { result.tap { block.call(result) } }
+
+      chained_procs <<
+        {
+          :proc => tapped,
+          :on   => on
+        } # end hash
+
+      self
+    end # method tap_result!
+
+    # @!visibility public
+    #
+    # As #yield_result, but modifies the current command instead of creating a
+    # clone. This is a protected method, and is meant to be called by the
+    # command to be chained, such as during #initialize.
+    #
+    # @param (see #yield_result)
+    #
+    # @yieldparam result [Cuprum::Result] The #result of the previous command.
+    #
+    # @return (see #yield_result)
+    #
+    # @see #yield_result
+    def yield_result! on: nil, &block
+      chained_procs <<
+        {
+          :proc => block,
+          :on   => on
+        } # end hash
+
+      self
+    end # method yield_result!
 
     private
 
