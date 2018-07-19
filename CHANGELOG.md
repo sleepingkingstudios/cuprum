@@ -8,6 +8,8 @@ The "We Have The Technology" Update.
 
 Added protected chaining methods `#chain!`, `#tap_result!` and `#yield_result!`. These methods function as their non-imperative counterparts, but add the chained command or block to the current command instead of a clone.
 
+Removed the ResultHelpers mixin from the default Command class. To use the result helper methods, include Cuprum::ResultHelpers in your command class.
+
 ## 0.7.0
 
 The "To Strive, To Seek, To Find, And Not To Yield" Update.

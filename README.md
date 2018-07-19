@@ -917,7 +917,7 @@ Generates an empty errors object. When the command is called, the result will ha
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#build_errors-instance_method)
 
-#### #call
+#### `#call`
 
     call(*arguments, **keywords) { ... } #=> Cuprum::Result
 
@@ -925,7 +925,7 @@ Executes the logic encoded in the constructor block, or the #process method if n
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#call-instance_method)
 
-#### #chain
+#### `#chain`
 
     chain(on: nil) { |result| ... } #=> Cuprum::Command
 
@@ -940,6 +940,18 @@ The block will be passed the #result of the previous command as its parameter. I
 If the block returns a Cuprum::Result (or an object responding to #value and #success?), the block result will be returned (or passed to the next chained command, if any). If the block returns any other value (including nil), the #result of the previous command will be returned or passed to the next command.
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#chain-instance_method)
+
+#### `#chain!`
+
+*(Protected Method)*
+
+    chain!(on: nil) { |result| ... } #=> Cuprum::Command
+
+    chain!(command, on: nil) #=> Cuprum::Command
+
+As `#chain`, but modifies the current command instead of creating a clone.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#chain!-instance_method)
 
 #### `#else`
 
@@ -957,61 +969,6 @@ If the block returns a Cuprum::Result (or an object responding to #value and #su
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#else-instance_method)
 
-#### `#errors`
-
-*(Private Method)*
-
-    errors() #=> Array
-
-Only available while the Command is being called. Provides access to the errors object of the generated Cuprum::Result, which is by default an instance of Array.
-
-Inside of the Command block or the `#process` method, you can add errors to the result.
-
-    command =
-      Cuprum::Command.new do
-        errors << "I'm sorry, something went wrong."
-
-        nil
-      end # command
-
-    result = command.call
-    result.failure?
-    #=> true
-    result.errors
-    #=> ["I'm sorry, something went wrong."]
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#errors-instance_method)
-
-#### `#failure!`
-
-    failure!() #=> NilClass
-
-*(Private Method)*
-
-Only available while the Command is being called. If called, marks the result object as failing, even if the result does not have errors.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#failure!-instance_method)
-
-#### `#halt!`
-
-    halt!() #=> NilClass
-
-*(Private Method)*
-
-Only available while the Command is being called. If called, halts the command chain (see Chaining Commands, below). Subsequent chained commands will not be called unless they were chained with the `:on => :always` option.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#halt!-instance_method)
-
-#### `#success!`
-
-    success!() #=> NilClass
-
-*(Private Method)*
-
-Only available while the Command is being called. If called, marks the result object as passing, even if the result has errors.
-
-[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#success!-instance_method)
-
 #### `#tap_result`
 
     tap_result(on: nil) { |previous_result| } #=> Cuprum::Result
@@ -1019,6 +976,18 @@ Only available while the Command is being called. If called, marks the result ob
 Creates a copy of the command, and then chains the block to execute after the command implementation. When #call is executed, each chained block will be yielded the previous result, and the previous result returned or yielded to the next block. The return value of the block is discarded.
 
 If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#tap_result-instance_method)
+
+#### `#tap_result!`
+
+*(Protected Method)*
+
+    tap_result!(on: nil) { |previous_result| } #=> Cuprum::Result
+
+As `#tap_result`, but modifies the current command instead of creating a clone.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#tap_result!-instance_method)
 
 #### `#then`
 
@@ -1045,6 +1014,16 @@ Creates a copy of the command, and then chains the block to execute after the co
 If the `on` parameter is omitted, the block will be called if the last result is not halted. If the `on` parameter is set to `:success`, the block will be called if the last result is successful and not halted. If the `on` parameter is set to `:failure`, the block will be called if the last result is failing and not halted. Finally, if the `on` parameter is set to `:always`, the block will always be called, even if the last result is halted.
 
 [Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#yield_result-instance_method)
+
+#### `#yield_result!`
+
+*(Protected Method)*
+
+    yield_result!(on: nil) { |previous_result| } #=> Cuprum::Result
+
+As `#yield_result`, but modifies the current command instead of creating a clone.
+
+[Method Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum/Command#yield_result!-instance_method)
 
 ### Cuprum::Operation
 
