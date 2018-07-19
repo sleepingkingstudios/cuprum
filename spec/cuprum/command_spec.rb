@@ -2,12 +2,10 @@ require 'cuprum/command'
 
 require 'support/examples/chaining_examples'
 require 'support/examples/processing_examples'
-require 'support/examples/result_helpers_examples'
 
 RSpec.describe Cuprum::Command do
   include Spec::Examples::ChainingExamples
   include Spec::Examples::ProcessingExamples
-  include Spec::Examples::ResultHelpersExamples
 
   subject(:instance) { described_class.new }
 
@@ -23,8 +21,6 @@ RSpec.describe Cuprum::Command do
   include_examples 'should implement the Processing interface'
 
   include_examples 'should implement the Processing methods'
-
-  include_examples 'should implement the ResultHelpers methods'
 
   describe '#call' do
     let(:implementation) { ->() {} }
@@ -50,9 +46,5 @@ RSpec.describe Cuprum::Command do
 
       include_examples 'should execute the command implementation'
     end # context
-  end # describe
-
-  describe '#errors' do
-    include_examples 'should have private reader', :errors
   end # describe
 end # describe

@@ -1,6 +1,5 @@
 require 'cuprum/chaining'
 require 'cuprum/processing'
-require 'cuprum/result_helpers'
 
 module Cuprum
   # Functional object that encapsulates a business logic operation with a
@@ -112,11 +111,9 @@ module Cuprum
   #
   # @see Cuprum::Chaining
   # @see Cuprum::Processing
-  # @see Cuprum::ResultHelpers
   class Command
     include Cuprum::Processing
     include Cuprum::Chaining
-    include Cuprum::ResultHelpers
 
     # Returns a new instance of Cuprum::Command.
     #
