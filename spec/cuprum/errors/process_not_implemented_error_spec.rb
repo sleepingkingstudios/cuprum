@@ -1,6 +1,6 @@
-require 'cuprum/not_implemented_error'
+require 'cuprum/errors/process_not_implemented_error'
 
-RSpec.describe Cuprum::NotImplementedError do
+RSpec.describe Cuprum::Errors::ProcessNotImplementedError do
   subject(:instance) { described_class.new(message) }
 
   let(:message) { nil }
@@ -14,12 +14,12 @@ RSpec.describe Cuprum::NotImplementedError do
       expect(described_class).
         to have_immutable_constant(:DEFAULT_MESSAGE).
         with_value(be == expected)
-    end # it
-  end # describe
+    end
+  end
 
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0..1).arguments }
-  end # describe
+  end
 
   describe '#message' do
     let(:expected) { 'no implementation defined for command'.freeze }
@@ -30,9 +30,9 @@ RSpec.describe Cuprum::NotImplementedError do
       let(:message) do
         'Unable to log out because you are not logged in. Please log in so ' \
         'you can log out.'
-      end # let
+      end
 
       it { expect(instance.message).to be == message }
-    end # context
-  end # describe
-end # describe
+    end
+  end
+end
