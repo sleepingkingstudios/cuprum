@@ -650,6 +650,43 @@ result.success? #=> true
 
 Under the hood, both `#chain` and `#tap_result` are implemented on top of `#yield_result`.
 
+#### Protected Chaining Methods
+
+Each Command also defines the `#chain!`, `#tap_result!`, and `#yield_result!` methods - note the imperative `!`. These methods behave identically to their non-imperative counterparts, but they modify the current command directly instead of creating a clone. They are also protected methods, so they cannot be called from outside the command itself. These methods are designed for use when defining commands.
+
+```ruby
+# We subclass the build command, which will be executed first.
+class CreateCommentCommand < BuildCommentCommand
+  include Cuprum::Chaining
+  include Cuprum::Processing
+  #
+  def initialize
+    # After the build step is run, we validate the comment.
+    chain!(ValidateCommentCommand.new)
+  #
+    # If the validation passes, we then save the comment.
+    chain!(SaveCommentCommand.new, on: :success)
+  end
+end
+
+Comment.count #=> 0
+
+body   = 'Why do hot dogs come in packages of ten, and hot dog buns come in ' \
+         'packages of eight?'
+result = CreateCommentCommand.new.call({ user_id: '12345', body: body })
+
+result.value    #=> an instance of Comment with the given user_id and body.
+result.success? #=> true
+Comment.count   #=> 1; the comment was added to the database
+
+result = CreateCommentCommand.new.call({ user_id: nil, body: body })
+
+result.value    #=> an instance of Comment with the given user_id and body.
+result.success? #=> false
+result.errors   #=> ["User id can't be blank"]
+Comment.count   #=> 1; the comment was not added to the database
+```
+
 ### Results
 
     require 'cuprum'
