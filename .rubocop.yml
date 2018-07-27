@@ -14,7 +14,8 @@ Layout/AlignParameters:
   IndentationWidth: ~
 
 Layout/DotPosition:
-  EnforcedStyle: trailing
+  # Disabled while transitioning to modern syntax.
+  Enabled: false
 
 Layout/EmptyLineBetweenDefs:
   AllowAdjacentOneLineDefs: true
@@ -74,10 +75,12 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/HashSyntax:
-  EnforcedStyle: hash_rockets
+  # Disabled while transitioning to modern syntax.
+  Enabled: false
 
 Style/MethodDefParentheses:
-  EnforcedStyle: require_no_parentheses_except_multiline
+  # Disabled while transitioning to modern syntax.
+  Enabled: false
 
 Style/MultilineBlockChain:
   # Incompatible with operation then/else syntax.

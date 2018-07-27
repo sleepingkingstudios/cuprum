@@ -14,6 +14,12 @@
 
 - builder/aggregator for command objects, esp. with shared
   initializers/parameters, e.g. actions for a resource
+- ::command method:
+  - with a command class, e.g. BuildBookCommand
+    - defines class at ::Build
+    - defines instance method at #build
+  - with a block
+    - defines instance method at #build
 - Syntax: |
 
   actions = ResourceCommandFactory.new(Book)
