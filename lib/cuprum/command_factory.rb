@@ -10,12 +10,13 @@ module Cuprum
   #     command :build, BuildCommand
   #
   #     command :fly { |launch_site:| FlyCommand.new(launch_site) }
+  #
+  #     command_class :dream { DreamCommand }
   #   end
   #
   #   factory = SpaceFactory.new
   #
   #   factory::Build #=> BuildCommand
-  #   # OR
   #   factory.build  #=> an instance of BuildCommand
   #
   #   rocket = factory.build.call({ size: 'big' }) #=> an instance of Rocket
@@ -24,29 +25,27 @@ module Cuprum
   #   command = factory.fly(launch_site: 'KSC') #=> an instance of FlyCommand
   #   command.call(rocket)
   #   #=> launches the rocket from KSC
+  #
+  #   factory::Dream #=> DreamCommand
+  #   factory.dream  #=> an instance of DreamCommand
   class CommandFactory < Module
     # Defines the Domain-Specific Language and helper methods for dynamically
     # defined commands.
     class << self
-      ABSTRACT_ERROR_MESSAGE =
-        'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
-        'define commands for a factory.'.freeze
-      private_constant :ABSTRACT_ERROR_MESSAGE
-
-      INVALID_DEFINITION_ERROR_MESSAGE =
-        'definition must be a command class'.freeze
-      private_constant :INVALID_DEFINITION_ERROR_MESSAGE
-
-      MISSING_DEFINITION_ERROR_MESSAGE =
-        'must provide a command class or a block'.freeze
-      private_constant :MISSING_DEFINITION_ERROR_MESSAGE
-
       # Defines a command for the factory.
       #
       # @overload command(name, command_class)
-      #   Defines a command using the given factory class. The command class can
-      #   be accessed from a factory instance as a constant factory::Name, and
-      #   the method factory.name() will build an instance of the class.
+      #   Defines a command using the given factory class. For example, when a
+      #   command is defined with the name "whirlpool" and the WhirlpoolCommand
+      #   class:
+      #
+      #   A factory instance will define the constant ::Whirlpool, and accessing
+      #   factory::Whirlpool will return the WhirlpoolCommand class.
+      #
+      #   A factory instance will define the method #whirlpool, and calling
+      #   factory#whirlpool will return an instance of WhirlpoolCommand. Any
+      #   arguments passed to the #whirlpool method will be forwarded to the
+      #   constructor when building the command.
       #
       #   @param name [String, Symbol] The name of the command.
       #   @param command_class [Class] The command class. Must be a subclass of
@@ -62,10 +61,19 @@ module Cuprum
       #     factory.cut  #=> an instance of CutCommand
       #
       # @overload command(name) { |*args| }
-      #   Defines a command using the given block. The method factory.name()
-      #   will execute the block in the context of the factory instance (this
-      #   allows you to use methods or instance variables from the factory) and
-      #   will return the created command instance.
+      #   Defines a command using the given block, which must return an instance
+      #   of a Cuprum::Command subclass. For example, when a command is defined
+      #   with the name "dive" and a block that returns an instance of the
+      #   DiveCommand class:
+      #
+      #   A factory instance will define the method #dive, and calling
+      #   factory#dive will call the block and return the resulting command
+      #   instance. Any arguments passed to the #dive method will be forwarded
+      #   to the block when building the command.
+      #
+      #   The block will be evaluated in the context of the factory instance, so
+      #   it has access to any methods or instance variables defined for the
+      #   factory instance.
       #
       #   @param name [String, Symbol] The name of the command.
       #
@@ -93,6 +101,65 @@ module Cuprum
           define_command_from_block(defn, name: name)
         else
           require_definition!
+        end
+      end
+
+      # Defines a command using the given block, which must return a subclass of
+      # Cuprum::Command. For example, when a command is defined with the name
+      # "rock_climb" and a block returning a subclass of RockClimbCommand:
+      #
+      # A factory instance will define the constant ::RockClimb, and accessing
+      # factory::RockClimb will call the block and return the resulting command
+      # class. This value is memoized, so subsequent factory::RockClimb accesses
+      # on the same factory instance will return the same command class.
+      #
+      # A factory instance will define the method #rock_climb, and calling
+      # factory#rock_climb will access the constant at ::RockClimb and return an
+      # instance of that subclass of RockClimbCommand. Any arguments passed to
+      # the #whirlpool method will be forwarded to the constructor when building
+      # the command.
+      #
+      # @param name [String, Symbol] The name of the command.
+      # @yield The block will be executed in the context of the factory
+      #   instance.
+      # @yieldparam *args [Array] Any arguments given to the method
+      #   factory.name() will be passed on the block.
+      # @yieldreturn [Cuprum::Command] The block return an instance of a
+      #   Cuprum::Command subclass, or else raise an error.
+      #
+      # @example
+      #   class MoveFactory < Cuprum::CommandFactory
+      #     command_class :flash do
+      #       Class.new(FlashCommand) do
+      #         def brightness
+      #           :intense
+      #         end
+      #       end
+      #     end
+      #   end
+      #
+      #   factory = MoveFactory.new
+      #   factory::Flash #=> a subclass of FlashCommand
+      #   factory.flash  #=> an instance of factory::Flash
+      #
+      #   command = factory.flash
+      #   command.brightness #=> :intense
+      def command_class(name, &defn)
+        guard_abstract_factory!
+
+        raise ArgumentError, 'must provide a block'.freeze unless block_given?
+
+        builder = defn
+        name    = normalize_command_name(name)
+
+        (@command_definitions ||= {})[name] = builder
+
+        const_name = tools.string.camelize(name)
+
+        define_method(name) do |*args, &block|
+          command_class = const_get(const_name)
+
+          command_class.new(*args, &block)
         end
       end
 
@@ -138,13 +205,17 @@ module Cuprum
       end
 
       def guard_abstract_factory!
-        raise NotImplementedError, ABSTRACT_ERROR_MESSAGE if abstract_factory?
+        return unless abstract_factory?
+
+        raise NotImplementedError,
+          'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
+          'define commands for a factory.'.freeze
       end
 
       def guard_invalid_definition!(command_class)
         return if command_class.is_a?(Class) && command_class < Cuprum::Command
 
-        raise ArgumentError, INVALID_DEFINITION_ERROR_MESSAGE
+        raise ArgumentError, 'definition must be a command class'.freeze
       end
 
       def normalize_command_name(command_name)
@@ -152,7 +223,7 @@ module Cuprum
       end
 
       def require_definition!
-        raise ArgumentError, MISSING_DEFINITION_ERROR_MESSAGE
+        raise ArgumentError, 'must provide a command class or a block'.freeze
       end
 
       def tools
@@ -186,9 +257,12 @@ module Cuprum
 
       return super unless command_defn
 
-      const_set(const_name, command_defn)
+      command_class =
+        command_defn.is_a?(Proc) ? instance_exec(&command_defn) : command_defn
 
-      command_defn
+      const_set(const_name, command_class)
+
+      command_class
     end
 
     private

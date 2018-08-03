@@ -34,13 +34,26 @@ RSpec.describe Cuprum::CommandFactory do
   end
 
   shared_context 'when a command is defined with a command class' do
-    let(:command_name)  { 'cut' }
-    let(:command_class) { Spec::CutCommand }
+    let(:command_name)  { 'strength' }
+    let(:command_class) { Spec::StrengthCommand }
 
-    example_class 'Spec::CutCommand', base_class: Cuprum::Command
+    example_class 'Spec::StrengthCommand', base_class: Cuprum::Command
 
     before(:example) do
       described_class.command(command_name, command_class)
+    end
+  end
+
+  shared_context 'when a command class is defined with a block' do
+    let(:command_name)  { 'waterfall' }
+    let(:command_class) { Spec::WaterfallCommand }
+
+    example_class 'Spec::WaterfallCommand', base_class: Cuprum::Command
+
+    before(:example) do
+      klass = command_class
+
+      described_class.command_class(command_name) { klass }
     end
   end
 
@@ -244,6 +257,89 @@ RSpec.describe Cuprum::CommandFactory do
     end
   end
 
+  describe '::command_class' do
+    let(:command_class) { Spec::SurfCommand }
+    let(:command_name)  { 'surf' }
+    let(:constant_name) { tools.string.camelize(command_name) }
+    let(:arguments)     { [] }
+    let(:tools) do
+      SleepingKingStudios::Tools::Toolbelt.instance
+    end
+    let(:error_message) do
+      'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
+      'define commands for a factory.'
+    end
+
+    it 'should define the class method' do
+      expect(described_class)
+        .to respond_to(:command_class)
+        .with(1).argument
+        .and_a_block
+    end
+
+    describe 'with a name' do
+      it 'should raise an error' do
+        expect { described_class.command_class(command_name) }
+          .to raise_error NotImplementedError, error_message
+      end
+    end
+
+    describe 'with a name and a block' do
+      it 'should raise an error' do
+        expect do
+          described_class.command_class(command_name) { Spec::SurfCommand }
+        end
+          .to raise_error NotImplementedError, error_message
+      end
+    end
+
+    wrap_context 'when a factory subclass is defined' do
+      describe 'with a name' do
+        let(:error_message) { 'must provide a block' }
+
+        it 'should raise an error' do
+          expect { described_class.command_class(command_name) }
+            .to raise_error ArgumentError, error_message
+        end
+      end
+
+      describe 'with a name and a block' do
+        def define_command
+          klass = command_class
+
+          described_class.command_class(command_name) { klass }
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+      end
+    end
+
+    wrap_context 'when a factory subclass is subclassed' do
+      describe 'with a name' do
+        let(:error_message) { 'must provide a block' }
+
+        it 'should raise an error' do
+          expect { described_class.command_class(command_name) }
+            .to raise_error ArgumentError, error_message
+        end
+      end
+
+      describe 'with a name and a block' do
+        def define_command
+          klass = command_class
+
+          described_class.command_class(command_name) { klass }
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+      end
+    end
+  end
+
   describe '#command?' do
     it { expect(instance).to respond_to(:command?).with(1).argument }
 
@@ -277,6 +373,64 @@ RSpec.describe Cuprum::CommandFactory do
           it { expect(instance.command?(command_name.intern)).to be true }
         end
       end
+
+      wrap_context 'when a command class is defined with a block' do
+        describe 'with an invalid command name' do
+          it { expect(instance.command?(:defenestrate)).to be false }
+        end
+
+        describe 'with a valid command name as a string' do
+          it { expect(instance.command?(command_name.to_s)).to be true }
+        end
+
+        describe 'with a valid command name as a symbol' do
+          it { expect(instance.command?(command_name.intern)).to be true }
+        end
+      end
+    end
+
+    wrap_context 'when a factory subclass is subclassed' do
+      wrap_context 'when a command is defined with a block' do
+        describe 'with an invalid command name' do
+          it { expect(instance.command?(:defenestrate)).to be false }
+        end
+
+        describe 'with a valid command name as a string' do
+          it { expect(instance.command?(command_name.to_s)).to be true }
+        end
+
+        describe 'with a valid command name as a symbol' do
+          it { expect(instance.command?(command_name.intern)).to be true }
+        end
+      end
+
+      wrap_context 'when a command is defined with a command class' do
+        describe 'with an invalid command name' do
+          it { expect(instance.command?(:defenestrate)).to be false }
+        end
+
+        describe 'with a valid command name as a string' do
+          it { expect(instance.command?(command_name.to_s)).to be true }
+        end
+
+        describe 'with a valid command name as a symbol' do
+          it { expect(instance.command?(command_name.intern)).to be true }
+        end
+      end
+
+      wrap_context 'when a command class is defined with a block' do
+        describe 'with an invalid command name' do
+          it { expect(instance.command?(:defenestrate)).to be false }
+        end
+
+        describe 'with a valid command name as a string' do
+          it { expect(instance.command?(command_name.to_s)).to be true }
+        end
+
+        describe 'with a valid command name as a symbol' do
+          it { expect(instance.command?(command_name.intern)).to be true }
+        end
+      end
     end
   end
 
@@ -291,6 +445,10 @@ RSpec.describe Cuprum::CommandFactory do
       wrap_context 'when a command is defined with a command class' do
         it { expect(instance.commands).to contain_exactly(command_name.intern) }
       end
+
+      wrap_context 'when a command class is defined with a block' do
+        it { expect(instance.commands).to contain_exactly(command_name.intern) }
+      end
     end
 
     wrap_context 'when a factory subclass is subclassed' do
@@ -299,6 +457,10 @@ RSpec.describe Cuprum::CommandFactory do
       end
 
       wrap_context 'when a command is defined with a command class' do
+        it { expect(instance.commands).to contain_exactly(command_name.intern) }
+      end
+
+      wrap_context 'when a command class is defined with a block' do
         it { expect(instance.commands).to contain_exactly(command_name.intern) }
       end
     end
