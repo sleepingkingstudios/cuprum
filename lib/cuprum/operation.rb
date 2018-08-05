@@ -61,9 +61,9 @@ module Cuprum
       #   @yield If a block argument is given, it will be passed to the
       #     implementation.
       #
-      #   @raise [Cuprum::NotImplementedError] Unless a block was passed to the
-      #     constructor or the #process method was overriden by a Command
-      #     subclass.
+      #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless a block was
+      #     passed to the constructor or the #process method was overriden by a
+      #     Command subclass.
       #
       # @see Cuprum::Command#call
       def call *args, &block

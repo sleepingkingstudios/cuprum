@@ -10,6 +10,10 @@ Added protected chaining methods `#chain!`, `#tap_result!` and `#yield_result!`.
 
 Removed the ResultHelpers mixin from the default Command class. To use the result helper methods, include Cuprum::ResultHelpers in your command class.
 
+### Command Factory
+
+Implemented the CommandFactory class, which provides a builder interface and DSL for grouping and creating commands with a common purpose or with shared configuration.
+
 ## 0.7.0
 
 The "To Strive, To Seek, To Find, And Not To Yield" Update.

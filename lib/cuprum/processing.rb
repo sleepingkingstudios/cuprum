@@ -1,4 +1,4 @@
-require 'cuprum/not_implemented_error'
+require 'cuprum/errors/process_not_implemented_error'
 require 'cuprum/utils/result_not_empty_warning'
 
 module Cuprum
@@ -94,8 +94,8 @@ module Cuprum
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
     #
-    #   @raise [Cuprum::NotImplementedError] Unless the #process method was
-    #     overriden.
+    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless the #process
+    #     method was overriden.
     def call *args, &block
       result = build_result(nil, :errors => build_errors)
 
@@ -153,13 +153,13 @@ module Cuprum
     #
     #   @return [Object] the value of the result object to be returned by #call.
     #
-    #   @raise [Cuprum::NotImplementedError] Unless a block was passed to the
-    #     constructor or the #process method was overriden by a Command
-    #     subclass.
+    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless a block was
+    #     passed to the constructor or the #process method was overriden by a
+    #     Command subclass.
     #
     # @note This is a private method.
     def process *_args
-      raise Cuprum::NotImplementedError, nil, caller(1..-1)
+      raise Cuprum::Errors::ProcessNotImplementedError, nil, caller(1..-1)
     end # method process
 
     def process_with_result result, *args, &block
