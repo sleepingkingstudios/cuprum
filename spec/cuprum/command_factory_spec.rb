@@ -136,6 +136,10 @@ RSpec.describe Cuprum::CommandFactory do
     let(:command_name)  { 'surf' }
     let(:constant_name) { tools.string.camelize(command_name) }
     let(:arguments)     { [] }
+    let(:metadata)      { {} }
+    let(:definition) do
+      described_class.send(:command_definitions)[command_name.intern]
+    end
     let(:tools) do
       SleepingKingStudios::Tools::Toolbelt.instance
     end
@@ -148,6 +152,7 @@ RSpec.describe Cuprum::CommandFactory do
       expect(described_class)
         .to respond_to(:command)
         .with(1..2).arguments
+        .and_any_keywords
         .and_a_block
     end
 
@@ -202,6 +207,57 @@ RSpec.describe Cuprum::CommandFactory do
         end
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should not set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be nil
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a block, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          klass = command_class
+
+          described_class.command(command_name, **metadata) do |*args|
+            klass.new(*args)
+          end
+        end
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should not set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be nil
+        end
+
+        it 'should set the metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
 
       describe 'with a name and a command class' do
@@ -212,6 +268,55 @@ RSpec.describe Cuprum::CommandFactory do
         include_examples 'should define the constant'
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set the class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be command_class
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a command class, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          described_class.command(command_name, command_class, **metadata)
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set the class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be command_class
+        end
+
+        it 'should set the metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
     end
 
@@ -243,6 +348,57 @@ RSpec.describe Cuprum::CommandFactory do
         end
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should not set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be nil
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a block, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          klass = command_class
+
+          described_class.command(command_name, **metadata) do |*args|
+            klass.new(*args)
+          end
+        end
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should not set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be nil
+        end
+
+        it 'should set the metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
 
       describe 'with a name and a command class' do
@@ -253,6 +409,55 @@ RSpec.describe Cuprum::CommandFactory do
         include_examples 'should define the constant'
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set the class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be command_class
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a command class, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          described_class.command(command_name, command_class, **metadata)
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set the class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be command_class
+        end
+
+        it 'should set the metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
     end
   end
@@ -262,6 +467,10 @@ RSpec.describe Cuprum::CommandFactory do
     let(:command_name)  { 'surf' }
     let(:constant_name) { tools.string.camelize(command_name) }
     let(:arguments)     { [] }
+    let(:metadata)      { {} }
+    let(:definition) do
+      described_class.send(:command_definitions)[command_name.intern]
+    end
     let(:tools) do
       SleepingKingStudios::Tools::Toolbelt.instance
     end
@@ -274,6 +483,7 @@ RSpec.describe Cuprum::CommandFactory do
       expect(described_class)
         .to respond_to(:command_class)
         .with(1).argument
+        .and_any_keywords
         .and_a_block
     end
 
@@ -313,6 +523,57 @@ RSpec.describe Cuprum::CommandFactory do
         include_examples 'should define the constant'
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be_a Proc
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a block, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          klass = command_class
+
+          described_class.command_class(command_name, **metadata) { klass }
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be_a Proc
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
     end
 
@@ -336,6 +597,57 @@ RSpec.describe Cuprum::CommandFactory do
         include_examples 'should define the constant'
 
         include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be_a Proc
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+        end
+      end
+
+      describe 'with a name, a block, and metadata' do
+        let(:metadata) { { key: 'value', opt: 5 } }
+
+        def define_command
+          klass = command_class
+
+          described_class.command_class(command_name, **metadata) { klass }
+        end
+
+        include_examples 'should define the constant'
+
+        include_examples 'should define the helper method'
+
+        it 'should set the definition' do
+          define_command
+
+          expect(definition).to be_a Hash
+        end
+
+        it 'should set a class definition' do
+          define_command
+
+          expect(definition[:__const_defn__]).to be_a Proc
+        end
+
+        it 'should not set metadata' do
+          define_command
+
+          expect(definition.reject { |k, _| k == :__const_defn__ })
+            .to be == metadata
+        end
       end
     end
   end

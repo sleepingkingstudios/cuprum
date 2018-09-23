@@ -1,35 +1,22 @@
 # Development
 
-## Version 0.8.0
+## Version 0.9.0
 
-'The "We Have The Technology" Update'
+The "Second Star To The Right" Update
 
 ### Commands
 
-- Protected Chaining Methods:
-  - #chain!, #tap_chain!, #yield_result!
-  - adds chained command to current command instead of a clone.
+#### LifecycleHooks
 
-### CommandFactory
+- :before, :after hooks
+  - NOT included in Command by default
 
-- builder/aggregator for command objects, esp. with shared
-  initializers/parameters, e.g. actions for a resource
-- ::command method:
-  - with a command class, e.g. BuildBookCommand
-    - defines class at ::Build
-    - defines instance method at #build
-  - with a block
-    - defines instance method at #build
-- Syntax: |
+### Command Factories
 
-  actions = ResourceCommandFactory.new(Book)
-  command = actions::Build.new        #=> returns a book builder command
-  result  = command.call(attributes)  #=> returns a result with value => a Book
-  # OR
-  result  = actions.build(attributes) #=> returns a result with value => a Book
-  book    = result.value
+- Allow defining commands with metadata, to be persisted in the
+  class command_definitions. E.g. action: false, if: ->() {}.
 
-## Version 0.9.0
+## Version 0.10.0
 
 'The "Out Of Context Problem" Update'
 
@@ -97,6 +84,3 @@ Chaining Case Study: |
   - ::keywords - sets keyword arguments; same arguments as ::arguments.
 
 #### Hooks
-
-- :before, :around, :after hooks
-  - NOT included in Command by default
