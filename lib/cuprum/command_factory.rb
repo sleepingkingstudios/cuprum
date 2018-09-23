@@ -92,13 +92,13 @@ module Cuprum
       #     factory = MoveFactory.new
       #     factory.fly_command('Indigo Plateau')
       #     #=> an instance of FlyCommand with a destination of 'Indigo Plateau'
-      def command(name, command_class = nil, &defn)
+      def command(name, klass = nil, **metadata, &defn)
         guard_abstract_factory!
 
-        if command_class
-          define_command_from_class(command_class, name: name)
+        if klass
+          define_command_from_class(klass, name: name, metadata: metadata)
         elsif block_given?
-          define_command_from_block(defn, name: name)
+          define_command_from_block(defn, name: name, metadata: metadata)
         else
           require_definition!
         end
@@ -144,15 +144,15 @@ module Cuprum
       #
       #   command = factory.flash
       #   command.brightness #=> :intense
-      def command_class(name, &defn)
+      def command_class(name, **metadata, &defn)
         guard_abstract_factory!
 
         raise ArgumentError, 'must provide a block'.freeze unless block_given?
 
-        builder = defn
-        name    = normalize_command_name(name)
+        name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] = builder
+        (@command_definitions ||= {})[name] =
+          metadata.merge(__const_defn__: defn)
 
         const_name = tools.string.camelize(name)
 
@@ -183,23 +183,24 @@ module Cuprum
         ->(*args, &block) { command_class.new(*args, &block) }
       end
 
-      def define_command_from_block(builder, name:)
+      def define_command_from_block(builder, name:, metadata: {})
         name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] = {}
+        (@command_definitions ||= {})[name] = metadata
 
         define_method(name) do |*args|
           instance_exec(*args, &builder)
         end
       end
 
-      def define_command_from_class(command_class, name:)
+      def define_command_from_class(command_class, name:, metadata: {})
         guard_invalid_definition!(command_class)
 
         builder = command_builder(command_class)
         name    = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] = command_class
+        (@command_definitions ||= {})[name] =
+          metadata.merge(__const_defn__: command_class)
 
         define_method(name) { |*args, &block| builder.call(*args, &block) }
       end
@@ -253,7 +254,7 @@ module Cuprum
     def const_missing(const_name)
       definitions  = self.class.send(:command_definitions)
       command_name = normalize_command_name(const_name)
-      command_defn = definitions[command_name]
+      command_defn = definitions.dig(command_name, :__const_defn__)
 
       return super unless command_defn
 
