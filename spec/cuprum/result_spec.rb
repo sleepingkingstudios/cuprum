@@ -1016,6 +1016,50 @@ RSpec.describe Cuprum::Result do
     end # wrap_context
   end # describe
 
+  describe '#build_errors' do
+    it { expect(instance).not_to respond_to(:build_errors) }
+
+    it 'should define the private method' do
+      expect(instance).to respond_to(:build_errors, true).with(0).arguments
+    end # it
+
+    it { expect(instance.send(:build_errors)).to be_a Array }
+
+    it { expect(instance.send(:build_errors)).to be_empty }
+
+    it 'should return a new object each time it is called' do
+      errors = instance.send(:build_errors)
+
+      expect(instance.send :build_errors).not_to be errors
+    end # it
+
+    context 'when a custom errors object is returned' do
+      let(:custom_errors)   { instance_double(Array) }
+      let(:described_class) { Spec::CustomResult }
+
+      # rubocop:disable RSpec/DescribedClass
+      example_class 'Spec::CustomResult', base_class: Cuprum::Result do |klass|
+        err = custom_errors
+
+        klass.send(:define_method, :build_errors) { err }
+      end # example_class
+      # rubocop:enable RSpec/DescribedClass
+
+      it 'should assign the custom errors object to the errors' do
+        expect(instance.errors).to be custom_errors
+      end # it
+
+      # rubocop:disable RSpec/NestedGroups
+      context 'when initialized with an errors object' do
+        let(:errors)   { ['spec.errors.something_went_wrong'] }
+        let(:instance) { described_class.new(nil, errors: errors) }
+
+        it { expect(instance.errors).to be errors }
+      end # context
+      # rubocop:enable RSpec/NestedGroups
+    end # context
+  end # describe
+
   describe '#empty?' do
     include_examples 'should have predicate', :empty?, true
 
@@ -1042,6 +1086,13 @@ RSpec.describe Cuprum::Result do
 
   describe '#errors' do
     include_examples 'should have property', :errors, []
+
+    context 'when initialized with an errors object' do
+      let(:errors)   { ['spec.errors.something_went_wrong'] }
+      let(:instance) { described_class.new(nil, errors: errors) }
+
+      it { expect(instance.errors).to be errors }
+    end # context
   end # describe
 
   describe '#failure!' do
@@ -1548,5 +1599,12 @@ RSpec.describe Cuprum::Result do
 
   describe '#value' do
     include_examples 'should have property', :value, nil
+
+    context 'when initialized with a value' do
+      let(:value)    { 'result value' }
+      let(:instance) { described_class.new(value) }
+
+      it { expect(instance.value).to be value }
+    end # context
   end # describe
 end # describe

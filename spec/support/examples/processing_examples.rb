@@ -48,42 +48,6 @@ module Spec::Examples
     end # shared_examples
 
     shared_examples 'should implement the Processing methods' do
-      describe '#build_errors' do
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:build_errors)
-
-          expect(instance).to respond_to(:build_errors, true).with(0).arguments
-        end # it
-
-        it 'should return an empty array' do
-          errors = instance.send(:build_errors)
-
-          expect(errors).to be_a Array
-          expect(errors).to be_empty
-        end # it
-
-        it 'should return a new object each time it is called' do
-          errors = instance.send(:build_errors)
-
-          expect(instance.send :build_errors).not_to be errors
-        end # it
-
-        context 'when a custom errors object is returned' do
-          let(:custom_errors) { instance_double(Array) }
-
-          before(:example) do
-            allow(instance).to receive(:process)
-            allow(instance).to receive(:build_errors).and_return(custom_errors)
-          end # before
-
-          it 'should assign the custom errors object to the result' do
-            result = instance.call
-
-            expect(result.errors).to be custom_errors
-          end # it
-        end # context
-      end # describe
-
       describe '#build_result' do
         include_context 'when a custom result class is defined'
 

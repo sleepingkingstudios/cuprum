@@ -97,9 +97,7 @@ module Cuprum
     #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless the #process
     #     method was overriden.
     def call *args, &block
-      result = build_result(nil, :errors => build_errors)
-
-      process_with_result(result, *args, &block)
+      process_with_result(build_result, *args, &block)
     end # method call
 
     private
@@ -108,20 +106,8 @@ module Cuprum
     #   is being called.
     attr_reader :result
 
-    # @!visibility public
-    #
-    # Generates an empty errors object. When the command is called, the result
-    # will have its #errors property initialized to the value returned by
-    # #build_errors. By default, this is an array. If you want to use a custom
-    # errors object type, override this method in a subclass.
-    #
-    # @return [Array] An empty errors object.
-    def build_errors
-      []
-    end # method build_errors
-
-    def build_result value, errors:
-      Cuprum::Result.new(value, :errors => errors)
+    def build_result value = nil, **options
+      Cuprum::Result.new(value, options)
     end # method build_result
 
     def merge_results result, other

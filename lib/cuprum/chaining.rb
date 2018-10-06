@@ -442,7 +442,7 @@ module Cuprum
         if value_is_result?(value)
           value.to_result
         else
-          build_result(value, :errors => build_errors)
+          build_result(value)
         end # if-else
       end # reduce
     end # method yield_chain
