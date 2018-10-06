@@ -4,7 +4,10 @@
 
 The "Second Star To The Right" Update
 
-### Commands
+### Actions
+
+- remove Processing#build_errors
+  - result is responsible for building its own errors
 
 #### LifecycleHooks
 
