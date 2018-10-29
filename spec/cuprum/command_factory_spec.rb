@@ -57,6 +57,21 @@ RSpec.describe Cuprum::CommandFactory do
     end
   end
 
+  shared_context 'when the factory defines a custom #build_command method' do
+    let(:default_options) { { state: { value: 'a value'.freeze } } }
+
+    before(:example) do
+      opts = default_options
+
+      Spec::ExampleCommandFactory.send :define_method, :build_command \
+      do |klass, *args, **kwargs, &block|
+        kwargs = kwargs.merge(opts)
+
+        klass.new(*args, **kwargs, &block)
+      end
+    end
+  end
+
   shared_examples 'should define the constant' do
     describe '::${CommandName}' do
       before(:example) { define_command }
@@ -114,6 +129,38 @@ RSpec.describe Cuprum::CommandFactory do
       end
     end
     # rubocop:enable RSpec/NestedGroups
+  end
+
+  shared_examples 'should call the #build_command method' do
+    include_context 'when the factory defines a custom #build_command method'
+
+    let(:command_class) { Spec::FlyCommand }
+    let(:command_name)  { 'fly' }
+    let(:command)       { instance.send(command_name, *arguments) }
+
+    before(:example) { define_command }
+
+    describe 'with no arguments' do
+      it { expect(command).to be_a command_class }
+
+      it { expect(command.value).to be nil }
+
+      it { expect(command.options).to be == default_options }
+    end
+
+    describe 'with arguments' do
+      let(:value)     { 'value'.freeze }
+      let(:options)   { { key: 'option'.freeze } }
+      let(:arguments) { [value, options] }
+
+      it { expect(command).to be_a command_class }
+
+      it { expect(command.value).to be == value }
+
+      it 'should merge the options' do
+        expect(command.options).to be == default_options.merge(options)
+      end
+    end
   end
 
   subject(:instance) { described_class.new }
@@ -203,7 +250,9 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name) { |*args| klass.new(*args) }
+          described_class.command(command_name) do |*args|
+            build_command(klass, *args)
+          end
         end
 
         include_examples 'should define the helper method'
@@ -225,6 +274,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a block, and metadata' do
@@ -234,7 +285,7 @@ RSpec.describe Cuprum::CommandFactory do
           klass = command_class
 
           described_class.command(command_name, **metadata) do |*args|
-            klass.new(*args)
+            build_command(klass, *args)
           end
         end
 
@@ -258,6 +309,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name and a command class' do
@@ -286,6 +339,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a command class, and metadata' do
@@ -317,6 +372,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
     end
 
@@ -344,7 +401,9 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name) { |*args| klass.new(*args) }
+          described_class.command(command_name) do |*args|
+            build_command(klass, *args)
+          end
         end
 
         include_examples 'should define the helper method'
@@ -366,6 +425,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a block, and metadata' do
@@ -375,7 +436,7 @@ RSpec.describe Cuprum::CommandFactory do
           klass = command_class
 
           described_class.command(command_name, **metadata) do |*args|
-            klass.new(*args)
+            build_command(klass, *args)
           end
         end
 
@@ -399,6 +460,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name and a command class' do
@@ -427,6 +490,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a command class, and metadata' do
@@ -458,6 +523,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
     end
   end
@@ -541,6 +608,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a block, and metadata' do
@@ -574,6 +643,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
     end
 
@@ -615,6 +686,8 @@ RSpec.describe Cuprum::CommandFactory do
 
           expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
         end
+
+        wrap_examples 'should call the #build_command method'
       end
 
       describe 'with a name, a block, and metadata' do
@@ -648,6 +721,8 @@ RSpec.describe Cuprum::CommandFactory do
           expect(definition.reject { |k, _| k == :__const_defn__ })
             .to be == metadata
         end
+
+        wrap_examples 'should call the #build_command method'
       end
     end
   end

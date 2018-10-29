@@ -159,7 +159,7 @@ module Cuprum
         define_method(name) do |*args, &block|
           command_class = const_get(const_name)
 
-          command_class.new(*args, &block)
+          build_command(command_class, *args, &block)
         end
       end
 
@@ -179,16 +179,12 @@ module Cuprum
         self == Cuprum::CommandFactory
       end
 
-      def command_builder(command_class)
-        ->(*args, &block) { command_class.new(*args, &block) }
-      end
-
       def define_command_from_block(builder, name:, metadata: {})
-        name = normalize_command_name(name)
+        command_name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] = metadata
+        (@command_definitions ||= {})[command_name] = metadata
 
-        define_method(name) do |*args|
+        define_method(command_name) do |*args|
           instance_exec(*args, &builder)
         end
       end
@@ -196,13 +192,14 @@ module Cuprum
       def define_command_from_class(command_class, name:, metadata: {})
         guard_invalid_definition!(command_class)
 
-        builder = command_builder(command_class)
-        name    = normalize_command_name(name)
+        command_name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] =
+        (@command_definitions ||= {})[command_name] =
           metadata.merge(__const_defn__: command_class)
 
-        define_method(name) { |*args, &block| builder.call(*args, &block) }
+        define_method(command_name) do |*args, &block|
+          build_command(command_class, *args, &block)
+        end
       end
 
       def guard_abstract_factory!
@@ -267,6 +264,10 @@ module Cuprum
     end
 
     private
+
+    def build_command(command_class, *args, &block)
+      command_class.new(*args, &block)
+    end
 
     def normalize_command_name(command_name)
       self.class.send(:normalize_command_name, command_name)

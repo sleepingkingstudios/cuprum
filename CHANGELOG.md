@@ -10,6 +10,8 @@ Added protected chaining methods `#chain!`, `#tap_result!` and `#yield_result!`.
 
 Removed the ResultHelpers mixin from the default Command class. To use the result helper methods, include Cuprum::ResultHelpers in your command class.
 
+Removed the #build_errors helper - each Result is now responsible for building its own errors object. To use a custom errors object, define a subclass of Cuprum::Result and override its #build_errors method, then update your Command's #build_result method to use your custom result class.
+
 ### Command Factory
 
 Implemented the CommandFactory class, which provides a builder interface and DSL for grouping and creating commands with a common purpose or with shared configuration.
