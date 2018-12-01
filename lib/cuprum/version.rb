@@ -12,9 +12,9 @@ module Cuprum
     # Patch version.
     PATCH = 0
     # Prerelease version.
-    PRERELEASE = :rc
+    PRERELEASE = nil
     # Build metadata.
-    BUILD = 0
+    BUILD = nil
 
     class << self
       # Generates the gem version string from the Version constants.
