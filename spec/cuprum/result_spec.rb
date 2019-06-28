@@ -41,8 +41,8 @@ RSpec.describe Cuprum::Result do
     it 'should define the constructor' do
       expect(described_class)
         .to be_constructible
-        .with(0..1).arguments
-        .and_keywords(:errors)
+        .with(0).arguments
+        .and_keywords(:errors, :value)
     end
 
     describe 'with an errors object' do
@@ -54,9 +54,18 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.failure?).to be true }
     end
 
-    describe 'with a value' do
+    describe 'with a hash value' do
+      let(:value)    { { key: 'returned value' } }
+      let(:instance) { described_class.new(value: value) }
+
+      it { expect(instance.value).to be value }
+
+      it { expect(instance.success?).to be true }
+    end
+
+    describe 'with a string value' do
       let(:value)    { 'returned value' }
-      let(:instance) { described_class.new(value) }
+      let(:instance) { described_class.new(value: value) }
 
       it { expect(instance.value).to be value }
 
@@ -66,7 +75,7 @@ RSpec.describe Cuprum::Result do
     describe 'with a value and an errors object' do
       let(:value)    { 'returned value' }
       let(:errors)   { ['errors.messages.unknown'] }
-      let(:instance) { described_class.new(value, errors: errors) }
+      let(:instance) { described_class.new(value: value, errors: errors) }
 
       it { expect(instance.value).to be value }
 
@@ -90,17 +99,13 @@ RSpec.describe Cuprum::Result do
     end
 
     describe 'with a result with a value' do
-      let(:other) { described_class.new('other value') }
+      let(:other) { described_class.new(value: 'other value') }
 
       it { expect(instance == other).to be false }
     end
 
     describe 'with a result with many errors' do
-      let(:other) do
-        described_class
-          .new
-          .tap { |result| result.errors = ['errors.messages.unknown'] }
-      end
+      let(:other) { described_class.new(errors: ['errors.messages.unknown']) }
 
       it { expect(instance == other).to be false }
     end
@@ -108,8 +113,7 @@ RSpec.describe Cuprum::Result do
     describe 'with a result with many errors and success status' do
       let(:other) do
         described_class
-          .new
-          .tap { |result| result.errors = ['errors.messages.unknown'] }
+          .new(errors: ['errors.messages.unknown'])
           .tap(&:success!)
       end
 
@@ -147,11 +151,7 @@ RSpec.describe Cuprum::Result do
     end
 
     describe 'with a called operation with a value' do
-      let(:other) do
-        Cuprum::Operation.new do
-          'other value'
-        end.call
-      end
+      let(:other) { Cuprum::Operation.new { 'other value' }.call }
 
       it { expect(instance == other).to be false }
     end
@@ -159,9 +159,9 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with many errors' do
       let(:other) do
         Cuprum::Operation.new do
-          errors << 'errors.messages.unknown'
-
-          nil
+          # rubocop:disable RSpec/DescribedClass
+          Cuprum::Result.new(errors: ['errors.messages.unknown'])
+          # rubocop:enable RSpec/DescribedClass
         end.call
       end
 
@@ -171,11 +171,11 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with many errors and success status' do
       let(:other) do
         Cuprum::Operation.new do
-          errors << 'errors.messages.unknown'
-
-          result.success!
-
-          nil
+          # rubocop:disable RSpec/DescribedClass
+          Cuprum::Result
+            .new(errors: ['errors.messages.unknown'])
+            .tap(&:success!)
+          # rubocop:enable RSpec/DescribedClass
         end.call
       end
 
@@ -185,9 +185,9 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with status set to failure' do
       let(:other) do
         Cuprum::Operation.new do
-          result.failure!
-
-          nil
+          # rubocop:disable RSpec/DescribedClass
+          Cuprum::Result.new.tap(&:failure!)
+          # rubocop:enable RSpec/DescribedClass
         end.call
       end
 
@@ -197,9 +197,9 @@ RSpec.describe Cuprum::Result do
     describe 'with a called operation with status set to success' do
       let(:other) do
         Cuprum::Operation.new do
-          result.success!
-
-          nil
+          # rubocop:disable RSpec/DescribedClass
+          Cuprum::Result.new.tap(&:success!)
+          # rubocop:enable RSpec/DescribedClass
         end.call
       end
 
@@ -209,9 +209,9 @@ RSpec.describe Cuprum::Result do
     describe 'with a called and halted operation' do
       let(:other) do
         Cuprum::Operation.new do
-          result.halt!
-
-          nil
+          # rubocop:disable RSpec/DescribedClass
+          Cuprum::Result.new.tap(&:halt!)
+          # rubocop:enable RSpec/DescribedClass
         end.call
       end
 
@@ -226,13 +226,13 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a non-matching value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
 
       describe 'with a result with a matching value' do
-        let(:other) { described_class.new(value) }
+        let(:other) { described_class.new(value: value) }
 
         it { expect(instance == other).to be true }
       end
@@ -240,9 +240,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -252,11 +252,11 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors and success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -266,9 +266,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -278,9 +278,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -290,9 +290,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -308,26 +308,20 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
 
       describe 'with a result with non-matching errors' do
-        let(:other) do
-          described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.other'] }
-        end
+        let(:other) { described_class.new(errors: ['errors.messages.other']) }
 
         it { expect(instance == other).to be false }
       end
 
       describe 'with a result with matching errors' do
         let(:other) do
-          described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+          described_class.new(errors: ['errors.messages.unknown'])
         end
 
         it { expect(instance == other).to be true }
@@ -336,8 +330,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with matching errors and success status' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
             .tap(&:success!)
         end
 
@@ -376,10 +369,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation with a value' do
         let(:other) do
-          Cuprum::Operation
-            .new do
-            'other value'
-          end.call
+          Cuprum::Operation.new { 'other value' }.call
         end
 
         it { expect(instance == other).to be false }
@@ -388,9 +378,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with non-matching errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.other'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.other'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -400,9 +390,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with matching errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -413,11 +403,11 @@ RSpec.describe Cuprum::Result do
                'success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -427,9 +417,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -439,9 +429,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -451,9 +441,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -469,16 +459,14 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
 
       describe 'with a result with non-matching errors' do
         let(:other) do
-          described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.other'] }
+          described_class.new(errors: ['errors.messages.other'])
         end
 
         it { expect(instance == other).to be false }
@@ -486,9 +474,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a result with matching errors' do
         let(:other) do
-          described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+          described_class.new(errors: ['errors.messages.unknown'])
         end
 
         it { expect(instance == other).to be false }
@@ -497,8 +483,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with matching errors and success status' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
             .tap(&:success!)
         end
 
@@ -537,9 +522,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation with a value' do
         let(:other) do
-          Cuprum::Operation.new do
-            'other value'
-          end.call
+          Cuprum::Operation.new { 'other value' }.call
         end
 
         it { expect(instance == other).to be false }
@@ -560,9 +543,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with matching errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -573,11 +556,11 @@ RSpec.describe Cuprum::Result do
                'success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -587,9 +570,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -599,9 +582,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -611,9 +594,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -629,7 +612,7 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
@@ -637,8 +620,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
         end
 
         it { expect(instance == other).to be false }
@@ -647,8 +629,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors and success status' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
             .tap(&:success!)
         end
 
@@ -687,9 +668,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation with a value' do
         let(:other) do
-          Cuprum::Operation.new do
-            'other value'
-          end.call
+          Cuprum::Operation.new { 'other value' }.call
         end
 
         it { expect(instance == other).to be false }
@@ -698,9 +677,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -710,11 +689,11 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors and success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -724,9 +703,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -736,9 +715,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -748,9 +727,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -766,7 +745,7 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
@@ -774,8 +753,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
         end
 
         it { expect(instance == other).to be false }
@@ -784,8 +762,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors and success status' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
             .tap(&:success!)
         end
 
@@ -824,9 +801,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation with a value' do
         let(:other) do
-          Cuprum::Operation.new do
-            'other value'
-          end.call
+          Cuprum::Operation.new { 'other value' }.call
         end
 
         it { expect(instance == other).to be false }
@@ -835,9 +810,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -847,11 +822,11 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors and success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -861,9 +836,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -873,9 +848,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -885,9 +860,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -903,7 +878,7 @@ RSpec.describe Cuprum::Result do
       end
 
       describe 'with a result with a value' do
-        let(:other) { described_class.new('other value') }
+        let(:other) { described_class.new(value: 'other value') }
 
         it { expect(instance == other).to be false }
       end
@@ -911,8 +886,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
         end
 
         it { expect(instance == other).to be false }
@@ -921,8 +895,7 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with many errors and success status' do
         let(:other) do
           described_class
-            .new
-            .tap { |result| result.errors = ['errors.messages.unknown'] }
+            .new(errors: ['errors.messages.unknown'])
             .tap(&:success!)
         end
 
@@ -961,9 +934,7 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a called operation with a value' do
         let(:other) do
-          Cuprum::Operation.new do
-            'other value'
-          end.call
+          Cuprum::Operation.new { 'other value' }.call
         end
 
         it { expect(instance == other).to be false }
@@ -972,9 +943,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new(errors: ['errors.messages.unknown'])
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -984,11 +955,11 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with many errors and success status' do
         let(:other) do
           Cuprum::Operation.new do
-            errors << 'errors.messages.unknown'
-
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result
+              .new(errors: ['errors.messages.unknown'])
+              .tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -998,9 +969,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to failure' do
         let(:other) do
           Cuprum::Operation.new do
-            result.failure!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:failure!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -1010,9 +981,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called operation with status set to success' do
         let(:other) do
           Cuprum::Operation.new do
-            result.success!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:success!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -1022,9 +993,9 @@ RSpec.describe Cuprum::Result do
       describe 'with a called and halted operation' do
         let(:other) do
           Cuprum::Operation.new do
-            result.halt!
-
-            nil
+            # rubocop:disable RSpec/DescribedClass
+            Cuprum::Result.new.tap(&:halt!)
+            # rubocop:enable RSpec/DescribedClass
           end.call
         end
 
@@ -1069,7 +1040,7 @@ RSpec.describe Cuprum::Result do
       # rubocop:disable RSpec/NestedGroups
       context 'when initialized with an errors object' do
         let(:errors)   { ['spec.errors.something_went_wrong'] }
-        let(:instance) { described_class.new(nil, errors: errors) }
+        let(:instance) { described_class.new(errors: errors) }
 
         it { expect(instance.errors).to be errors }
       end
@@ -1106,7 +1077,7 @@ RSpec.describe Cuprum::Result do
 
     context 'when initialized with an errors object' do
       let(:errors)   { ['spec.errors.something_went_wrong'] }
-      let(:instance) { described_class.new(nil, errors: errors) }
+      let(:instance) { described_class.new(errors: errors) }
 
       it { expect(instance.errors).to be errors }
     end
@@ -1260,7 +1231,7 @@ RSpec.describe Cuprum::Result do
     let(:other_value)  { 'other value' }
     let(:other_errors) { [] }
     let(:other) do
-      described_class.new(other_value, errors: other_errors)
+      described_class.new(value: other_value, errors: other_errors)
     end
 
     it { expect(instance).to respond_to(:update).with(1).argument }
@@ -1619,7 +1590,7 @@ RSpec.describe Cuprum::Result do
 
     context 'when initialized with a value' do
       let(:value)    { 'result value' }
-      let(:instance) { described_class.new(value) }
+      let(:instance) { described_class.new(value: value) }
 
       it { expect(instance.value).to be value }
     end

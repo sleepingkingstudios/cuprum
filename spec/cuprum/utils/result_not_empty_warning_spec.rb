@@ -6,7 +6,7 @@ RSpec.describe Cuprum::Utils::ResultNotEmptyWarning do
 
   let(:value)  { nil }
   let(:errors) { [] }
-  let(:result) { Cuprum::Result.new value, :errors => errors }
+  let(:result) { Cuprum::Result.new(value: value, :errors => errors) }
 
   describe '::new' do
     it { expect(described_class).to be_constructible.with(1).argument }

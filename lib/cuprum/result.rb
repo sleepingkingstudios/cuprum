@@ -8,7 +8,7 @@ module Cuprum
     # @param value [Object] The value returned by calling the command.
     # @param errors [Array] The errors (if any) generated when the command was
     #   called.
-    def initialize(value = nil, errors: nil)
+    def initialize(value: nil, errors: nil)
       @value  = value
       @errors = errors.nil? ? build_errors : errors
       @status = nil

@@ -331,7 +331,7 @@ module Spec::Examples
 
         context 'when the implementation returns a result with a value' do
           let(:value)  { 'returned value'.freeze }
-          let(:result) { Cuprum::Result.new(value) }
+          let(:result) { Cuprum::Result.new(value: value) }
           let(:implementation) do
             returned = result
 
@@ -344,7 +344,7 @@ module Spec::Examples
         context 'when the implementation returns a result with errors' do
           let(:expected_errors) { ['errors.messages.unknown'.freeze] }
           let(:result) do
-            Cuprum::Result.new(nil, :errors => expected_errors)
+            Cuprum::Result.new(errors: expected_errors)
           end # let
           let(:implementation) do
             returned = result
