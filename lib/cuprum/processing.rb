@@ -107,7 +107,7 @@ module Cuprum
     attr_reader :result
 
     def build_result value = nil, **options
-      Cuprum::Result.new(value, options)
+      Cuprum::Result.new(value: value, **options)
     end # method build_result
 
     def merge_results result, other

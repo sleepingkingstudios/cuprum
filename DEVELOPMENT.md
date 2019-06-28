@@ -2,22 +2,25 @@
 
 ## Version 0.9.0
 
-The "Second Star To The Right" Update
-
-### Actions
-
-#### LifecycleHooks
-
-- :before, :after hooks
-  - NOT included in Command by default
-
-## Version 0.10.0
-
-'The "Out Of Context Problem" Update'
+The "'Tis Not Too Late To Seek A Newer World" Update
 
 ### Commands
 
-- #context object
+- #process DOES NOT have reference to a current Result.
+- #process either returns a Result or a value (converted to successful Result).
+- define helper methods:
+  - #success(value)  => returns passing Result with value # Optional
+  - #failure(errors) => returns failing Result with errors
+
+### Results
+
+- Update constructor signature: initialize(value:, errors: [])
+- Results are immutable
+  - Remove methods #errors=, #value=, #failure!, #halt!, #success!, #update.
+
+## Version 0.10.0
+
+The "One Small Step" Update
 
 ## Version 1.0.0
 

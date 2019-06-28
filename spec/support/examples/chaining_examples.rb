@@ -167,7 +167,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value'.freeze }
-        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
           ->() {}
@@ -423,7 +423,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value'.freeze }
-        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
           ->() {}
@@ -678,7 +678,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value'.freeze }
-        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
           ->() {}
@@ -747,7 +747,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value'.freeze }
-        let(:first_result) { Cuprum::Result.new(first_value) }
+        let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
           ->() {}
@@ -844,7 +844,8 @@ module Spec::Examples
           end # it
         end # shared_examples
 
-        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:first_value)   { 'first value'.freeze }
+        let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
 
@@ -939,7 +940,7 @@ module Spec::Examples
           let(:results) do
             %w[second third fourth].
               map { |str| "#{str} value".freeze }.
-              map { |str| Cuprum::Result.new(str) }
+              map { |str| Cuprum::Result.new(value: str) }
           end # let
           let(:chained) do
             instance.
@@ -1002,7 +1003,8 @@ module Spec::Examples
           end # it
         end # shared_examples
 
-        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:first_value)   { 'first value'.freeze }
+        let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
 
@@ -1096,7 +1098,7 @@ module Spec::Examples
           let(:results) do
             %w[second third fourth].
               map { |str| "#{str} value".freeze }.
-              map { |str| Cuprum::Result.new(str) }
+              map { |str| Cuprum::Result.new(value: str) }
           end # let
           let(:chained) do
             instance.
@@ -1149,7 +1151,7 @@ module Spec::Examples
 
           context 'when the block returns an operation' do
             it 'should return the result' do
-              result    = Cuprum::Result.new('final value'.freeze)
+              result    = Cuprum::Result.new(value: 'final value'.freeze)
               operation = Cuprum::Operation.new { result }
               chained   =
                 instance.yield_result(:on => conditional) { operation.call }
@@ -1160,7 +1162,7 @@ module Spec::Examples
 
           context 'when the block returns a result' do
             it 'should return the result' do
-              result  = Cuprum::Result.new('final value'.freeze)
+              result  = Cuprum::Result.new(value: 'final value'.freeze)
               chained = instance.yield_result(:on => conditional) { result }
 
               expect(chained.call.to_result).to be result
@@ -1183,7 +1185,8 @@ module Spec::Examples
           end # it
         end # shared_examples
 
-        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:first_value)   { 'first value'.freeze }
+        let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
 
@@ -1278,7 +1281,7 @@ module Spec::Examples
           let(:results) do
             %w[second third fourth].
               map { |str| "#{str} value".freeze }.
-              map { |str| Cuprum::Result.new(str) }
+              map { |str| Cuprum::Result.new(value: str) }
           end # let
           let(:chained) do
             instance.
@@ -1332,7 +1335,7 @@ module Spec::Examples
 
           context 'when the block returns an operation' do
             it 'should return the result' do
-              result    = Cuprum::Result.new('final value'.freeze)
+              result    = Cuprum::Result.new(value: 'final value'.freeze)
               operation = Cuprum::Operation.new { result }
               chained   =
                 instance.send(:yield_result!, :on => conditional) do
@@ -1345,7 +1348,7 @@ module Spec::Examples
 
           context 'when the block returns a result' do
             it 'should return the result' do
-              result  = Cuprum::Result.new('final value'.freeze)
+              result  = Cuprum::Result.new(value: 'final value'.freeze)
               chained =
                 instance.send(:yield_result!, :on => conditional) { result }
 
@@ -1369,7 +1372,8 @@ module Spec::Examples
           end # it
         end # shared_examples
 
-        let(:first_result)  { Cuprum::Result.new('first value'.freeze) }
+        let(:first_value)   { 'first value'.freeze }
+        let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
 
@@ -1463,7 +1467,7 @@ module Spec::Examples
           let(:results) do
             %w[second third fourth].
               map { |str| "#{str} value".freeze }.
-              map { |str| Cuprum::Result.new(str) }
+              map { |str| Cuprum::Result.new(value: str) }
           end # let
           let(:chained) do
             instance.

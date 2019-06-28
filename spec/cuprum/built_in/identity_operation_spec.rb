@@ -11,7 +11,7 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
 
   let(:value)  { 'returned value'.freeze }
   let(:errors) { ['errors.messages.unknown'] }
-  let(:result) { Cuprum::Result.new(value, :errors => errors) }
+  let(:result) { Cuprum::Result.new(value: value, :errors => errors) }
 
   include_examples 'should implement the Operation methods'
 

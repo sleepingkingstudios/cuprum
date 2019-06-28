@@ -32,7 +32,7 @@ module Spec::Examples
     shared_context 'when the result has errors' do
       let(:value)  { 'returned value'.freeze }
       let(:errors) { ['errors.messages.unknown'] }
-      let(:result) { Cuprum::Result.new(value, :errors => errors) }
+      let(:result) { Cuprum::Result.new(value: value, :errors => errors) }
 
       before(:example) do
         allow(instance).to receive(:result).and_return(result)
@@ -41,7 +41,7 @@ module Spec::Examples
 
     shared_context 'when the result has a value' do
       let(:value)  { 'returned value'.freeze }
-      let(:result) { Cuprum::Result.new(value) }
+      let(:result) { Cuprum::Result.new(value: value) }
 
       before(:example) do
         allow(instance).to receive(:result).and_return(result)
@@ -50,7 +50,7 @@ module Spec::Examples
 
     shared_context 'when the result is halted' do
       let(:value)  { 'returned value'.freeze }
-      let(:result) { Cuprum::Result.new(value).halt! }
+      let(:result) { Cuprum::Result.new(value: value).halt! }
 
       before(:example) do
         allow(instance).to receive(:result).and_return(result)

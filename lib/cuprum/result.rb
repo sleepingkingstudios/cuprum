@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum'
 
 module Cuprum
@@ -6,12 +8,12 @@ module Cuprum
     # @param value [Object] The value returned by calling the command.
     # @param errors [Array] The errors (if any) generated when the command was
     #   called.
-    def initialize value = nil, errors: nil
+    def initialize(value: nil, errors: nil)
       @value  = value
       @errors = errors.nil? ? build_errors : errors
       @status = nil
       @halted = false
-    end # constructor
+    end
 
     # @return [Object] the value returned by calling the command.
     attr_accessor :value
@@ -22,7 +24,6 @@ module Cuprum
 
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/PerceivedComplexity
 
     # Compares the other object to the result.
@@ -33,37 +34,30 @@ module Cuprum
     #
     # @return [Boolean] True if all present values match the result, otherwise
     #   false.
-    def == other
+    def ==(other)
       return false unless other.respond_to?(:value) && other.value == value
 
       unless other.respond_to?(:success?) && other.success? == success?
         return false
-      end # unless
+      end
 
-      if other.respond_to?(:failure?) && other.failure? != failure?
-        return false
-      end # if
+      return false if other.respond_to?(:failure?) && other.failure? != failure?
 
-      if other.respond_to?(:errors) && other.errors != errors
-        return false
-      end # if
+      return false if other.respond_to?(:errors) && other.errors != errors
 
-      if other.respond_to?(:halted?) && other.halted? != halted?
-        return false
-      end # if
+      return false if other.respond_to?(:halted?) && other.halted? != halted?
 
       true
-    end # method ==
+    end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/PerceivedComplexity
 
     # @return [Boolean] true if the result is empty, i.e. has no value or errors
     #   and does not have its status set or is halted.
     def empty?
       value.nil? && errors.empty? && @status.nil? && !halted?
-    end # method empty?
+    end
 
     # Marks the result as a failure, whether or not the command generated any
     # errors.
@@ -73,13 +67,13 @@ module Cuprum
       @status = :failure
 
       self
-    end # method failure!
+    end
 
     # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
       @status == :failure || (@status.nil? && !errors.empty?)
-    end # method failure?
+    end
 
     # Marks the result as halted. Any subsequent chained commands will not be
     #   run.
@@ -89,13 +83,13 @@ module Cuprum
       @halted = true
 
       self
-    end # method halt!
+    end
 
     # @return [Boolean] true if the command has been halted, and will not run
     #   any subsequent chained commands.
     def halted?
       @halted
-    end # method halted?
+    end
 
     # Marks the result as a success, whether or not the command generated any
     # errors.
@@ -105,21 +99,21 @@ module Cuprum
       @status = :success
 
       self
-    end # method success!
+    end
 
     # @return [Boolean] true if the command did not generate any errors,
     #   otherwise false.
     def success?
       @status == :success || (@status.nil? && errors.empty?)
-    end # method success?
+    end
 
     # @return [Cuprum::Result] The result.
     def to_result
       self
-    end # method to_result
+    end
 
     # @api private
-    def update other_result
+    def update(other_result)
       return self if other_result.nil?
 
       self.value = other_result.value
@@ -131,7 +125,7 @@ module Cuprum
       halt! if other_result.halted?
 
       self
-    end # method update
+    end
 
     protected
 
@@ -149,18 +143,18 @@ module Cuprum
     # @return [Array] An empty errors object.
     def build_errors
       []
-    end # method build_errors
+    end
 
-    def update_errors other_result
+    def update_errors(other_result)
       return if other_result.errors.empty?
 
       @errors += other_result.errors
-    end # method update_errors
+    end
 
-    def update_status other_result
+    def update_status(other_result)
       return if status || !errors.empty?
 
       @status = other_result.status
-    end # method update_status
-  end # class
-end # module
+    end
+  end
+end
