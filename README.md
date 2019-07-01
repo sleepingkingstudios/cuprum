@@ -413,7 +413,7 @@ If the command is chained with `:on => :success`, then the chained command will 
 
 If the command is chained with `:on => :failure`, then the chained command will only execute if the previous result is failing, e.g. the `#success?` method returns false and the command is not halted. A result is failing if the errors object is not empty, or if the status is set to `:failure`.
 
-If the command is chained with `:on => always`, then the chained command will always be executed, even if the previous result is halted.
+If the command is chained with `:on => :always`, then the chained command will always be executed, even if the previous result is halted.
 
 ```ruby
 find_command =
@@ -474,8 +474,6 @@ book.title      #=> nil
 result.success? #=> false
 result.errors   #=> ['Book not found', "Title can't be blank"]
 ```
-
-The `#success` method can be used as shorthand for `chain(command, :on => :success)`. Likewise, the `#failure` method can be used in place of `chain(command, :on => :failure)`.
 
 #### Halting A Command Chain
 
@@ -697,7 +695,7 @@ A Cuprum::Result is a data object that encapsulates the result of calling a Cupr
 
 ```ruby
 value  = 'A result value'.freeze
-result = Cuprum::Result.new(value)
+result = Cuprum::Result.new(value: value)
 
 result.value    #=> 'A result value'
 result.errors   #=> []
