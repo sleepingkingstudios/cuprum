@@ -2,6 +2,10 @@
 
 ## 0.9.0
 
+### Commands
+
+Removed the `#success` and `#failure` chaining helpers.
+
 ### Results
 
 Updated the constructor to take both the value and the errors (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value.
