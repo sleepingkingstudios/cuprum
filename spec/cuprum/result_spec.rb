@@ -1223,8 +1223,8 @@ RSpec.describe Cuprum::Result do
     end
   end
 
-  describe '#to_result' do
-    include_examples 'should have reader', :to_result, ->() { instance }
+  describe '#to_cuprum_result' do
+    include_examples 'should have reader', :to_cuprum_result, ->() { instance }
   end
 
   describe '#update' do

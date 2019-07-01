@@ -398,7 +398,7 @@ module Cuprum
         value = hsh.fetch(:proc).call(result)
 
         if value_is_result?(value)
-          value.to_result
+          value.to_cuprum_result
         else
           build_result(value)
         end

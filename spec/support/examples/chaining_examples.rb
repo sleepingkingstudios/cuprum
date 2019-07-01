@@ -84,7 +84,7 @@ module Spec::Examples
       end
 
       shared_examples 'should call the block' do
-        let(:result) { chained.call.to_result }
+        let(:result) { chained.call.to_cuprum_result }
 
         it 'should return the previous result' do
           expect(result).to be first_result
@@ -141,7 +141,7 @@ module Spec::Examples
       end
 
       shared_examples 'should not call the block' do
-        let(:result) { chained.call.to_result }
+        let(:result) { chained.call.to_cuprum_result }
 
         it 'should return the previous result' do
           expect(result).to be first_result
@@ -293,7 +293,7 @@ module Spec::Examples
                 chain(&blocks[2])
             end
             let(:arguments) { [] }
-            let(:result)    { chained.call.to_result }
+            let(:result)    { chained.call.to_cuprum_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -402,7 +402,7 @@ module Spec::Examples
                 chain(commands[2])
             end
             let(:arguments) { [] }
-            let(:result)    { chained.call.to_result }
+            let(:result)    { chained.call.to_cuprum_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -548,7 +548,7 @@ module Spec::Examples
                 chain(&blocks[2])
             end
             let(:arguments) { [] }
-            let(:result)    { chained.call.to_result }
+            let(:result)    { chained.call.to_cuprum_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -657,7 +657,7 @@ module Spec::Examples
                 chain(commands[2])
             end
             let(:arguments) { [] }
-            let(:result)    { chained.call.to_result }
+            let(:result)    { chained.call.to_cuprum_result }
 
             it 'should call each command with the previous result value' do
               chained.call
@@ -689,7 +689,7 @@ module Spec::Examples
             value   = 'final value'
             chained = instance.tap_result(on: conditional) { value }
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -704,7 +704,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.tap_result(on: conditional) {}
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -830,7 +830,7 @@ module Spec::Examples
           end
 
           it 'should return the first result' do
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
       end
@@ -848,7 +848,7 @@ module Spec::Examples
             value   = 'final value'
             chained = instance.send(:tap_result!, on: conditional) { value }
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -863,7 +863,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.send(:tap_result!, on: conditional) {}
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -988,7 +988,7 @@ module Spec::Examples
           end
 
           it 'should return the first result' do
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
       end
@@ -1006,7 +1006,7 @@ module Spec::Examples
             it 'should wrap the value in a result' do
               value   = 'final value'
               chained = instance.yield_result(on: conditional) { value }
-              result  = chained.call.to_result
+              result  = chained.call.to_cuprum_result
 
               expect(result).to be_a Cuprum::Result
               expect(result.value).to be value
@@ -1020,7 +1020,7 @@ module Spec::Examples
               chained   =
                 instance.yield_result(on: conditional) { operation.call }
 
-              expect(chained.call.to_result).to be result
+              expect(chained.call.to_cuprum_result).to be result
             end
           end
 
@@ -1029,7 +1029,7 @@ module Spec::Examples
               result  = Cuprum::Result.new(value: 'final value')
               chained = instance.yield_result(on: conditional) { result }
 
-              expect(chained.call.to_result).to be result
+              expect(chained.call.to_cuprum_result).to be result
             end
           end
         end
@@ -1045,7 +1045,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.yield_result(on: conditional) {}
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -1171,7 +1171,7 @@ module Spec::Examples
           end
 
           it 'should return the final result' do
-            expect(chained.call.to_result).to be results.last
+            expect(chained.call.to_cuprum_result).to be results.last
           end
         end
       end
@@ -1190,7 +1190,7 @@ module Spec::Examples
               value   = 'final value'
               chained =
                 instance.send(:yield_result!, on: conditional) { value }
-              result  = chained.call.to_result
+              result  = chained.call.to_cuprum_result
 
               expect(result).to be_a Cuprum::Result
               expect(result.value).to be value
@@ -1206,7 +1206,7 @@ module Spec::Examples
                   operation.call
                 end
 
-              expect(chained.call.to_result).to be result
+              expect(chained.call.to_cuprum_result).to be result
             end
           end
 
@@ -1216,7 +1216,7 @@ module Spec::Examples
               chained =
                 instance.send(:yield_result!, on: conditional) { result }
 
-              expect(chained.call.to_result).to be result
+              expect(chained.call.to_cuprum_result).to be result
             end
           end
         end
@@ -1232,7 +1232,7 @@ module Spec::Examples
           it 'should return the previous result' do
             chained = instance.yield_result(on: conditional) {}
 
-            expect(chained.call.to_result).to be first_result
+            expect(chained.call.to_cuprum_result).to be first_result
           end
         end
 
@@ -1357,7 +1357,7 @@ module Spec::Examples
           end
 
           it 'should return the final result' do
-            expect(chained.call.to_result).to be results.last
+            expect(chained.call.to_cuprum_result).to be results.last
           end
         end
       end
