@@ -108,7 +108,7 @@ module Cuprum
     end
 
     # @return [Cuprum::Result] The result.
-    def to_result
+    def to_cuprum_result
       self
     end
 

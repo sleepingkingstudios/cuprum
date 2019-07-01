@@ -170,14 +170,14 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
-      describe '#to_result' do
-        include_examples 'should have reader', :to_result, nil
+      describe '#to_cuprum_result' do
+        include_examples 'should have reader', :to_cuprum_result, nil
 
         wrap_context 'when the operation has been called' do
           it 'should return the result' do
             call_operation
 
-            result = instance.to_result
+            result = instance.to_cuprum_result
             expect(result).to be_a Cuprum::Result
             expect(result.value).to be value
           end # it

@@ -136,7 +136,7 @@ Commands defined using `Cuprum::Command.new` are quick to use, but more difficul
 
 Calling the `#call` method on a `Cuprum::Command` instance will always return an instance of `Cuprum::Result`. The result's `#value` property is determined by the object returned by the `#process` method (if the command is defined as a class) or the block (if the command is defined by passing a block to `Cuprum::Command.new`).
 
-The `#value` depends on whether or not the returned object is a result or is compatible with the result interface. Specifically, any object that responds to the methods `#to_result`, `#value`, and `#success?` is considered to be a result.
+The `#value` depends on whether or not the returned object is a result or is compatible with the result interface. Specifically, any object that responds to the method `#to_cuprum_result` is considered to be a result.
 
 If the object returned is **not** a result, then the `#value` of the returned result is set to the object.
 
@@ -157,7 +157,7 @@ result.value    #=> nil
 result.success? #=> false
 ```
 
-If the object returned is another result or compatible object, then `#call` will call the `#to_result` method on the result and return the resulting object.
+If the object returned is another result or compatible object, then `#call` will call the `#to_cuprum_result` method on the result and return the resulting object (unless `to_cuprum_result` returns nil).
 
 ```ruby
 command = Cuprum::Command.new { |value| Cuprum::Result.new(value) }

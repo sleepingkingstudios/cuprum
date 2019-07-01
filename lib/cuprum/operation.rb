@@ -45,7 +45,7 @@ module Cuprum
       # @return [Cuprum::Result] The result from the most recent call of the
       #   operation.
       attr_reader :result
-      alias_method :to_result, :result
+      alias_method :to_cuprum_result, :result
 
       # @overload call(*arguments, **keywords, &block)
       #   Executes the logic encoded in the constructor block, or the #process

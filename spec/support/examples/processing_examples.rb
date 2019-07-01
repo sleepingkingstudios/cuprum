@@ -13,14 +13,13 @@ module Spec::Examples
           :define_method,
           :success?,
           ->() { errors.nil? || errors.empty? }
-        ) # end method success?
+        )
 
         klass.send(
           :define_method,
-          :to_result,
+          :to_cuprum_result,
           ->() { self }
-          # ->() { Cuprum::Result.new(value, errors: errors) }
-        ) # end method to_result
+        )
       end
     end
 
@@ -37,14 +36,6 @@ module Spec::Examples
             .to respond_to(:call)
             .with_unlimited_arguments
             .and_a_block
-        end
-      end
-
-      describe '#result' do
-        it 'should define the reader' do
-          expect(instance)
-            .to have_reader(:result, allow_private: true)
-            .with_value(nil)
         end
       end
     end
@@ -91,7 +82,7 @@ module Spec::Examples
           end
 
           it 'should return the custom result when called' do
-            result = instance.call.to_result
+            result = instance.call.to_cuprum_result
 
             expect(result).to be custom_result
             expect(result.value).to be value
@@ -110,7 +101,7 @@ module Spec::Examples
               nil
             end
 
-            returned_result = instance.call.to_result
+            returned_result = instance.call.to_cuprum_result
 
             expect(result_during_process).to be_a Cuprum::Result
             expect(result_during_process).to be returned_result
@@ -408,7 +399,7 @@ module Spec::Examples
           it 'should return a result with the expected errors' do
             result = instance.call
 
-            expect(result.to_result).to be_a Spec::CustomResult
+            expect(result.to_cuprum_result).to be_a Spec::CustomResult
             expect(result.value).to be value
             expect(result.errors).to be_empty
             expect(result.success?).to be true
@@ -431,7 +422,7 @@ module Spec::Examples
           it 'should return a result with the expected errors' do
             result = instance.call
 
-            expect(result.to_result).to be_a Spec::CustomResult
+            expect(result.to_cuprum_result).to be_a Spec::CustomResult
             expect(result.value).to be nil
             expect(result.errors).to be == expected_errors
             expect(result.success?).to be false

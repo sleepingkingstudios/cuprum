@@ -60,9 +60,6 @@ module Cuprum
   #
   # @see Cuprum::Command
   module Processing
-    VALUE_METHODS = %i[to_result value success?].freeze
-    private_constant :VALUE_METHODS
-
     # Returns a nonnegative integer for commands that take a fixed number of
     # arguments. For commands that take a variable number of arguments, returns
     # -n-1, where n is the number of required arguments.
@@ -118,7 +115,7 @@ module Cuprum
 
         warn_unless_empty!(result)
 
-        other.to_result
+        other.to_cuprum_result
       else
         result.value = other
 
@@ -160,7 +157,7 @@ module Cuprum
     end
 
     def value_is_result?(value)
-      VALUE_METHODS.all? { |method_name| value.respond_to?(method_name) }
+      value.respond_to?(:to_cuprum_result)
     end
 
     def warn_unless_empty!(result)
