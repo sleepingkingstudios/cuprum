@@ -39,13 +39,6 @@ RSpec.describe Cuprum::Utils::ResultNotEmptyWarning do
       it { expect(instance.message).to be == expected }
     end # describe
 
-    describe 'when the result is halted' do
-      let(:result)   { super().halt! }
-      let(:expected) { super() << 'the command was halted' }
-
-      it { expect(instance.message).to be == expected }
-    end # describe
-
     describe 'when the result has errors and a set status' do
       let(:errors) { ['errors.messages.unknown'] }
       let(:result) { super().success! }
@@ -54,21 +47,6 @@ RSpec.describe Cuprum::Utils::ResultNotEmptyWarning do
           "there were already errors #{result.errors.inspect}" \
           ' and ' \
           'the status was set to :success'
-      end # let
-
-      it { expect(instance.message).to be == expected }
-    end # describe
-
-    describe 'when the result has errors, a set status, and is halted' do
-      let(:errors) { ['errors.messages.unknown'] }
-      let(:result) { super().success!.halt! }
-      let(:expected) do
-        super() +
-          "there were already errors #{result.errors.inspect}" \
-          ', ' \
-          'the status was set to :success' \
-          ', and ' \
-          'the command was halted'
       end # let
 
       it { expect(instance.message).to be == expected }
@@ -96,22 +74,9 @@ RSpec.describe Cuprum::Utils::ResultNotEmptyWarning do
       it { expect(instance.warning?).to be true }
     end # describe
 
-    describe 'when the result is halted' do
-      let(:result) { super().halt! }
-
-      it { expect(instance.warning?).to be true }
-    end # describe
-
     describe 'when the result has errors and a set status' do
       let(:errors) { ['errors.messages.unknown'] }
       let(:result) { super().success! }
-
-      it { expect(instance.warning?).to be true }
-    end # describe
-
-    describe 'when the result has errors, a set status, and is halted' do
-      let(:errors) { ['errors.messages.unknown'] }
-      let(:result) { super().success!.halt! }
 
       it { expect(instance.warning?).to be true }
     end # describe

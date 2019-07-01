@@ -78,8 +78,8 @@ module Cuprum
     #   1. Creates a result object, typically an instance of Cuprum::Result.
     #      The result is assigned to the command as the private #result reader.
     #   2. The #process method is called, passing the arguments, keywords, and
-    #      block that were passed to #call. The #process method can set errors,
-    #      set the status, or halt the result via the #result reader method.
+    #      block that were passed to #call. The #process method can set errors
+    #      or set the status via the #result reader method.
     #   3. If #process returns a result, that result is returned by #call.
     #      Otherwise, the return value of #process is assigned to the #value
     #      property of the result, and the result is returned by #call.

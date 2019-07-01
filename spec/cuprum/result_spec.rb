@@ -31,10 +31,6 @@ RSpec.describe Cuprum::Result do
     include_context 'when the result status is set to success'
   end
 
-  shared_context 'when the result is halted' do
-    before(:example) { instance.halt! }
-  end
-
   subject(:instance) { described_class.new }
 
   describe '::new' do
@@ -132,12 +128,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance == other).to be true }
     end
 
-    describe 'with a halted result' do
-      let(:other) { described_class.new.tap(&:halt!) }
-
-      it { expect(instance == other).to be false }
-    end
-
     describe 'with an uncalled operation' do
       let(:other) { Cuprum::BuiltIn::NullOperation.new }
 
@@ -204,18 +194,6 @@ RSpec.describe Cuprum::Result do
       end
 
       it { expect(instance == other).to be true }
-    end
-
-    describe 'with a called and halted operation' do
-      let(:other) do
-        Cuprum::Operation.new do
-          # rubocop:disable RSpec/DescribedClass
-          Cuprum::Result.new.tap(&:halt!)
-          # rubocop:enable RSpec/DescribedClass
-        end.call
-      end
-
-      it { expect(instance == other).to be false }
     end
 
     wrap_context 'when the result has a value' do
@@ -286,18 +264,6 @@ RSpec.describe Cuprum::Result do
 
         it { expect(instance == other).to be false }
       end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
     end
 
     wrap_context 'when the result has many errors' do
@@ -345,12 +311,6 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a result with status set to success' do
         let(:other) { described_class.new.tap(&:success!) }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a halted result' do
-        let(:other) { described_class.new.tap(&:halt!) }
 
         it { expect(instance == other).to be false }
       end
@@ -437,18 +397,6 @@ RSpec.describe Cuprum::Result do
 
         it { expect(instance == other).to be false }
       end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
     end
 
     wrap_context 'when the result has many errors and success status' do
@@ -498,12 +446,6 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a result with status set to success' do
         let(:other) { described_class.new.tap(&:success!) }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a halted result' do
-        let(:other) { described_class.new.tap(&:halt!) }
 
         it { expect(instance == other).to be false }
       end
@@ -590,18 +532,6 @@ RSpec.describe Cuprum::Result do
 
         it { expect(instance == other).to be false }
       end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
     end
 
     wrap_context 'when the result status is set to failure' do
@@ -644,12 +574,6 @@ RSpec.describe Cuprum::Result do
 
       describe 'with a result with status set to success' do
         let(:other) { described_class.new.tap(&:success!) }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a halted result' do
-        let(:other) { described_class.new.tap(&:halt!) }
 
         it { expect(instance == other).to be false }
       end
@@ -717,18 +641,6 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             # rubocop:disable RSpec/DescribedClass
             Cuprum::Result.new.tap(&:success!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
             # rubocop:enable RSpec/DescribedClass
           end.call
         end
@@ -781,12 +693,6 @@ RSpec.describe Cuprum::Result do
         it { expect(instance == other).to be true }
       end
 
-      describe 'with a halted result' do
-        let(:other) { described_class.new.tap(&:halt!) }
-
-        it { expect(instance == other).to be false }
-      end
-
       describe 'with an uncalled operation' do
         let(:other) { Cuprum::BuiltIn::NullOperation.new }
 
@@ -850,151 +756,6 @@ RSpec.describe Cuprum::Result do
           Cuprum::Operation.new do
             # rubocop:disable RSpec/DescribedClass
             Cuprum::Result.new.tap(&:success!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be true }
-      end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-    end
-
-    wrap_context 'when the result is halted' do
-      describe 'with an empty result' do
-        let(:other) { described_class.new }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a result with a value' do
-        let(:other) { described_class.new(value: 'other value') }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a result with many errors' do
-        let(:other) do
-          described_class
-            .new(errors: ['errors.messages.unknown'])
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a result with many errors and success status' do
-        let(:other) do
-          described_class
-            .new(errors: ['errors.messages.unknown'])
-            .tap(&:success!)
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a result with status set to failure' do
-        let(:other) { described_class.new.tap(&:failure!) }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a result with status set to success' do
-        let(:other) { described_class.new.tap(&:success!) }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a halted result' do
-        let(:other) { described_class.new.tap(&:halt!) }
-
-        it { expect(instance == other).to be true }
-      end
-
-      describe 'with an uncalled operation' do
-        let(:other) { Cuprum::BuiltIn::NullOperation.new }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation' do
-        let(:other) { Cuprum::BuiltIn::NullOperation.new.call }
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation with a value' do
-        let(:other) do
-          Cuprum::Operation.new { 'other value' }.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation with many errors' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new(errors: ['errors.messages.unknown'])
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation with many errors and success status' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result
-              .new(errors: ['errors.messages.unknown'])
-              .tap(&:success!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation with status set to failure' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:failure!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called operation with status set to success' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:success!)
-            # rubocop:enable RSpec/DescribedClass
-          end.call
-        end
-
-        it { expect(instance == other).to be false }
-      end
-
-      describe 'with a called and halted operation' do
-        let(:other) do
-          Cuprum::Operation.new do
-            # rubocop:disable RSpec/DescribedClass
-            Cuprum::Result.new.tap(&:halt!)
             # rubocop:enable RSpec/DescribedClass
           end.call
         end
@@ -1066,10 +827,6 @@ RSpec.describe Cuprum::Result do
     wrap_context 'when the result status is set to success' do
       it { expect(instance.empty?).to be false }
     end
-
-    wrap_context 'when the result is halted' do
-      it { expect(instance.empty?).to be false }
-    end
   end
 
   describe '#errors' do
@@ -1133,38 +890,6 @@ RSpec.describe Cuprum::Result do
     wrap_context 'when the result status is set to success' do
       it { expect(instance.failure?).to be false }
     end
-
-    wrap_context 'when the result is halted' do
-      it { expect(instance.failure?).to be false }
-    end
-  end
-
-  describe '#halt!' do
-    it { expect(instance).to respond_to(:halt!).with(0).arguments }
-
-    it { expect(instance.halt!).to be instance }
-
-    it 'should mark the result as halted' do
-      instance.halt!
-
-      expect(instance.halted?).to be true
-    end
-  end
-
-  describe '#halted?' do
-    include_examples 'should have predicate', :halted?, false
-
-    wrap_context 'when the result status is set to failure' do
-      it { expect(instance.halted?).to be false }
-    end
-
-    wrap_context 'when the result status is set to success' do
-      it { expect(instance.halted?).to be false }
-    end
-
-    wrap_context 'when the result is halted' do
-      it { expect(instance.halted?).to be true }
-    end
   end
 
   describe '#success!' do
@@ -1217,10 +942,6 @@ RSpec.describe Cuprum::Result do
     wrap_context 'when the result status is set to success' do
       it { expect(instance.success?).to be true }
     end
-
-    wrap_context 'when the result is halted' do
-      it { expect(instance.success?).to be true }
-    end
   end
 
   describe '#to_cuprum_result' do
@@ -1250,8 +971,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.update(other).failure?).to be false }
 
       it { expect(instance.update(other).success?).to be true }
-
-      it { expect(instance.update(other).halted?).to be false }
     end
 
     describe 'with a result with a status set to failure' do
@@ -1266,8 +985,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.update(other).failure?).to be true }
 
       it { expect(instance.update(other).success?).to be false }
-
-      it { expect(instance.update(other).halted?).to be false }
     end
 
     describe 'with a result with a status set to success' do
@@ -1282,8 +999,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.update(other).failure?).to be false }
 
       it { expect(instance.update(other).success?).to be true }
-
-      it { expect(instance.update(other).halted?).to be false }
     end
 
     describe 'with a result with errors' do
@@ -1298,8 +1013,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.update(other).failure?).to be true }
 
       it { expect(instance.update(other).success?).to be false }
-
-      it { expect(instance.update(other).halted?).to be false }
     end
 
     describe 'with a result with errors and a status set to success' do
@@ -1315,24 +1028,6 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.update(other).failure?).to be false }
 
       it { expect(instance.update(other).success?).to be true }
-
-      it { expect(instance.update(other).halted?).to be false }
-    end
-
-    describe 'with a result that is halted' do
-      let(:other) { super().tap(&:halt!) }
-
-      it { expect(instance.update other).to be instance }
-
-      it { expect(instance.update(other).value).to be == other_value }
-
-      it { expect(instance.update(other).errors).to be_empty }
-
-      it { expect(instance.update(other).failure?).to be false }
-
-      it { expect(instance.update(other).success?).to be true }
-
-      it { expect(instance.update(other).halted?).to be true }
     end
 
     wrap_context 'when the result has many errors' do
@@ -1387,16 +1082,6 @@ RSpec.describe Cuprum::Result do
           expect(instance.update(other).errors)
             .to contain_exactly(*expected_errors)
         end
-
-        it { expect(instance.update(other).failure?).to be true }
-
-        it { expect(instance.update(other).success?).to be false }
-      end
-
-      describe 'with a result that is halted' do
-        let(:other) { super().tap(&:halt!) }
-
-        it { expect(instance.update(other).errors).to be == errors }
 
         it { expect(instance.update(other).failure?).to be true }
 
@@ -1460,16 +1145,6 @@ RSpec.describe Cuprum::Result do
 
           it { expect(instance.update(other).success?).to be true }
         end
-
-        describe 'with a result that is halted' do
-          let(:other) { super().tap(&:halt!) }
-
-          it { expect(instance.update(other).errors).to be == errors }
-
-          it { expect(instance.update(other).failure?).to be false }
-
-          it { expect(instance.update(other).success?).to be true }
-        end
       end
     end
 
@@ -1499,12 +1174,6 @@ RSpec.describe Cuprum::Result do
       describe 'with a result with errors and a status set to success' do
         let(:other)        { super().tap(&:success!) }
         let(:other_errors) { ['errors.messages.other'] }
-
-        it { expect(instance.update(other).failure?).to be true }
-      end
-
-      describe 'with a result that is halted' do
-        let(:other) { super().tap(&:halt!) }
 
         it { expect(instance.update(other).failure?).to be true }
       end
@@ -1538,49 +1207,6 @@ RSpec.describe Cuprum::Result do
         let(:other_errors) { ['errors.messages.other'] }
 
         it { expect(instance.update(other).success?).to be true }
-      end
-
-      describe 'with a result that is halted' do
-        let(:other) { super().tap(&:halt!) }
-
-        it { expect(instance.update(other).success?).to be true }
-      end
-    end
-
-    wrap_context 'when the result is halted' do
-      describe 'with a result with a value' do
-        it { expect(instance.update(other).halted?).to be true }
-      end
-
-      describe 'with a result with a status set to failure' do
-        let(:other) { super().tap(&:failure!) }
-
-        it { expect(instance.update(other).halted?).to be true }
-      end
-
-      describe 'with a result with a status set to success' do
-        let(:other) { super().tap(&:success!) }
-
-        it { expect(instance.update(other).halted?).to be true }
-      end
-
-      describe 'with a result with errors' do
-        let(:other_errors)    { ['errors.messages.other'] }
-
-        it { expect(instance.update(other).halted?).to be true }
-      end
-
-      describe 'with a result with errors and a status set to success' do
-        let(:other)        { super().tap(&:success!) }
-        let(:other_errors) { ['errors.messages.other'] }
-
-        it { expect(instance.update(other).halted?).to be true }
-      end
-
-      describe 'with a result that is halted' do
-        let(:other) { super().tap(&:halt!) }
-
-        it { expect(instance.update(other).halted?).to be true }
       end
     end
   end

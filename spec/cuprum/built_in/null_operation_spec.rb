@@ -47,18 +47,6 @@ RSpec.describe Cuprum::BuiltIn::NullOperation do
     end # describe
   end # describe
 
-  describe '#halted?' do
-    it { expect(instance.halted?).to be false }
-
-    it { expect(instance.call.halted?).to be false }
-
-    describe 'with arbitrary arguments' do
-      it 'should not be halt the operation' do
-        expect(instance.call(1, 2, :san => 'san') { :yon }.halted?).to be false
-      end # it
-    end # describe
-  end # describe
-
   describe '#success?' do
     it { expect(instance.success?).to be false }
 

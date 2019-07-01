@@ -43,18 +43,6 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
     it { expect(instance.call(result).failure?).to be true }
   end # describe
 
-  describe '#halted?' do
-    it { expect(instance.halted?).to be false }
-
-    it { expect(instance.call.halted?).to be false }
-
-    it { expect(instance.call(value).halted?).to be false }
-
-    it { expect(instance.call(result).halted?).to be false }
-
-    it { expect(instance.call(result.halt!).halted?).to be true }
-  end # describe
-
   describe '#success?' do
     it { expect(instance.success?).to be false }
 

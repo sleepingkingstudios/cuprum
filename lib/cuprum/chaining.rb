@@ -125,12 +125,8 @@ module Cuprum
   #       Find.new(Post).call(id).
   #         yield_result(:on => :failure) do |result|
   #           redirect_to posts_path
-  #
-  #           # A halted result prevents further :on => :failure commands from
-  #           # being called.
-  #           result.halt!
   #         end.
-  #         yield_result do |result|
+  #         yield_result(on: :success) do |result|
   #           # Assign our attributes and save the post.
   #           UpdateAttributes.new.call(result.value, attributes)
   #         end.
@@ -142,7 +138,7 @@ module Cuprum
   #         end.
   #         tap_result(:on => :always) do |result|
   #           # Chaining :on => :always ensures that the command will be run,
-  #           # even if the previous result is failing or halted.
+  #           # even if the previous result is failing.
   #           if result.failure?
   #             log_errors(
   #               :command => UpdatePostCommand,
@@ -192,13 +188,11 @@ module Cuprum
     #   @param on [Symbol] Sets a condition on when the chained block can run,
     #     based on the previous result. Valid values are :success, :failure, and
     #     :always. If the value is :success, the block will be called only if
-    #     the previous result succeeded and is not halted. If the value is
-    #     :failure, the block will be called only if the previous result failed
-    #     and is not halted. If the value is :always, the block will be called
-    #     regardless of the previous result status, even if the previous result
-    #     is halted. If no value is given, the command will run whether the
-    #     previous command was a success or a failure, but not if the command
-    #     chain has been halted.
+    #     the previous result succeeded. If the value is :failure, the block
+    #     will be called only if the previous result failed. If the value is
+    #     :always, the block will be called regardless of the previous result
+    #     status. If no value is given, the command will run whether the
+    #     previous command was a success or a failure.
     #
     # @overload chain(on: nil) { |value| }
     #   Creates an anonymous command from the given block. The command will be
@@ -207,13 +201,11 @@ module Cuprum
     #   @param on [Symbol] Sets a condition on when the chained block can run,
     #     based on the previous result. Valid values are :success, :failure, and
     #     :always. If the value is :success, the block will be called only if
-    #     the previous result succeeded and is not halted. If the value is
-    #     :failure, the block will be called only if the previous result failed
-    #     and is not halted. If the value is :always, the block will be called
-    #     regardless of the previous result status, even if the previous result
-    #     is halted. If no value is given, the command will run whether the
-    #     previous command was a success or a failure, but not if the command
-    #     chain has been halted.
+    #     the previous result succeeded. If the value is :failure, the block
+    #     will be called only if the previous result failed. If the value is
+    #     :always, the block will be called regardless of the previous result
+    #     status. If no value is given, the command will run whether the
+    #     previous command was a success or a failure.
     #
     #   @yieldparam value [Object] The value of the previous result.
     def chain(command = nil, on: nil, &block)
@@ -242,12 +234,11 @@ module Cuprum
     # @param on [Symbol] Sets a condition on when the chained block can run,
     #   based on the previous result. Valid values are :success, :failure, and
     #   :always. If the value is :success, the block will be called only if the
-    #   previous result succeeded and is not halted. If the value is :failure,
-    #   the block will be called only if the previous result failed and is not
-    #   halted. If the value is :always, the block will be called regardless of
-    #   the previous result status, even if the previous result is halted. If no
+    #   previous result succeeded. If the value is :failure, the block will be
+    #   called only if the previous result failed. If the value is :always, the
+    #   block will be called regardless of the previous result status. If no
     #   value is given, the command will run whether the previous command was a
-    #   success or a failure, but not if the command chain has been halted.
+    #   success or a failure.
     #
     # @yieldparam result [Cuprum::Result] The #result of the previous command.
     #
@@ -276,13 +267,11 @@ module Cuprum
     #   @param on [Symbol] Sets a condition on when the chained block can run,
     #     based on the previous result. Valid values are :success, :failure, and
     #     :always. If the value is :success, the block will be called only if
-    #     the previous result succeeded and is not halted. If the value is
-    #     :failure, the block will be called only if the previous result failed
-    #     and is not halted. If the value is :always, the block will be called
-    #     regardless of the previous result status, even if the previous result
-    #     is halted. If no value is given, the command will run whether the
-    #     previous command was a success or a failure, but not if the command
-    #     chain has been halted.
+    #     the previous result succeeded. If the value is :failure, the block
+    #     will be called only if the previous result failed. If the value is
+    #     :always, the block will be called regardless of the previous result
+    #     status. If no value is given, the command will run whether the
+    #     previous command was a success or a failure.
     #
     # @overload chain!(on: nil) { |value| }
     #   Creates an anonymous command from the given block. The command will be
@@ -291,13 +280,11 @@ module Cuprum
     #   @param on [Symbol] Sets a condition on when the chained block can run,
     #     based on the previous result. Valid values are :success, :failure, and
     #     :always. If the value is :success, the block will be called only if
-    #     the previous result succeeded and is not halted. If the value is
-    #     :failure, the block will be called only if the previous result failed
-    #     and is not halted. If the value is :always, the block will be called
-    #     regardless of the previous result status, even if the previous result
-    #     is halted. If no value is given, the command will run whether the
-    #     previous command was a success or a failure, but not if the command
-    #     chain has been halted.
+    #     the previous result succeeded. If the value is :failure, the block
+    #     will be called only if the previous result failed. If the value is
+    #     :always, the block will be called regardless of the previous result
+    #     status. If no value is given, the command will run whether the
+    #     previous command was a success or a failure.
     #
     #   @yieldparam value [Object] The value of the previous result.
     def chain!(command = nil, on: nil, &block)
@@ -380,8 +367,6 @@ module Cuprum
 
     def skip_chained_proc?(last_result, on:)
       return false if on == :always
-
-      return true if last_result.respond_to?(:halted?) && last_result.halted?
 
       case on
       when :success

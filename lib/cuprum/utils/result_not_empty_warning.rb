@@ -2,8 +2,7 @@ require 'cuprum/utils'
 
 module Cuprum::Utils
   # Helper class for building a warning message when a command returns a result,
-  # but the command's current result already has errors, a set status, or is
-  # halted.
+  # but the command's current result already has errors or a set status.
   class ResultNotEmptyWarning
     MESSAGE = '#process returned a result, but '.freeze
     private_constant :MESSAGE
@@ -36,20 +35,12 @@ module Cuprum::Utils
       "there were already errors #{@result.errors.inspect}".freeze
     end # method errors_not_empty_warning
 
-    def halted_warning
-      return nil unless result.halted?
-
-      'the command was halted'.freeze
-    end # method halted_warning
-
     def humanize_list list, empty_value: ''
       return empty_value if list.size.zero?
 
       return list.first.to_s if list.size == 1
 
-      return "#{list.first} and #{list.last}" if list.size == 2
-
-      "#{list[0...-1].join ', '}, and #{list.last}"
+      "#{list.first} and #{list.last}"
     end # method humanize_list
 
     def status_set_warning
@@ -64,8 +55,7 @@ module Cuprum::Utils
       @warnings ||=
         [
           errors_not_empty_warning,
-          status_set_warning,
-          halted_warning
+          status_set_warning
         ].compact
     end # method warnings
   end # class

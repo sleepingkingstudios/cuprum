@@ -21,7 +21,6 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
         expect(result.errors).to be_empty
         expect(result.success?).to be true
         expect(result.failure?).to be false
-        expect(result.halted?).to be false
       end # it
     end # describe
 
@@ -36,7 +35,6 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
         expect(result.errors).to be_empty
         expect(result.success?).to be true
         expect(result.failure?).to be false
-        expect(result.halted?).to be false
       end # it
     end # describe
 
@@ -53,7 +51,6 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
         expect(result.errors).to be == errors
         expect(result.success?).to be false
         expect(result.failure?).to be true
-        expect(result.halted?).to be false
       end # it
     end # describe
   end # describe

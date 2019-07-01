@@ -130,14 +130,6 @@ module Spec::Examples
             expect(result.failure?).to be true
           end
         end
-
-        describe 'when the block halts the result' do
-          let(:chained_implementation) { ->() { result.halt! } }
-
-          it 'should set the status of the result' do
-            expect(result.halted?).to be true
-          end
-        end
       end
 
       shared_examples 'should not call the block' do
@@ -247,30 +239,6 @@ module Spec::Examples
             end
           end
 
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
           context 'when multiple blocks are chained' do
             let(:values) do
               %w[second third fourth].map { |str| "#{str} value" }
@@ -347,30 +315,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -502,30 +446,6 @@ module Spec::Examples
             end
           end
 
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
           context 'when multiple blocks are chained' do
             let(:values) do
               %w[second third fourth].map { |str| "#{str} value" }
@@ -602,30 +522,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -776,30 +672,6 @@ module Spec::Examples
           end
         end
 
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
         context 'when multiple results are tapped' do
           let(:results) do
             %w[second third fourth].
@@ -925,30 +797,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
@@ -1117,30 +965,6 @@ module Spec::Examples
           end
         end
 
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
         context 'when multiple results are yielded' do
           let(:results) do
             %w[second third fourth].
@@ -1294,30 +1118,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
