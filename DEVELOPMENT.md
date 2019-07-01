@@ -14,9 +14,9 @@ The "'Tis Not Too Late To Seek A Newer World" Update
 
 ### Results
 
-- Update constructor signature: initialize(value:, errors: [])
 - Results are immutable
   - Remove methods #errors=, #value=, #failure!, #halt!, #success!, #update.
+- Alias #errors as #error.
 
 ## Version 0.10.0
 

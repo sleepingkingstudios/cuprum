@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Results
+
+Updated the constructor to take both the value and the errors (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value.
+
 ## 0.8.0
 
 The "We Have The Technology" Update.

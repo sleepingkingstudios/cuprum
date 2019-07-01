@@ -697,7 +697,7 @@ A Cuprum::Result is a data object that encapsulates the result of calling a Cupr
 
 ```ruby
 value  = 'A result value'.freeze
-result = Cuprum::Result.new(value)
+result = Cuprum::Result.new(value: value)
 
 result.value    #=> 'A result value'
 result.errors   #=> []
