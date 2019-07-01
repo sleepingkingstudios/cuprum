@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/errors/process_not_implemented_error'
 require 'cuprum/utils/result_not_empty_warning'
 
@@ -12,14 +14,14 @@ module Cuprum
   #
   #     def initialize addend
   #       @addend = addend
-  #     end # constructor
+  #     end
   #
   #     private
   #
   #     def process int
   #       int + addend
-  #     end # method process
-  #   end # class AdderCommand
+  #     end
+  #   end
   #
   #   adder  = AdderCommand.new(2)
   #   result = adder.call(3)
@@ -38,11 +40,11 @@ module Cuprum
   #         result.errors << 'value cannot be negative'
   #
   #         return nil
-  #       end # if
+  #       end
   #
   #       Math.sqrt(value)
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   result = SquareRootCommand.new.call(2)
   #   result.value    #=> 1.414
@@ -68,7 +70,7 @@ module Cuprum
     # @return [Integer] The number of arguments.
     def arity
       method(:process).arity
-    end # method arity
+    end
 
     # @overload call(*arguments, **keywords, &block)
     #   Executes the command implementation and returns a Cuprum::Result or
@@ -96,9 +98,9 @@ module Cuprum
     #
     #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless the #process
     #     method was overriden.
-    def call *args, &block
+    def call(*args, &block)
       process_with_result(build_result, *args, &block)
-    end # method call
+    end
 
     private
 
@@ -106,11 +108,11 @@ module Cuprum
     #   is being called.
     attr_reader :result
 
-    def build_result value = nil, **options
+    def build_result(value = nil, **options)
       Cuprum::Result.new(value: value, **options)
-    end # method build_result
+    end
 
-    def merge_results result, other
+    def merge_results(result, other)
       if value_is_result?(other)
         return result if result == other
 
@@ -121,8 +123,8 @@ module Cuprum
         result.value = other
 
         result
-      end # if-else
-    end # method merge_results
+      end
+    end
 
     # @!visibility public
     # @overload process(*arguments, **keywords, &block)
@@ -144,29 +146,29 @@ module Cuprum
     #     Command subclass.
     #
     # @note This is a private method.
-    def process *_args
+    def process(*_args)
       raise Cuprum::Errors::ProcessNotImplementedError, nil, caller(1..-1)
-    end # method process
+    end
 
-    def process_with_result result, *args, &block
+    def process_with_result(result, *args, &block)
       @result = result
       value   = process(*args, &block)
 
       merge_results(result, value)
     ensure
       @result = nil
-    end # method process_with_result
+    end
 
-    def value_is_result? value
+    def value_is_result?(value)
       VALUE_METHODS.all? { |method_name| value.respond_to?(method_name) }
-    end # method value
+    end
 
-    def warn_unless_empty! result
+    def warn_unless_empty!(result)
       return unless result.respond_to?(:empty?) && !result.empty?
 
       not_empty = Cuprum::Utils::ResultNotEmptyWarning.new(result)
 
       Cuprum.warn(not_empty.message) if not_empty.warning?
-    end # method warn_unless_empty!
-  end # module
-end # module
+    end
+  end
+end

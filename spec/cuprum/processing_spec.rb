@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/processing'
 
 require 'support/examples/processing_examples'
@@ -19,12 +21,12 @@ RSpec.describe Cuprum::Processing do
       let(:described_class) do
         super().tap do |klass|
           klass.send(:define_method, :process, &implementation)
-        end # tap
-      end # let
-    end # shared_context
+        end
+      end
+    end
 
     let(:implementation) { ->() {} }
 
     include_examples 'should execute the command implementation'
-  end # describe
-end # describe
+  end
+end
