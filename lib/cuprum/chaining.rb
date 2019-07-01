@@ -220,50 +220,6 @@ module Cuprum
       clone.chain!(command, on: on, &block)
     end
 
-    # Shorthand for command.chain(:on => :failure). Creates a copy of the first
-    # command, and then chains the given command or block to execute after the
-    # first command's implementation, but only if the previous command is
-    # failing.
-    #
-    # @return [Cuprum::Chaining] A copy of the command, with the chained
-    #   command.
-    #
-    # @see #chain
-    #
-    # @overload failure(command)
-    #   @param command [Cuprum::Command] The command to chain.
-    #
-    # @overload failure() { |value| }
-    #   Creates an anonymous command from the given block. The command will be
-    #   passed the value of the previous result.
-    #
-    #   @yieldparam value [Object] The value of the previous result.
-    def failure(command = nil, &block)
-      clone.chain!(command, on: :failure, &block)
-    end
-
-    # Shorthand for command.chain(:on => :success). Creates a copy of the first
-    # command, and then chains the given command or block to execute after the
-    # first command's implementation, but only if the previous command is
-    # failing.
-    #
-    # @return [Cuprum::Chaining] A copy of the command, with the chained
-    #   command.
-    #
-    # @see #chain
-    #
-    # @overload success(command)
-    #   @param command [Cuprum::Command] The command to chain.
-    #
-    # @overload success() { |value| }
-    #   Creates an anonymous command from the given block. The command will be
-    #   passed the value of the previous result.
-    #
-    #   @yieldparam value [Object] The value of the previous result.
-    def success(command = nil, &block)
-      clone.chain!(command, on: :success, &block)
-    end
-
     # As #yield_result, but always returns the previous result when the block is
     # called. The return value of the block is discarded.
     #
