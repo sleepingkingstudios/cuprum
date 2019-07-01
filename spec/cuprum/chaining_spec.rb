@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/chaining'
 require 'cuprum/processing'
 
@@ -13,7 +15,7 @@ RSpec.describe Cuprum::Chaining do
   example_class 'Spec::CommandWithChaining' do |klass|
     klass.include Cuprum::Processing
     klass.include described_class
-  end # klass
+  end
 
   include_examples 'should implement the Chaining methods'
-end # describe
+end

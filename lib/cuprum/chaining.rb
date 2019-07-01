@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum'
 
 module Cuprum
@@ -25,8 +27,8 @@ module Cuprum
   #         chain(UrlSafeCommand.new).
   #         chain(PrependDateCommand.new(post.created_at)).
   #         call(post.title)
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   title = 'Greetings, programs!'
   #   date  = '1982-07-09'
@@ -74,8 +76,8 @@ module Cuprum
   #         chain(:on => :success) do |tag|
   #           tag.create_tagging(taggable)
   #         end
-  #     end # method process
-  #   end # method class
+  #     end
+  #   end
   #
   #   post        = Post.create(:title => 'Tagging Example')
   #   example_tag = Tag.create(:name => 'Example Tag')
@@ -214,9 +216,9 @@ module Cuprum
     #     chain has been halted.
     #
     #   @yieldparam value [Object] The value of the previous result.
-    def chain command = nil, on: nil, &block
-      clone.chain!(command, :on => on, &block)
-    end # method chain
+    def chain(command = nil, on: nil, &block)
+      clone.chain!(command, on: on, &block)
+    end
 
     # Shorthand for command.chain(:on => :failure). Creates a copy of the first
     # command, and then chains the given command or block to execute after the
@@ -236,9 +238,9 @@ module Cuprum
     #   passed the value of the previous result.
     #
     #   @yieldparam value [Object] The value of the previous result.
-    def failure command = nil, &block
-      clone.chain!(command, :on => :failure, &block)
-    end # method failure
+    def failure(command = nil, &block)
+      clone.chain!(command, on: :failure, &block)
+    end
 
     # Shorthand for command.chain(:on => :success). Creates a copy of the first
     # command, and then chains the given command or block to execute after the
@@ -258,9 +260,9 @@ module Cuprum
     #   passed the value of the previous result.
     #
     #   @yieldparam value [Object] The value of the previous result.
-    def success command = nil, &block
-      clone.chain!(command, :on => :success, &block)
-    end # method success
+    def success(command = nil, &block)
+      clone.chain!(command, on: :success, &block)
+    end
 
     # As #yield_result, but always returns the previous result when the block is
     # called. The return value of the block is discarded.
@@ -272,9 +274,9 @@ module Cuprum
     # @return (see #yield_result)
     #
     # @see #yield_result
-    def tap_result on: nil, &block
-      clone.tap_result!(:on => on, &block)
-    end # method tap_result
+    def tap_result(on: nil, &block)
+      clone.tap_result!(on: on, &block)
+    end
 
     # Creates a copy of the command, and then chains the block to execute after
     # the command implementation. When #call is executed, each chained block
@@ -296,9 +298,9 @@ module Cuprum
     # @return [Cuprum::Chaining] A copy of the command, with the chained block.
     #
     # @see #tap_result
-    def yield_result on: nil, &block
-      clone.yield_result!(:on => on, &block)
-    end # method yield_result
+    def yield_result(on: nil, &block)
+      clone.yield_result!(on: on, &block)
+    end
 
     protected
 
@@ -342,25 +344,25 @@ module Cuprum
     #     chain has been halted.
     #
     #   @yieldparam value [Object] The value of the previous result.
-    def chain! command = nil, on: nil, &block
+    def chain!(command = nil, on: nil, &block)
       command ||= Cuprum::Command.new(&block)
 
       chained_procs <<
         {
-          :proc => chain_command(command),
-          :on   => on
+          proc: chain_command(command),
+          on:   on
         } # end hash
 
       self
-    end # method chain!
+    end
 
     def chained_procs
       @chained_procs ||= []
-    end # method chained_procs
+    end
 
-    def process_with_result *args, &block
+    def process_with_result(*args, &block)
       yield_chain(super)
-    end # method call
+    end
 
     # @!visibility public
     #
@@ -375,17 +377,17 @@ module Cuprum
     # @return (see #tap_result)
     #
     # @see #tap_result
-    def tap_result! on: nil, &block
+    def tap_result!(on: nil, &block)
       tapped = ->(result) { result.tap { block.call(result) } }
 
       chained_procs <<
         {
-          :proc => tapped,
-          :on   => on
+          proc: tapped,
+          on:   on
         } # end hash
 
       self
-    end # method tap_result!
+    end
 
     # @!visibility public
     #
@@ -400,27 +402,27 @@ module Cuprum
     # @return (see #yield_result)
     #
     # @see #yield_result
-    def yield_result! on: nil, &block
+    def yield_result!(on: nil, &block)
       chained_procs <<
         {
-          :proc => block,
-          :on   => on
+          proc: block,
+          on:   on
         } # end hash
 
       self
-    end # method yield_result!
+    end
 
     private
 
-    def chain_command command
+    def chain_command(command)
       if command.arity.zero?
         ->(result) { command.process_with_result(result) }
       else
         ->(result) { command.process_with_result(result, result.value) }
-      end # if-else
-    end # method chain_command
+      end
+    end
 
-    def skip_chained_proc? last_result, on:
+    def skip_chained_proc?(last_result, on:)
       return false if on == :always
 
       return true if last_result.respond_to?(:halted?) && last_result.halted?
@@ -430,12 +432,12 @@ module Cuprum
         !last_result.success?
       when :failure
         !last_result.failure?
-      end # case
-    end # method skip_chained_proc?
+      end
+    end
 
-    def yield_chain first_result
+    def yield_chain(first_result)
       chained_procs.reduce(first_result) do |result, hsh|
-        next result if skip_chained_proc?(result, :on => hsh[:on])
+        next result if skip_chained_proc?(result, on: hsh[:on])
 
         value = hsh.fetch(:proc).call(result)
 
@@ -443,8 +445,8 @@ module Cuprum
           value.to_result
         else
           build_result(value)
-        end # if-else
-      end # reduce
-    end # method yield_chain
-  end # module
-end # modue
+        end
+      end
+    end
+  end
+end
