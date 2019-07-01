@@ -6,6 +6,8 @@
 
 Removed the `#success` and `#failure` chaining helpers.
 
+Permanently removed the deprecated ResultHelpers mixin.
+
 ### Results
 
 Updated the constructor to take both the value and the errors (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value.
