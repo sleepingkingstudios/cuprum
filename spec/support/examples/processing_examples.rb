@@ -207,20 +207,6 @@ module Spec::Examples
           end
         end
 
-        shared_examples 'should display a warning when returning a result' do
-          context 'when a result is returned', :allow_warnings do
-            let(:value) { Cuprum::Result.new }
-
-            it 'should display a warning' do
-              allow(Cuprum).to receive(:warn)
-
-              instance.call
-
-              expect(Cuprum).to have_received(:warn).with(an_instance_of String)
-            end
-          end
-        end
-
         let(:value) { nil }
 
         include_examples 'should return an empty result'
@@ -250,8 +236,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected errors'
-
-          include_examples 'should display a warning when returning a result'
         end
 
         context 'when the implementation sets the status' do
@@ -266,8 +250,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a failing result'
-
-          include_examples 'should display a warning when returning a result'
         end
 
         context 'when the implementation returns the current result' do

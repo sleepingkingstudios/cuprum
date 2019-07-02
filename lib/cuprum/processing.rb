@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cuprum/errors/process_not_implemented_error'
-require 'cuprum/utils/result_not_empty_warning'
 
 module Cuprum
   # Functional implementation for creating a command object. Cuprum::Processing
@@ -113,8 +112,6 @@ module Cuprum
       if value_is_result?(other)
         return result if result == other
 
-        warn_unless_empty!(result)
-
         other.to_cuprum_result
       else
         result.value = other
@@ -158,14 +155,6 @@ module Cuprum
 
     def value_is_result?(value)
       value.respond_to?(:to_cuprum_result)
-    end
-
-    def warn_unless_empty!(result)
-      return unless result.respond_to?(:empty?) && !result.empty?
-
-      not_empty = Cuprum::Utils::ResultNotEmptyWarning.new(result)
-
-      Cuprum.warn(not_empty.message) if not_empty.warning?
     end
   end
 end
