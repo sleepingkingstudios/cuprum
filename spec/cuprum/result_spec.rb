@@ -272,18 +272,6 @@ RSpec.describe Cuprum::Result do
     end
   end
 
-  describe '#empty?' do
-    include_examples 'should have predicate', :empty?, true
-
-    wrap_context 'when the result has a value' do
-      it { expect(instance.empty?).to be false }
-    end
-
-    wrap_context 'when the result has many errors' do
-      it { expect(instance.empty?).to be false }
-    end
-  end
-
   describe '#errors' do
     include_examples 'should have property', :errors, []
 

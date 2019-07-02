@@ -50,12 +50,6 @@ module Cuprum
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity
 
-    # @return [Boolean] true if the result is empty, i.e. has no value or errors
-    #   and does not have its status set.
-    def empty?
-      value.nil? && errors.empty? && @status.nil?
-    end
-
     # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
