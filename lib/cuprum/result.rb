@@ -56,30 +56,10 @@ module Cuprum
       value.nil? && errors.empty? && @status.nil?
     end
 
-    # Marks the result as a failure, whether or not the command generated any
-    # errors.
-    #
-    # @return [Cuprum::Result] The result.
-    def failure!
-      @status = :failure
-
-      self
-    end
-
     # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
       @status == :failure || (@status.nil? && !errors.empty?)
-    end
-
-    # Marks the result as a success, whether or not the command generated any
-    # errors.
-    #
-    # @return [Cuprum::Result] The result.
-    def success!
-      @status = :success
-
-      self
     end
 
     # @return [Boolean] true if the command did not generate any errors,

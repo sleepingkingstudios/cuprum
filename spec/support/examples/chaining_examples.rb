@@ -122,14 +122,6 @@ module Spec::Examples
             end
           end
         end
-
-        describe 'when the block sets the result status' do
-          let(:chained_implementation) { ->() { result.failure! } }
-
-          it 'should set the status of the result' do
-            expect(result.failure?).to be true
-          end
-        end
       end
 
       shared_examples 'should not call the block' do
@@ -161,6 +153,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value' }
+        let(:first_errors) { ['first error'] }
         let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
@@ -216,7 +209,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -301,7 +296,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -369,6 +366,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value' }
+        let(:first_errors) { ['first error'] }
         let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
@@ -423,7 +421,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -508,7 +508,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -605,6 +607,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -649,7 +652,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -740,6 +745,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -783,7 +789,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -898,6 +906,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -942,7 +951,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -1061,6 +1072,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -1104,7 +1116,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 

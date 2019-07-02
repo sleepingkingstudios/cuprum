@@ -195,18 +195,6 @@ module Spec::Examples
           end
         end
 
-        shared_examples 'should return a failing result' do
-          it 'should return a failing result' do
-            result = instance.call
-
-            expect(result).to be_a result_class
-            expect(result.value).to be nil
-            expect(result.errors).to be_empty
-            expect(result.success?).to be false
-            expect(result.failure?).to be true
-          end
-        end
-
         let(:value) { nil }
 
         include_examples 'should return an empty result'
@@ -236,20 +224,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected errors'
-        end
-
-        context 'when the implementation sets the status' do
-          let(:implementation) do
-            returned = value
-
-            lambda do
-              result.failure!
-
-              returned
-            end
-          end
-
-          include_examples 'should return a failing result'
         end
 
         context 'when the implementation returns the current result' do
@@ -295,17 +269,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected errors'
-        end
-
-        context 'when the implementation returns a failing result' do
-          let(:result) { Cuprum::Result.new.failure! }
-          let(:implementation) do
-            returned = result
-
-            ->() { returned }
-          end
-
-          include_examples 'should return a failing result'
         end
 
         context 'when the implementation returns a result-like object' do
