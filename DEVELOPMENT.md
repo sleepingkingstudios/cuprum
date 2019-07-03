@@ -12,15 +12,48 @@ The "'Tis Not Too Late To Seek A Newer World" Update
   - #success(value)  => returns passing Result with value # Optional
   - #failure(errors) => returns failing Result with errors
 
+### Errors
+
+Encapsulate an error state, e.g. (hypothetical) ValidationError. Pattern matching.
+- Cuprum::Error
+  - Takes optional #message param.
+- Cuprum::Errors::CommandNotImplemented
+  - instead of raising an exception.
+- Cuprum::Errors::OperationNotCalled
+  - when an uncalled operation is returned
+  - Update Operation#to_cuprum_result to return when not yet called.
+
 ### Results
 
 - Results are immutable
-  - Remove methods #errors=, #value=, #failure!, #halt!, #success!, #update.
+  - Remove methods #errors=, #value=, #failure!, #success!, #update.
 - Alias #errors as #error.
+
+#### Custom Statuses
+
+- Add :status keyword to initializer
+  - Defaults to :success or :failure
+  - Private #statuses method? Override to allow custom status.
+- Example custom statuses: #halted, #pending, etc?
 
 ## Version 0.10.0
 
 The "One Small Step" Update
+
+### Commands
+
+- Implement #<<, #>> composition methods.
+  - Calls commands in order passing values.
+  - Return Result early on Failure, otherwise final Result.
+- Implement #step method (used in #process).
+  - Called with command (block? method?) that returns a Result.
+  - Raise (and catch) exception on non-success Result (test custom status?)
+  - Otherwise return Result#value.
+
+### Matcher
+
+- Handle success(), failure(), failure(SomeError) cases.
+  - Custom matcher to handle additional cases - halted, pending, etc?
 
 ## Version 1.0.0
 

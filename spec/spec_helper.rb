@@ -17,21 +17,6 @@ RSpec.configure do |config|
   config.extend  RSpec::SleepingKingStudios::Concerns::WrapExamples
   config.include RSpec::SleepingKingStudios::Examples::PropertyExamples
 
-  config.before(:example) do |example|
-    Cuprum.warning_proc =
-      if example.metadata.fetch(:allow_warnings, false)
-        Cuprum.const_get(:DEFAULT_WARNING_PROC)
-      elsif example.metadata.fetch(:suppress_warnings, false)
-        ->(_) {}
-      else
-        lambda do |message|
-          raise StandardError,
-            "Unexpected warning with message #{message.inspect}",
-            caller(2..-1)
-        end # proc
-      end # if-else
-  end # before example
-
   config.disable_monkey_patching!
 
   # This allows you to limit a spec run to individual examples or groups

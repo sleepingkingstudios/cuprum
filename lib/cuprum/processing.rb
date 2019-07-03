@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'cuprum/errors/process_not_implemented_error'
-require 'cuprum/utils/result_not_empty_warning'
 
 module Cuprum
   # Functional implementation for creating a command object. Cuprum::Processing
@@ -78,8 +77,8 @@ module Cuprum
     #   1. Creates a result object, typically an instance of Cuprum::Result.
     #      The result is assigned to the command as the private #result reader.
     #   2. The #process method is called, passing the arguments, keywords, and
-    #      block that were passed to #call. The #process method can set errors,
-    #      set the status, or halt the result via the #result reader method.
+    #      block that were passed to #call. The #process method can set errors
+    #      or set the status via the #result reader method.
     #   3. If #process returns a result, that result is returned by #call.
     #      Otherwise, the return value of #process is assigned to the #value
     #      property of the result, and the result is returned by #call.
@@ -112,8 +111,6 @@ module Cuprum
     def merge_results(result, other)
       if value_is_result?(other)
         return result if result == other
-
-        warn_unless_empty!(result)
 
         other.to_cuprum_result
       else
@@ -158,14 +155,6 @@ module Cuprum
 
     def value_is_result?(value)
       value.respond_to?(:to_cuprum_result)
-    end
-
-    def warn_unless_empty!(result)
-      return unless result.respond_to?(:empty?) && !result.empty?
-
-      not_empty = Cuprum::Utils::ResultNotEmptyWarning.new(result)
-
-      Cuprum.warn(not_empty.message) if not_empty.warning?
     end
   end
 end

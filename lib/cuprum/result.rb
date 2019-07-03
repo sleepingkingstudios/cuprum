@@ -12,7 +12,6 @@ module Cuprum
       @value  = value
       @errors = errors.nil? ? build_errors : errors
       @status = nil
-      @halted = false
     end
 
     # @return [Object] the value returned by calling the command.
@@ -29,8 +28,8 @@ module Cuprum
     # Compares the other object to the result.
     #
     # @param other [#value, #success?] An object responding to, at minimum,
-    #   #value and #success?. If present, the #failure?, #errors and #halted?
-    #   values will also be compared.
+    #   #value and #success?. If present, the #failure? and #errors values
+    #   will also be compared.
     #
     # @return [Boolean] True if all present values match the result, otherwise
     #   false.
@@ -45,60 +44,16 @@ module Cuprum
 
       return false if other.respond_to?(:errors) && other.errors != errors
 
-      return false if other.respond_to?(:halted?) && other.halted? != halted?
-
       true
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity
 
-    # @return [Boolean] true if the result is empty, i.e. has no value or errors
-    #   and does not have its status set or is halted.
-    def empty?
-      value.nil? && errors.empty? && @status.nil? && !halted?
-    end
-
-    # Marks the result as a failure, whether or not the command generated any
-    # errors.
-    #
-    # @return [Cuprum::Result] The result.
-    def failure!
-      @status = :failure
-
-      self
-    end
-
     # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
       @status == :failure || (@status.nil? && !errors.empty?)
-    end
-
-    # Marks the result as halted. Any subsequent chained commands will not be
-    #   run.
-    #
-    # @return [Cuprum::Result] The result.
-    def halt!
-      @halted = true
-
-      self
-    end
-
-    # @return [Boolean] true if the command has been halted, and will not run
-    #   any subsequent chained commands.
-    def halted?
-      @halted
-    end
-
-    # Marks the result as a success, whether or not the command generated any
-    # errors.
-    #
-    # @return [Cuprum::Result] The result.
-    def success!
-      @status = :success
-
-      self
     end
 
     # @return [Boolean] true if the command did not generate any errors,
@@ -109,21 +64,6 @@ module Cuprum
 
     # @return [Cuprum::Result] The result.
     def to_cuprum_result
-      self
-    end
-
-    # @api private
-    def update(other_result)
-      return self if other_result.nil?
-
-      self.value = other_result.value
-
-      update_status(other_result)
-
-      update_errors(other_result)
-
-      halt! if other_result.halted?
-
       self
     end
 
@@ -143,18 +83,6 @@ module Cuprum
     # @return [Array] An empty errors object.
     def build_errors
       []
-    end
-
-    def update_errors(other_result)
-      return if other_result.errors.empty?
-
-      @errors += other_result.errors
-    end
-
-    def update_status(other_result)
-      return if status || !errors.empty?
-
-      @status = other_result.status
     end
   end
 end

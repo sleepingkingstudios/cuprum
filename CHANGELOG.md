@@ -6,9 +6,19 @@
 
 Removed the `#success` and `#failure` chaining helpers.
 
+Permanently removed the deprecated ResultHelpers mixin.
+
 ### Results
 
+Results are now nominally immutable objects. All mutator methods have been removed, including `#failure!`, `#success!`, and `#update`. The `#empty?` predicate has also been removed.
+
 Updated the constructor to take both the value and the errors (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value.
+
+Removed the `:halted` status.
+
+### Other Changes
+
+Removed the `Cuprum#warn` functionality.
 
 ## 0.8.0
 

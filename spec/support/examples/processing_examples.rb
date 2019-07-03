@@ -168,7 +168,6 @@ module Spec::Examples
             expect(result.errors).to be_empty
             expect(result.success?).to be true
             expect(result.failure?).to be false
-            expect(result.halted?).to be false
           end
         end
 
@@ -181,7 +180,6 @@ module Spec::Examples
             expect(result.errors).to be_empty
             expect(result.success?).to be true
             expect(result.failure?).to be false
-            expect(result.halted?).to be false
           end
         end
 
@@ -194,47 +192,6 @@ module Spec::Examples
             expect(result.errors).to be == expected_errors
             expect(result.success?).to be false
             expect(result.failure?).to be true
-            expect(result.halted?).to be false
-          end
-        end
-
-        shared_examples 'should return a failing result' do
-          it 'should return a failing result' do
-            result = instance.call
-
-            expect(result).to be_a result_class
-            expect(result.value).to be nil
-            expect(result.errors).to be_empty
-            expect(result.success?).to be false
-            expect(result.failure?).to be true
-            expect(result.halted?).to be false
-          end
-        end
-
-        shared_examples 'should return a halted result' do
-          it 'should return a halted result' do
-            result = instance.call
-
-            expect(result).to be_a result_class
-            expect(result.value).to be nil
-            expect(result.errors).to be_empty
-            expect(result.success?).to be true
-            expect(result.failure?).to be false
-            expect(result.halted?).to be true
-          end
-        end
-
-        shared_examples 'should display a warning when returning a result' do
-          context 'when a result is returned', :allow_warnings do
-            let(:value) { Cuprum::Result.new }
-
-            it 'should display a warning' do
-              allow(Cuprum).to receive(:warn)
-
-              instance.call
-
-              expect(Cuprum).to have_received(:warn).with(an_instance_of String)
-            end
           end
         end
 
@@ -267,40 +224,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected errors'
-
-          include_examples 'should display a warning when returning a result'
-        end
-
-        context 'when the implementation sets the status' do
-          let(:implementation) do
-            returned = value
-
-            lambda do
-              result.failure!
-
-              returned
-            end
-          end
-
-          include_examples 'should return a failing result'
-
-          include_examples 'should display a warning when returning a result'
-        end
-
-        context 'when the implementation halts the result' do
-          let(:implementation) do
-            returned = value
-
-            lambda do
-              result.halt!
-
-              returned
-            end
-          end
-
-          include_examples 'should return a halted result'
-
-          include_examples 'should display a warning when returning a result'
         end
 
         context 'when the implementation returns the current result' do
@@ -346,28 +269,6 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected errors'
-        end
-
-        context 'when the implementation returns a failing result' do
-          let(:result) { Cuprum::Result.new.failure! }
-          let(:implementation) do
-            returned = result
-
-            ->() { returned }
-          end
-
-          include_examples 'should return a failing result'
-        end
-
-        context 'when the implementation returns a halted result' do
-          let(:result) { Cuprum::Result.new.halt! }
-          let(:implementation) do
-            returned = result
-
-            ->() { returned }
-          end
-
-          include_examples 'should return a halted result'
         end
 
         context 'when the implementation returns a result-like object' do

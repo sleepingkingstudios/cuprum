@@ -20,7 +20,6 @@ RSpec.describe Cuprum::BuiltIn::NullCommand do
       expect(result.errors).to be_empty
       expect(result.success?).to be true
       expect(result.failure?).to be false
-      expect(result.halted?).to be false
     end # it
 
     describe 'with arbitrary arguments' do
@@ -32,7 +31,6 @@ RSpec.describe Cuprum::BuiltIn::NullCommand do
         expect(result.errors).to be_empty
         expect(result.success?).to be true
         expect(result.failure?).to be false
-        expect(result.halted?).to be false
       end # it
     end # describe
   end # describe

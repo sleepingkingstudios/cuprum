@@ -122,22 +122,6 @@ module Spec::Examples
             end
           end
         end
-
-        describe 'when the block sets the result status' do
-          let(:chained_implementation) { ->() { result.failure! } }
-
-          it 'should set the status of the result' do
-            expect(result.failure?).to be true
-          end
-        end
-
-        describe 'when the block halts the result' do
-          let(:chained_implementation) { ->() { result.halt! } }
-
-          it 'should set the status of the result' do
-            expect(result.halted?).to be true
-          end
-        end
       end
 
       shared_examples 'should not call the block' do
@@ -169,6 +153,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value' }
+        let(:first_errors) { ['first error'] }
         let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
@@ -224,7 +209,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -238,30 +225,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -333,7 +296,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -347,30 +312,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -425,6 +366,7 @@ module Spec::Examples
         include ChainMethodExamples
 
         let(:first_value)  { 'first value' }
+        let(:first_errors) { ['first error'] }
         let(:first_result) { Cuprum::Result.new(value: first_value) }
         let(:conditional)  { nil }
         let(:chained_implementation) do
@@ -479,7 +421,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -493,30 +437,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -588,7 +508,9 @@ module Spec::Examples
           end
 
           context 'when the previous result is failing' do
-            let(:first_result) { super().failure! }
+            let(:first_result) do
+              Cuprum::Result.new(value: first_value, errors: first_errors)
+            end
 
             include_examples 'should call the block'
 
@@ -602,30 +524,6 @@ module Spec::Examples
               let(:conditional) { :failure }
 
               include_examples 'should call the block'
-            end
-
-            describe 'with on: :success' do
-              let(:conditional) { :success }
-
-              include_examples 'should not call the block'
-            end
-          end
-
-          context 'when the previous result is halted' do
-            let(:first_result) { super().halt! }
-
-            include_examples 'should not call the block'
-
-            describe 'with on: :always' do
-              let(:conditional) { :always }
-
-              include_examples 'should call the block'
-            end
-
-            describe 'with on: :failure' do
-              let(:conditional) { :failure }
-
-              include_examples 'should not call the block'
             end
 
             describe 'with on: :success' do
@@ -709,6 +607,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -753,7 +652,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -767,30 +668,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
@@ -868,6 +745,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -911,7 +789,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -925,30 +805,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
@@ -1050,6 +906,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -1094,7 +951,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -1108,30 +967,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
@@ -1237,6 +1072,7 @@ module Spec::Examples
         end
 
         let(:first_value)   { 'first value' }
+        let(:first_errors)  { ['first error'] }
         let(:first_result)  { Cuprum::Result.new(value: first_value) }
         let(:chained_block) { ->() {} }
         let(:conditional)   { nil }
@@ -1280,7 +1116,9 @@ module Spec::Examples
         end
 
         context 'when the previous result is failing' do
-          let(:first_result) { super().failure! }
+          let(:first_result) do
+            Cuprum::Result.new(value: first_value, errors: first_errors)
+          end
 
           include_examples 'should call the block'
 
@@ -1294,30 +1132,6 @@ module Spec::Examples
             let(:conditional) { :failure }
 
             include_examples 'should call the block'
-          end
-
-          describe 'with on: :success' do
-            let(:conditional) { :success }
-
-            include_examples 'should not call the block'
-          end
-        end
-
-        context 'when the previous result is halted' do
-          let(:first_result) { super().halt! }
-
-          include_examples 'should not call the block'
-
-          describe 'with on: :always' do
-            let(:conditional) { :always }
-
-            include_examples 'should call the block'
-          end
-
-          describe 'with on: :failure' do
-            let(:conditional) { :failure }
-
-            include_examples 'should not call the block'
           end
 
           describe 'with on: :success' do
