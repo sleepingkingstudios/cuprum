@@ -15,6 +15,8 @@ The "'Tis Not Too Late To Seek A Newer World" Update
 ### Errors
 
 Encapsulate an error state, e.g. (hypothetical) ValidationError. Pattern matching.
+- Cuprum::Error
+  - Takes optional #message param.
 - Cuprum::Errors::CommandNotImplemented
   - instead of raising an exception.
 - Cuprum::Errors::OperationNotCalled
