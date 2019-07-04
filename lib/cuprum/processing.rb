@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/errors/process_not_implemented_error'
+require 'cuprum/errors/command_not_implemented'
 
 module Cuprum
   # Functional implementation for creating a command object. Cuprum::Processing
@@ -91,9 +91,6 @@ module Cuprum
     #
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
-    #
-    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless the #process
-    #     method was overriden.
     def call(*args, &block)
       process_with_result(build_result, *args, &block)
     end
@@ -133,13 +130,11 @@ module Cuprum
     #
     #   @return [Object] the value of the result object to be returned by #call.
     #
-    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless a block was
-    #     passed to the constructor or the #process method was overriden by a
-    #     Command subclass.
-    #
     # @note This is a private method.
     def process(*_args)
-      raise Cuprum::Errors::ProcessNotImplementedError, nil, caller(1..-1)
+      error = Cuprum::Errors::CommandNotImplemented.new(command: self)
+
+      build_result(errors: error)
     end
 
     def process_with_result(result, *args, &block)

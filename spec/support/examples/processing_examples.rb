@@ -117,9 +117,15 @@ module Spec::Examples
     end
 
     shared_examples 'should execute the command implementation' do
-      it 'should raise an error' do
-        expect { instance.call }
-          .to raise_error Cuprum::Errors::ProcessNotImplementedError
+      it 'should return a failing result' do
+        result = instance.call.to_cuprum_result
+        error  = result.errors
+
+        expect(result.failure?).to be true
+        expect(result.value).to be nil
+
+        expect(error).to be_a Cuprum::Errors::CommandNotImplemented
+        expect(error.command).to be instance
       end
 
       context 'when the implementation does not support the given arguments' \
