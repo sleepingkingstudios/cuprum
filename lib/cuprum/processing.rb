@@ -110,8 +110,6 @@ module Cuprum
 
     def merge_results(result, other)
       if value_is_result?(other)
-        return result if result == other
-
         other.to_cuprum_result
       else
         result.value = other

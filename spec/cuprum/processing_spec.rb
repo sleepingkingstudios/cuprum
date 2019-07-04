@@ -10,7 +10,6 @@ RSpec.describe Cuprum::Processing do
   subject(:instance) { described_class.new }
 
   let(:described_class) { Class.new { include Cuprum::Processing } }
-  let(:result_class)    { Cuprum::Result }
 
   include_examples 'should implement the Processing interface'
 

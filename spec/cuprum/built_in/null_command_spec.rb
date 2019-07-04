@@ -17,7 +17,7 @@ RSpec.describe Cuprum::BuiltIn::NullCommand do
 
       expect(result).to be_a Cuprum::Result
       expect(result.value).to be nil
-      expect(result.errors).to be_empty
+      expect(result.errors).to be nil
       expect(result.success?).to be true
       expect(result.failure?).to be false
     end # it
@@ -28,7 +28,7 @@ RSpec.describe Cuprum::BuiltIn::NullCommand do
 
         expect(result).to be_a Cuprum::Result
         expect(result.value).to be nil
-        expect(result.errors).to be_empty
+        expect(result.errors).to be nil
         expect(result.success?).to be true
         expect(result.failure?).to be false
       end # it

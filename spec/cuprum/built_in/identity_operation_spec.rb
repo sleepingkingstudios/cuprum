@@ -26,9 +26,9 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   describe '#errors' do
     it { expect(instance.errors).to be nil }
 
-    it { expect(instance.call.errors).to be_empty }
+    it { expect(instance.call.errors).to be nil }
 
-    it { expect(instance.call(value).errors).to be_empty }
+    it { expect(instance.call(value).errors).to be nil }
 
     it { expect(instance.call(result).errors).to be == errors }
   end # describe

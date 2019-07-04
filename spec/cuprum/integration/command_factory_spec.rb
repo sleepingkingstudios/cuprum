@@ -56,10 +56,14 @@ module Spec
 
     command :validate do
       Cuprum::Command.new do |book|
-        result.errors << "title can't be blank"  if book.title.nil?
-        result.errors << "author can't be blank" if book.author.nil?
+        errors = []
 
-        book
+        errors << "title can't be blank"  if book.title.nil?
+        errors << "author can't be blank" if book.author.nil?
+
+        return book if errors.empty?
+
+        Cuprum::Result.new(value: book, errors: errors)
       end
     end
 
@@ -209,7 +213,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
         result  = command.call(book)
 
         expect(result.success?).to be true
-        expect(result.errors).to be == []
+        expect(result.errors).to be nil
       end
     end
   end

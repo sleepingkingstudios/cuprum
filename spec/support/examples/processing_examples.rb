@@ -17,6 +17,12 @@ module Spec::Examples
 
         klass.send(
           :define_method,
+          :failure?,
+          ->() { !success? }
+        )
+
+        klass.send(
+          :define_method,
           :to_cuprum_result,
           ->() { self }
         )
@@ -159,13 +165,16 @@ module Spec::Examples
       end
 
       wrap_context 'when the implementation is defined' do
+        let(:result_class)   { defined?(super()) ? super() : Cuprum::Result }
+        let(:expected_class) { defined?(super()) ? super() : result_class }
+
         shared_examples 'should return an empty result' do
           it 'should return a result' do
             result = instance.call
 
-            expect(result).to be_a result_class
+            expect(result).to be_a expected_class
             expect(result.value).to be nil
-            expect(result.errors).to be_empty
+            expect(result.errors).to be nil
             expect(result.success?).to be true
             expect(result.failure?).to be false
           end
@@ -175,9 +184,9 @@ module Spec::Examples
           it 'should return a result with the expected value' do
             result = instance.call
 
-            expect(result).to be_a result_class
+            expect(result).to be_a expected_class
             expect(result.value).to be value
-            expect(result.errors).to be_empty
+            expect(result.errors).to be nil
             expect(result.success?).to be true
             expect(result.failure?).to be false
           end
@@ -187,7 +196,7 @@ module Spec::Examples
           it 'should return a result with the expected errors' do
             result = instance.call
 
-            expect(result).to be_a result_class
+            expect(result).to be_a expected_class
             expect(result.value).to be nil
             expect(result.errors).to be == expected_errors
             expect(result.success?).to be false
@@ -217,9 +226,7 @@ module Spec::Examples
             errors   = expected_errors
 
             lambda do
-              result.errors.concat(errors)
-
-              returned
+              Cuprum::Result.new(value: returned, errors: errors)
             end
           end
 
@@ -274,7 +281,8 @@ module Spec::Examples
         context 'when the implementation returns a result-like object' do
           include_context 'when a custom result class is defined'
 
-          let(:result) { Spec::CustomResult.new(nil, []) }
+          let(:result)       { Spec::CustomResult.new(nil) }
+          let(:result_class) { Spec::CustomResult }
           let(:implementation) do
             returned = result
 
@@ -290,7 +298,7 @@ module Spec::Examples
           include_context 'when a custom result class is defined'
 
           let(:value)  { 'returned value' }
-          let(:result) { Spec::CustomResult.new(value, []) }
+          let(:result) { Spec::CustomResult.new(value) }
           let(:implementation) do
             returned = result
 
@@ -302,7 +310,7 @@ module Spec::Examples
 
             expect(result.to_cuprum_result).to be_a Spec::CustomResult
             expect(result.value).to be value
-            expect(result.errors).to be_empty
+            expect(result.errors).to be nil
             expect(result.success?).to be true
           end
         end
@@ -344,9 +352,9 @@ module Spec::Examples
           it 'should return a result', :aggregate_failures do
             result = instance.call(10)
 
-            expect(result).to be_a result_class
+            expect(result).to be_a expected_class
             expect(result.value).to be 55
-            expect(result.errors).to be_empty
+            expect(result.errors).to be nil
           end
         end
       end

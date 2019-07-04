@@ -10,7 +10,7 @@ module Cuprum
     #   called.
     def initialize(value: nil, errors: nil)
       @value  = value
-      @errors = errors.nil? ? build_errors : errors
+      @errors = errors
       @status = nil
     end
 
@@ -53,13 +53,13 @@ module Cuprum
     # @return [Boolean] false if the command did not generate any errors,
     #   otherwise true.
     def failure?
-      @status == :failure || (@status.nil? && !errors.empty?)
+      @status == :failure || (@status.nil? && !errors.nil?)
     end
 
     # @return [Boolean] true if the command did not generate any errors,
     #   otherwise false.
     def success?
-      @status == :success || (@status.nil? && errors.empty?)
+      @status == :success || (@status.nil? && errors.nil?)
     end
 
     # @return [Cuprum::Result] The result.
@@ -70,19 +70,5 @@ module Cuprum
     protected
 
     attr_reader :status
-
-    private
-
-    # @!visibility public
-    #
-    # Generates an empty errors object. When the command is called, the result
-    # will have its #errors property initialized to the value returned by
-    # #build_errors. By default, this is an array. If you want to use a custom
-    # errors object type, override this method in a subclass.
-    #
-    # @return [Array] An empty errors object.
-    def build_errors
-      []
-    end
   end
 end

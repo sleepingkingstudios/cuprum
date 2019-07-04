@@ -26,11 +26,11 @@ RSpec.describe Cuprum::BuiltIn::NullOperation do
   describe '#errors' do
     it { expect(instance.errors).to be nil }
 
-    it { expect(instance.call.errors).to be_empty }
+    it { expect(instance.call.errors).to be nil }
 
     describe 'with arbitrary arguments' do
       it 'should not set any errors' do
-        expect(instance.call(1, 2, :san => 'san') { :yon }.errors).to be_empty
+        expect(instance.call(1, 2, :san => 'san') { :yon }.errors).to be nil
       end # it
     end # describe
   end # describe

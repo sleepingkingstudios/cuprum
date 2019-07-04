@@ -71,7 +71,7 @@ module Spec::Examples
         include_examples 'should have reader', :errors, nil
 
         wrap_context 'when the result has a value' do
-          it { expect(instance.errors).to be_empty }
+          it { expect(instance.errors).to be nil }
         end # wrap_context
 
         wrap_context 'when the result has errors' do

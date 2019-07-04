@@ -228,52 +228,8 @@ RSpec.describe Cuprum::Result do
     end
   end
 
-  describe '#build_errors' do
-    it { expect(instance).not_to respond_to(:build_errors) }
-
-    it 'should define the private method' do
-      expect(instance).to respond_to(:build_errors, true).with(0).arguments
-    end
-
-    it { expect(instance.send(:build_errors)).to be_a Array }
-
-    it { expect(instance.send(:build_errors)).to be_empty }
-
-    it 'should return a new object each time it is called' do
-      errors = instance.send(:build_errors)
-
-      expect(instance.send :build_errors).not_to be errors
-    end
-
-    context 'when a custom errors object is returned' do
-      let(:custom_errors)   { instance_double(Array) }
-      let(:described_class) { Spec::CustomResult }
-
-      # rubocop:disable RSpec/DescribedClass
-      example_class 'Spec::CustomResult', base_class: Cuprum::Result do |klass|
-        err = custom_errors
-
-        klass.send(:define_method, :build_errors) { err }
-      end
-      # rubocop:enable RSpec/DescribedClass
-
-      it 'should assign the custom errors object to the errors' do
-        expect(instance.errors).to be custom_errors
-      end
-
-      # rubocop:disable RSpec/NestedGroups
-      context 'when initialized with an errors object' do
-        let(:errors)   { ['spec.errors.something_went_wrong'] }
-        let(:instance) { described_class.new(errors: errors) }
-
-        it { expect(instance.errors).to be errors }
-      end
-      # rubocop:enable RSpec/NestedGroups
-    end
-  end
-
   describe '#errors' do
-    include_examples 'should have property', :errors, []
+    include_examples 'should have property', :errors, nil
 
     context 'when initialized with an errors object' do
       let(:errors)   { ['spec.errors.something_went_wrong'] }
