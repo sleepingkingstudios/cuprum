@@ -134,7 +134,17 @@ module Spec::Examples
       end # describe
 
       describe '#to_cuprum_result' do
-        include_examples 'should have reader', :to_cuprum_result, nil
+        it 'should return an OperationNotCalled error', :aggregate_failures do
+          result = instance.to_cuprum_result
+          error  = result.errors
+
+          expect(result).to be_a Cuprum::Result
+          expect(result.failure?).to be true
+          expect(result.value).to be nil
+
+          expect(error).to be_a Cuprum::Errors::OperationNotCalled
+          expect(error.operation).to be instance
+        end
 
         wrap_context 'when the operation has been called' do
           it 'should return the result' do

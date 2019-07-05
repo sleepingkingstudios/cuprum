@@ -7,6 +7,7 @@ module Cuprum::Errors
   # Error class to be used when a Command is called without defining a #process
   # method.
   class CommandNotImplemented < Cuprum::Error
+    # Format for generating error message.
     MESSAGE_FORMAT = 'no implementation defined for %s'
 
     # @param command [Cuprum::Command] The command called without a definition.
