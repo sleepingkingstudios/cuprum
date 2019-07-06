@@ -134,7 +134,7 @@ module Cuprum
     def process(*_args)
       error = Cuprum::Errors::CommandNotImplemented.new(command: self)
 
-      build_result(errors: error)
+      build_result(error: error)
     end
 
     def process_with_result(result, *args, &block)

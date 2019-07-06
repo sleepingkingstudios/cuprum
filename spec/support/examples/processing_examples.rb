@@ -7,12 +7,12 @@ module Spec::Examples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
 
     shared_context 'when a custom result class is defined' do
-      options = { base_class: Struct.new(:value, :errors) }
+      options = { base_class: Struct.new(:value, :error) }
       example_class 'Spec::CustomResult', options do |klass|
         klass.send(
           :define_method,
           :success?,
-          ->() { errors.nil? || errors.empty? }
+          ->() { error.nil? }
         )
 
         klass.send(
@@ -50,35 +50,35 @@ module Spec::Examples
       describe '#build_result' do
         include_context 'when a custom result class is defined'
 
-        let(:value)  { 'returned value' }
-        let(:errors) { [] }
+        let(:value) { 'returned value' }
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
 
         it 'should define the private method' do
           expect(instance).not_to respond_to(:build_result)
 
           expect(instance)
             .to respond_to(:build_result, true)
-            .with(1).argument
-            .and_keywords(:errors)
+            .with(0).arguments
+            .and_keywords(:error, :value)
         end
 
         it 'should return a result' do
-          result = instance.send(:build_result, value, errors: errors)
+          result = instance.send(:build_result, value: value, error: error)
 
           expect(result).to be_a Cuprum::Result
           expect(result.value).to be value
-          expect(result.errors).to be errors
+          expect(result.error).to be error
         end
 
         it 'should return a new object each time it is called' do
-          result = instance.send(:build_result, value, errors: errors)
+          result = instance.send(:build_result, value: value, error: error)
 
-          expect(instance.send :build_result, value, errors: errors)
+          expect(instance.send :build_result, value: value, error: error)
             .not_to be result
         end
 
         context 'when a custom result object is returned' do
-          let(:custom_result) { Spec::CustomResult.new(value, []) }
+          let(:custom_result) { Spec::CustomResult.new(value, error) }
 
           before(:example) do
             allow(instance).to receive(:process).and_return(value)
@@ -92,6 +92,7 @@ module Spec::Examples
 
             expect(result).to be custom_result
             expect(result.value).to be value
+            expect(result.error).to be error
           end
         end
       end
@@ -119,7 +120,7 @@ module Spec::Examples
     shared_examples 'should execute the command implementation' do
       it 'should return a failing result' do
         result = instance.call.to_cuprum_result
-        error  = result.errors
+        error  = result.error
 
         expect(result.failure?).to be true
         expect(result.value).to be nil
@@ -180,7 +181,7 @@ module Spec::Examples
 
             expect(result).to be_a expected_class
             expect(result.value).to be nil
-            expect(result.errors).to be nil
+            expect(result.error).to be nil
             expect(result.success?).to be true
             expect(result.failure?).to be false
           end
@@ -192,19 +193,19 @@ module Spec::Examples
 
             expect(result).to be_a expected_class
             expect(result.value).to be value
-            expect(result.errors).to be nil
+            expect(result.error).to be nil
             expect(result.success?).to be true
             expect(result.failure?).to be false
           end
         end
 
-        shared_examples 'should return a result with the expected errors' do
-          it 'should return a result with the expected errors' do
+        shared_examples 'should return a result with the expected error' do
+          it 'should return a result with the expected error' do
             result = instance.call
 
             expect(result).to be_a expected_class
             expect(result.value).to be nil
-            expect(result.errors).to be == expected_errors
+            expect(result.error).to be == expected_error
             expect(result.success?).to be false
             expect(result.failure?).to be true
           end
@@ -225,18 +226,20 @@ module Spec::Examples
           include_examples 'should return a result with the expected value'
         end
 
-        context 'when the implementation sets the errors' do
-          let(:expected_errors) { ['errors.messages.unknown'] }
+        context 'when the implementation sets the error' do
+          let(:expected_error) do
+            Cuprum::Error.new(message: 'Something went wrong.')
+          end
           let(:implementation) do
             returned = value
-            errors   = expected_errors
+            error    = expected_error
 
             lambda do
-              Cuprum::Result.new(value: returned, errors: errors)
+              Cuprum::Result.new(value: returned, error: error)
             end
           end
 
-          include_examples 'should return a result with the expected errors'
+          include_examples 'should return a result with the expected error'
         end
 
         context 'when the implementation returns the current result' do
@@ -271,9 +274,11 @@ module Spec::Examples
         end
 
         context 'when the implementation returns a result with errors' do
-          let(:expected_errors) { ['errors.messages.unknown'] }
+          let(:expected_error) do
+            Cuprum::Error.new(message: 'Something went wrong.')
+          end
           let(:result) do
-            Cuprum::Result.new(errors: expected_errors)
+            Cuprum::Result.new(error: expected_error)
           end
           let(:implementation) do
             returned = result
@@ -281,7 +286,7 @@ module Spec::Examples
             ->() { returned }
           end
 
-          include_examples 'should return a result with the expected errors'
+          include_examples 'should return a result with the expected error'
         end
 
         context 'when the implementation returns a result-like object' do
@@ -311,12 +316,12 @@ module Spec::Examples
             ->() { returned }
           end
 
-          it 'should return a result with the expected errors' do
+          it 'should return a result with the expected error' do
             result = instance.call
 
             expect(result.to_cuprum_result).to be_a Spec::CustomResult
             expect(result.value).to be value
-            expect(result.errors).to be nil
+            expect(result.error).to be nil
             expect(result.success?).to be true
           end
         end
@@ -334,12 +339,12 @@ module Spec::Examples
             ->() { returned }
           end
 
-          it 'should return a result with the expected errors' do
+          it 'should return a result with the expected error' do
             result = instance.call
 
             expect(result.to_cuprum_result).to be_a Spec::CustomResult
             expect(result.value).to be nil
-            expect(result.errors).to be == expected_errors
+            expect(result.error).to be == expected_errors
             expect(result.success?).to be false
           end
         end
@@ -360,7 +365,7 @@ module Spec::Examples
 
             expect(result).to be_a expected_class
             expect(result.value).to be 55
-            expect(result.errors).to be nil
+            expect(result.error).to be nil
           end
         end
       end

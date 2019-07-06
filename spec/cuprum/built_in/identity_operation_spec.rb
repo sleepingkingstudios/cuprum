@@ -10,8 +10,8 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   subject(:instance) { described_class.new }
 
   let(:value)  { 'returned value'.freeze }
-  let(:errors) { ['errors.messages.unknown'] }
-  let(:result) { Cuprum::Result.new(value: value, :errors => errors) }
+  let(:error)  { Cuprum::Error.new(message: 'Something went wrong.') }
+  let(:result) { Cuprum::Result.new(value: value, error: error) }
 
   include_examples 'should implement the Operation methods'
 
@@ -23,14 +23,14 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
     it { expect(instance.call).to be instance }
   end # describe
 
-  describe '#errors' do
-    it { expect(instance.errors).to be nil }
+  describe '#error' do
+    it { expect(instance.error).to be nil }
 
-    it { expect(instance.call.errors).to be nil }
+    it { expect(instance.call.error).to be nil }
 
-    it { expect(instance.call(value).errors).to be nil }
+    it { expect(instance.call(value).error).to be nil }
 
-    it { expect(instance.call(result).errors).to be == errors }
+    it { expect(instance.call(result).error).to be == error }
   end # describe
 
   describe '#failure?' do

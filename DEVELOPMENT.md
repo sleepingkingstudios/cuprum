@@ -4,6 +4,8 @@
 
 The "'Tis Not Too Late To Seek A Newer World" Update
 
+- Remove autoload.
+
 ### Commands
 
 - #process DOES NOT have reference to a current Result.
@@ -11,17 +13,6 @@ The "'Tis Not Too Late To Seek A Newer World" Update
 - define helper methods:
   - #success(value)  => returns passing Result with value # Optional
   - #failure(errors) => returns failing Result with errors
-
-### Errors
-
-Encapsulate an error state, e.g. (hypothetical) ValidationError. Pattern matching.
-- Cuprum::Error
-  - Takes optional #message param.
-- Cuprum::Errors::CommandNotImplemented
-  - instead of raising an exception.
-- Cuprum::Errors::OperationNotCalled
-  - when an uncalled operation is returned
-  - Update Operation#to_cuprum_result to return when not yet called.
 
 ### Results
 

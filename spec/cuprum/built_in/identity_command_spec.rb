@@ -18,7 +18,7 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
 
         expect(result).to be_a Cuprum::Result
         expect(result.value).to be nil
-        expect(result.errors).to be nil
+        expect(result.error).to be nil
         expect(result.success?).to be true
         expect(result.failure?).to be false
       end # it
@@ -32,7 +32,7 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
 
         expect(result).to be_a Cuprum::Result
         expect(result.value).to be value
-        expect(result.errors).to be nil
+        expect(result.error).to be nil
         expect(result.success?).to be true
         expect(result.failure?).to be false
       end # it
@@ -40,15 +40,15 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
 
     describe 'with a result' do
       let(:value)    { 'expected value'.freeze }
-      let(:errors)   { ['errors.messages.unknown'] }
-      let(:expected) { Cuprum::Result.new(value: value, :errors => errors) }
+      let(:error)    { Cuprum::Error.new(message: 'Something went wrong.') }
+      let(:expected) { Cuprum::Result.new(value: value, error: error) }
 
       it 'should return the result', :aggregate_failures do
         result = instance.call(expected)
 
         expect(result).to be_a Cuprum::Result
         expect(result.value).to be value
-        expect(result.errors).to be == errors
+        expect(result.error).to be == error
         expect(result.success?).to be false
         expect(result.failure?).to be true
       end # it
