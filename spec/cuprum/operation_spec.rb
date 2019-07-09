@@ -12,7 +12,7 @@ RSpec.describe Cuprum::Operation do
   subject(:instance) { described_class.new }
 
   let(:implementation) { ->() {} }
-  let(:result_class)   { described_class }
+  let(:expected_class) { described_class }
 
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }

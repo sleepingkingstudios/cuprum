@@ -6,29 +6,27 @@ module Cuprum
   # Data object that encapsulates the result of calling a Cuprum command.
   class Result
     # @param value [Object] The value returned by calling the command.
-    # @param errors [Array] The errors (if any) generated when the command was
-    #   called.
-    def initialize(value: nil, errors: nil)
+    # @param error [Object] The error (if any) generated when the command was
+    #   called. Can be a Cuprum::Error, a model errors object, etc.
+    def initialize(value: nil, error: nil)
       @value  = value
-      @errors = errors.nil? ? build_errors : errors
+      @error  = error
       @status = nil
     end
 
     # @return [Object] the value returned by calling the command.
     attr_accessor :value
 
-    # @return [Array] the errors (if any) generated when the command was
+    # @return [Object] the error (if any) generated when the command was
     #   called.
-    attr_accessor :errors
+    attr_accessor :error
 
-    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
 
     # Compares the other object to the result.
     #
     # @param other [#value, #success?] An object responding to, at minimum,
-    #   #value and #success?. If present, the #failure? and #errors values
+    #   #value and #success?. If present, the #failure? and #error values
     #   will also be compared.
     #
     # @return [Boolean] True if all present values match the result, otherwise
@@ -40,26 +38,22 @@ module Cuprum
         return false
       end
 
-      return false if other.respond_to?(:failure?) && other.failure? != failure?
-
-      return false if other.respond_to?(:errors) && other.errors != errors
+      return false if other.respond_to?(:error) && other.error != error
 
       true
     end
-    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/PerceivedComplexity
 
-    # @return [Boolean] false if the command did not generate any errors,
+    # @return [Boolean] false if the command did not generate any error,
     #   otherwise true.
     def failure?
-      @status == :failure || (@status.nil? && !errors.empty?)
+      @status == :failure || (@status.nil? && !error.nil?)
     end
 
-    # @return [Boolean] true if the command did not generate any errors,
+    # @return [Boolean] true if the command did not generate any error,
     #   otherwise false.
     def success?
-      @status == :success || (@status.nil? && errors.empty?)
+      @status == :success || (@status.nil? && error.nil?)
     end
 
     # @return [Cuprum::Result] The result.
@@ -70,19 +64,5 @@ module Cuprum
     protected
 
     attr_reader :status
-
-    private
-
-    # @!visibility public
-    #
-    # Generates an empty errors object. When the command is called, the result
-    # will have its #errors property initialized to the value returned by
-    # #build_errors. By default, this is an array. If you want to use a custom
-    # errors object type, override this method in a subclass.
-    #
-    # @return [Array] An empty errors object.
-    def build_errors
-      []
-    end
   end
 end

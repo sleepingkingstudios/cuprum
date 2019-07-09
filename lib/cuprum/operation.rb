@@ -1,4 +1,5 @@
 require 'cuprum/command'
+require 'cuprum/errors/operation_not_called'
 
 module Cuprum
   # Functional object with syntactic sugar for tracking the last result.
@@ -45,7 +46,6 @@ module Cuprum
       # @return [Cuprum::Result] The result from the most recent call of the
       #   operation.
       attr_reader :result
-      alias_method :to_cuprum_result, :result
 
       # @overload call(*arguments, **keywords, &block)
       #   Executes the logic encoded in the constructor block, or the #process
@@ -60,10 +60,6 @@ module Cuprum
       #
       #   @yield If a block argument is given, it will be passed to the
       #     implementation.
-      #
-      #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless a block was
-      #     passed to the constructor or the #process method was overriden by a
-      #     Command subclass.
       #
       # @see Cuprum::Command#call
       def call *args, &block
@@ -80,18 +76,18 @@ module Cuprum
         !result.nil?
       end # method called?
 
-      # @return [Array] the errors from the most recent result, or nil if the
-      #   operation has not been called.
-      def errors
-        called? ? result.errors : nil
-      end # method errors
+      # @return [Object] the error (if any) from the most recent result, or nil
+      #   if the operation has not been called.
+      def error
+        called? ? result.error : nil
+      end # method error
 
-      # @return [Boolean] true if the most recent result had errors, or false if
-      #   the most recent result had no errors or if the operation has not been
-      #   called.
+      # @return [Boolean] true if the most recent result had an error, or false
+      #   if the most recent result had no error or if the operation has not
+      #   been called.
       def failure?
         called? ? result.failure? : false
-      end # method success?
+      end # method failure?
 
       # Clears the reference to the most recent call of the operation, if any.
       # This allows the result and any referenced data to be garbage collected.
@@ -105,12 +101,24 @@ module Cuprum
         @result = nil
       end # method reset
 
-      # @return [Boolean] true if the most recent result had no errors, or false
-      #   if the most recent result had errors or if the operation has not been
-      #   called.
+      # @return [Boolean] true if the most recent result had no error, or false
+      #   if the most recent result had an error or if the operation has not
+      #   been called.
       def success?
         called? ? result.success? : false
       end # method success?
+
+      # Returns the most result if the operation was previously called.
+      # Otherwise, returns a failing result.
+      #
+      # @return [Cuprum::Result] the most recent result or failing result.
+      def to_cuprum_result
+        return result if result
+
+        error = Cuprum::Errors::OperationNotCalled.new(operation: self)
+
+        Cuprum::Result.new(error: error)
+      end
 
       # @return [Object] the value of the most recent result, or nil if the
       #   operation has not been called.
@@ -126,8 +134,8 @@ module Cuprum
     # @!method called?
     #   (see Cuprum::Operation::Mixin#called?)
 
-    # @!method errors
-    #   (see Cuprum::Operation::Mixin#errors)
+    # @!method error
+    #   (see Cuprum::Operation::Mixin#error)
 
     # @!method failure?
     #   (see Cuprum::Operation::Mixin#failure?)
@@ -140,6 +148,9 @@ module Cuprum
 
     # @!method success?
     #   (see Cuprum::Operation::Mixin#success?)
+
+    # @!method to_cuprum_result
+    #   (see Cuprum::Operation::Mixin#to_cuprum_result?)
 
     # @!method value
     #   (see Cuprum::Operation::Mixin#value)

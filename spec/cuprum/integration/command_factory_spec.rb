@@ -2,6 +2,16 @@ require 'cuprum/command'
 require 'cuprum/command_factory'
 
 module Spec
+  class ValidationError < Cuprum::Error
+    def initialize(errors:)
+      @errors = errors
+
+      super(message: 'Object is not valid.')
+    end
+
+    attr_reader :errors
+  end
+
   class Book
     def initialize(attributes = {})
       @title  = attributes[:title]
@@ -56,10 +66,16 @@ module Spec
 
     command :validate do
       Cuprum::Command.new do |book|
-        result.errors << "title can't be blank"  if book.title.nil?
-        result.errors << "author can't be blank" if book.author.nil?
+        errors = []
 
-        book
+        errors << "title can't be blank"  if book.title.nil?
+        errors << "author can't be blank" if book.author.nil?
+
+        return book if errors.empty?
+
+        error = Spec::ValidationError.new(errors: errors)
+
+        Cuprum::Result.new(value: book, error: error)
       end
     end
 
@@ -193,9 +209,12 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
       it 'should validate the book' do
         command = instance.validate
         result  = command.call(book)
+        error   = result.error
 
         expect(result.success?).to be false
-        expect(result.errors).to include "author can't be blank"
+
+        expect(error).to be_a Spec::ValidationError
+        expect(error.errors).to include "author can't be blank"
       end
     end
 
@@ -209,7 +228,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
         result  = command.call(book)
 
         expect(result.success?).to be true
-        expect(result.errors).to be == []
+        expect(result.error).to be nil
       end
     end
   end

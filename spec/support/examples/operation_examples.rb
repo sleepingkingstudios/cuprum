@@ -29,10 +29,10 @@ module Spec::Examples
       end # before example
     end # shared_context
 
-    shared_context 'when the result has errors' do
+    shared_context 'when the result has an error' do
       let(:value)  { 'returned value'.freeze }
-      let(:errors) { ['errors.messages.unknown'] }
-      let(:result) { Cuprum::Result.new(value: value, :errors => errors) }
+      let(:error)  { Cuprum::Error.new(message: 'Something went wrong.') }
+      let(:result) { Cuprum::Result.new(value: value, error: error) }
 
       before(:example) do
         allow(instance).to receive(:result).and_return(result)
@@ -67,15 +67,15 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
-      describe '#errors' do
-        include_examples 'should have reader', :errors, nil
+      describe '#error' do
+        include_examples 'should have reader', :error, nil
 
         wrap_context 'when the result has a value' do
-          it { expect(instance.errors).to be_empty }
+          it { expect(instance.error).to be nil }
         end # wrap_context
 
-        wrap_context 'when the result has errors' do
-          it { expect(instance.errors).to be == errors }
+        wrap_context 'when the result has an error' do
+          it { expect(instance.error).to be == error }
         end # wrap_context
       end # describe
 
@@ -86,7 +86,7 @@ module Spec::Examples
           it { expect(instance.failure?).to be false }
         end # wrap_context
 
-        wrap_context 'when the result has errors' do
+        wrap_context 'when the result has an error' do
           it { expect(instance.failure?).to be true }
         end # wrap_context
       end # describe
@@ -128,13 +128,23 @@ module Spec::Examples
           it { expect(instance.success?).to be true }
         end # wrap_context
 
-        wrap_context 'when the result has errors' do
+        wrap_context 'when the result has an error' do
           it { expect(instance.success?).to be false }
         end # wrap_context
       end # describe
 
       describe '#to_cuprum_result' do
-        include_examples 'should have reader', :to_cuprum_result, nil
+        it 'should return an OperationNotCalled error', :aggregate_failures do
+          result = instance.to_cuprum_result
+          error  = result.error
+
+          expect(result).to be_a Cuprum::Result
+          expect(result.failure?).to be true
+          expect(result.value).to be nil
+
+          expect(error).to be_a Cuprum::Errors::OperationNotCalled
+          expect(error.operation).to be instance
+        end
 
         wrap_context 'when the operation has been called' do
           it 'should return the result' do
@@ -154,7 +164,7 @@ module Spec::Examples
           it { expect(instance.value).to be value }
         end # wrap_context
 
-        wrap_context 'when the result has errors' do
+        wrap_context 'when the result has an error' do
           it { expect(instance.value).to be value }
         end # wrap_context
       end # describe

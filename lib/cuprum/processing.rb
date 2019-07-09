@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum/errors/process_not_implemented_error'
+require 'cuprum/errors/command_not_implemented'
 
 module Cuprum
   # Functional implementation for creating a command object. Cuprum::Processing
@@ -36,9 +36,7 @@ module Cuprum
   #
   #     def process value
   #       if value.negative?
-  #         result.errors << 'value cannot be negative'
-  #
-  #         return nil
+  #         return Cuprum::Result.new(error: 'value cannot be negative')
   #       end
   #
   #       Math.sqrt(value)
@@ -49,13 +47,13 @@ module Cuprum
   #   result.value    #=> 1.414
   #   result.success? #=> true
   #   result.failure? #=> false
-  #   result.errors   #=> []
+  #   result.error    #=> nil
   #
   #   result = SquareRootCommand.new.call(-1)
   #   result.value    #=> nil
   #   result.success? #=> false
   #   result.failure? #=> true
-  #   result.errors   #=> ['value cannot be negative']
+  #   result.error    #=> 'value cannot be negative'
   #
   # @see Cuprum::Command
   module Processing
@@ -74,14 +72,12 @@ module Cuprum
     #
     #   Each time #call is invoked, the object performs the following steps:
     #
-    #   1. Creates a result object, typically an instance of Cuprum::Result.
-    #      The result is assigned to the command as the private #result reader.
-    #   2. The #process method is called, passing the arguments, keywords, and
-    #      block that were passed to #call. The #process method can set errors
-    #      or set the status via the #result reader method.
-    #   3. If #process returns a result, that result is returned by #call.
-    #      Otherwise, the return value of #process is assigned to the #value
-    #      property of the result, and the result is returned by #call.
+    #   1. The #process method is called, passing the arguments, keywords, and
+    #      block that were passed to #call.
+    #   2. If the value returned by #process is a Cuprum::Result or compatible
+    #      object, that result is directly returned by #call.
+    #   3. Otherwise, the value returned by #process will be wrapped in a
+    #      successful result, which will be returned by #call.
     #
     #   @param arguments [Array] Arguments to be passed to the implementation.
     #
@@ -91,9 +87,6 @@ module Cuprum
     #
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
-    #
-    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless the #process
-    #     method was overriden.
     def call(*args, &block)
       process_with_result(build_result, *args, &block)
     end
@@ -110,8 +103,6 @@ module Cuprum
 
     def merge_results(result, other)
       if value_is_result?(other)
-        return result if result == other
-
         other.to_cuprum_result
       else
         result.value = other
@@ -123,9 +114,10 @@ module Cuprum
     # @!visibility public
     # @overload process(*arguments, **keywords, &block)
     #   The implementation of the command, to be executed when the #call method
-    #   is called. Can add errors to or set the status of the result, and the
-    #   value of the result will be set to the value returned by #process. Do
-    #   not call this method directly.
+    #   is called. If #process returns a result, that result will be returned by
+    #   #call; otherwise, the value returned by #process will be wrapped in a
+    #   successful Cuprum::Result object. This method should not be called
+    #   directly.
     #
     #   @param arguments [Array] The arguments, if any, passed from #call.
     #
@@ -135,13 +127,11 @@ module Cuprum
     #
     #   @return [Object] the value of the result object to be returned by #call.
     #
-    #   @raise [Cuprum::Errors::ProcessNotImplementedError] Unless a block was
-    #     passed to the constructor or the #process method was overriden by a
-    #     Command subclass.
-    #
     # @note This is a private method.
     def process(*_args)
-      raise Cuprum::Errors::ProcessNotImplementedError, nil, caller(1..-1)
+      error = Cuprum::Errors::CommandNotImplemented.new(command: self)
+
+      build_result(error: error)
     end
 
     def process_with_result(result, *args, &block)
