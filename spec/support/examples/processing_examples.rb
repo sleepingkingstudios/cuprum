@@ -273,7 +273,7 @@ module Spec::Examples
           include_examples 'should return a result with the expected value'
         end
 
-        context 'when the implementation returns a result with errors' do
+        context 'when the implementation returns a result with an error' do
           let(:expected_error) do
             Cuprum::Error.new(message: 'Something went wrong.')
           end
@@ -327,7 +327,7 @@ module Spec::Examples
         end
 
         context 'when the implementation returns a result-like object with ' \
-                 'errors' \
+                 'an error' \
         do
           include_context 'when a custom result class is defined'
 

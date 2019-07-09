@@ -32,7 +32,7 @@ module Cuprum
   #
   #   result.value #=> 15
   #
-  # @example A Command with errors
+  # @example A Command with an error state
   #   class DivideCommand < Cuprum::Command
   #     def initialize divisor
   #       @divisor = divisor
@@ -42,10 +42,8 @@ module Cuprum
   #
   #     def process int
   #       if @divisor.zero?
-  #         errors << 'errors.messages.divide_by_zero'
-  #
-  #         return
-  #       end # if
+  #         return Cuprum::Result.new(error: 'errors.messages.divide_by_zero')
+  #       end
   #
   #       int / @divisor
   #     end # method process
@@ -54,14 +52,14 @@ module Cuprum
   #   halve_command = DivideCommand.new(2)
   #   result        = halve_command.call(10)
   #
-  #   result.errors #=> []
-  #   result.value  #=> 5
+  #   result.error #=> nil
+  #   result.value #=> 5
   #
-  #   command_with_errors = DivideCommand.new(0)
-  #   result              = command_with_errors.call(10)
+  #   divide_command = DivideCommand.new(0)
+  #   result         = divide_command.call(10)
   #
-  #   result.errors #=> ['errors.messages.divide_by_zero']
-  #   result.value  #=> nil
+  #   result.error #=> 'errors.messages.divide_by_zero'
+  #   result.value #=> nil
   #
   # @example Command Chaining
   #   class AddCommand < Cuprum::Command
@@ -86,9 +84,9 @@ module Cuprum
   #     private
   #
   #     def process int
-  #       errors << 'errors.messages.not_even' unless int.even?
+  #       return int if int.even?
   #
-  #       int
+  #       Cuprum::Errors.new(error: 'errors.messages.not_even')
   #     end # method process
   #   end # class
   #

@@ -55,27 +55,53 @@ module Cuprum
   #
   #     private
   #
+  #     def create_tag
+  #       Command.new do |tag_name|
+  #         tag = Tag.new(name: tag_name)
+  #
+  #         return tag if tag.save
+  #
+  #         Cuprum::Result.new(error: tag.errors)
+  #       end
+  #     end
+  #
+  #     def create_tagging(taggable)
+  #       Command.new do |tag|
+  #         tagging = tag.build_tagging(taggable)
+  #
+  #         return tagging if tagging.save
+  #
+  #         Cuprum::Result.new(error: tagging.errors)
+  #       end
+  #     end
+  #
+  #     def find_tag
+  #       Command.new do |tag_name|
+  #         tag = Tag.where(name: tag_name).first
+  #
+  #         tag || Cuprum::Result.new(error: 'tag not found')
+  #       end
+  #     end
+  #
   #     # Tries to find the tag with the given name. If that fails, creates a
   #     # new tag with the given name. If the tag is found, or if the new tag is
   #     # successfully created, then creates a tagging using the tag. If the tag
   #     # is not found and cannot be created, then the tagging is not created
   #     # and the result of the CreateTaggingCommand is a failure with the
   #     # appropriate error messages.
-  #     def process taggable, tag_name
-  #       FindTag.new.call(tag_name).
-  #         # The chained command is called with the value of the previous
-  #         # command, in this case the Tag or nil returned by FindTag.
-  #         chain(:on => :failure) do |tag|
-  #           # Chained commands share a result object, including errors. To
-  #           # rescue a command chain and return the execution to the "happy
-  #           # path", use on: :failure and clear the errors.
-  #           result.errors.clear
-  #
-  #           Tag.create(tag_name)
-  #         end.
-  #         chain(:on => :success) do |tag|
+  #     def process(taggable, tag_name)
+  #       find_tag
+  #         .chain(on: :failure) do
+  #           # If the finding the tag fails, this step is called, returning a
+  #           # result with a newly created tag.
+  #           create_tag.call(tag_name)
+  #         end
+  #         .chain(:on => :success) do |tag|
+  #           # Finally, the tag has been either found or created, so we can
+  #           # create the tagging relation.
   #           tag.create_tagging(taggable)
   #         end
+  #         .call(tag_name)
   #     end
   #   end
   #
@@ -84,21 +110,21 @@ module Cuprum
   #
   #   result = CreateTaggingCommand.new.call(post, 'Example Tag')
   #   result.success? #=> true
-  #   result.errors   #=> []
+  #   result.error    #=> nil
   #   result.value    #=> an instance of Tagging
   #   post.tags.map(&:name)
   #   #=> ['Example Tag']
   #
   #   result = CreateTaggingCommand.new.call(post, 'Another Tag')
   #   result.success? #=> true
-  #   result.errors   #=> []
+  #   result.error    #=> nil
   #   result.value    #=> an instance of Tagging
   #   post.tags.map(&:name)
   #   #=> ['Example Tag', 'Another Tag']
   #
   #   result = CreateTaggingCommand.new.call(post, 'An Invalid Tag Name')
   #   result.success? #=> false
-  #   result.errors   #=> [{ tag: { name: ['is invalid'] }}]
+  #   result.error    #=> [{ tag: { name: ['is invalid'] }}]
   #   post.tags.map(&:name)
   #   #=> ['Example Tag', 'Another Tag']
   #
@@ -142,7 +168,7 @@ module Cuprum
   #           if result.failure?
   #             log_errors(
   #               :command => UpdatePostCommand,
-  #               :errors => result.errors
+  #               :error   => result.error
   #             )
   #           end
   #         end

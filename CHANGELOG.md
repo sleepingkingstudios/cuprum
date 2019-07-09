@@ -2,23 +2,39 @@
 
 ## 0.9.0
 
+The "'Tis Not Too Late To Seek A Newer World" Update
+
+Major refactoring of Command processing and the Result object. This update is **not** backwards compatible.
+
 ### Commands
 
 Removed the `#success` and `#failure` chaining helpers.
 
 Permanently removed the deprecated ResultHelpers mixin.
 
+### Errors
+
+Added `Cuprum::Error`, which encapsulates the failure state of a result. It is *recommended*, but not required, that when creating a failing Result, the `:error` property be set to an instance of `Cuprum::Error`.
+
 ### Results
 
 Results are now nominally immutable objects. All mutator methods have been removed, including `#failure!`, `#success!`, and `#update`. The `#empty?` predicate has also been removed.
 
-Updated the constructor to take both the value and the errors (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value.
+Updated the constructor to take both the value and the error (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value. The `errors:` keyword has also been renamed to `error:`.
 
 Removed the `:halted` status.
 
 ### Other Changes
 
 Removed the `Cuprum#warn` functionality.
+
+### Upgrade Notes
+
+Anywhere a new `Cuprum::Result` is created directly, update the arguments to match the new `value:` and `error:` keywords.
+
+Anywhere the `#result` is referenced inside a command, instead return the desired value directly, or return a result with the desired error.
+
+Anywhere a command is chained with the `#success` or `#failure` shorthand, use the full `chain(on: :success)` or `chain(on: :failure)` format.
 
 ## 0.8.0
 

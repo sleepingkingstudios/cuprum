@@ -116,7 +116,7 @@ module Spec::Examples
             ->() { Cuprum::Result.new(error: error) }
           end
 
-          it 'should set the errors of the result' do
+          it 'should set the error of the result' do
             expect(result.error).to be expected_error
           end
         end

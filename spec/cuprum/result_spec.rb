@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+
 require 'cuprum/error'
 require 'cuprum/result'
 
@@ -55,7 +57,7 @@ RSpec.describe Cuprum::Result do
       it { expect(instance.success?).to be true }
     end
 
-    describe 'with a value and an errors object' do
+    describe 'with a value and an error object' do
       let(:value)    { 'returned value' }
       let(:error)    { Cuprum::Error.new(message: 'Something went wrong.') }
       let(:instance) { described_class.new(value: value, error: error) }

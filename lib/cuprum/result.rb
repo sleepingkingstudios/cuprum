@@ -26,7 +26,7 @@ module Cuprum
     # Compares the other object to the result.
     #
     # @param other [#value, #success?] An object responding to, at minimum,
-    #   #value and #success?. If present, the #failure? and #errors values
+    #   #value and #success?. If present, the #failure? and #error values
     #   will also be compared.
     #
     # @return [Boolean] True if all present values match the result, otherwise
@@ -44,13 +44,13 @@ module Cuprum
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    # @return [Boolean] false if the command did not generate any errors,
+    # @return [Boolean] false if the command did not generate any error,
     #   otherwise true.
     def failure?
       @status == :failure || (@status.nil? && !error.nil?)
     end
 
-    # @return [Boolean] true if the command did not generate any errors,
+    # @return [Boolean] true if the command did not generate any error,
     #   otherwise false.
     def success?
       @status == :success || (@status.nil? && error.nil?)
