@@ -7,6 +7,9 @@ module Cuprum::Errors
   # Error class to be used when a Command is called without defining a #process
   # method.
   class CommandNotImplemented < Cuprum::Error
+    COMPARABLE_PROPERTIES = %i[command].freeze
+    private_constant :COMPARABLE_PROPERTIES
+
     # Format for generating error message.
     MESSAGE_FORMAT = 'no implementation defined for %s'
 
@@ -22,5 +25,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Command] The command called without a definition.
     attr_reader :command
+
+    private
+
+    def comparable_properties
+      COMPARABLE_PROPERTIES
+    end
   end
 end
