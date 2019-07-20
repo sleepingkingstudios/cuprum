@@ -20,7 +20,12 @@ Added `Cuprum::Error`, which encapsulates the failure state of a result. It is *
 
 Results are now nominally immutable objects. All mutator methods have been removed, including `#failure!`, `#success!`, and `#update`. The `#empty?` predicate has also been removed.
 
-Updated the constructor to take both the value and the error (if any) as keywords. This resolved an issue when attempting to instantiate a result with a Hash value. The `errors:` keyword has also been renamed to `error:`.
+Updated the constructor to take the following keyword arguments: `:value`, `:error`, and `:status`.
+
+- The status can now be overridden on a new Result by passing in the `:status`.
+- Resolves an issue when attempting to instantiate a result with a Hash value.
+- *Note:* The value must now be passed in as a keyword.
+- *Note:* The `:errors` keyword has been renamed to `:error`.
 
 Removed the `:halted` status.
 
