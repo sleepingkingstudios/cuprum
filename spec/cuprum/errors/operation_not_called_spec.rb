@@ -27,6 +27,54 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
     end
   end
 
+  describe '#==' do
+    describe 'with nil' do
+      # rubocop:disable Style/NilComparison
+      it { expect(error == nil).to be false }
+      # rubocop:enable Style/NilComparison
+    end
+
+    describe 'with an Object' do
+      it { expect(error == Object.new.freeze).to be false }
+    end
+
+    describe 'with a non-matching Error with no message' do
+      let(:other) { Cuprum::Error.new(message: 'An error occurred.') }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with a non-matching Error with non-matching message' do
+      let(:other) { Cuprum::Error.new(message: 'An error occurred.') }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with a non-matching Error with matching message' do
+      let(:other) { Cuprum::Error.new(message: error.message) }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with a matching Error with non-matching operation' do
+      let(:other) { described_class.new(operation: Cuprum::Operation.new) }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with a matching Error with operation of same class' do
+      let(:other) { described_class.new(operation: Spec::ExampleOperation.new) }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with a matching Error with matching operation' do
+      let(:other) { described_class.new(operation: operation) }
+
+      it { expect(error == other).to be true }
+    end
+  end
+
   describe '#message' do
     let(:expected_message) do
       'Spec::ExampleOperation was not called and does not have a result'

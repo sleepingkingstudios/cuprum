@@ -5,13 +5,17 @@ require 'cuprum'
 module Cuprum
   # Data object that encapsulates the result of calling a Cuprum command.
   class Result
+    STATUSES = %i[success failure].freeze
+
     # @param value [Object] The value returned by calling the command.
     # @param error [Object] The error (if any) generated when the command was
     #   called. Can be a Cuprum::Error, a model errors object, etc.
-    def initialize(value: nil, error: nil)
+    # @param status [String, Symbol] The status of the result. Must be :success,
+    #   :failure, or nil.
+    def initialize(value: nil, error: nil, status: nil)
       @value  = value
       @error  = error
-      @status = nil
+      @status = resolve_status(status)
     end
 
     # @return [Object] the value returned by calling the command.
@@ -20,6 +24,9 @@ module Cuprum
     # @return [Object] the error (if any) generated when the command was
     #   called.
     attr_accessor :error
+
+    # @return [Symbol] the status of the result, either :success or :failure.
+    attr_reader :status
 
     # rubocop:disable Metrics/CyclomaticComplexity
 
@@ -32,28 +39,22 @@ module Cuprum
     # @return [Boolean] True if all present values match the result, otherwise
     #   false.
     def ==(other)
-      return false unless other.respond_to?(:value) && other.value == value
-
-      unless other.respond_to?(:success?) && other.success? == success?
-        return false
-      end
-
-      return false if other.respond_to?(:error) && other.error != error
+      return false unless other.respond_to?(:value)  && other.value  == value
+      return false unless other.respond_to?(:status) && other.status == status
+      return false unless other.respond_to?(:error)  && other.error  == error
 
       true
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    # @return [Boolean] false if the command did not generate any error,
-    #   otherwise true.
+    # @return [Boolean] true if the result status is :failure, otherwise false.
     def failure?
-      @status == :failure || (@status.nil? && !error.nil?)
+      @status == :failure
     end
 
-    # @return [Boolean] true if the command did not generate any error,
-    #   otherwise false.
+    # @return [Boolean] true if the result status is :success, otherwise false.
     def success?
-      @status == :success || (@status.nil? && error.nil?)
+      @status == :success
     end
 
     # @return [Cuprum::Result] The result.
@@ -61,8 +62,30 @@ module Cuprum
       self
     end
 
-    protected
+    private
 
-    attr_reader :status
+    def defined_statuses
+      self.class::STATUSES
+    end
+
+    def normalize_status(status)
+      return status unless status.is_a?(String) || status.is_a?(Symbol)
+
+      tools.string.underscore(status).intern
+    end
+
+    def resolve_status(status)
+      return error.nil? ? :success : :failure if status.nil?
+
+      normalized = normalize_status(status)
+
+      return normalized if defined_statuses.include?(normalized)
+
+      raise ArgumentError, "invalid status #{status.inspect}"
+    end
+
+    def tools
+      SleepingKingStudios::Tools::Toolbelt.instance
+    end
   end
 end

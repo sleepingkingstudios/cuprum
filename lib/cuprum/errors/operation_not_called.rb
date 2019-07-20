@@ -7,6 +7,9 @@ module Cuprum::Errors
   # Error class to be used when trying to access the result of an uncalled
   # Operation.
   class OperationNotCalled < Cuprum::Error
+    COMPARABLE_PROPERTIES = %i[operation].freeze
+    private_constant :COMPARABLE_PROPERTIES
+
     # Format for generating error message.
     MESSAGE_FORMAT = '%s was not called and does not have a result'
 
@@ -22,5 +25,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Operation] The uncalled operation.
     attr_reader :operation
+
+    private
+
+    def comparable_properties
+      COMPARABLE_PROPERTIES
+    end
   end
 end
