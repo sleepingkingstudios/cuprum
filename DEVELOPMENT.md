@@ -13,6 +13,7 @@ The "'Tis Not Too Late To Seek A Newer World" Update
 - define helper methods:
   - #success(value)  => returns passing Result with value # Optional
   - #failure(errors) => returns failing Result with errors
+  - delegate to #build_result(\*\*props)
 
 ### Results
 

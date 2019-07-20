@@ -1,30 +1,12 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-
 require 'cuprum/error'
 require 'cuprum/result'
 
+require 'support/examples/result_examples'
+
 RSpec.describe Cuprum::Result do
-  shared_context 'when the result has a value' do
-    let(:value) { 'returned value' }
-
-    before(:example) { params[:value] = value }
-  end
-
-  shared_context 'when the result has an error' do
-    let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
-
-    before(:example) { params[:error] = error }
-  end
-
-  shared_context 'when the result has status: :failure' do
-    before(:example) { params[:status] = :failure }
-  end
-
-  shared_context 'when the result has status: :success' do
-    before(:example) { params[:status] = :success }
-  end
+  include Spec::Examples::ResultExamples
 
   subject(:instance) { described_class.new(params) }
 
@@ -39,27 +21,27 @@ RSpec.describe Cuprum::Result do
     end
 
     describe 'with status: :failure' do
-      let(:instance) { described_class.new(status: :failure) }
+      let(:result) { described_class.new(status: :failure) }
 
-      it { expect(instance.status).to be :failure }
+      it { expect(result.status).to be :failure }
     end
 
     describe 'with status: "failure"' do
-      let(:instance) { described_class.new(status: 'failure') }
+      let(:result) { described_class.new(status: 'failure') }
 
-      it { expect(instance.status).to be :failure }
+      it { expect(result.status).to be :failure }
     end
 
     describe 'with status: :success' do
-      let(:instance) { described_class.new(status: :success) }
+      let(:result) { described_class.new(status: :success) }
 
-      it { expect(instance.status).to be :success }
+      it { expect(result.status).to be :success }
     end
 
     describe 'with status: "success"' do
-      let(:instance) { described_class.new(status: 'success') }
+      let(:result) { described_class.new(status: 'success') }
 
-      it { expect(instance.status).to be :success }
+      it { expect(result.status).to be :success }
     end
 
     describe 'with status: invalid object' do
@@ -84,36 +66,7 @@ RSpec.describe Cuprum::Result do
   end
 
   describe '#==' do
-    shared_context 'with an object that wraps a result' do
-      let(:other) { Spec::ResultWrapper.new(result) }
-
-      example_class 'Spec::ResultWrapper', Struct.new(:result) do |klass|
-        klass.extend Forwardable
-
-        klass.def_delegators :result, :error, :status, :value
-      end
-    end
-
-    shared_examples 'should compare the results' do |value:, error:, status:|
-      let(:other_value)  { value }
-      let(:other_error)  { error }
-      let(:other_status) { status }
-      let(:result) do
-        described_class.new(
-          value:  other_value,
-          error:  other_error,
-          status: other_status
-        )
-      end
-      let(:other) { defined?(super()) ? super() : result }
-      let(:expected) do
-        %i[error status value]
-          .map { |method| instance.send(method) == other.send(method) }
-          .reduce(true) { |memo, bool| memo && bool }
-      end
-
-      it { expect(instance == other).to be expected }
-    end
+    include Spec::Examples::ResultExamples::EqualityExamples
 
     value_scenarios = {
       'a nil value'          => nil,
@@ -135,26 +88,14 @@ RSpec.describe Cuprum::Result do
       status: status_scenarios
     }
 
-    def self.compare_results(**scenarios)
-      Spec::Matrix.new(self).evaluate(scenarios) do |value:, error:, status:|
-        include_examples 'should compare the results',
-          value:  value,
-          error:  error,
-          status: status
-      end
-    end
-
     describe 'with nil' do
       # rubocop:disable Style/NilComparison
       it { expect(instance == nil).to be false }
       # rubocop:enable Style/NilComparison
     end
 
-    compare_results(default_scenarios)
-
-    wrap_context 'with an object that wraps a result' do
-      compare_results(default_scenarios)
-    end
+    include_examples 'should compare the results in each scenario',
+      default_scenarios
 
     wrap_context 'when the result has a value' do
       all_scenarios = {
@@ -164,26 +105,17 @@ RSpec.describe Cuprum::Result do
         status: status_scenarios
       }
 
-      compare_results(all_scenarios)
-
-      wrap_context 'with an object that wraps a result' do
-        compare_results(all_scenarios)
-      end
+      include_examples 'should compare the results in each scenario',
+        all_scenarios
 
       wrap_context 'when the result has status: :failure' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
 
       wrap_context 'when the result has status: :success' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
     end
 
@@ -198,26 +130,17 @@ RSpec.describe Cuprum::Result do
         status: status_scenarios
       }
 
-      compare_results(all_scenarios)
-
-      wrap_context 'with an object that wraps a result' do
-        compare_results(all_scenarios)
-      end
+      include_examples 'should compare the results in each scenario',
+        all_scenarios
 
       wrap_context 'when the result has status: :failure' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
 
       wrap_context 'when the result has status: :success' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
     end
 
@@ -236,43 +159,28 @@ RSpec.describe Cuprum::Result do
         status: status_scenarios
       }
 
-      compare_results(all_scenarios)
-
-      wrap_context 'with an object that wraps a result' do
-        compare_results(all_scenarios)
-      end
+      include_examples 'should compare the results in each scenario',
+        all_scenarios
 
       wrap_context 'when the result has status: :failure' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
 
       wrap_context 'when the result has status: :success' do
-        compare_results(all_scenarios)
-
-        wrap_context 'with an object that wraps a result' do
-          compare_results(all_scenarios)
-        end
+        include_examples 'should compare the results in each scenario',
+          all_scenarios
       end
     end
 
     wrap_context 'when the result has status: :failure' do
-      compare_results(default_scenarios)
-
-      wrap_context 'with an object that wraps a result' do
-        compare_results(default_scenarios)
-      end
+      include_examples 'should compare the results in each scenario',
+        default_scenarios
     end
 
     wrap_context 'when the result has status: :success' do
-      compare_results(default_scenarios)
-
-      wrap_context 'with an object that wraps a result' do
-        compare_results(default_scenarios)
-      end
+      include_examples 'should compare the results in each scenario',
+        default_scenarios
     end
   end
 

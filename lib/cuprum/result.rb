@@ -47,14 +47,12 @@ module Cuprum
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
-    # @return [Boolean] false if the command did not generate any error,
-    #   otherwise true.
+    # @return [Boolean] true if the result status is :failure, otherwise false.
     def failure?
       @status == :failure
     end
 
-    # @return [Boolean] true if the command did not generate any error,
-    #   otherwise false.
+    # @return [Boolean] true if the result status is :success, otherwise false.
     def success?
       @status == :success
     end
