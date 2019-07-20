@@ -101,13 +101,11 @@ module Cuprum
       Cuprum::Result.new(value: value, **options)
     end
 
-    def merge_results(result, other)
+    def merge_results(_result, other)
       if value_is_result?(other)
         other.to_cuprum_result
       else
-        result.value = other
-
-        result
+        build_result(other)
       end
     end
 

@@ -185,7 +185,9 @@ RSpec.describe Cuprum::Result do
   end
 
   describe '#error' do
-    include_examples 'should have property', :error, nil
+    include_examples 'should have reader', :error, nil
+
+    include_examples 'should not have writer', :error
 
     wrap_context 'when the result has an error' do
       it { expect(instance.error).to be error }
@@ -269,18 +271,20 @@ RSpec.describe Cuprum::Result do
   end
 
   describe '#value' do
-    include_examples 'should have property', :value, nil
+    include_examples 'should have reader', :value, nil
+
+    include_examples 'should not have writer', :value
 
     context 'when initialized with a hash value' do
-      let(:value)    { 'result value' }
-      let(:instance) { described_class.new(value: value) }
+      let(:value)  { 'result value' }
+      let(:params) { super().merge(value: value) }
 
       it { expect(instance.value).to be value }
     end
 
     context 'when initialized with a string value' do
-      let(:value)    { { key: 'returned value' } }
-      let(:instance) { described_class.new(value: value) }
+      let(:value)  { { key: 'returned value' } }
+      let(:params) { super().merge(value: value) }
 
       it { expect(instance.value).to be value }
     end

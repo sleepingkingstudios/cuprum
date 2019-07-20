@@ -96,25 +96,6 @@ module Spec::Examples
           end
         end
       end
-
-      describe '#result' do
-        context 'when the #process method is executed' do
-          it 'should return the current result' do
-            result_during_process = nil
-
-            allow(instance).to receive(:process) do
-              result_during_process = instance.send(:result)
-
-              nil
-            end
-
-            returned_result = instance.call.to_cuprum_result
-
-            expect(result_during_process).to be_a Cuprum::Result
-            expect(result_during_process).to be returned_result
-          end
-        end
-      end
     end
 
     shared_examples 'should execute the command implementation' do
