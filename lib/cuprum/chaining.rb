@@ -196,6 +196,11 @@ module Cuprum
   #
   # @see Cuprum::Command
   module Chaining
+    # (see Cuprum::Processing#call)
+    def call(*args, &block)
+      yield_chain(super)
+    end
+
     # Creates a copy of the first command, and then chains the given command or
     # block to execute after the first command's implementation. When #call is
     # executed, each chained command will be called with the previous result
@@ -329,10 +334,6 @@ module Cuprum
       @chained_procs ||= []
     end
 
-    def process_with_result(*args, &block)
-      yield_chain(super)
-    end
-
     # @!visibility public
     #
     # As #tap_result, but modifies the current command instead of creating a
@@ -385,9 +386,9 @@ module Cuprum
 
     def chain_command(command)
       if command.arity.zero?
-        ->(result) { command.process_with_result(result) }
+        ->(_result) { command.call }
       else
-        ->(result) { command.process_with_result(result, result.value) }
+        ->(result) { command.call(result.value) }
       end
     end
 
@@ -411,7 +412,7 @@ module Cuprum
         if value_is_result?(value)
           value.to_cuprum_result
         else
-          build_result(value)
+          build_result(value: value)
         end
       end
     end

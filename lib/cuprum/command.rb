@@ -120,7 +120,11 @@ module Cuprum
     #   value of the block. This overrides the implementation in #process, if
     #   any.
     def initialize &implementation
-      define_singleton_method :process, &implementation if implementation
+      return unless implementation
+
+      define_singleton_method :process, &implementation
+
+      singleton_class.send(:private, :process)
     end # method initialize
   end # class
 end # module

@@ -59,7 +59,7 @@ module Spec::Examples
           expect(instance)
             .to respond_to(:build_result, true)
             .with(0).arguments
-            .and_keywords(:error, :value)
+            .and_keywords(:error, :status, :value)
         end
 
         it 'should return a result' do
