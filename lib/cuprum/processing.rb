@@ -97,10 +97,6 @@ module Cuprum
 
     private
 
-    # @return [Cuprum::Result] The current result. Only available while #process
-    #   is being called.
-    attr_reader :result
-
     def build_result(error: nil, status: nil, value: nil)
       Cuprum::Result.new(error: error, status: status, value: value)
     end

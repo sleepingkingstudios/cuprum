@@ -223,14 +223,6 @@ module Spec::Examples
           include_examples 'should return a result with the expected error'
         end
 
-        context 'when the implementation returns the current result' do
-          let(:implementation) do
-            ->() { result }
-          end
-
-          include_examples 'should return an empty result'
-        end
-
         context 'when the implementation returns an empty result' do
           let(:result) { Cuprum::Result.new }
           let(:implementation) do
