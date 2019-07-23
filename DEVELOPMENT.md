@@ -6,19 +6,10 @@ The "'Tis Not Too Late To Seek A Newer World" Update
 
 - Remove autoload.
 
-### Commands
+### Testing
 
-- #process DOES NOT have reference to a current Result.
-- #process either returns a Result or a value (converted to successful Result).
-- define helper methods:
-  - #success(value)  => returns passing Result with value # Optional
-  - #failure(errors) => returns failing Result with errors
-  - delegate to #build_result(\*\*props)
-
-### Results
-
-- Results are immutable
-  - Remove methods #errors=, #value=, #failure!, #success!, #update.
+- Define BeAResultMatcher
+  - Macros for be_a_result, be_a_passing_result, be_a_failing_result
 
 ## Version 0.10.0
 

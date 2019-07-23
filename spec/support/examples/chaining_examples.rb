@@ -87,7 +87,7 @@ module Spec::Examples
         let(:result) { chained.call.to_cuprum_result }
 
         it 'should return the previous result' do
-          expect(result).to be first_result
+          expect(result.value).to be nil
         end
 
         include_examples \
@@ -262,10 +262,6 @@ module Spec::Examples
               expect(arguments).to be == [first_value, values[0], values[1]]
             end
 
-            it 'should return the first result' do
-              expect(result).to be first_result
-            end
-
             it 'should set the value of the result' do
               expect(result.value).to be == values.last
             end
@@ -347,10 +343,6 @@ module Spec::Examples
               chained.call
 
               expect(arguments).to be == [first_value, values[0], values[1]]
-            end
-
-            it 'should return the first result' do
-              expect(result).to be first_result
             end
 
             it 'should set the value of the result' do
@@ -474,10 +466,6 @@ module Spec::Examples
               expect(arguments).to be == [first_value, values[0], values[1]]
             end
 
-            it 'should return the first result' do
-              expect(result).to be first_result
-            end
-
             it 'should set the value of the result' do
               expect(result.value).to be == values.last
             end
@@ -559,10 +547,6 @@ module Spec::Examples
               chained.call
 
               expect(arguments).to be == [first_value, values[0], values[1]]
-            end
-
-            it 'should return the first result' do
-              expect(result).to be first_result
             end
 
             it 'should set the value of the result' do

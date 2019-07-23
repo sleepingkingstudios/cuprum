@@ -88,27 +88,21 @@ module Cuprum
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
     def call(*args, &block)
-      process_with_result(build_result, *args, &block)
+      value = process(*args, &block)
+
+      return value.to_cuprum_result if value_is_result?(value)
+
+      build_result(value: value)
     end
 
     private
 
-    # @return [Cuprum::Result] The current result. Only available while #process
-    #   is being called.
-    attr_reader :result
-
-    def build_result(value = nil, **options)
-      Cuprum::Result.new(value: value, **options)
+    def build_result(error: nil, status: nil, value: nil)
+      Cuprum::Result.new(error: error, status: status, value: value)
     end
 
-    def merge_results(result, other)
-      if value_is_result?(other)
-        other.to_cuprum_result
-      else
-        result.value = other
-
-        result
-      end
+    def failure(error)
+      build_result(error: error)
     end
 
     # @!visibility public
@@ -134,13 +128,8 @@ module Cuprum
       build_result(error: error)
     end
 
-    def process_with_result(result, *args, &block)
-      @result = result
-      value   = process(*args, &block)
-
-      merge_results(result, value)
-    ensure
-      @result = nil
+    def success(value)
+      build_result(value: value)
     end
 
     def value_is_result?(value)

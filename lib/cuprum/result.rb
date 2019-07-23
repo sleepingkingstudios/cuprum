@@ -19,11 +19,11 @@ module Cuprum
     end
 
     # @return [Object] the value returned by calling the command.
-    attr_accessor :value
+    attr_reader :value
 
     # @return [Object] the error (if any) generated when the command was
     #   called.
-    attr_accessor :error
+    attr_reader :error
 
     # @return [Symbol] the status of the result, either :success or :failure.
     attr_reader :status
