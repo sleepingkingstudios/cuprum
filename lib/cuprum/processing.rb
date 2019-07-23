@@ -101,6 +101,10 @@ module Cuprum
       Cuprum::Result.new(error: error, status: status, value: value)
     end
 
+    def failure(error)
+      build_result(error: error)
+    end
+
     # @!visibility public
     # @overload process(*arguments, **keywords, &block)
     #   The implementation of the command, to be executed when the #call method
@@ -122,6 +126,10 @@ module Cuprum
       error = Cuprum::Errors::CommandNotImplemented.new(command: self)
 
       build_result(error: error)
+    end
+
+    def success(value)
+      build_result(value: value)
     end
 
     def value_is_result?(value)

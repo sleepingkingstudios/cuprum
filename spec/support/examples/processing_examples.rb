@@ -2,6 +2,8 @@
 
 require 'rspec/sleeping_king_studios/concerns/shared_example_group'
 
+require 'cuprum/error'
+
 module Spec::Examples
   module ProcessingExamples
     extend RSpec::SleepingKingStudios::Concerns::SharedExampleGroup
@@ -94,6 +96,60 @@ module Spec::Examples
             expect(result.value).to be value
             expect(result.error).to be error
           end
+        end
+      end
+
+      describe '#failure' do
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
+
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:failure)
+
+          expect(instance).to respond_to(:failure, true).with(1).argument
+        end
+
+        it 'should delegate to #build_result' do
+          allow(instance).to receive(:build_result)
+
+          instance.send(:failure, error)
+
+          expect(instance).to have_received(:build_result).with(error: error)
+        end
+
+        it 'should return a failing result', :aggregate_failures do
+          result = instance.send(:failure, error)
+
+          expect(result).to be_a Cuprum::Result
+          expect(result.status).to be :failure
+          expect(result.value).to be nil
+          expect(result.error).to be error
+        end
+      end
+
+      describe '#success' do
+        let(:value) { 'result value' }
+
+        it 'should define the private method' do
+          expect(instance).not_to respond_to(:success)
+
+          expect(instance).to respond_to(:success, true).with(1).argument
+        end
+
+        it 'should delegate to #build_result' do
+          allow(instance).to receive(:build_result)
+
+          instance.send(:success, value)
+
+          expect(instance).to have_received(:build_result).with(value: value)
+        end
+
+        it 'should return a passing result', :aggregate_failures do
+          result = instance.send(:success, value)
+
+          expect(result).to be_a Cuprum::Result
+          expect(result.status).to be :success
+          expect(result.value).to be value
+          expect(result.error).to be nil
         end
       end
     end
@@ -207,22 +263,6 @@ module Spec::Examples
           include_examples 'should return a result with the expected value'
         end
 
-        context 'when the implementation sets the error' do
-          let(:expected_error) do
-            Cuprum::Error.new(message: 'Something went wrong.')
-          end
-          let(:implementation) do
-            returned = value
-            error    = expected_error
-
-            lambda do
-              Cuprum::Result.new(value: returned, error: error)
-            end
-          end
-
-          include_examples 'should return a result with the expected error'
-        end
-
         context 'when the implementation returns an empty result' do
           let(:result) { Cuprum::Result.new }
           let(:implementation) do
@@ -260,6 +300,30 @@ module Spec::Examples
           end
 
           include_examples 'should return a result with the expected error'
+        end
+
+        context 'when the implementation calls #failure' do
+          let(:expected_error) do
+            Cuprum::Error.new(message: 'Something went wrong.')
+          end
+          let(:implementation) do
+            err = expected_error
+
+            ->() { failure(err) }
+          end
+
+          include_examples 'should return a result with the expected error'
+        end
+
+        context 'when the implementation calls #success' do
+          let(:value) { 'returned value' }
+          let(:implementation) do
+            val = value
+
+            ->() { success(val) }
+          end
+
+          include_examples 'should return a result with the expected value'
         end
 
         context 'when the implementation returns a result-like object' do
