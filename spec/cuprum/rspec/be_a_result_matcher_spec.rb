@@ -12,6 +12,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     let(:matcher)         { super().with_status(expected_status) }
   end
 
+  shared_context 'with a value expectation' do
+    let(:expected_value) { defined?(super()) ? super() : 'returned value' }
+    let(:matcher)        { super().with_value(expected_value) }
+  end
+
   subject(:matcher) { described_class.new }
 
   describe '::new' do
@@ -27,6 +32,26 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with a status expectation' do
       let(:expected) { super() + " with status: #{expected_status.inspect}" }
+
+      it { expect(matcher.description).to be == expected }
+    end
+
+    wrap_context 'with a value expectation' do
+      let(:expected) { super() + ' with the expected value' }
+
+      it { expect(matcher.description).to be == expected }
+    end
+
+    context 'with a status and a value expectation' do
+      let(:expected_status) { :success }
+      let(:expected_value)  { 'returned value' }
+      let(:matcher) do
+        super().with_value(expected_value).and_status(expected_status)
+      end
+      let(:expected) do
+        super() +
+          " with the expected value and status: #{expected_status.inspect}"
+      end
 
       it { expect(matcher.description).to be == expected }
     end
@@ -105,6 +130,35 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           .to raise_error ArgumentError, error_message
       end
     end
+
+    wrap_context 'with a value expectation' do
+      let(:error_message) do
+        'Using `expect().not_to be_a_result.with_value()` risks false' \
+        ' positives, since any other result will match.'
+      end
+
+      it 'should raise an error' do
+        expect { matcher.does_not_match? nil }
+          .to raise_error ArgumentError, error_message
+      end
+    end
+
+    context 'with a status and a value expectation' do
+      let(:expected_status) { :success }
+      let(:expected_value)  { 'returned value' }
+      let(:matcher) do
+        super().with_value(expected_value).and_status(expected_status)
+      end
+      let(:error_message) do
+        'Using `expect().not_to be_a_result.with_value().and_status()` risks' \
+        ' false positives, since any other result will match.'
+      end
+
+      it 'should raise an error' do
+        expect { matcher.does_not_match? nil }
+          .to raise_error ArgumentError, error_message
+      end
+    end
   end
 
   describe '#failure_message' do
@@ -121,6 +175,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
   end
 
+  # rubocop:disable RSpec/NestedGroups
   describe '#matches?' do
     shared_examples 'should set the failure message' do
       it 'should set the failure message' do
@@ -196,7 +251,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
         describe 'with a non-matching status' do
           let(:params) { { status: :failure } }
           let(:failure_message) do
-            super() + ', but the status did not match:' \
+            super() + ', but the status does not match:' \
               "\n  expected status: #{expected_status.inspect}" \
               "\n    actual status: #{params[:status].inspect}"
           end
@@ -274,12 +329,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
         let(:params) { {} }
         let(:actual) { Spec::HaltingResult.new(params) }
         let(:failure_message) do
-          super() + ', but the status did not match:' \
+          super() + ', but the status does not match:' \
             "\n  expected status: #{expected_status.inspect}" \
             "\n    actual status: #{params[:status].inspect}"
         end
 
-        # rubocop:disable RSpec/NestedGroups
         describe 'with status: :failure' do
           let(:params) { { status: :failure } }
 
@@ -327,10 +381,367 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
             include_examples 'should set the failure message'
           end
         end
-        # rubocop:enable RSpec/NestedGroups
+      end
+    end
+
+    describe 'with expected value: nil' do
+      include_context 'with a value expectation'
+
+      shared_examples 'should match the result value' do
+        describe 'with a non-matching value' do
+          let(:params) { { value: 'other value' } }
+          let(:failure_message) do
+            super() + ', but the value does not match:' \
+              "\n   expected value: #{expected_value.inspect}" \
+              "\n     actual value: #{params[:value].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a matching status' do
+          let(:params) { { value: nil } }
+
+          it { expect(matcher.matches? actual).to be true }
+        end
+      end
+
+      let(:expected_value) { nil }
+      let(:description) do
+        super() + ' with the expected value'
+      end
+
+      describe 'with nil' do
+        let(:actual) { nil }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? nil).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with an Object' do
+        let(:actual) { Object.new.freeze }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a Cuprum result' do
+        let(:params) { {} }
+        let(:actual) { Cuprum::Result.new(params) }
+
+        include_examples 'should match the result value'
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+        let(:failure_message) do
+          super() + ', but the object is an uncalled operation'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:params) { {} }
+        let(:result) { Cuprum::Result.new(params) }
+        let(:actual) do
+          returned = result
+
+          Cuprum::Operation.new { returned }.call
+        end
+
+        include_examples 'should match the result value'
+      end
+    end
+
+    describe 'with expected value: value' do
+      include_context 'with a value expectation'
+
+      shared_examples 'should match the result value' do
+        describe 'with a non-matching value' do
+          let(:params) { { value: 'other value' } }
+          let(:failure_message) do
+            super() + ', but the value does not match:' \
+              "\n   expected value: #{expected_value.inspect}" \
+              "\n     actual value: #{params[:value].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a matching status' do
+          let(:params) { { value: 'returned value' } }
+
+          it { expect(matcher.matches? actual).to be true }
+        end
+      end
+
+      let(:description) do
+        super() + ' with the expected value'
+      end
+
+      describe 'with nil' do
+        let(:actual) { nil }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? nil).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with an Object' do
+        let(:actual) { Object.new.freeze }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a Cuprum result' do
+        let(:params) { {} }
+        let(:actual) { Cuprum::Result.new(params) }
+
+        include_examples 'should match the result value'
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+        let(:failure_message) do
+          super() + ', but the object is an uncalled operation'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:params) { {} }
+        let(:result) { Cuprum::Result.new(params) }
+        let(:actual) do
+          returned = result
+
+          Cuprum::Operation.new { returned }.call
+        end
+
+        include_examples 'should match the result value'
+      end
+    end
+
+    describe 'with expected value: matcher' do
+      include_context 'with a value expectation'
+
+      shared_examples 'should match the result value' do
+        describe 'with a non-matching value' do
+          let(:params) { { value: :a_symbol } }
+          let(:failure_message) do
+            super() + ', but the value does not match:' \
+              "\n   expected value: #{expected_value.description}" \
+              "\n     actual value: #{params[:value].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a matching status' do
+          let(:params) { { value: 'a string' } }
+
+          it { expect(matcher.matches? actual).to be true }
+        end
+      end
+
+      let(:expected_value) { an_instance_of(String) }
+      let(:description) do
+        super() + ' with the expected value'
+      end
+
+      describe 'with nil' do
+        let(:actual) { nil }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? nil).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with an Object' do
+        let(:actual) { Object.new.freeze }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a Cuprum result' do
+        let(:params) { {} }
+        let(:actual) { Cuprum::Result.new(params) }
+
+        include_examples 'should match the result value'
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+        let(:failure_message) do
+          super() + ', but the object is an uncalled operation'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:params) { {} }
+        let(:result) { Cuprum::Result.new(params) }
+        let(:actual) do
+          returned = result
+
+          Cuprum::Operation.new { returned }.call
+        end
+
+        include_examples 'should match the result value'
+      end
+    end
+
+    describe 'with a status and a value expectation' do
+      shared_examples 'should match the result status and value' do
+        describe 'with a non-matching status and value' do
+          let(:params) { { status: :failure, value: 'other value' } }
+          let(:failure_message) do
+            super() + ', but the status and value do not match:' \
+              "\n  expected status: #{expected_status.inspect}" \
+              "\n    actual status: #{params[:status].inspect}" \
+              "\n   expected value: #{expected_value.inspect}" \
+              "\n     actual value: #{params[:value].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a non-matching status' do
+          let(:params) { { status: :failure, value: expected_value } }
+          let(:failure_message) do
+            super() + ', but the status does not match:' \
+              "\n  expected status: #{expected_status.inspect}" \
+              "\n    actual status: #{params[:status].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a non-matching value' do
+          let(:params) { { status: expected_status, value: 'other value' } }
+          let(:failure_message) do
+            super() + ', but the value does not match:' \
+              "\n   expected value: #{expected_value.inspect}" \
+              "\n     actual value: #{params[:value].inspect}"
+          end
+
+          it { expect(matcher.matches? actual).to be false }
+
+          include_examples 'should set the failure message'
+        end
+
+        describe 'with a matching status and value' do
+          let(:params) { { status: expected_status, value: expected_value } }
+
+          it { expect(matcher.matches? actual).to be true }
+        end
+      end
+
+      let(:expected_status) { :success }
+      let(:expected_value)  { 'returned value' }
+      let(:matcher) do
+        super().with_value(expected_value).and_status(expected_status)
+      end
+      let(:description) do
+        super() + ' with the expected value and status: :success'
+      end
+
+      describe 'with nil' do
+        let(:actual) { nil }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? nil).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with an Object' do
+        let(:actual) { Object.new.freeze }
+        let(:failure_message) do
+          super() + ', but the object is not a result'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a Cuprum result' do
+        let(:params) { {} }
+        let(:actual) { Cuprum::Result.new(params) }
+
+        include_examples 'should match the result status and value'
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+        let(:failure_message) do
+          super() + ', but the object is an uncalled operation'
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:params) { {} }
+        let(:result) { Cuprum::Result.new(params) }
+        let(:actual) do
+          returned = result
+
+          Cuprum::Operation.new { returned }.call
+        end
+
+        include_examples 'should match the result status and value'
       end
     end
   end
+  # rubocop:enable RSpec/NestedGroups
 
   describe '#with_status' do
     it { expect(matcher).to respond_to(:with_status).with(1).argument }
@@ -338,5 +749,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     it { expect(matcher).to alias_method(:with_status).as(:and_status) }
 
     it { expect(matcher.with_status :success).to be matcher }
+  end
+
+  describe '#with_value' do
+    it { expect(matcher).to respond_to(:with_value).with(1).argument }
+
+    it { expect(matcher).to alias_method(:with_value).as(:and_value) }
+
+    it { expect(matcher.with_value 'returned value').to be matcher }
   end
 end
