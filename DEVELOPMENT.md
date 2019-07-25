@@ -4,13 +4,6 @@
 
 The "'Tis Not Too Late To Seek A Newer World" Update
 
-- Remove autoload.
-
-### Testing
-
-- Define BeAResultMatcher
-  - Macros for be_a_result, be_a_passing_result, be_a_failing_result
-
 ## Version 0.10.0
 
 The "One Small Step" Update
