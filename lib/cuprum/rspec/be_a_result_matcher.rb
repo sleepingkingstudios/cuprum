@@ -11,6 +11,7 @@ module Cuprum::RSpec
     private_constant :DEFAULT_VALUE
 
     def initialize
+      @expected_error = DEFAULT_VALUE
       @expected_value = DEFAULT_VALUE
     end
 
@@ -73,6 +74,19 @@ module Cuprum::RSpec
       actual_is_result? && !actual_is_uncalled_operation? && properties_match?
     end
 
+    # Sets an error expectation on the matcher. Calls to #matches? will fail
+    # unless the actual object has the specified error.
+    #
+    # @param error [Cuprum::Error, Object] The expected error.
+    #
+    # @return [BeAResultMatcher] the updated matcher.
+    def with_error(error)
+      @expected_error = error
+
+      self
+    end
+    alias_method :and_error, :with_error
+
     # Sets a status expectation on the matcher. Calls to #matches? will fail
     # unless the actual object has the specified status.
     #
@@ -103,6 +117,7 @@ module Cuprum::RSpec
 
     attr_reader \
       :actual,
+      :expected_error,
       :expected_status,
       :expected_value
 
@@ -120,8 +135,27 @@ module Cuprum::RSpec
       expected == actual
     end
 
+    def error_failure_message
+      return '' if error_matches?
+
+      "\n   expected error: #{inspect_expected(expected_error)}" \
+      "\n     actual error: #{result.error.inspect}"
+    end
+
+    def error_matches?
+      return @error_matches unless @error_matches.nil?
+
+      return @error_matches = true unless expected_error?
+
+      @error_matches = compare_items(expected_error, result.error)
+    end
+
     def expected_properties?
-      expected_value? || expected_status?
+      expected_error? || expected_status? || expected_value?
+    end
+
+    def expected_error?
+      expected_error != DEFAULT_VALUE
     end
 
     def expected_status?
@@ -143,26 +177,39 @@ module Cuprum::RSpec
       ' positives, since any other result will match.'
     end
 
-    def properties_description
+    def properties_description # rubocop:disable Metrics/AbcSize
+      msg = ''
       ary = []
-      ary << 'the expected value' if expected_value?
-      ary << "status: #{expected_status.inspect}" if expected_status?
+      ary << 'value' if expected_value?
+      ary << 'error' if expected_error?
 
-      "with #{tools.array.humanize_list(ary)}"
+      unless ary.empty?
+        msg = "with the expected #{tools.array.humanize_list(ary)}"
+      end
+
+      return msg unless expected_status?
+
+      return "with status: #{expected_status.inspect}" if msg.empty?
+
+      msg + " and status: #{expected_status.inspect}"
     end
 
     def properties_failure_message
-      properties_short_message + status_failure_message + value_failure_message
+      properties_short_message +
+        status_failure_message +
+        value_failure_message +
+        error_failure_message
     end
 
     def properties_match?
-      status_matches? && value_matches?
+      error_matches? && status_matches? && value_matches?
     end
 
     def properties_short_message
       ary = []
       ary << 'status' unless status_matches?
       ary << 'value'  unless value_matches?
+      ary << 'error'  unless error_matches?
 
       ", but the #{tools.array.humanize_list(ary)}" \
       " #{tools.integer.pluralize(ary.size, 'does', 'do')} not match:"
@@ -172,6 +219,7 @@ module Cuprum::RSpec
       ary = []
       ary << 'value'  if expected_value?
       ary << 'status' if expected_status?
+      ary << 'error'  if expected_error?
 
       return '' if ary.empty?
 
