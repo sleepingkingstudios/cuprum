@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.1
+
+### Operations
+
+Delegate Operation#status to the most recent result.
+
+### RSpec
+
+The #be_a_passing_result macro now automatically adds a `with_error(nil)` expectation.
+
+- This causes the error (if any) to be displayed when matching a failing result.
+- This may break some cases when expecting a passing result that still has an error; in these cases, add an error expectation to the call, e.g. `expect().to be_a_passing_result.with_error(some_error)`.
+
+Improve failure message of BeAResultMatcher under some circumstances.
+
 ## 0.9.0
 
 The "'Tis Not Too Late To Seek A Newer World" Update
@@ -101,21 +116,21 @@ The "Name Not Found For NullFunction" Update.
 
 Added the `Cuprum::warn` helper, which prints a warning message. By default, `::warn` delegates to `Kernel#warn`, but can be configured (e.g. to call a Logger) by setting `Cuprum::warning_proc=` with a Proc that accepts one argument (the message to display).
 
-## Operations
+### Operations
 
 The implementation of `Cuprum::Operation` has been extracted to a module at `Cuprum::Operation::Mixin`, allowing users to easily convert an existing function class or instance to an operation.
 
-## Results
+### Results
 
 Implemented `Cuprum::Result#==` as a fuzzy comparison, allowing a result to be equal to any object with the same value and status.
 
 Implemented `Cuprum::Result#empty?`, which returns true for a new result and false for a result with a value, with non-empty errors, a result with set status, or a halted result.
 
-## Utilities
+### Utilities
 
 Added the `Cuprum::Utils::InstanceSpy` module to empower testing of code that calls a function without providing a reference, such as some chained functions.
 
-## Built In Functions
+### Built In Functions
 
 Added the `NullFunction` and `NullOperation` predefined classes, which do nothing when called and return a result with no errors and a value of nil.
 
@@ -125,7 +140,7 @@ Added the `IdentityFunction` and `IdentityOperation` predefined classes, which r
 
 The "Halt And Catch Fire" Update.
 
-## Functions
+### Functions
 
 Can now call `#success!` or `#failure!` in a function block or `#process` method to override the default, error-based status for the result. This allows for a passing result that still has errors, or a failing result that does not have explicit errors.
 
@@ -135,11 +150,11 @@ Can now generate results with custom error objects by overriding the `#build_err
 
 Fixed an inconsistency issue when a function block or `#process` method returned an instance of `Cuprum::Result`.
 
-## Operations
+### Operations
 
 Calling `#call` on an operation now returns the operation instance.
 
-## Results
+### Results
 
 Can now call `#success!` or `#failure!` to override the default, error-based status.
 
@@ -149,11 +164,11 @@ Can now call `#halt!` and check the `#halted?` status. A halted result will prev
 
 The "Nothing To Lose But Your Chains" Update.
 
-## Functions
+### Functions
 
 Now support chaining via the `#chain`, `#then`, and `#else` methods.
 
-## Results
+### Results
 
 Can pass a value and/or an errors object to the constructor.
 
