@@ -48,6 +48,22 @@ module Spec::Examples
       end # before example
     end # shared_context
 
+    shared_context 'when the result has status: :failure' do
+      let(:result) { Cuprum::Result.new(status: :failure) }
+
+      before(:example) do
+        allow(instance).to receive(:result).and_return(result)
+      end
+    end
+
+    shared_context 'when the result has status: :success' do
+      let(:result) { Cuprum::Result.new(status: :success) }
+
+      before(:example) do
+        allow(instance).to receive(:result).and_return(result)
+      end
+    end
+
     shared_examples 'should implement the Operation methods' do
       describe '#call' do
         wrap_context 'when the operation has been called' do
@@ -89,6 +105,14 @@ module Spec::Examples
         wrap_context 'when the result has an error' do
           it { expect(instance.failure?).to be true }
         end # wrap_context
+
+        wrap_context 'when the result has status: :failure' do
+          it { expect(instance.failure?).to be true }
+        end
+
+        wrap_context 'when the result has status: :success' do
+          it { expect(instance.failure?).to be false }
+        end
       end # describe
 
       describe '#reset!' do
@@ -121,6 +145,26 @@ module Spec::Examples
         end # wrap_context
       end # describe
 
+      describe '#status' do
+        include_examples 'should have reader', :status, nil
+
+        wrap_context 'when the result has a value' do
+          it { expect(instance.status).to be :success }
+        end
+
+        wrap_context 'when the result has an error' do
+          it { expect(instance.status).to be :failure }
+        end
+
+        wrap_context 'when the result has status: :failure' do
+          it { expect(instance.status).to be :failure }
+        end
+
+        wrap_context 'when the result has status: :success' do
+          it { expect(instance.status).to be :success }
+        end
+      end
+
       describe '#success?' do
         include_examples 'should have predicate', :success?, false
 
@@ -131,6 +175,14 @@ module Spec::Examples
         wrap_context 'when the result has an error' do
           it { expect(instance.success?).to be false }
         end # wrap_context
+
+        wrap_context 'when the result has status: :failure' do
+          it { expect(instance.success?).to be false }
+        end
+
+        wrap_context 'when the result has status: :success' do
+          it { expect(instance.success?).to be true }
+        end
       end # describe
 
       describe '#to_cuprum_result' do

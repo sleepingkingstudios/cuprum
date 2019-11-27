@@ -101,6 +101,12 @@ module Cuprum
         @result = nil
       end # method reset
 
+      # @return [Symbol, nil] the status of the most recent result, or nil if
+      #   the operation has not been called.
+      def status
+        called? ? result.status : nil
+      end
+
       # @return [Boolean] true if the most recent result had no error, or false
       #   if the most recent result had an error or if the operation has not
       #   been called.
