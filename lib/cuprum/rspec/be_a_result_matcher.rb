@@ -10,6 +10,9 @@ module Cuprum::RSpec
     DEFAULT_VALUE = Object.new.freeze
     private_constant :DEFAULT_VALUE
 
+    RSPEC_MATCHER_METHODS = %i[description failure_message matches?].freeze
+    private_constant :RSPEC_MATCHER_METHODS
+
     def initialize
       @expected_error = DEFAULT_VALUE
       @expected_value = DEFAULT_VALUE
@@ -167,7 +170,7 @@ module Cuprum::RSpec
     end
 
     def inspect_expected(expected)
-      return expected.description if expected.respond_to?(:description)
+      return expected.description if rspec_matcher?(expected)
 
       expected.inspect
     end
@@ -232,6 +235,12 @@ module Cuprum::RSpec
 
     def result
       @result ||= actual.to_cuprum_result
+    end
+
+    def rspec_matcher?(value)
+      RSPEC_MATCHER_METHODS.all? do |method_name|
+        value.respond_to?(method_name)
+      end
     end
 
     def status_failure_message
