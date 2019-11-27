@@ -9,7 +9,7 @@ module RSpec
     end
 
     def be_a_passing_result
-      be_a_result.with_status(:success)
+      be_a_result.with_status(:success).and_error(nil)
     end
 
     def be_a_result

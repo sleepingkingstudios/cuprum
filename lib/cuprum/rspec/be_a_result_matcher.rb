@@ -10,6 +10,9 @@ module Cuprum::RSpec
     DEFAULT_VALUE = Object.new.freeze
     private_constant :DEFAULT_VALUE
 
+    RSPEC_MATCHER_METHODS = %i[description failure_message matches?].freeze
+    private_constant :RSPEC_MATCHER_METHODS
+
     def initialize
       @expected_error = DEFAULT_VALUE
       @expected_value = DEFAULT_VALUE
@@ -151,7 +154,9 @@ module Cuprum::RSpec
     end
 
     def expected_properties?
-      expected_error? || expected_status? || expected_value?
+      (expected_error? && !expected_error.nil?) ||
+        expected_status? ||
+        expected_value?
     end
 
     def expected_error?
@@ -167,7 +172,7 @@ module Cuprum::RSpec
     end
 
     def inspect_expected(expected)
-      return expected.description if expected.respond_to?(:description)
+      return expected.description if rspec_matcher?(expected)
 
       expected.inspect
     end
@@ -177,11 +182,13 @@ module Cuprum::RSpec
       ' positives, since any other result will match.'
     end
 
-    def properties_description # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
+    def properties_description
       msg = ''
       ary = []
       ary << 'value' if expected_value?
-      ary << 'error' if expected_error?
+      ary << 'error' if expected_error? && !expected_error.nil?
 
       unless ary.empty?
         msg = "with the expected #{tools.array.humanize_list(ary)}"
@@ -193,6 +200,8 @@ module Cuprum::RSpec
 
       msg + " and status: #{expected_status.inspect}"
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     def properties_failure_message
       properties_short_message +
@@ -232,6 +241,12 @@ module Cuprum::RSpec
 
     def result
       @result ||= actual.to_cuprum_result
+    end
+
+    def rspec_matcher?(value)
+      RSPEC_MATCHER_METHODS.all? do |method_name|
+        value.respond_to?(method_name)
+      end
     end
 
     def status_failure_message
