@@ -154,7 +154,9 @@ module Cuprum::RSpec
     end
 
     def expected_properties?
-      expected_error? || expected_status? || expected_value?
+      (expected_error? && !expected_error.nil?) ||
+        expected_status? ||
+        expected_value?
     end
 
     def expected_error?
@@ -180,11 +182,13 @@ module Cuprum::RSpec
       ' positives, since any other result will match.'
     end
 
-    def properties_description # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
+    def properties_description
       msg = ''
       ary = []
       ary << 'value' if expected_value?
-      ary << 'error' if expected_error?
+      ary << 'error' if expected_error? && !expected_error.nil?
 
       unless ary.empty?
         msg = "with the expected #{tools.array.humanize_list(ary)}"
@@ -196,6 +200,8 @@ module Cuprum::RSpec
 
       msg + " and status: #{expected_status.inspect}"
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     def properties_failure_message
       properties_short_message +

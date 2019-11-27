@@ -47,7 +47,9 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
   end
 
   shared_context 'with an error, a status and a value expectation' do
-    let(:expected_error)  { nil }
+    let(:expected_error) do
+      Cuprum::Error.new(message: 'Something went wrong.')
+    end
     let(:expected_status) { :success }
     let(:expected_value)  { 'returned value' }
     let(:matcher) do
@@ -520,9 +522,6 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:expected_error) { nil }
-      let(:description) do
-        super() + ' with the expected error'
-      end
 
       describe 'with nil' do
         let(:actual) { nil }

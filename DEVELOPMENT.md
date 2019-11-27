@@ -27,11 +27,6 @@ The "One Small Step" Update
 
 - be_callable matcher - delegates to respond_to(), but check arguments of
   private #process method
-- be_a_result matcher
-  - smarter detection of RSpec matchers when generating text
-    - do not just check for #description method!
-  - be_a_passing_result macro should default to with_error(nil)
-    - provides addl context on unexpected failure
 
 ## Version 1.0.0
 
