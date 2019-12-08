@@ -17,39 +17,11 @@ The "One Small Step" Update
   - Called with command (block? method?) that returns a Result.
   - Raise (and catch) exception on non-success Result (test custom status?)
   - Otherwise return Result#value.
-
-### Matcher
-
-- Handle success(), failure(), failure(SomeError) cases.
-  - Custom matcher to handle additional cases - halted, pending, etc?
-
-### RSpec
-
-- be_callable matcher - delegates to respond_to(), but check arguments of
-  private #process method
-
-## Version 1.0.0
-
-'The "Look On My Works, Ye Mighty, and Despair" Update'
-
-- Integration specs.
-- Configuration option to raise, warn, ignore discarded results.
-- Code cleanup: Hash syntax, remove end comments, remove file headers
-
-### Commands
-
-- Command#to_proc
-- :clear_errors => true option on #chain
-
-### Commands - Built In
-
-- MapCommand - wraps a command (or proc) and returns Result with value, errors
-  as array
-- RetryCommand
+- Deprecate #chain and its related methods
 
 ### Documentation
 
-Chaining Case Study: |
+Steps Case Study: |
 
   CMS application - creating a new post.
   Directory has many Posts
@@ -63,6 +35,37 @@ Chaining Case Study: |
   Create ContentVersion
   Tags.each { FindOrCreate Tag }
 
+### Matcher
+
+- Handle success(), failure(), failure(SomeError) cases.
+  - Custom matcher to handle additional cases - halted, pending, etc?
+
+### RSpec
+
+- be_callable matcher - delegates to respond_to(), but check arguments of
+  private #process method
+- call_command_step matcher
+- (optionally) alias be_a_result family as have_result for operations
+
+## Version 1.0.0
+
+'The "Look On My Works, Ye Mighty, and Despair" Update'
+
+- Integration specs.
+- Configuration option to raise, warn, ignore discarded results.
+- Code cleanup: Hash syntax, remove end comments, remove file headers
+
+### Commands
+
+- Command#to_proc
+- Remove #chain and its related methods
+
+### Commands - Built In
+
+- MapCommand - wraps a command (or proc) and returns Result with value, errors
+  as array
+- RetryCommand
+
 ## Future Versions
 
 ### Commands
@@ -73,10 +76,6 @@ Chaining Case Study: |
 
 - ::process - shortcut for defining #process
 - ::rescue - `rescue StandardError do ... end`, rescues matched errors in #process
-- chaining methods:
-  - ::chain (::success, ::failure):
-    on #initialize, chains the given command. Can be given a command class
-    (if ::new takes no arguments) or a block that returns a command.
 - constructor methods:
   - Programmatically generate a constructor method. Raises an error if
     #initialize is defined. Automatically sets instance variables on initialize,
