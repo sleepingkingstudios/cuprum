@@ -9,18 +9,6 @@ The "One Small Step" Update
 - Deprecate #chain and its related methods
 - In Cuprum::Command, wrap #process in #steps (see below)
 
-#### Currying
-
-- Implement Cuprum::CurriedCommand
-  - #initialize takes command, \*args as arguments, \*\*kwargs as keywords
-  - #call takes \*args, \*\*kwargs
-      - prepend arguments to args
-      - merge kwargs into keywords
-      - call wrapped command with (\*args, \*\*kwargs)
-- Command#curry
-  - takes \*args, \*\*kwargs parameters
-  - returns CurriedCommand
-
 #### Middleware
 
 - Implement Cuprum::Middleware

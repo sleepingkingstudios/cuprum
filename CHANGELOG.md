@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10
+
+The "One Small Step" Update
+
+### Commands
+
+Implemented the `#curry` method, which performs partial application of arguments or keywords.
+
 ## 0.9.1
 
 ### Operations
