@@ -8,11 +8,11 @@ module Cuprum
     # Major version.
     MAJOR = 0
     # Minor version.
-    MINOR = 9
+    MINOR = 10
     # Patch version.
-    PATCH = 1
+    PATCH = 0
     # Prerelease version.
-    PRERELEASE = nil
+    PRERELEASE = :alpha
     # Build metadata.
     BUILD = nil
 
