@@ -1,11 +1,13 @@
 require 'cuprum/operation'
 
 require 'support/examples/chaining_examples'
+require 'support/examples/currying_examples'
 require 'support/examples/operation_examples'
 require 'support/examples/processing_examples'
 
 RSpec.describe Cuprum::Operation do
   include Spec::Examples::ChainingExamples
+  include Spec::Examples::CurryingExamples
   include Spec::Examples::OperationExamples
   include Spec::Examples::ProcessingExamples
 
@@ -19,6 +21,10 @@ RSpec.describe Cuprum::Operation do
   end # describe
 
   include_examples 'should implement the Chaining methods'
+
+  include_examples 'should implement the Currying interface'
+
+  include_examples 'should implement the Currying methods'
 
   include_examples 'should implement the Operation methods'
 

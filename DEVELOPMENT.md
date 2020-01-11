@@ -1,23 +1,33 @@
 # Development
 
-## Version 0.9.0
-
-The "'Tis Not Too Late To Seek A Newer World" Update
-
 ## Version 0.10.0
 
 The "One Small Step" Update
 
 ### Commands
 
-- Implement #<<, #>> composition methods.
-  - Calls commands in order passing values.
-  - Return Result early on Failure (or not Success), otherwise final Result.
-- Implement #step method (used in #process).
-  - Called with command (block? method?) that returns a Result.
-  - Raise (and catch) exception on non-success Result (test custom status?)
-  - Otherwise return Result#value.
 - Deprecate #chain and its related methods
+- In Cuprum::Command, wrap #process in #steps (see below)
+
+#### Middleware
+
+- Implement Cuprum::Middleware
+  - .apply takes middleware: array, root: command
+  - #process takes next command, \*args, \*\*kwargs
+    - calls next command with \*args, \*\*kwargs
+
+#### Steps
+
+- Implement #step method
+  - Called with result, e.g. `step my_operation.call(some_params)`
+  - Called with block, e.g. `step { my_method(my_args) }`
+    - Block form wraps the value in a result
+  - If the result is not success, throw :cuprum_failed_step and the result.
+  - Otherwise return Result#value.
+- Implement #steps method
+  - Called with block, e.g. `steps { step something }`
+  - Catches :cuprum_failed_step and returns the thrown result.
+  - Otherwise wraps the value in a result.
 
 ### Documentation
 
@@ -70,7 +80,9 @@ Steps Case Study: |
 
 ### Commands
 
-- command currying
+- Implement #<<, #>> composition methods.
+  - Calls commands in order passing values.
+  - Return Result early on Failure (or not Success), otherwise final Result.
 
 #### Cuprum::DSL
 

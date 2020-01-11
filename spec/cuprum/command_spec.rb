@@ -1,10 +1,12 @@
 require 'cuprum/command'
 
 require 'support/examples/chaining_examples'
+require 'support/examples/currying_examples'
 require 'support/examples/processing_examples'
 
 RSpec.describe Cuprum::Command do
   include Spec::Examples::ChainingExamples
+  include Spec::Examples::CurryingExamples
   include Spec::Examples::ProcessingExamples
 
   subject(:instance) { described_class.new }
@@ -17,6 +19,10 @@ RSpec.describe Cuprum::Command do
   end # describe
 
   include_examples 'should implement the Chaining methods'
+
+  include_examples 'should implement the Currying interface'
+
+  include_examples 'should implement the Currying methods'
 
   include_examples 'should implement the Processing interface'
 
