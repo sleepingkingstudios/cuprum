@@ -1,4 +1,5 @@
 require 'cuprum/chaining'
+require 'cuprum/currying'
 require 'cuprum/processing'
 
 module Cuprum
@@ -112,6 +113,7 @@ module Cuprum
   class Command
     include Cuprum::Processing
     include Cuprum::Chaining
+    include Cuprum::Currying
 
     # Returns a new instance of Cuprum::Command.
     #

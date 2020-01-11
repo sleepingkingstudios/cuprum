@@ -80,7 +80,7 @@ module Cuprum::Currying
     #   command's #call method.
     #
     #   @param args [Array] Additional arguments to pass to the curried command.
-    #   @param args [Hash] Additional keywords to pass to the curried command.
+    #   @param kwargs [Hash] Additional keywords to pass to the curried command.
     #
     #   @return [Cuprum::Result]
     #
