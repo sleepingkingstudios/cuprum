@@ -62,7 +62,7 @@ module Cuprum
       #     implementation.
       #
       # @see Cuprum::Command#call
-      def call *args, &block
+      def call *args, **kwargs, &block
         reset! if called? # Clear reference to most recent result.
 
         @result = super

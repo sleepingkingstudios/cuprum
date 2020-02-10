@@ -8,7 +8,7 @@ require 'support/examples/result_examples'
 RSpec.describe Cuprum::Result do
   include Spec::Examples::ResultExamples
 
-  subject(:instance) { described_class.new(params) }
+  subject(:instance) { described_class.new(**params) }
 
   let(:params) { {} }
 

@@ -18,7 +18,15 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
     end
 
     describe 'with no arguments' do
-      let(:error_message) { 'missing keyword: command' }
+      let(:error_message) do
+        # :nocov:
+        if RUBY_VERSION >= '2.7.0'
+          'missing keyword: :command'
+        else
+          'missing keyword: command'
+        end
+        # :nocov:
+      end
 
       it 'should raise an error' do
         expect { described_class.new }

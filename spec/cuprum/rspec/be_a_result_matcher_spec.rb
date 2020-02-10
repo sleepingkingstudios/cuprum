@@ -408,7 +408,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result status'
       end
@@ -426,7 +426,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -438,7 +438,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a custom result object' do
         let(:params) { {} }
-        let(:actual) { Spec::HaltingResult.new(params) }
+        let(:actual) { Spec::HaltingResult.new(**params) }
         let(:failure_message) do
           super() + ', but the status does not match:' \
             "\n  expected status: #{expected_status.inspect}" \
@@ -547,7 +547,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result error'
       end
@@ -565,7 +565,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -630,7 +630,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result error'
       end
@@ -648,7 +648,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -718,7 +718,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result error'
       end
@@ -736,7 +736,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -800,7 +800,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result value'
       end
@@ -818,7 +818,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -881,7 +881,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result value'
       end
@@ -899,7 +899,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -963,7 +963,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result value'
       end
@@ -981,7 +981,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -1080,7 +1080,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result error and status'
       end
@@ -1098,7 +1098,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -1197,7 +1197,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result error and value'
       end
@@ -1215,7 +1215,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -1304,7 +1304,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result status and value'
       end
@@ -1322,7 +1322,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
@@ -1521,7 +1521,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a Cuprum result' do
         let(:params) { {} }
-        let(:actual) { Cuprum::Result.new(params) }
+        let(:actual) { Cuprum::Result.new(**params) }
 
         include_examples 'should match the result properties'
       end
@@ -1539,7 +1539,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a called Cuprum::Operation' do
         let(:params) { {} }
-        let(:result) { Cuprum::Result.new(params) }
+        let(:result) { Cuprum::Result.new(**params) }
         let(:actual) do
           returned = result
 
