@@ -87,8 +87,13 @@ module Cuprum
     #
     #   @yield If a block argument is given, it will be passed to the
     #     implementation.
-    def call(*args, &block)
-      value = process(*args, &block)
+    def call(*args, **kwargs, &block)
+      value =
+        if kwargs.empty?
+          process(*args, &block)
+        else
+          process(*args, **kwargs, &block)
+        end
 
       return value.to_cuprum_result if value_is_result?(value)
 

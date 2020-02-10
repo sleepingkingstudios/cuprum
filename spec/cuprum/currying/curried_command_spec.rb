@@ -146,10 +146,16 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
 
     before(:example) { allow(command).to receive(:call).and_return(result) }
 
-    def call_curried_command(&block)
-      ary = kwargs.empty? ? args : [*args, kwargs]
-
-      block_given? ? instance.call(*ary, &block) : instance.call(*ary)
+    def call_curried_command(&block) # rubocop:disable Metrics/AbcSize
+      if block_given? && kwargs.empty?
+        instance.call(*args, &block)
+      elsif block_given?
+        instance.call(*args, **kwargs, &block)
+      elsif kwargs.empty?
+        instance.call(*args)
+      else
+        instance.call(*args, **kwargs)
+      end
     end
 
     it { expect(instance).to respond_to(:call).with_unlimited_arguments }

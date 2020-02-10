@@ -100,9 +100,12 @@ module Cuprum::Currying
     def process(*args, **kwargs, &block)
       args   = [*arguments, *args]
       kwargs = keywords.merge(kwargs)
-      args << kwargs unless kwargs.empty?
 
-      command.call(*args, &block)
+      if kwargs.empty?
+        command.call(*args, &block)
+      else
+        command.call(*args, **kwargs, &block)
+      end
     end
   end
 end

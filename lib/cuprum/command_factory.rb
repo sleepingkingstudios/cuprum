@@ -28,7 +28,7 @@ module Cuprum
   #
   #   factory::Dream #=> DreamCommand
   #   factory.dream  #=> an instance of DreamCommand
-  class CommandFactory < Module
+  class CommandFactory < Module # rubocop:disable Metrics/ClassLength
     # Defines the Domain-Specific Language and helper methods for dynamically
     # defined commands.
     class << self
@@ -149,18 +149,12 @@ module Cuprum
 
         raise ArgumentError, 'must provide a block'.freeze unless block_given?
 
-        name = normalize_command_name(name)
+        method_name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[name] =
+        (@command_definitions ||= {})[method_name] =
           metadata.merge(__const_defn__: defn)
 
-        const_name = tools.string.camelize(name)
-
-        define_method(name) do |*args, &block|
-          command_class = const_get(const_name)
-
-          build_command(command_class, *args, &block)
-        end
+        define_lazy_command_method(method_name)
       end
 
       protected
@@ -184,21 +178,47 @@ module Cuprum
 
         (@command_definitions ||= {})[command_name] = metadata
 
-        define_method(command_name) do |*args|
-          instance_exec(*args, &builder)
+        define_method(command_name) do |*args, **kwargs|
+          if kwargs.empty?
+            instance_exec(*args, &builder)
+          else
+            instance_exec(*args, **kwargs, &builder)
+          end
         end
       end
 
       def define_command_from_class(command_class, name:, metadata: {})
         guard_invalid_definition!(command_class)
 
-        command_name = normalize_command_name(name)
+        method_name = normalize_command_name(name)
 
-        (@command_definitions ||= {})[command_name] =
+        (@command_definitions ||= {})[method_name] =
           metadata.merge(__const_defn__: command_class)
 
-        define_method(command_name) do |*args, &block|
-          build_command(command_class, *args, &block)
+        define_command_method(method_name, command_class)
+      end
+
+      def define_command_method(method_name, command_class)
+        define_method(method_name) do |*args, **kwargs, &block|
+          if kwargs.empty?
+            build_command(command_class, *args, &block)
+          else
+            build_command(command_class, *args, **kwargs, &block)
+          end
+        end
+      end
+
+      def define_lazy_command_method(method_name)
+        const_name = tools.string.camelize(method_name)
+
+        define_method(method_name) do |*args, **kwargs, &block|
+          command_class = const_get(const_name)
+
+          if kwargs.empty?
+            build_command(command_class, *args, &block)
+          else
+            build_command(command_class, *args, **kwargs, &block)
+          end
         end
       end
 
@@ -265,8 +285,12 @@ module Cuprum
 
     private
 
-    def build_command(command_class, *args, &block)
-      command_class.new(*args, &block)
+    def build_command(command_class, *args, **kwargs, &block)
+      if kwargs.empty?
+        command_class.new(*args, &block)
+      else
+        command_class.new(*args, **kwargs, &block)
+      end
     end
 
     def normalize_command_name(command_name)

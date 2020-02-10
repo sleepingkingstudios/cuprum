@@ -11,7 +11,9 @@ module Spec
     def evaluate(**scenarios, &block)
       matrix = build_matrix(scenarios)
 
-      matrix.each do |labels:, properties:|
+      matrix.each do |hsh|
+        labels       = hsh.fetch(:labels)
+        properties   = hsh.fetch(:properties)
         example_name = generate_example_name(labels)
 
         example_group.context(example_name).instance_exec(**properties, &block)
@@ -33,10 +35,14 @@ module Spec
       matrix
     end
 
+    # rubocop:disable Metrics/MethodLength
     def expand_scenarios(matrix:, keyword:, values:)
       expanded = []
 
-      matrix.each do |labels:, properties:|
+      matrix.each do |hsh|
+        labels     = hsh.fetch(:labels)
+        properties = hsh.fetch(:properties)
+
         values.each do |(label, value)|
           expanded << {
             labels:     [*labels, label],
@@ -47,6 +53,7 @@ module Spec
 
       expanded
     end
+    # rubocop:enable Metrics/MethodLength
 
     def generate_example_name(labels)
       ary = labels.map(&:to_s).reject(&:empty?)

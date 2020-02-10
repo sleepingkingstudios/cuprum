@@ -129,8 +129,13 @@ module Cuprum::Utils
     end # eigenclass
 
     # (see Cuprum::Command#call)
-    def call *args, &block
-      Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
+    def call *args, **kwargs, &block
+      if kwargs.empty?
+        Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
+      else
+        Cuprum::Utils::InstanceSpy
+          .send(:call_spies_for, self, *args, **kwargs, &block)
+      end
 
       super
     end # method call

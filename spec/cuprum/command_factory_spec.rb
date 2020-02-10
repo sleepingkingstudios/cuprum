@@ -90,7 +90,11 @@ RSpec.describe Cuprum::CommandFactory do
       before(:example) { define_command }
 
       def build_command
-        instance.send(command_name, *arguments)
+        if defined?(options) && !options.empty?
+          instance.send(command_name, *arguments, **options)
+        else
+          instance.send(command_name, *arguments)
+        end
       end
 
       it { expect(instance).to respond_to(command_name).with(0).arguments }
@@ -118,7 +122,7 @@ RSpec.describe Cuprum::CommandFactory do
         describe 'with arguments' do
           let(:value)     { 'value'.freeze }
           let(:options)   { { key: 'option'.freeze } }
-          let(:arguments) { [value, options] }
+          let(:arguments) { [value] }
 
           it { expect(build_command).to be_a command_class }
 
@@ -136,7 +140,13 @@ RSpec.describe Cuprum::CommandFactory do
 
     let(:command_class) { Spec::FlyCommand }
     let(:command_name)  { 'fly' }
-    let(:command)       { instance.send(command_name, *arguments) }
+    let(:command) do
+      if defined?(options) && !options.empty?
+        instance.send(command_name, *arguments, **options)
+      else
+        instance.send(command_name, *arguments)
+      end
+    end
 
     before(:example) { define_command }
 
@@ -151,7 +161,7 @@ RSpec.describe Cuprum::CommandFactory do
     describe 'with arguments' do
       let(:value)     { 'value'.freeze }
       let(:options)   { { key: 'option'.freeze } }
-      let(:arguments) { [value, options] }
+      let(:arguments) { [value] }
 
       it { expect(command).to be_a command_class }
 
@@ -250,8 +260,12 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name) do |*args|
-            build_command(klass, *args)
+          described_class.command(command_name) do |*args, **kwargs|
+            if kwargs.empty?
+              build_command(klass, *args)
+            else
+              build_command(klass, *args, **kwargs)
+            end
           end
         end
 
@@ -284,8 +298,12 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name, **metadata) do |*args|
-            build_command(klass, *args)
+          described_class.command(command_name, **metadata) do |*args, **kwargs|
+            if kwargs.empty?
+              build_command(klass, *args)
+            else
+              build_command(klass, *args, **kwargs)
+            end
           end
         end
 
@@ -401,8 +419,12 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name) do |*args|
-            build_command(klass, *args)
+          described_class.command(command_name) do |*args, **kwargs|
+            if kwargs.empty?
+              build_command(klass, *args)
+            else
+              build_command(klass, *args, **kwargs)
+            end
           end
         end
 
@@ -435,8 +457,12 @@ RSpec.describe Cuprum::CommandFactory do
         def define_command
           klass = command_class
 
-          described_class.command(command_name, **metadata) do |*args|
-            build_command(klass, *args)
+          described_class.command(command_name, **metadata) do |*args, **kwargs|
+            if kwargs.empty?
+              build_command(klass, *args)
+            else
+              build_command(klass, *args, **kwargs)
+            end
           end
         end
 

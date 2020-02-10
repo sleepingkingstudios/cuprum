@@ -123,7 +123,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
 
     it 'should build a book' do
       command = instance.build
-      result  = command.call(attributes)
+      result  = command.call(attributes, **{})
       book    = result.value
 
       expect(book).to be_a Spec::Book

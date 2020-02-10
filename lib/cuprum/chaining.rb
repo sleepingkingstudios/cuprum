@@ -197,7 +197,7 @@ module Cuprum
   # @see Cuprum::Command
   module Chaining
     # (see Cuprum::Processing#call)
-    def call(*args, &block)
+    def call(*args, **kwargs, &block)
       yield_chain(super)
     end
 

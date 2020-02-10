@@ -35,13 +35,13 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       let(:scenarios) { {} }
 
       it 'should not define an example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).not_to have_received(:context)
       end
 
       it 'should not yield control' do
-        expect { |block| matrix.evaluate(scenarios, &block) }
+        expect { |block| matrix.evaluate(**scenarios, &block) }
           .not_to yield_control
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define one example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -61,7 +61,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example group' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 
@@ -87,7 +87,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define three example groups' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(3).times
       end
@@ -95,7 +95,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example group' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 
@@ -115,7 +115,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -123,7 +123,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example groups' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 
@@ -161,7 +161,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(9).times
       end
@@ -169,7 +169,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example groups' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 
@@ -192,7 +192,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define one example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -200,7 +200,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example group' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 
@@ -230,7 +230,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(27).times
       end
@@ -275,7 +275,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(scenarios) {}
+        matrix.evaluate(**scenarios) {}
 
         expect(example_group).to have_received(:context).exactly(9).times
       end
@@ -283,7 +283,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       it 'should generate the example groups' do
         contexts = {}
 
-        matrix.evaluate(scenarios) do |properties|
+        matrix.evaluate(**scenarios) do |properties|
           contexts[name] = properties
         end
 

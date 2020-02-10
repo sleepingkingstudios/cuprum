@@ -16,7 +16,7 @@ RSpec.describe Cuprum::Result do
       before(:example) { params[:status] = :halted }
     end
 
-    subject(:instance) { described_class.new(params) }
+    subject(:instance) { described_class.new(**params) }
 
     let(:described_class) { Spec::HaltingResult }
     let(:params) { {} }

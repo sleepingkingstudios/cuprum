@@ -21,10 +21,10 @@ module Spec::Examples
         end
       end
 
-      shared_examples 'should compare the results' do |value:, error:, status:|
-        let(:other_value)  { value }
-        let(:other_error)  { error }
-        let(:other_status) { status }
+      shared_examples 'should compare the results' do |kwargs|
+        let(:other_value)  { kwargs.fetch(:value) }
+        let(:other_error)  { kwargs.fetch(:error) }
+        let(:other_status) { kwargs.fetch(:status) }
         let(:result) do
           described_class.new(
             value:  other_value,
@@ -44,7 +44,8 @@ module Spec::Examples
 
       shared_examples 'should compare the results in each scenario' \
       do |scenarios|
-        Spec::Matrix.new(self).evaluate(scenarios) do |value:, error:, status:|
+        Spec::Matrix.new(self).evaluate(**scenarios) \
+        do |value:, error:, status:|
           include_examples 'should compare the results',
             value:  value,
             error:  error,
@@ -52,7 +53,7 @@ module Spec::Examples
         end
 
         wrap_context 'with an object that wraps a result' do
-          Spec::Matrix.new(self).evaluate(scenarios) \
+          Spec::Matrix.new(self).evaluate(**scenarios) \
           do |value:, error:, status:|
             include_examples 'should compare the results',
               value:  value,
