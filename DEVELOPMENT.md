@@ -101,3 +101,7 @@ Steps Case Study: |
 #### Dependency Injection
 
 - shorthand for referencing a sequence of operations
+
+### Steps::Strict
+
+- #step raises exception unless block or method returns a result
