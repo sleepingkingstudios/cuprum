@@ -1,6 +1,7 @@
 require 'cuprum/chaining'
 require 'cuprum/currying'
 require 'cuprum/processing'
+require 'cuprum/steps'
 
 module Cuprum
   # Functional object that encapsulates a business logic operation with a
@@ -114,6 +115,7 @@ module Cuprum
     include Cuprum::Processing
     include Cuprum::Chaining
     include Cuprum::Currying
+    include Cuprum::Steps
 
     # Returns a new instance of Cuprum::Command.
     #
@@ -128,5 +130,9 @@ module Cuprum
 
       singleton_class.send(:private, :process)
     end # method initialize
+
+    def call(*args, **kwargs, &block)
+      steps { super }
+    end
   end # class
 end # module
