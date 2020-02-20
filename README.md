@@ -213,63 +213,6 @@ result.value    #=> book
 book.published? #=> false
 ```
 
-#### Composing Commands
-
-Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
-
-```ruby
-increment_command = Cuprum::Command.new { |i| i + 1 }
-increment_command.call(1).value #=> 2
-increment_command.call(2).value #=> 3
-increment_command.call(3).value #=> 4
-
-add_command = Cuprum::Command.new do |addend, i|
-  addend.times { i = increment_command(i).value }
-
-  i
-end
-
-add_command.call(1, 1).value #=> 2
-add_command.call(1, 2).value #=> 3
-add_command.call(2, 1).value #=> 3
-add_command.call(2, 2).value #=> 4
-```
-
-This can also be done using command classes.
-
-```ruby
-class IncrementCommand < Cuprum::Command
-  private
-
-  def process i
-    i + 1
-  end
-end
-
-class AddCommand < Cuprum::Command
-  def initialize addend
-    @addend = addend
-  end
-
-  private
-
-  def increment_command
-    @increment_command ||= IncrementCommand.new
-  end
-
-  def process i
-    addend.times { i = increment_command.call(i).value }
-
-    i
-  end
-end
-
-add_two_command = AddCommand.new(2)
-add_two_command.call(0).value #=> 2
-add_two_command.call(1).value #=> 3
-add_two_command.call(8).value #=> 10
-```
-
 #### Command Currying
 
 Cuprum::Command defines the `#curry` method, which allows for partial application of command objects. Partial application (more commonly referred to, if imprecisely, as currying) refers to fixing some number of arguments to a function, resulting in a function with a smaller number of arguments.
@@ -323,6 +266,362 @@ multiply_command = math_command.curry(operation: :*)
 multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
+
+### Composing Commands
+
+Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
+
+```ruby
+increment_command = Cuprum::Command.new { |i| i + 1 }
+increment_command.call(1).value #=> 2
+increment_command.call(2).value #=> 3
+increment_command.call(3).value #=> 4
+
+add_command = Cuprum::Command.new do |addend, i|
+  # Here, we are composing commands together by calling the increment_command
+  # instance from inside the add_command definition.
+  addend.times { i = increment_command(i).value }
+
+  i
+end
+
+add_command.call(1, 1).value #=> 2
+add_command.call(1, 2).value #=> 3
+add_command.call(2, 1).value #=> 3
+add_command.call(2, 2).value #=> 4
+```
+
+This can also be done using command classes.
+
+```ruby
+class IncrementCommand < Cuprum::Command
+  private
+
+  def process i
+    i + 1
+  end
+end
+
+class AddCommand < Cuprum::Command
+  def initialize addend
+    @addend = addend
+  end
+
+  private
+
+  def increment_command
+    @increment_command ||= IncrementCommand.new
+  end
+
+  def process i
+    addend.times { i = increment_command.call(i).value }
+
+    i
+  end
+end
+
+add_two_command = AddCommand.new(2)
+add_two_command.call(0).value #=> 2
+add_two_command.call(1).value #=> 3
+add_two_command.call(8).value #=> 10
+```
+
+You can achieve even more powerful composition by passing in a command as an argument to a method, or by creating a method that returns a command.
+
+#### Commands As Arguments
+
+Since commands are objects, they can be passed in as arguments to a method or to another command. For example, consider a command that calls another command a given number of times:
+
+```ruby
+class RepeatCommand
+  def initialize(count)
+    @count = count
+  end
+
+  private
+
+  def process(command)
+    @count.times { command.call }
+  end
+end
+
+greet_command  = Cuprum::Command.new { puts 'Greetings, programs!' }
+repeat_command = RepeatCommand.new(3)
+repeat_command.call(greet_command) #=> prints 'Greetings, programs!' 3 times
+```
+
+This is an implementation of the Strategy pattern, which allows us to customize the behavior of a part of our system by passing in implementation code rather than burying conditionals in our logic.
+
+Consider a more concrete example. Suppose we are running an online bookstore that sells both physuical and electronic books, and serves both domestic and international customers. Depending on what the customer ordered and where they live, our business logic for fulfilling an order will have different shipping instructions.
+
+Traditionally this would be handled with a conditional inside the order fulfillment code, which adds complexity. However, we can use the Strategy pattern and pass in our shipping code as a command.
+
+```ruby
+class DeliverEbook < Cuprum::Command; end
+
+class ShipDomestic < Cuprum::Command; end
+
+class ShipInternational < Cuprum::Command; end
+
+class FulfillOrder < Cuprum::Command
+  def initialize(delivery_command)
+    @delivery_command = delivery_command
+  end
+
+  private
+
+  def process(book:, user:)
+    # Here we will check inventory, process payments, and so on. The final step
+    # is actually delivering the book to the user:
+    delivery_command.call(book: book, user: user)
+  end
+end
+```
+
+This pattern is also useful for testing. When writing specs for the FulfillOrder command, simply pass in a mock double as the delivery command. This removes any need to stub out the implementation of whatever shipping method is used (or worse, calls to external services).
+
+#### Commands As Returned Values
+
+We can also return commands as an object from a method call or from another command. One use case for this is the Abstract Factory pattern.
+
+Consider our shipping example, above. The traditional way to generate a shipping command is to use an `if-then-else` or `case` construct, which would be embedded in whatever code is calling `FulfillOrder`. This adds complexity and increases the testing burden.
+
+Instead, let's create a factory command. This command will take a user and a book, and will return the command used to ship that item.
+
+```ruby
+class ShippingMethod < Cuprum::Command
+  private
+
+  def process(book:, user:)
+    return DeliverEbook.new(user.email) if book.ebook?
+
+    return ShipDomestic.new(user.address) if user.address&.domestic?
+
+    return ShipInternational.new(user.address) if user.address&.international?
+
+    err = Cuprum::Error.new(message: 'user does not have a valid address')
+
+    failure(err)
+  end
+end
+```
+
+Notice that our factory includes error handling - if the user does not have a valid address, that is handled immediately rather than when trying to ship the item.
+
+The [Command Factory](#label-Command+Factories) defined by Cuprum is another example of using the Abstract Factory pattern to return command instances. One use case for a command factory would be defining CRUD operations for data records. Depending on the class or the type of record passed in, the factory could return a generic command or a specific command tied to that specific record type.
+
+### Command Steps
+
+Separating out business logic into commands is a powerful tool, but it does come with some overhead, particularly when checking whether a result is passing, or when converting between results and values. When a process has many steps, each of which can fail or return a value, this can result in a lot of boilerplate.
+
+The solution Cuprum provides is the `#step` method, which calls either a named method or a given block. If the result of the block or method is passing, then the `#step` method returns the value of the result.
+
+```ruby
+triple_command = Cuprum::Command.new { |i| success(3 * i) }
+
+int = 2
+int = step { triple_command.call(int) } #=> returns 6
+int = step { triple_command.call(int) } #=> returns 18
+```
+
+Notice that in each step, we are returning the *value* of the result from `#step`, not the result itself. This means we do not need explicit calls to the `#value` method.
+
+Of course, not all commands return a passing result. If the result of the block or method is failing, then `#step` will throw `:cuprum_failed_result` and the result, immediately halting the execution chain. If the `#step` method is used inside a command definition (or inside a `#steps` block; [see below](#label-Using+Steps+Outside+Of+Commands)), that symbol will be caught and the failing result returned by `#call`.
+
+```ruby
+divide_command = Cuprum::Command.new do |dividend, divisor|
+  return failure('divide by zero') if divisor.zero?
+
+  success(dividend / divisor)
+end
+
+value = step { divide_command.call(10, 5) } #=> returns 2
+value = step { divide_command.call(2, 0) }  #=> throws :cuprum_failed_result
+```
+
+Here, the `divide_command` can either return a passing result (if the divisor is not zero) or a failing result (if the divisor is zero). When wrapped in a `#step`, the failing result is then thrown, halting execution.
+
+This is important when using a sequence of steps. Let's consider a case study - reserving a book from the library. This entails several steps, each of which could potentially fail:
+
+- Validating that the user can reserve books. Maybe the user has too many unpaid fines.
+- Finding the requested book in the library system. Maybe the requested title isn't in the system.
+- Placing a reservation on the book. Maybe there are no copies of the book available to reserve.
+
+Using `#step`, as soon as one of the subtasks fails then the command will immediately return the failed value. This prevents us from hitting later subtasks with invalid data, it returns the actual failing result for analytics and for displaying a useful error message to the user, and it avoids the overhead (and the boilerplate) of exception-based failure handling.
+
+```ruby
+class CheckUserStatus < Cuprum::Command; end
+
+class CreateBookReservation < Cuprum::Command; end
+
+class FindBookByTitle < Cuprum::Command; end
+
+class ReserveBookByTitle < Cuprum::Command
+  private
+
+  def process(title:, user:)
+    # If CheckUserStatus fails, #process will immediately return that result. # For this step, we already have the user, so we don't need to use the
+    # result value.
+    step { CheckUserStatus.new.call(user) }
+
+    # Here, we are looking up the requested title. In this case, we will need # the book object, so we save it as a variable. Notice that we don't need
+    # an explicit #value call - #step handles that for us.
+    book = step { FindBookByTitle.new.call(title) }
+
+    # Finally, we want to reserve the book. Since this is the last subtask, we
+    # don't strictly need to use #step. However, it's good practice, especially
+    # if we might need to add more steps to the command in the future.
+    step { CreateBookReservation.new.call(book: book, user: user) }
+  end
+end
+```
+
+First, our user may not have borrowing privileges. In this case, `CheckUserStatus` will fail, and neither of the subsequent steps will be called. The `#call` method will return the failing result from `CheckUserStatus`.
+
+```ruby
+result = ReserveBookByTitle.new.call(
+  title: 'The C Programming Language',
+  user:  'Ed Dillinger'
+)
+result.class    #=> Cuprum::Result
+result.success? #=> false
+result.error    #=> 'not authorized to reserve book'
+```
+
+Second, our user may be valid but our requested title may not exist in the system. In this case, `FindBookByTitle` will fail, and the final step will not be called. The `#call` method will return the failing result from `FindBookByTitle`.
+
+```ruby
+result = ReserveBookByTitle.new.call(
+  title: 'Using GOTO For Fun And Profit',
+  user:  'Alan Bradley'
+)
+result.class    #=> Cuprum::Result
+result.success? #=> false
+result.error    #=> 'title not found'
+```
+
+Third, our user and book may be valid, but all of the copies are checked out. In this case, each of the steps will be called, and the `#call` method will return the failing result from `CreateBookReservation`.
+
+```ruby
+result = ReserveBookByTitle.new.call(
+  title: 'Design Patterns: Elements of Reusable Object-Oriented Software',
+  user:  'Alan Bradley'
+)
+result.class    #=> Cuprum::Result
+result.success? #=> false
+result.error    #=> 'no copies available'
+```
+
+Finally, if each of the steps succeeds, the `#call` method will return the result of the final step.
+
+```ruby
+result = ReserveBookByTitle.new.call(
+  title: 'The C Programming Language',
+  user:  'Alan Bradley'
+)
+result.class    #=> Cuprum::Result
+result.success? #=> true
+result.value    #=> an instance of BookReservation
+```
+
+#### Using Methods As Steps
+
+Steps can also be defined as method calls. Instead of providing a block to `#step`, provide the name of the method as the first argument, either as a symbol or as a string. Any subsequent arguments, keywords, or a block is passed to the method when it is called.
+
+A step defined with a method behaves the same as a step defined with a block. If the method returns a successful result, then `#step` will return the value of the result. If the method returns a failing result, then `#step` will throw `:cuprum_failed_result` and the result, to be caught by the `#process` method or the containing `#steps` block.
+
+We can use this to rewrite our `ReserveBookByTitle` command to use methods:
+
+```ruby
+class ReserveBookByTitle < Cuprum::Result
+  private
+
+  def check_user_status(user)
+    CheckUserStatus.new(user)
+  end
+
+  def create_book_reservation(book:, user:)
+    CreateBookReservation.new(book: book, user: user)
+  end
+
+  def find_book_by_title(title)
+    FindBookByTitle.new.call(title)
+  end
+
+  def process(title:, user:)
+    step :check_user_status, user
+
+    book = step :find_book_by_title, title
+
+    create_book_reservation, book: book, user: user
+  end
+end
+```
+
+In this case, our methods simply delegate to our previously defined commands. However, a more complex example could include other logic in each method, or even a sequence of steps defining subtasks for the method. The only requirement is that the method returns a result. You can use the `#success` helpers to wrap a non-result value, or the `#failure` helper to generate a failing result.
+
+#### Using Steps Outside Of Commands
+
+Steps can also be used outside of a command. For example, a controller action might define a sequence of steps to run when the corresponding endpoint is called.
+
+To use steps outside of a command, include the `Cuprum::Steps` module. Then, each sequence of steps should be wrapped in a `#steps` block as follows:
+
+```ruby
+steps do
+  step { check_something }
+
+  obj = step { find_something }
+
+  step :do_something, with: obj
+end
+```
+
+Each step will be executed in sequence until a failing result is returned by the block or method. The `#steps` block will return that failing result. If no step returns a failing result, then the return value of the block will be wrapped in a result and returned by `#steps`.
+
+Let's consider the example of a controller action for creating a new resource. This would have several steps, each of which can fail:
+
+- First, we build a new instance of the resource with the provided attributes. This can fail if the attributes are incompatible with the resource, e.g. with extra attributes not included in the resource's table columns.
+- Second, we run validations on the resource itself. This can fail if the attributes do not match the expected format.
+- Finally, we persist the resource to the database. This can fail if the record violates any database constraints, or if the database itself is unavailable.
+
+```ruby
+class BooksController
+  include Cuprum::Steps
+
+  def create
+    attributes = params[:books]
+    result     = steps do
+      @book = step :build_book, attributes
+
+      step :run_validations, @book
+
+      step :persist_book, book
+    end
+
+    result.success ? redirect_to(@book) : render(:edit)
+  end
+
+  private
+
+  def build_book(attributes)
+    success(Book.new(attributes))
+  rescue InvalidAttributes
+    failure('attributes are invalid')
+  end
+
+  def persist_book(book)
+    book.save ? success(book) : failure('unable to persist book')
+  end
+
+  def run_validations(book)
+    book.valid? ? success : failure('book is invalid')
+  end
+end
+```
+
+A few things to note about this example. First, we have a couple of examples of wrapping existing code in a result, both by rescuing exceptions (in `#build_book`) or by checking a returned status (in `#persist_book`). Second, note that each of our helper methods can be reused in other controller actions. For even more encapsulation and reusability, the next step might be to convert those methods to commands of their own.
+
+You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
 
 ### Chaining Commands
 

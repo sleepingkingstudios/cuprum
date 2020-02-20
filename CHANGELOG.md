@@ -4,9 +4,17 @@
 
 The "One Small Step" Update
 
+**Note:** This update may have backwards incompatible changes for versions of Ruby before 2.7 when creating commands whose last parameter is an arguments Hash. See [separation of positional and keyword arguments](https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/) for more information.
+
 ### Commands
 
 Implemented the `#curry` method, which performs partial application of arguments or keywords.
+
+#### Steps
+
+Implemented the `#step` method, which extracts the value of the called command (on a success) or halts execution (on a failure).
+
+Implemented the `#steps` method, which wraps a series of steps and returns first failing result, or the the last result if all steps are passing.
 
 ## 0.9.1
 

@@ -4,6 +4,7 @@ module Cuprum
   autoload :Command,   'cuprum/command'
   autoload :Operation, 'cuprum/operation'
   autoload :Result,    'cuprum/result'
+  autoload :Steps,     'cuprum/steps'
 
   class << self
     # @return [String] The current version of the gem.
