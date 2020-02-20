@@ -74,7 +74,8 @@ Steps Case Study: |
 
 - MapCommand - wraps a command (or proc) and returns Result with value, errors
   as array
-- RetryCommand
+- RetryCommand - takes command, retry count
+  - optional only:, except: - restrict what errors are retried
 
 ## Future Versions
 
