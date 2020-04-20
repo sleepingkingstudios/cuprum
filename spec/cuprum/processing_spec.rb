@@ -3,9 +3,11 @@
 require 'cuprum/processing'
 
 require 'support/examples/processing_examples'
+require 'support/examples/result_helpers_examples'
 
 RSpec.describe Cuprum::Processing do
   include Spec::Examples::ProcessingExamples
+  include Spec::Examples::ResultHelpersExamples
 
   subject(:instance) { described_class.new }
 
@@ -14,6 +16,10 @@ RSpec.describe Cuprum::Processing do
   include_examples 'should implement the Processing interface'
 
   include_examples 'should implement the Processing methods'
+
+  include_examples 'should implement the ResultHelpers interface'
+
+  include_examples 'should implement the ResultHelpers methods'
 
   describe '#call' do
     shared_context 'when the implementation is defined' do
@@ -24,7 +30,7 @@ RSpec.describe Cuprum::Processing do
       end
     end
 
-    let(:implementation) { ->() {} }
+    let(:implementation) { -> {} }
 
     include_examples 'should execute the command implementation'
   end

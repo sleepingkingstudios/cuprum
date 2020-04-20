@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cuprum'
+require 'cuprum/result_helpers'
 
 module Cuprum
   # The Steps supports step by step processes that halt on a failed step.
@@ -61,6 +61,8 @@ module Cuprum
   #     end
   #   end
   module Steps
+    include Cuprum::ResultHelpers
+
     class << self
       # @!visibility private
       def execute_method(receiver, method_name, *args, **kwargs, &block)

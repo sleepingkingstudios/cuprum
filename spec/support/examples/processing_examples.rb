@@ -33,9 +33,7 @@ module Spec::Examples
 
     shared_examples 'should implement the Processing interface' do
       describe '#arity' do
-        include_examples 'should have reader',
-          :arity,
-          ->() { instance.method(:process).arity }
+        include_examples 'should have reader', :arity
       end
 
       describe '#call' do
@@ -49,108 +47,8 @@ module Spec::Examples
     end
 
     shared_examples 'should implement the Processing methods' do
-      describe '#build_result' do
-        include_context 'when a custom result class is defined'
-
-        let(:value) { 'returned value' }
-        let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
-
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:build_result)
-
-          expect(instance)
-            .to respond_to(:build_result, true)
-            .with(0).arguments
-            .and_keywords(:error, :status, :value)
-        end
-
-        it 'should return a result' do
-          result = instance.send(:build_result, value: value, error: error)
-
-          expect(result).to be_a Cuprum::Result
-          expect(result.value).to be value
-          expect(result.error).to be error
-        end
-
-        it 'should return a new object each time it is called' do
-          result = instance.send(:build_result, value: value, error: error)
-
-          expect(instance.send :build_result, value: value, error: error)
-            .not_to be result
-        end
-
-        context 'when a custom result object is returned' do
-          let(:custom_result) { Spec::CustomResult.new(value, error) }
-
-          before(:example) do
-            allow(instance).to receive(:process).and_return(value)
-            allow(instance)
-              .to receive(:build_result)
-              .and_return(custom_result)
-          end
-
-          it 'should return the custom result when called' do
-            result = instance.call.to_cuprum_result
-
-            expect(result).to be custom_result
-            expect(result.value).to be value
-            expect(result.error).to be error
-          end
-        end
-      end
-
-      describe '#failure' do
-        let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
-
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:failure)
-
-          expect(instance).to respond_to(:failure, true).with(1).argument
-        end
-
-        it 'should delegate to #build_result' do
-          allow(instance).to receive(:build_result)
-
-          instance.send(:failure, error)
-
-          expect(instance).to have_received(:build_result).with(error: error)
-        end
-
-        it 'should return a failing result', :aggregate_failures do
-          result = instance.send(:failure, error)
-
-          expect(result).to be_a Cuprum::Result
-          expect(result.status).to be :failure
-          expect(result.value).to be nil
-          expect(result.error).to be error
-        end
-      end
-
-      describe '#success' do
-        let(:value) { 'result value' }
-
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:success)
-
-          expect(instance).to respond_to(:success, true).with(1).argument
-        end
-
-        it 'should delegate to #build_result' do
-          allow(instance).to receive(:build_result)
-
-          instance.send(:success, value)
-
-          expect(instance).to have_received(:build_result).with(value: value)
-        end
-
-        it 'should return a passing result', :aggregate_failures do
-          result = instance.send(:success, value)
-
-          expect(result).to be_a Cuprum::Result
-          expect(result.status).to be :success
-          expect(result.value).to be value
-          expect(result.error).to be nil
-        end
+      describe '#arity' do
+        it { expect(instance.arity).to be == instance.method(:process).arity }
       end
     end
 
@@ -403,6 +301,30 @@ module Spec::Examples
             expect(result).to be_a expected_class
             expect(result.value).to be 55
             expect(result.error).to be nil
+          end
+        end
+
+        context 'when a custom result object is returned' do
+          include_context 'when a custom result class is defined'
+
+          let(:error) do
+            Cuprum::Error.new(message: 'Something went wrong.')
+          end
+          let(:custom_result) { Spec::CustomResult.new(value, error) }
+
+          before(:example) do
+            allow(instance).to receive(:process).and_return(value)
+            allow(instance)
+              .to receive(:build_result)
+              .and_return(custom_result)
+          end
+
+          it 'should return the custom result when called' do
+            result = instance.call.to_cuprum_result
+
+            expect(result).to be custom_result
+            expect(result.value).to be value
+            expect(result.error).to be error
           end
         end
       end

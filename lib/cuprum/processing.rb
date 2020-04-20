@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/errors/command_not_implemented'
+require 'cuprum/result_helpers'
 
 module Cuprum
   # Functional implementation for creating a command object. Cuprum::Processing
@@ -57,6 +58,8 @@ module Cuprum
   #
   # @see Cuprum::Command
   module Processing
+    include Cuprum::ResultHelpers
+
     # Returns a nonnegative integer for commands that take a fixed number of
     # arguments. For commands that take a variable number of arguments, returns
     # -n-1, where n is the number of required arguments.
@@ -102,14 +105,6 @@ module Cuprum
 
     private
 
-    def build_result(error: nil, status: nil, value: nil)
-      Cuprum::Result.new(error: error, status: status, value: value)
-    end
-
-    def failure(error)
-      build_result(error: error)
-    end
-
     # @!visibility public
     # @overload process(*arguments, **keywords, &block)
     #   The implementation of the command, to be executed when the #call method
@@ -131,10 +126,6 @@ module Cuprum
       error = Cuprum::Errors::CommandNotImplemented.new(command: self)
 
       build_result(error: error)
-    end
-
-    def success(value)
-      build_result(value: value)
     end
 
     def value_is_result?(value)
