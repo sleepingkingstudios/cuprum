@@ -71,7 +71,7 @@ module Cuprum
     def normalize_status(status)
       return status unless status.is_a?(String) || status.is_a?(Symbol)
 
-      tools.string.underscore(status).intern
+      tools.string_tools.underscore(status).intern
     end
 
     def resolve_status(status)

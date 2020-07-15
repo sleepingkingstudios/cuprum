@@ -58,7 +58,7 @@ module Spec
     def generate_example_name(labels)
       ary = labels.map(&:to_s).reject(&:empty?)
 
-      "with #{tools.array.humanize_list(ary)}"
+      "with #{tools.array_tools.humanize_list(ary)}"
     end
 
     def tools

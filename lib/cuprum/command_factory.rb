@@ -209,7 +209,7 @@ module Cuprum
       end
 
       def define_lazy_command_method(method_name)
-        const_name = tools.string.camelize(method_name)
+        const_name = tools.string_tools.camelize(method_name)
 
         define_method(method_name) do |*args, **kwargs, &block|
           command_class = const_get(const_name)
@@ -237,7 +237,7 @@ module Cuprum
       end
 
       def normalize_command_name(command_name)
-        tools.string.underscore(command_name).intern
+        tools.string_tools.underscore(command_name).intern
       end
 
       def require_definition!

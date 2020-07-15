@@ -12,9 +12,20 @@ The "One Small Step" Update
 #### Middleware
 
 - Implement Cuprum::Middleware
-  - .apply takes middleware: array, root: command
   - #process takes next command, \*args, \*\*kwargs
     - calls next command with \*args, \*\*kwargs
+  - .apply takes middleware: array, root: command
+- Implement Cuprum::AppliedMiddleware < Cuprum::Command
+  - has readers #root (Class), #middleware (Array<Class>)
+  - #initialize
+    - initializes root command (passing constructor parameters)
+    - initializes each middleware command
+      - if Class defining .instance, call .instance
+      - if Class, call .new
+      - if Proc, call #call with constructor parameters
+    - calls Middleware.apply and caches as private #applied
+  - #call
+    - delegates to #applied
 
 #### Steps
 

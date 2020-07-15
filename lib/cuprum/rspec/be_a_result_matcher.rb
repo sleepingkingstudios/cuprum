@@ -191,7 +191,7 @@ module Cuprum::RSpec
       ary << 'error' if expected_error? && !expected_error.nil?
 
       unless ary.empty?
-        msg = "with the expected #{tools.array.humanize_list(ary)}"
+        msg = "with the expected #{tools.array_tools.humanize_list(ary)}"
       end
 
       return msg unless expected_status?
@@ -220,8 +220,8 @@ module Cuprum::RSpec
       ary << 'value'  unless value_matches?
       ary << 'error'  unless error_matches?
 
-      ", but the #{tools.array.humanize_list(ary)}" \
-      " #{tools.integer.pluralize(ary.size, 'does', 'do')} not match:"
+      ", but the #{tools.array_tools.humanize_list(ary)}" \
+      " #{tools.integer_tools.pluralize(ary.size, 'does', 'do')} not match:"
     end
 
     def properties_warning

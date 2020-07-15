@@ -191,7 +191,7 @@ RSpec.describe Cuprum::CommandFactory do
   describe '::command' do
     let(:command_class) { Spec::SurfCommand }
     let(:command_name)  { 'surf' }
-    let(:constant_name) { tools.string.camelize(command_name) }
+    let(:constant_name) { tools.string_tools.camelize(command_name) }
     let(:arguments)     { [] }
     let(:metadata)      { {} }
     let(:definition) do
@@ -558,7 +558,7 @@ RSpec.describe Cuprum::CommandFactory do
   describe '::command_class' do
     let(:command_class) { Spec::SurfCommand }
     let(:command_name)  { 'surf' }
-    let(:constant_name) { tools.string.camelize(command_name) }
+    let(:constant_name) { tools.string_tools.camelize(command_name) }
     let(:arguments)     { [] }
     let(:metadata)      { {} }
     let(:definition) do
