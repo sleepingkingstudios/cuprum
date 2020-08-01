@@ -224,7 +224,7 @@ module Spec::Examples
             instance.singleton_class.send(:define_method, method_name) \
             { |*_, **_, &block| }
 
-            allow(instance).to receive(method_name) do |*_, **_, &block|
+            allow(instance).to receive(method_name) do |*_, &block|
               block.call
 
               returned_value

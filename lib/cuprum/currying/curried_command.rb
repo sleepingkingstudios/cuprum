@@ -3,8 +3,6 @@
 require 'cuprum/currying'
 
 module Cuprum::Currying
-  # @todo Document Cuprum::Currying::CurriedCommand.
-  #
   # A CurriedCommand wraps another command and passes preset args to #call.
   #
   # @example Currying Arguments

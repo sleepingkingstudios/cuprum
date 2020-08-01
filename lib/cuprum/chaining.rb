@@ -282,6 +282,8 @@ module Cuprum
 
     protected
 
+    # rubocop:disable Metrics/MethodLength
+
     # @!visibility public
     #
     # As #chain, but modifies the current command instead of creating a clone.
@@ -319,6 +321,11 @@ module Cuprum
     #
     #   @yieldparam value [Object] The value of the previous result.
     def chain!(command = nil, on: nil, &block)
+      SleepingKingStudios::Tools::CoreTools.deprecate(
+        "#{self.class}#chain",
+        message: 'Use the #step method to compose commands.'
+      )
+
       command ||= Cuprum::Command.new(&block)
 
       chained_procs <<
@@ -329,10 +336,13 @@ module Cuprum
 
       self
     end
+    # rubocop:enable Metrics/MethodLength
 
     def chained_procs
       @chained_procs ||= []
     end
+
+    # rubocop:disable Metrics/MethodLength
 
     # @!visibility public
     #
@@ -348,6 +358,11 @@ module Cuprum
     #
     # @see #tap_result
     def tap_result!(on: nil, &block)
+      SleepingKingStudios::Tools::CoreTools.deprecate(
+        "#{self.class}#tap_result",
+        message: 'Use the #step method to compose commands.'
+      )
+
       tapped = ->(result) { result.tap { block.call(result) } }
 
       chained_procs <<
@@ -358,6 +373,7 @@ module Cuprum
 
       self
     end
+    # rubocop:enable Metrics/MethodLength
 
     # @!visibility public
     #
@@ -373,6 +389,11 @@ module Cuprum
     #
     # @see #yield_result
     def yield_result!(on: nil, &block)
+      SleepingKingStudios::Tools::CoreTools.deprecate(
+        "#{self.class}#yield_result",
+        message: 'Use the #step method to compose commands.'
+      )
+
       chained_procs <<
         {
           proc: block,

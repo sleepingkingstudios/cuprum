@@ -1,13 +1,11 @@
 require 'cuprum/command'
 
-require 'support/examples/chaining_examples'
 require 'support/examples/currying_examples'
 require 'support/examples/processing_examples'
 require 'support/examples/result_helpers_examples'
 require 'support/examples/steps_examples'
 
 RSpec.describe Cuprum::Command do
-  include Spec::Examples::ChainingExamples
   include Spec::Examples::CurryingExamples
   include Spec::Examples::ProcessingExamples
   include Spec::Examples::ResultHelpersExamples
@@ -21,8 +19,6 @@ RSpec.describe Cuprum::Command do
   describe '::new' do
     it { expect(described_class).to be_constructible.with(0).arguments }
   end # describe
-
-  include_examples 'should implement the Chaining methods'
 
   include_examples 'should implement the Currying interface'
 

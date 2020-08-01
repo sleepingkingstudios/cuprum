@@ -23,12 +23,12 @@ Traditional frameworks such as Rails focus on the objects of your application - 
 
 ### Alternatives
 
-If you want to extract your logic but Cuprum is not the right solution for you, here are several alternatives:
-
-- Service objects. A common pattern used when first refactoring an application that has outgrown its abstractions. Service objects are simple and let you group related functionality, but they are harder to compose and require firm conventions to tame.
-- The [Interactor](https://github.com/collectiveidea/interactor) gem. Provides an `Action` module to implement logic and an `Organizer` module to manage control flow. Supports before, around, and after hooks.
-- The [Waterfall](https://github.com/apneadiving/waterfall) gem. Focused more on control flow.
-- [Trailblazer](http://trailblazer.to/) Operations. A pipeline-based approach to control flow, and can integrate tightly with other Trailblazer elements.
+If you want to extract your logic but Cuprum is not the right solution for you, there are a number of alternatives, including
+[ActiveInteraction](https://github.com/AaronLasseigne/active_interaction),
+[Dry::Monads](https://dry-rb.org/gems/dry-monads/),
+[Interactor](https://github.com/collectiveidea/interactor),
+[Trailblazer](http://trailblazer.to/) Operations,
+and [Waterfall](https://github.com/apneadiving/waterfall).
 
 ### Compatibility
 
@@ -460,11 +460,13 @@ class ReserveBookByTitle < Cuprum::Command
   private
 
   def process(title:, user:)
-    # If CheckUserStatus fails, #process will immediately return that result. # For this step, we already have the user, so we don't need to use the
+    # If CheckUserStatus fails, #process will immediately return that result.
+    # For this step, we already have the user, so we don't need to use the
     # result value.
     step { CheckUserStatus.new.call(user) }
 
-    # Here, we are looking up the requested title. In this case, we will need # the book object, so we save it as a variable. Notice that we don't need
+    # Here, we are looking up the requested title. In this case, we will need
+    # the book object, so we save it as a variable. Notice that we don't need
     # an explicit #value call - #step handles that for us.
     book = step { FindBookByTitle.new.call(title) }
 
@@ -622,288 +624,6 @@ end
 A few things to note about this example. First, we have a couple of examples of wrapping existing code in a result, both by rescuing exceptions (in `#build_book`) or by checking a returned status (in `#persist_book`). Second, note that each of our helper methods can be reused in other controller actions. For even more encapsulation and reusability, the next step might be to convert those methods to commands of their own.
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
-
-### Chaining Commands
-
-Cuprum::Command also defines methods for chaining commands together. When a chain of commands is called, each command in the chain is called in sequence and passed the value of the previous command. The result of the last command in the chain is returned from the chained call.
-
-```ruby
-name_command       = Cuprum::Command.new { |klass| klass.name }
-pluralize_command  = Cuprum::Command.new { |str| str.pluralize }
-underscore_command = Cuprum::Command.new { |str| str.underscore }
-
-table_name_command =
-  name_command
-    .chain(pluralize_command)
-    .chain(underscore_command)
-
-result = table_name_command.call(LibraryCard)
-result.class #=> Cuprum::Result
-result.value #=> 'library_cards'
-```
-
-When the `table_name_command` is called, the class (in our case `LibraryCard`) is passed to the first command in the chain, which is the `name_command`. This produces a Result with a value of 'LibraryCard'. This value is then passed to `pluralize_command`, which returns a Result with a value of 'LibraryCards'. Finally, `underscore_command` is called and returns a Result with a value of 'library_cards'. Since there are no more commands in the chain, this final result is then returned.
-
-Chained commands can also be defined with a block. This creates an anonymous command, equivalent to `Cuprum::Command.new {}`. Thus, the `table_name_command` could have been defined as either of these:
-
-```ruby
-table_name_command =
-  Cuprum::Command.new { |klass| klass.name }
-    .chain { |str| str.pluralize }
-    .chain { |str| str.underscore }
-
-table_name_command =
-  Cuprum::Command.new(&:name).chain(&:pluralize).chain(&:underscore)
-```
-
-#### Chaining Details
-
-The `#chain` method is defined for instances of `Cuprum::Command` (or object that extend `Cuprum::Chaining`). Calling `#chain` on a command will always create a copy of the command. The given command is then added to the command chain for the copied command. The original command is unchanged. Thus:
-
-<!-- Indented code block due to parsing weirdness. -->
-    first_command = Cuprum::Command.new { puts 'First command!' }
-    first_command.call #=> Outputs 'First command!' to STDOUT.
-
-    second_command = first_command.chain { puts 'Second command!' }
-    second_command.call #=> Outputs 'First command!' then 'Second command!'.
-
-    # The original command is unchanged.
-    first_command.call #=> Outputs 'First command!' to STDOUT.
-
-When a chained command is called, the original command is called with whatever parameters are passed in to the `#call` method, and the command executes the `#process` method as normal. Rather than returning the result, however, the next command in the chain is called. If the next command does not take any arguments, it is not passed any arguments. If the next command takes one or more arguments, it is passed the `#value` of that previous result. When the final command in the chain is called, that result is returned.
-
-```ruby
-double_command    = Cuprum::Command.new { |i| 2 * i }
-increment_command = Cuprum::Command.new { |i| 1 + i }
-square_command    = Cuprum::Command.new { |i| i * i }
-chained_command   =
-  double_command
-    .chain(increment_command)
-    .chain(square_command)
-
-# First, the double_commmand is called with 2. This returns a Cuprum::Result
-# with a value of 4.
-#
-# Next, the increment_command is called with 4, returning a result with value 5.
-#
-# Finally, the square_command is called with 5, returning a result with a value
-# of 25. This final result is returned by #call.
-result = chained_command.call(2)
-result.class #=> Cuprum::Result
-result.value #=> 25
-```
-
-#### Conditional Chaining
-
-The `#chain` method can be passed an optional `on: value` keyword. This keyword determines whether or not the chained command will execute, based on the previous result status. Possible values are `:success`, `:failure`, `:always`, or `nil`. The default value is `nil`.
-
-If the command is chained with `on: :always`, or if the `:on` keyword is omitted, the chained command will always be executed after the previous command.
-
-If the command is chained with `on: :success`, then the chained command will only execute if the previous result is passing, e.g. the `#success?` method returns true. A result is passing if there is no `#error`, or if the status is set to `:success`.
-
-If the command is chained with `on: :failure`, then the chained command will only execute if the previous result is failing, e.g. the `#success?` method returns false. A result is failing if there is an `#error`, or if the status is set to `:failure`.
-
-```ruby
-find_command =
-  Cuprum::Command.new do |attributes|
-    book = Book.where(id: attributes[:id]).first
-
-    return book if book
-
-    Cuprum::Result.new(error: 'Book not found')
-  end
-create_command =
-  Cuprum::Command.new do |attributes|
-    book = Book.new(attributes)
-
-    return book if book.save
-
-    Cuprum::Result.new(error: book.errors.full_messages)
-  end
-
-find_or_create_command = find_command.chain(create_command, on: :failure)
-
-# With a book that exists in the database, the find_command is called and
-# returns a result with no error and a value of the found book. The
-# create_command is not called.
-hsh    = { id: 0, title: 'Journey to the West' }
-result = find_or_create_command.call(hsh)
-book   = result.value
-book.id         #=> 0
-book.title      #=> 'Journey to the West'
-result.success? #=> true
-result.error    #=> nil
-
-# With a book that does not exist but with valid attributes, the find command
-# returns a failing result with a value of nil. The create_command is called and
-# creates a new book with the attributes, returning a passing result.
-hsh    = { id: 1, title: 'The Ramayana' }
-result = find_or_create_command.call(hsh)
-book   = result.value
-book.id         #=> 1
-book.title      #=> 'The Ramayana'
-result.success? #=> true
-result.error    #=> nil
-
-# With a book that does not exist and with invalid attributes, the find command
-# returns a failing result with a value of nil. The create_command is called and
-# is unable to create a new book with the attributes, returning the
-# (non-persisted) book and adding the validation errors.
-hsh    = { id: 2, title: nil }
-result = find_or_create_command.call(hsh)
-book   = result.value
-book.id         #=> 2
-book.title      #=> nil
-result.success? #=> false
-result.error    #=> ["Title can't be blank"]
-```
-
-### Advanced Chaining
-
-The `#tap_result` and `#yield_result` methods provide advanced control over the flow of chained commands.
-
-#### Tap Result
-
-The `#tap_result` method allows you to insert arbitrary code into a command chain without affecting later commands. The method takes a block and yields the previous result, which is then returned and passed to the next command, or returned by `#call` if `#tap_result` is the last item in the chain.
-
-```ruby
-command =
-  Cuprum::Command.new do
-    Cuprum::Result.new(value: 'Example value', error: 'Example error')
-  end
-chained_command =
-  command
-    .tap_result do |result|
-      puts "The result value was #{result.inspect}"
-    end
-
-# Prints 'The result value was "Example value"' to STDOUT.
-result = chained_command.call
-result.class    #=> Cuprum::Result
-result.value    #=> 'Example value'
-result.success? #=> false
-result.error    #=> 'Example error'
-```
-
-Like `#chain`, `#tap_result` can be given an `on: value` keyword.
-
-```ruby
-find_book_command =
-  Cuprum::Command.new do |book_id|
-    book = Book.where(id: book_id).first
-
-    return book if book
-
-    Cuprum::Result.new(error: "Unable to find book with id #{book_id}")
-  end
-
-chained_command =
-  find_book_command
-    .tap_result(on: :success) do |result|
-      render :show, locals: { book: result.value }
-    end
-    .tap_result(on: :failure) do
-      redirect_to books_path
-    end
-
-# Calls find_book_command with the id, which queries for the book and returns a
-# result with a value of the book and no error. Then, the first tap_result
-# block is evaluated, calling the render method and passing it the book via the
-# result.value method. Because the result is passing, the next block is skipped.
-# Finally, the result of find_book_command is returned unchanged.
-result = chained_command.call(valid_id)
-result.class    #=> Cuprum::Result
-result.value    #=> an instance of Book
-result.success? #=> true
-result.error    #=> nil
-
-# Calls find_book_command with the id, which queries for the book and returns a
-# result with a value of nil and the error message. Because the result is
-# failing, the first block is skipped. The second block is then evaluated,
-# calling the redirect_to method. Finally, the result of find_book_command is
-# returned unchanged.
-result = chained_command.call(invalid_id)
-result.class    #=> Cuprum::Result
-result.value    #=> nil
-result.success? #=> false
-result.error    #=> ['Unable to find book with id invalid_id']
-```
-
-#### Yield Result
-
-The `#yield_result` method offers advanced control over a chained command step. The method takes a block and yields the previous result. If the object returned by the block is not a result, a new result is created with a value equal to the returned object. In either case, the result is returned and passed to the next command, or returned by `#call` if `#tap_result` is the last item in the chain.
-
-Unlike `#chain`, the block in `#yield_result` yields the previous result, not the previous value.
-
-```ruby
-chained_command =
-  Cuprum::Command.new do
-    'Example value'
-  end
-  .yield_result do |result|
-    Cuprum::Result.new(error: 'Example error')
-  end
-  .yield_result do |result|
-    "The last result was a #{result.success? ? 'success' : 'failure'}."
-  end
-
-# The first command creates a passing result with a value of 'Example value'.
-#
-# This is passed to the first yield_result block, which creates a new result
-# with the same value and the string 'Example error' as the error object. It is
-# then passed to the next command in the chain.
-#
-# Finally, the second yield_result block is called, which checks the status of
-# the passed result. Since the final block does not return the previous result,
-# the previous result is discarded and a new result is created with the string
-# value starting with 'The last result was ...'.
-result = chained_command.call
-result.class    #=> Cuprum::Result
-result.value    #=> 'The last result was a failure.'
-result.success? #=> true
-result.error    #=> nil
-```
-
-Like `#chain`, `#yield_result` can be given an `on: value` keyword.
-
-Under the hood, both `#chain` and `#tap_result` are implemented on top of `#yield_result`.
-
-#### Protected Chaining Methods
-
-Each Command also defines the `#chain!`, `#tap_result!`, and `#yield_result!` methods - note the imperative `!`. These methods behave identically to their non-imperative counterparts, but they modify the current command directly instead of creating a clone. They are also protected methods, so they cannot be called from outside the command itself. These methods are designed for use when defining commands.
-
-```ruby
-# We subclass the build command, which will be executed first.
-class CreateCommentCommand < BuildCommentCommand
-  include Cuprum::Chaining
-  include Cuprum::Processing
-  #
-  def initialize
-    # After the build step is run, we validate the comment.
-    chain!(ValidateCommentCommand.new)
-  #
-    # If the validation passes, we then save the comment.
-    chain!(SaveCommentCommand.new, on: :success)
-  end
-end
-
-Comment.count #=> 0
-
-body   = 'Why do hot dogs come in packages of ten, and hot dog buns come in ' \
-         'packages of eight?'
-result = CreateCommentCommand.new.call({ user_id: '12345', body: body })
-
-result.value    #=> an instance of Comment with the given user_id and body.
-result.success? #=> true
-Comment.count   #=> 1 - the comment was added to the database
-
-result = CreateCommentCommand.new.call({ user_id: nil, body: body })
-
-result.value    #=> an instance of Comment with the given user_id and body.
-result.success? #=> false
-result.error    #=> ["User id can't be blank"]
-Comment.count   #=> 1 - the comment was not added to the database
-```
 
 ### Results
 

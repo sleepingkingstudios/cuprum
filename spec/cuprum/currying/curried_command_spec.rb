@@ -2,11 +2,7 @@
 
 require 'cuprum/currying/curried_command'
 
-require 'support/examples/chaining_examples'
-
 RSpec.describe Cuprum::Currying::CurriedCommand do
-  include Spec::Examples::ChainingExamples
-
   shared_context 'when initialized with one argument' do
     let(:arguments) { %i[ichi] }
   end
@@ -48,8 +44,6 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
         .and_keywords(:arguments, :command, :keywords)
     end
   end
-
-  include_examples 'should implement the Chaining methods'
 
   describe '#arguments' do
     include_examples 'should have reader', :arguments, -> { arguments }
