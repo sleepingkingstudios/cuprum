@@ -1,9 +1,5 @@
 # Development
 
-## Version 0.10.0
-
-The "One Small Step" Update
-
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
