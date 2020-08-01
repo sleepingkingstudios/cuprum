@@ -23,12 +23,12 @@ Traditional frameworks such as Rails focus on the objects of your application - 
 
 ### Alternatives
 
-If you want to extract your logic but Cuprum is not the right solution for you, here are several alternatives:
-
-- Service objects. A common pattern used when first refactoring an application that has outgrown its abstractions. Service objects are simple and let you group related functionality, but they are harder to compose and require firm conventions to tame.
-- The [Interactor](https://github.com/collectiveidea/interactor) gem. Provides an `Action` module to implement logic and an `Organizer` module to manage control flow. Supports before, around, and after hooks.
-- The [Waterfall](https://github.com/apneadiving/waterfall) gem. Focused more on control flow.
-- [Trailblazer](http://trailblazer.to/) Operations. A pipeline-based approach to control flow, and can integrate tightly with other Trailblazer elements.
+If you want to extract your logic but Cuprum is not the right solution for you, there are a number of alternatives, including
+[ActiveInteraction](https://github.com/AaronLasseigne/active_interaction),
+[Dry::Monads](https://dry-rb.org/gems/dry-monads/),
+[Interactor](https://github.com/collectiveidea/interactor),
+[Trailblazer](http://trailblazer.to/) Operations,
+and [Waterfall](https://github.com/apneadiving/waterfall).
 
 ### Compatibility
 
@@ -460,11 +460,13 @@ class ReserveBookByTitle < Cuprum::Command
   private
 
   def process(title:, user:)
-    # If CheckUserStatus fails, #process will immediately return that result. # For this step, we already have the user, so we don't need to use the
+    # If CheckUserStatus fails, #process will immediately return that result.
+    # For this step, we already have the user, so we don't need to use the
     # result value.
     step { CheckUserStatus.new.call(user) }
 
-    # Here, we are looking up the requested title. In this case, we will need # the book object, so we save it as a variable. Notice that we don't need
+    # Here, we are looking up the requested title. In this case, we will need
+    # the book object, so we save it as a variable. Notice that we don't need
     # an explicit #value call - #step handles that for us.
     book = step { FindBookByTitle.new.call(title) }
 

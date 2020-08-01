@@ -113,7 +113,6 @@ module Cuprum
   # @see Cuprum::Processing
   class Command
     include Cuprum::Processing
-    include Cuprum::Chaining
     include Cuprum::Currying
     include Cuprum::Steps
 
