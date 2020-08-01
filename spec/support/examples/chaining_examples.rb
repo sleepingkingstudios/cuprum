@@ -159,6 +159,8 @@ module Spec::Examples
         end
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -183,6 +185,17 @@ module Spec::Examples
 
           expect(chained).to be_a described_class
           expect(chained).not_to be instance
+        end
+
+        it 'should print a deprecation notice' do
+          instance.chain {}
+
+          expect(SleepingKingStudios::Tools::CoreTools)
+            .to have_received(:deprecate)
+            .with(
+              "#{instance.class}#chain",
+              message: 'Use the #step method to compose commands.'
+            )
         end
 
         wrap_context 'with a block' do
@@ -364,6 +377,8 @@ module Spec::Examples
         end
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -387,6 +402,17 @@ module Spec::Examples
           chained = instance.send(:chain!, on: conditional) {}
 
           expect(chained).to be instance
+        end
+
+        it 'should print a deprecation notice' do
+          instance.send(:chain!) {}
+
+          expect(SleepingKingStudios::Tools::CoreTools)
+            .to have_received(:deprecate)
+            .with(
+              "#{instance.class}#chain",
+              message: 'Use the #step method to compose commands.'
+            )
         end
 
         wrap_context 'with a block' do
@@ -595,6 +621,8 @@ module Spec::Examples
         let(:conditional)   { nil }
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -611,6 +639,17 @@ module Spec::Examples
 
           expect(chained).to be_a described_class
           expect(chained).not_to be instance
+        end
+
+        it 'should print a deprecation notice' do
+          instance.tap_result {}
+
+          expect(SleepingKingStudios::Tools::CoreTools)
+            .to have_received(:deprecate)
+            .with(
+              "#{instance.class}#tap_result",
+              message: 'Use the #step method to compose commands.'
+            )
         end
 
         include_examples 'should call the block'
@@ -733,6 +772,8 @@ module Spec::Examples
         let(:conditional)   { nil }
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -748,6 +789,17 @@ module Spec::Examples
           chained = instance.send(:tap_result!, on: conditional) {}
 
           expect(chained).to be instance
+        end
+
+        it 'should print a deprecation notice' do
+          instance.send(:tap_result!) {}
+
+          expect(SleepingKingStudios::Tools::CoreTools)
+            .to have_received(:deprecate)
+            .with(
+              "#{instance.class}#tap_result",
+              message: 'Use the #step method to compose commands.'
+            )
         end
 
         include_examples 'should call the block'
@@ -894,6 +946,8 @@ module Spec::Examples
         let(:conditional)   { nil }
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -1060,6 +1114,8 @@ module Spec::Examples
         let(:conditional)   { nil }
 
         before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+
           allow(instance).to receive(:process).and_return(first_result)
         end
 
@@ -1075,6 +1131,17 @@ module Spec::Examples
           chained = instance.send(:yield_result!, on: conditional) {}
 
           expect(chained).to be instance
+        end
+
+        it 'should print a deprecation notice' do
+          instance.send(:yield_result!) {}
+
+          expect(SleepingKingStudios::Tools::CoreTools)
+            .to have_received(:deprecate)
+            .with(
+              "#{instance.class}#yield_result",
+              message: 'Use the #step method to compose commands.'
+            )
         end
 
         include_examples 'should call the block'
