@@ -10,6 +10,10 @@ The "One Small Step" Update
 
 Implemented the `#curry` method, which performs partial application of arguments or keywords.
 
+#### Chaining
+
+Added deprecation warnings to all chaining methods, and `Cuprum::Command` no longer includes `Cuprum::Chaining` by default. The `Cuprum::Chaining` module will be removed in version 1.0.
+
 #### Steps
 
 Implemented the `#step` method, which extracts the value of the called command (on a success) or halts execution (on a failure).
