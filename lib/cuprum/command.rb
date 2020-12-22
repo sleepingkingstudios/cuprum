@@ -1,4 +1,3 @@
-require 'cuprum/chaining'
 require 'cuprum/currying'
 require 'cuprum/processing'
 require 'cuprum/steps'
