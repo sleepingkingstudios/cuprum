@@ -5,7 +5,6 @@
 The "Look On My Works, Ye Mighty, and Despair" Update
 
 - Integration specs.
-- Configuration option to raise, warn, ignore discarded results.
 - Code cleanup: Hash syntax, remove end comments, remove file headers
 - Status Badges!
 
@@ -25,7 +24,8 @@ Steps Case Study: |
 
 ### Commands
 
-- Command#to_proc
+- Remove `Cuprum::Chaining`.
+- Implement `Command#to_proc`.
 
 ## Future Versions
 
