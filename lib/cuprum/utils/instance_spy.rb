@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/utils'
 
 module Cuprum::Utils
@@ -28,14 +30,14 @@ module Cuprum::Utils
   #     expect(spy).to receive(:call)
   #
   #     CustomCommand.new.call
-  #   end # spy_on
+  #   end
   module InstanceSpy
     # Minimal class that implements a #call method to mirror method calls to
     # instances of an instrumented command class.
     class Spy
       # Empty method that accepts any arguments and an optional block.
-      def call *_args, &block; end
-    end # class
+      def call(*_args, &block); end
+    end
 
     class << self
       # Retires all spies. Subsequent calls to the #call method on command
@@ -44,7 +46,7 @@ module Cuprum::Utils
         Thread.current[:cuprum_instance_spies] = nil
 
         nil
-      end # method clear_spies
+      end
 
       # Finds or creates a spy object for the given module or class. Each time
       # that the #call method is called for an object of the given type, the
@@ -68,41 +70,39 @@ module Cuprum::Utils
       #   @yield [Cuprum::Utils::InstanceSpy::Spy] The instance spy.
       #
       #   @return [nil] nil.
-      def spy_on command_class
+      def spy_on(command_class)
         guard_spy_class!(command_class)
 
         instrument_call!
 
         if block_given?
-          begin
-            instance_spy = assign_spy(command_class)
+          instance_spy = assign_spy(command_class)
 
-            yield instance_spy
-          end # begin-ensure
+          yield instance_spy
         else
           assign_spy(command_class)
-        end # if-else
-      end # method spy_on
+        end
+      end
 
       private
 
-      def assign_spy command_class
+      def assign_spy(command_class)
         existing_spy = spies[command_class]
 
         return existing_spy if existing_spy
 
         spies[command_class] = build_spy
-      end # method assign_spy
+      end
 
       def build_spy
         Cuprum::Utils::InstanceSpy::Spy.new
-      end # method build_spy
+      end
 
-      def call_spies_for command, *args, &block
+      def call_spies_for(command, *args, &block)
         spies_for(command).each { |spy| spy.call(*args, &block) }
-      end # method call_spies_for
+      end
 
-      def guard_spy_class! command_class
+      def guard_spy_class!(command_class)
         return if command_class.is_a?(Module) && !command_class.is_a?(Class)
 
         return if command_class.is_a?(Class) &&
@@ -111,25 +111,25 @@ module Cuprum::Utils
         raise ArgumentError,
           'must be a class inheriting from Cuprum::Command',
           caller(1..-1)
-      end # method guard_spy_class!
+      end
 
       def instrument_call!
         return if Cuprum::Command < Cuprum::Utils::InstanceSpy
 
         Cuprum::Command.prepend(Cuprum::Utils::InstanceSpy)
-      end # method instrument_call!
+      end
 
       def spies
         Thread.current[:cuprum_instance_spies] ||= {}
-      end # method spies
+      end
 
-      def spies_for command
+      def spies_for(command)
         spies.select { |mod, _| command.is_a?(mod) }.map { |_, spy| spy }
-      end # method spies_for
-    end # eigenclass
+      end
+    end
 
     # (see Cuprum::Command#call)
-    def call *args, **kwargs, &block
+    def call(*args, **kwargs, &block)
       if kwargs.empty?
         Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
       else
@@ -140,6 +140,6 @@ module Cuprum::Utils
       end
 
       super
-    end # method call
-  end # module
-end # module
+    end
+  end
+end

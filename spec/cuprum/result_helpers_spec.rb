@@ -7,7 +7,7 @@ require 'support/examples/result_helpers_examples'
 RSpec.describe Cuprum::ResultHelpers do
   include Spec::Examples::ResultHelpersExamples
 
-  subject(:instance) { described_class.new }
+  subject { described_class.new }
 
   let(:described_class) { Class.new { include Cuprum::ResultHelpers } }
 

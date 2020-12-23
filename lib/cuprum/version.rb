@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Cuprum
   # @api private
   #
@@ -34,11 +36,11 @@ module Cuprum
         str << ".#{build}" if build
 
         str
-      end # class method to_version
+      end
 
       private
 
-      def value_of constant
+      def value_of(constant)
         return nil unless const_defined?(constant)
 
         value = const_get(constant)
@@ -46,9 +48,9 @@ module Cuprum
         return nil if value.respond_to?(:empty?) && value.empty?
 
         value
-      end # method value_of
-    end # eigenclass
-  end # module
+      end
+    end
+  end
 
   VERSION = Version.to_gem_version
-end # module
+end

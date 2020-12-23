@@ -56,7 +56,9 @@ module Cuprum::Currying
     # @param arguments [Array] The arguments to pass to the curried command.
     # @param command [Cuprum::Command] The original command to curry.
     # @param keywords [Hash] The keywords to pass to the curried command.
-    def initialize(arguments: [], command:, keywords: {})
+    def initialize(command:, arguments: [], keywords: {})
+      super()
+
       @arguments = arguments
       @command   = command
       @keywords  = keywords

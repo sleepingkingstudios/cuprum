@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/command'
 require 'cuprum/command_factory'
 
@@ -58,7 +60,7 @@ RSpec.describe Cuprum::CommandFactory do
   end
 
   shared_context 'when the factory defines a custom #build_command method' do
-    let(:default_options) { { state: { value: 'a value'.freeze } } }
+    let(:default_options) { { state: { value: 'a value' } } }
 
     before(:example) do
       opts = default_options
@@ -120,8 +122,8 @@ RSpec.describe Cuprum::CommandFactory do
         end
 
         describe 'with arguments' do
-          let(:value)     { 'value'.freeze }
-          let(:options)   { { key: 'option'.freeze } }
+          let(:value)     { 'value' }
+          let(:options)   { { key: 'option' } }
           let(:arguments) { [value] }
 
           it { expect(build_command).to be_a command_class }
@@ -159,8 +161,8 @@ RSpec.describe Cuprum::CommandFactory do
     end
 
     describe 'with arguments' do
-      let(:value)     { 'value'.freeze }
-      let(:options)   { { key: 'option'.freeze } }
+      let(:value)     { 'value' }
+      let(:options)   { { key: 'option' } }
       let(:arguments) { [value] }
 
       it { expect(command).to be_a command_class }

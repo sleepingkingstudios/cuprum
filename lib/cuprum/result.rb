@@ -28,8 +28,6 @@ module Cuprum
     # @return [Symbol] the status of the result, either :success or :failure.
     attr_reader :status
 
-    # rubocop:disable Metrics/CyclomaticComplexity
-
     # Compares the other object to the result.
     #
     # @param other [#value, #success?] An object responding to, at minimum,
@@ -45,7 +43,6 @@ module Cuprum
 
       true
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     # @return [Boolean] true if the result status is :failure, otherwise false.
     def failure?

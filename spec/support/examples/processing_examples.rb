@@ -14,19 +14,19 @@ module Spec::Examples
         klass.send(
           :define_method,
           :success?,
-          ->() { error.nil? }
+          -> { error.nil? }
         )
 
         klass.send(
           :define_method,
           :failure?,
-          ->() { !success? }
+          -> { !success? }
         )
 
         klass.send(
           :define_method,
           :to_cuprum_result,
-          ->() { self }
+          -> { self }
         )
       end
     end
@@ -38,7 +38,7 @@ module Spec::Examples
 
       describe '#call' do
         it 'should define the method' do
-          expect(instance)
+          expect(command)
             .to respond_to(:call)
             .with_unlimited_arguments
             .and_a_block
@@ -48,31 +48,31 @@ module Spec::Examples
 
     shared_examples 'should implement the Processing methods' do
       describe '#arity' do
-        it { expect(instance.arity).to be == instance.method(:process).arity }
+        it { expect(command.arity).to be == command.method(:process).arity }
       end
     end
 
     shared_examples 'should execute the command implementation' do
-      it 'should return a failing result' do
-        result = instance.call.to_cuprum_result
+      it 'should return a failing result', :aggregate_failures do
+        result = command.call.to_cuprum_result
         error  = result.error
 
         expect(result.failure?).to be true
         expect(result.value).to be nil
 
         expect(error).to be_a Cuprum::Errors::CommandNotImplemented
-        expect(error.command).to be instance
+        expect(error.command).to be command
       end
 
       context 'when the implementation does not support the given arguments' \
       do
         include_context 'when the implementation is defined'
 
-        let(:implementation) { ->() {} }
+        let(:implementation) { -> {} }
         let(:arguments)      { %i[ichi ni san] }
 
         it 'should raise an error' do
-          expect { instance.call(*arguments) }
+          expect { command.call(*arguments) }
             .to raise_error ArgumentError,
               'wrong number of arguments (given 3, expected 0)'
         end
@@ -96,10 +96,12 @@ module Spec::Examples
           end
         end
 
-        it 'should forward all arguments to the implementation' do
+        it 'should forward all arguments to the implementation',
+          :aggregate_failures \
+        do
           yielded = false
 
-          instance.call(*arguments, **keywords, &->() { yielded = true })
+          command.call(*arguments, **keywords, &-> { yielded = true })
 
           expect(called_arguments).to be == [*arguments, keywords]
           expect(yielded).to be true
@@ -111,39 +113,39 @@ module Spec::Examples
         let(:expected_class) { defined?(super()) ? super() : result_class }
 
         shared_examples 'should return an empty result' do
-          it 'should return a result' do
-            result = instance.call
+          it { expect(command.call).to be_a expected_class }
 
-            expect(result).to be_a expected_class
-            expect(result.value).to be nil
-            expect(result.error).to be nil
-            expect(result.success?).to be true
-            expect(result.failure?).to be false
-          end
+          it { expect(command.call.value).to be nil }
+
+          it { expect(command.call.error).to be nil }
+
+          it { expect(command.call.success?).to be true }
+
+          it { expect(command.call.failure?).to be false }
         end
 
         shared_examples 'should return a result with the expected value' do
-          it 'should return a result with the expected value' do
-            result = instance.call
+          it { expect(command.call).to be_a expected_class }
 
-            expect(result).to be_a expected_class
-            expect(result.value).to be value
-            expect(result.error).to be nil
-            expect(result.success?).to be true
-            expect(result.failure?).to be false
-          end
+          it { expect(command.call.value).to be value }
+
+          it { expect(command.call.error).to be nil }
+
+          it { expect(command.call.success?).to be true }
+
+          it { expect(command.call.failure?).to be false }
         end
 
         shared_examples 'should return a result with the expected error' do
-          it 'should return a result with the expected error' do
-            result = instance.call
+          it { expect(command.call).to be_a expected_class }
 
-            expect(result).to be_a expected_class
-            expect(result.value).to be nil
-            expect(result.error).to be == expected_error
-            expect(result.success?).to be false
-            expect(result.failure?).to be true
-          end
+          it { expect(command.call.value).to be value }
+
+          it { expect(command.call.error).to be expected_error }
+
+          it { expect(command.call.success?).to be false }
+
+          it { expect(command.call.failure?).to be true }
         end
 
         let(:value) { nil }
@@ -155,7 +157,7 @@ module Spec::Examples
           let(:implementation) do
             returned = value
 
-            ->() { returned }
+            -> { returned }
           end
 
           include_examples 'should return a result with the expected value'
@@ -166,7 +168,7 @@ module Spec::Examples
           let(:implementation) do
             returned = result
 
-            ->() { returned }
+            -> { returned }
           end
 
           include_examples 'should return an empty result'
@@ -178,7 +180,7 @@ module Spec::Examples
           let(:implementation) do
             returned = result
 
-            ->() { returned }
+            -> { returned }
           end
 
           include_examples 'should return a result with the expected value'
@@ -194,7 +196,7 @@ module Spec::Examples
           let(:implementation) do
             returned = result
 
-            ->() { returned }
+            -> { returned }
           end
 
           include_examples 'should return a result with the expected error'
@@ -207,7 +209,7 @@ module Spec::Examples
           let(:implementation) do
             err = expected_error
 
-            ->() { failure(err) }
+            -> { failure(err) }
           end
 
           include_examples 'should return a result with the expected error'
@@ -218,7 +220,7 @@ module Spec::Examples
           let(:implementation) do
             val = value
 
-            ->() { success(val) }
+            -> { success(val) }
           end
 
           include_examples 'should return a result with the expected value'
@@ -232,7 +234,7 @@ module Spec::Examples
           let(:implementation) do
             returned = result
 
-            ->() { returned }
+            -> { returned }
           end
 
           include_examples 'should return an empty result'
@@ -245,20 +247,14 @@ module Spec::Examples
 
           let(:value)  { 'returned value' }
           let(:result) { Spec::CustomResult.new(value) }
-          let(:implementation) do
-            returned = result
 
-            ->() { returned }
-          end
+          it { expect(result.to_cuprum_result).to be_a Spec::CustomResult }
 
-          it 'should return a result with the expected error' do
-            result = instance.call
+          it { expect(result.value).to be value }
 
-            expect(result.to_cuprum_result).to be_a Spec::CustomResult
-            expect(result.value).to be value
-            expect(result.error).to be nil
-            expect(result.success?).to be true
-          end
+          it { expect(result.error).to be nil }
+
+          it { expect(result.success?).to be true }
         end
 
         context 'when the implementation returns a result-like object with ' \
@@ -268,20 +264,14 @@ module Spec::Examples
 
           let(:expected_errors) { ['errors.messages.unknown'] }
           let(:result)          { Spec::CustomResult.new(nil, expected_errors) }
-          let(:implementation) do
-            returned = result
 
-            ->() { returned }
-          end
+          it { expect(result.to_cuprum_result).to be_a Spec::CustomResult }
 
-          it 'should return a result with the expected error' do
-            result = instance.call
+          it { expect(result.value).to be nil }
 
-            expect(result.to_cuprum_result).to be_a Spec::CustomResult
-            expect(result.value).to be nil
-            expect(result.error).to be == expected_errors
-            expect(result.success?).to be false
-          end
+          it { expect(result.error).to be == expected_errors }
+
+          it { expect(result.success?).to be false }
         end
 
         context 'when the implementation calls itself' do
@@ -296,7 +286,7 @@ module Spec::Examples
           end
 
           it 'should return a result', :aggregate_failures do
-            result = instance.call(10)
+            result = command.call(10)
 
             expect(result).to be_a expected_class
             expect(result.value).to be 55
@@ -313,19 +303,17 @@ module Spec::Examples
           let(:custom_result) { Spec::CustomResult.new(value, error) }
 
           before(:example) do
-            allow(instance).to receive(:process).and_return(value)
-            allow(instance)
+            allow(command).to receive(:process).and_return(value)
+            allow(command)
               .to receive(:build_result)
               .and_return(custom_result)
           end
 
-          it 'should return the custom result when called' do
-            result = instance.call.to_cuprum_result
+          it { expect(command.call.to_cuprum_result).to be custom_result }
 
-            expect(result).to be custom_result
-            expect(result.value).to be value
-            expect(result.error).to be error
-          end
+          it { expect(command.call.to_cuprum_result.value).to be value }
+
+          it { expect(command.call.to_cuprum_result.error).to be error }
         end
       end
     end

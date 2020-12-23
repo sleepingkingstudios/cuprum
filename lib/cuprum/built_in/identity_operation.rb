@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/built_in/identity_command'
 require 'cuprum/operation'
 
@@ -23,5 +25,5 @@ module Cuprum::BuiltIn
   #   #=> ['errors.messages.unknown']
   class IdentityOperation < Cuprum::BuiltIn::IdentityCommand
     include Cuprum::Operation::Mixin
-  end # class
-end # module
+  end
+end

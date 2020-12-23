@@ -91,7 +91,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
       end
 
       it 'should yield the block to the command' do
-        allow(command).to receive(:call) { |&block| block.call }
+        allow(command).to receive(:call).and_yield
 
         expect { |block| call_curried_command(&block) }.to yield_control
       end

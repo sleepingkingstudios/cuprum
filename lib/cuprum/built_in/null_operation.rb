@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/built_in/null_command'
 require 'cuprum/operation'
 
@@ -12,5 +14,5 @@ module Cuprum::BuiltIn
   #   #=> true
   class NullOperation < Cuprum::BuiltIn::NullCommand
     include Cuprum::Operation::Mixin
-  end # class
-end # module
+  end
+end

@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.10
+## 1.0.0
+
+The "Look On My Works, Ye Mighty, and Despair" Update
+
+### Commands
+
+Removed the deprecated chaining mechanic.
+
+#### Steps
+
+The error type and message when calling `#steps` without a block has changed.
+
+## 0.10.0
 
 The "One Small Step" Update
 

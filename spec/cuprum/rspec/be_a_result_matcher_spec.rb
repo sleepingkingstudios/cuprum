@@ -82,7 +82,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     it { expect(matcher.description).to be == expected }
 
     wrap_context 'with an error expectation' do
-      let(:expected) { super() + ' with the expected error' }
+      let(:expected) { "#{super()} with the expected error" }
 
       it { expect(matcher.description).to be == expected }
     end
@@ -94,7 +94,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
 
     wrap_context 'with a value expectation' do
-      let(:expected) { super() + ' with the expected value' }
+      let(:expected) { "#{super()} with the expected value" }
 
       it { expect(matcher.description).to be == expected }
     end
@@ -110,7 +110,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with an error and a value expectation' do
       let(:expected) do
-        super() + ' with the expected value and error'
+        "#{super()} with the expected value and error"
       end
 
       it { expect(matcher.description).to be == expected }
@@ -304,7 +304,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     describe 'with nil' do
       let(:actual) { nil }
       let(:failure_message) do
-        super() + ', but the object is not a result'
+        "#{super()}, but the object is not a result"
       end
 
       it { expect(matcher.matches? nil).to be false }
@@ -315,7 +315,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     describe 'with an Object' do
       let(:actual) { Object.new.freeze }
       let(:failure_message) do
-        super() + ', but the object is not a result'
+        "#{super()}, but the object is not a result"
       end
 
       it { expect(matcher.matches? actual).to be false }
@@ -332,7 +332,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     describe 'with an uncalled Cuprum::Operation' do
       let(:actual) { Cuprum::Operation.new }
       let(:failure_message) do
-        super() + ', but the object is an uncalled operation'
+        "#{super()}, but the object is an uncalled operation"
       end
 
       it { expect(matcher.matches? actual).to be false }
@@ -387,7 +387,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -398,7 +398,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -416,7 +416,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -526,7 +526,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -537,7 +537,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -555,7 +555,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -603,13 +603,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        super() + ' with the expected error'
+        "#{super()} with the expected error"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -620,7 +620,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -638,7 +638,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -689,7 +689,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       let(:expected_error) { an_instance_of(Spec::CustomError) }
       let(:description) do
-        super() + ' with the expected error'
+        "#{super()} with the expected error"
       end
 
       example_class 'Spec::CustomError', Cuprum::Error
@@ -697,7 +697,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -708,7 +708,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -726,7 +726,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -773,13 +773,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       let(:expected_value) { nil }
       let(:description) do
-        super() + ' with the expected value'
+        "#{super()} with the expected value"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -790,7 +790,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -808,7 +808,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -854,13 +854,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        super() + ' with the expected value'
+        "#{super()} with the expected value"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -871,7 +871,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -889,7 +889,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -936,13 +936,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       let(:expected_value) { an_instance_of(String) }
       let(:description) do
-        super() + ' with the expected value'
+        "#{super()} with the expected value"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -953,7 +953,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -971,7 +971,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1053,13 +1053,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        super() + ' with the expected error and status: :failure'
+        "#{super()} with the expected error and status: :failure"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -1070,7 +1070,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1088,7 +1088,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1170,13 +1170,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        super() + ' with the expected value and error'
+        "#{super()} with the expected value and error"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -1187,7 +1187,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1205,7 +1205,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1277,13 +1277,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        super() + ' with the expected value and status: :success'
+        "#{super()} with the expected value and status: :success"
       end
 
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -1294,7 +1294,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1312,7 +1312,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1500,7 +1500,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with nil' do
         let(:actual) { nil }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? nil).to be false }
@@ -1511,7 +1511,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an Object' do
         let(:actual) { Object.new.freeze }
         let(:failure_message) do
-          super() + ', but the object is not a result'
+          "#{super()}, but the object is not a result"
         end
 
         it { expect(matcher.matches? actual).to be false }
@@ -1529,7 +1529,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       describe 'with an uncalled Cuprum::Operation' do
         let(:actual) { Cuprum::Operation.new }
         let(:failure_message) do
-          super() + ', but the object is an uncalled operation'
+          "#{super()}, but the object is an uncalled operation"
         end
 
         it { expect(matcher.matches? actual).to be false }

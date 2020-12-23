@@ -9,7 +9,7 @@ RSpec.describe Cuprum::Processing do
   include Spec::Examples::ProcessingExamples
   include Spec::Examples::ResultHelpersExamples
 
-  subject(:instance) { described_class.new }
+  subject(:command) { described_class.new }
 
   let(:described_class) { Class.new { include Cuprum::Processing } }
 

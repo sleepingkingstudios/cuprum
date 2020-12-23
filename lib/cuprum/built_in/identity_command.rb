@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/built_in'
 require 'cuprum/command'
 
@@ -24,8 +26,8 @@ module Cuprum::BuiltIn
   class IdentityCommand < Cuprum::Command
     private
 
-    def process value = nil
+    def process(value = nil)
       value
-    end # method process
-  end # class
-end # module
+    end
+  end
+end

@@ -8,7 +8,7 @@ require 'cuprum/result'
 require 'support/examples/result_examples'
 require 'support/halting_result'
 
-RSpec.describe Cuprum::Result do
+RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
   include Spec::Examples::ResultExamples
 
   context 'with a subclass with custom statuses' do
@@ -16,7 +16,7 @@ RSpec.describe Cuprum::Result do
       before(:example) { params[:status] = :halted }
     end
 
-    subject(:instance) { described_class.new(**params) }
+    subject(:result) { described_class.new(**params) }
 
     let(:described_class) { Spec::HaltingResult }
     let(:params) { {} }
@@ -97,8 +97,9 @@ RSpec.describe Cuprum::Result do
       }
       error_scenarios = {
         'a nil error'          => nil,
-        'a non-matching error' =>
-          Cuprum::Error.new(message: 'Other error message.')
+        'a non-matching error' => Cuprum::Error.new(
+          message: 'Other error message.'
+        )
       }
       status_scenarios = {
         ''                 => nil,
@@ -115,7 +116,7 @@ RSpec.describe Cuprum::Result do
       # rubocop:disable RSpec/NestedGroups
       describe 'with nil' do
         # rubocop:disable Style/NilComparison
-        it { expect(instance == nil).to be false }
+        it { expect(result == nil).to be false }
         # rubocop:enable Style/NilComparison
       end
 
@@ -124,8 +125,7 @@ RSpec.describe Cuprum::Result do
 
       wrap_context 'when the result has a value' do
         all_scenarios = {
-          value:
-            value_scenarios.merge('a matching value' => 'returned value'),
+          value:  value_scenarios.merge('a matching value' => 'returned value'),
           error:  error_scenarios,
           status: status_scenarios.merge('status: :halted' => :halted)
         }
@@ -184,8 +184,7 @@ RSpec.describe Cuprum::Result do
         include_context 'when the result has an error'
 
         all_scenarios = {
-          value:
-            value_scenarios.merge('a matching value' => 'returned value'),
+          value:  value_scenarios.merge('a matching value' => 'returned value'),
           error:  error_scenarios.merge(
             'a matching error' => Cuprum::Error.new(
               message: 'Something went wrong.'
@@ -234,31 +233,31 @@ RSpec.describe Cuprum::Result do
       include_examples 'should have predicate', :failure?, false
 
       wrap_context 'when the result has an error' do
-        it { expect(instance.failure?).to be true }
+        it { expect(result.failure?).to be true }
 
         wrap_context 'when the result has status: :failure' do
-          it { expect(instance.failure?).to be true }
+          it { expect(result.failure?).to be true }
         end
 
         wrap_context 'when the result has status: :halted' do
-          it { expect(instance.failure?).to be false }
+          it { expect(result.failure?).to be false }
         end
 
         wrap_context 'when the result has status: :success' do
-          it { expect(instance.failure?).to be false }
+          it { expect(result.failure?).to be false }
         end
       end
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.failure?).to be true }
+        it { expect(result.failure?).to be true }
       end
 
       wrap_context 'when the result has status: :halted' do
-        it { expect(instance.failure?).to be false }
+        it { expect(result.failure?).to be false }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.failure?).to be false }
+        it { expect(result.failure?).to be false }
       end
     end
 
@@ -266,31 +265,31 @@ RSpec.describe Cuprum::Result do
       include_examples 'should have predicate', :halted?, false
 
       wrap_context 'when the result has an error' do
-        it { expect(instance.halted?).to be false }
+        it { expect(result.halted?).to be false }
 
         wrap_context 'when the result has status: :failure' do
-          it { expect(instance.halted?).to be false }
+          it { expect(result.halted?).to be false }
         end
 
         wrap_context 'when the result has status: :halted' do
-          it { expect(instance.halted?).to be true }
+          it { expect(result.halted?).to be true }
         end
 
         wrap_context 'when the result has status: :success' do
-          it { expect(instance.halted?).to be false }
+          it { expect(result.halted?).to be false }
         end
       end
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.halted?).to be false }
+        it { expect(result.halted?).to be false }
       end
 
       wrap_context 'when the result has status: :halted' do
-        it { expect(instance.halted?).to be true }
+        it { expect(result.halted?).to be true }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.halted?).to be false }
+        it { expect(result.halted?).to be false }
       end
     end
 
@@ -298,31 +297,31 @@ RSpec.describe Cuprum::Result do
       include_examples 'should have predicate', :success?, true
 
       wrap_context 'when the result has an error' do
-        it { expect(instance.success?).to be false }
+        it { expect(result.success?).to be false }
 
         wrap_context 'when the result has status: :failure' do
-          it { expect(instance.success?).to be false }
+          it { expect(result.success?).to be false }
         end
 
         wrap_context 'when the result has status: :halted' do
-          it { expect(instance.success?).to be false }
+          it { expect(result.success?).to be false }
         end
 
         wrap_context 'when the result has status: :success' do
-          it { expect(instance.success?).to be true }
+          it { expect(result.success?).to be true }
         end
       end
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.success?).to be false }
+        it { expect(result.success?).to be false }
       end
 
       wrap_context 'when the result has status: :halted' do
-        it { expect(instance.success?).to be false }
+        it { expect(result.success?).to be false }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.success?).to be true }
+        it { expect(result.success?).to be true }
       end
     end
   end

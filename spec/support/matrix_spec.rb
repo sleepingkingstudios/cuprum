@@ -35,7 +35,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       let(:scenarios) { {} }
 
       it 'should not define an example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).not_to have_received(:context)
       end
@@ -53,7 +53,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define one example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -87,7 +87,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define three example groups' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(3).times
       end
@@ -115,7 +115,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -161,7 +161,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(9).times
       end
@@ -192,7 +192,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define one example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(1).times
       end
@@ -211,12 +211,12 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
     describe 'with many scenarios with many values each' do
       let(:scenarios) do
         {
-          english: {
+          english:  {
             'one'   => 1,
             'two'   => 2,
             'three' => 3
           },
-          spanish: {
+          spanish:  {
             'uno'  => 1,
             'dos'  => 2,
             'tres' => 3
@@ -230,7 +230,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
 
       it 'should define each example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(27).times
       end
@@ -239,7 +239,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
     describe 'with a scenario with an empty label' do
       let(:scenarios) do
         {
-          english: {
+          english:    {
             'one'   => 1,
             'two'   => 2,
             'three' => 3
@@ -253,29 +253,47 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
       end
       let(:expected) do
         {
-          'with one' =>
-            { english: 1, capitalize: nil },
-          'with one and capitalize: false' =>
-            { english: 1, capitalize: false },
-          'with one and capitalize: true' =>
-            { english: 1, capitalize: true },
-          'with two' =>
-            { english: 2, capitalize: nil },
-          'with two and capitalize: false' =>
-            { english: 2, capitalize: false },
-          'with two and capitalize: true' =>
-            { english: 2, capitalize: true },
-          'with three' =>
-            { english: 3, capitalize: nil },
-          'with three and capitalize: false' =>
-            { english: 3, capitalize: false },
-          'with three and capitalize: true' =>
-            { english: 3, capitalize: true }
+          'with one'                         => {
+            english:    1,
+            capitalize: nil
+          },
+          'with one and capitalize: false'   => {
+            english:    1,
+            capitalize: false
+          },
+          'with one and capitalize: true'    => {
+            english:    1,
+            capitalize: true
+          },
+          'with two'                         => {
+            english:    2,
+            capitalize: nil
+          },
+          'with two and capitalize: false'   => {
+            english:    2,
+            capitalize: false
+          },
+          'with two and capitalize: true'    => {
+            english:    2,
+            capitalize: true
+          },
+          'with three'                       => {
+            english:    3,
+            capitalize: nil
+          },
+          'with three and capitalize: false' => {
+            english:    3,
+            capitalize: false
+          },
+          'with three and capitalize: true'  => {
+            english:    3,
+            capitalize: true
+          }
         }
       end
 
       it 'should define each example group' do
-        matrix.evaluate(**scenarios) {}
+        matrix.evaluate(**scenarios) { nil }
 
         expect(example_group).to have_received(:context).exactly(9).times
       end
