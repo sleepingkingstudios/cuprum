@@ -10,6 +10,11 @@ RSpec.describe Spec::Commands::UpsertModel do
 
   let(:model_class) { Spec::Models::Post }
 
+  after(:example) do
+    Spec::Models::Directory.delete_all
+    Spec::Models::Post.delete_all
+  end
+
   describe '#call' do
     context 'when the model does not exist' do
       # rubocop:disable RSpec/NestedGroups

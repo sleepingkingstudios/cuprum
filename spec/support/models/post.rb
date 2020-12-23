@@ -6,10 +6,23 @@ require 'support/models/directory'
 module Spec::Models
   class Post < Spec::Models::Base
     attribute :directory_id
+    attribute :published
     attribute :title
+
+    def initialize(attributes: {})
+      super
+
+      self.published = false
+    end
 
     def directory
       @directory ||= Spec::Models::Directory.find(directory_id)
+    end
+
+    def update_attributes(attributes:)
+      attributes = attributes.dup.tap { |hsh| hsh.delete(:published) }
+
+      super
     end
 
     private

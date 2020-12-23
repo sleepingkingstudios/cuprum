@@ -10,6 +10,11 @@ RSpec.describe Spec::Commands::UpdateModel do
 
   let(:model_class) { Spec::Models::Post }
 
+  after(:example) do
+    Spec::Models::Directory.delete_all
+    Spec::Models::Post.delete_all
+  end
+
   describe '#call' do
     let(:directory) do
       Spec::Models::Directory.new(attributes: { name: 'widgets' })

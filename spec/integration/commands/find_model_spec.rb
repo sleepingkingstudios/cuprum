@@ -10,6 +10,10 @@ RSpec.describe Spec::Commands::FindModel do
 
   let(:model_class) { Spec::Models::Directory }
 
+  after(:example) do
+    Spec::Models::Directory.delete_all
+  end
+
   describe '#call' do
     context 'when the model does not exist' do
       let(:directory_id) { '00000000-0000-0000-0000-000000000000' }

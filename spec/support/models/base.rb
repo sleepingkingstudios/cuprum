@@ -19,6 +19,16 @@ module Spec::Models
         models.count
       end
 
+      def delete_all
+        @models = []
+      end
+
+      def each
+        return enum_for(:each) unless block_given?
+
+        models.each { |item| yield item.dup }
+      end
+
       def find(id)
         models.find { |item| item.id == id }.dup
       end
@@ -39,9 +49,7 @@ module Spec::Models
     end
 
     def initialize(attributes: {})
-      attributes.each do |attr_name, value|
-        send(:"#{attr_name}=", value)
-      end
+      update_attributes(attributes: attributes)
 
       self.id = SecureRandom.uuid if id.nil?
     end
@@ -64,6 +72,12 @@ module Spec::Models
       self.class.persist(self)
 
       self
+    end
+
+    def update_attributes(attributes:)
+      attributes.each do |attr_name, value|
+        send(:"#{attr_name}=", value)
+      end
     end
 
     def valid?

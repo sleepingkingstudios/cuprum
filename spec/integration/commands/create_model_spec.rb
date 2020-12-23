@@ -3,12 +3,18 @@
 require 'cuprum/rspec/be_a_result'
 
 require 'support/commands/create_model'
+require 'support/models/directory'
 require 'support/models/post'
 
 RSpec.describe Spec::Commands::CreateModel do
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Post }
+
+  after(:example) do
+    Spec::Models::Directory.delete_all
+    Spec::Models::Post.delete_all
+  end
 
   describe '#call' do
     describe 'with empty attributes' do

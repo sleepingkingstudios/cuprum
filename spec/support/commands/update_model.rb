@@ -24,9 +24,7 @@ module Spec::Commands
     end
 
     def process(attributes:, model:)
-      attributes.each do |attr_name, value|
-        model.send(:"#{attr_name}=", value)
-      end
+      model.update_attributes(attributes: attributes)
 
       return failure(not_valid(model)) unless model.valid?
 
