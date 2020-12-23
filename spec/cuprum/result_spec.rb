@@ -8,7 +8,7 @@ require 'support/examples/result_examples'
 RSpec.describe Cuprum::Result do
   include Spec::Examples::ResultExamples
 
-  subject(:instance) { described_class.new(**params) }
+  subject(:result) { described_class.new(**params) }
 
   let(:params) { {} }
 
@@ -74,8 +74,9 @@ RSpec.describe Cuprum::Result do
     }
     error_scenarios = {
       'a nil error'          => nil,
-      'a non-matching error' =>
-        Cuprum::Error.new(message: 'Other error message.')
+      'a non-matching error' => Cuprum::Error.new(
+        message: 'Other error message.'
+      )
     }
     status_scenarios = {
       ''                 => nil,
@@ -90,7 +91,7 @@ RSpec.describe Cuprum::Result do
 
     describe 'with nil' do
       # rubocop:disable Style/NilComparison
-      it { expect(instance == nil).to be false }
+      it { expect(result == nil).to be false }
       # rubocop:enable Style/NilComparison
     end
 
@@ -99,8 +100,7 @@ RSpec.describe Cuprum::Result do
 
     wrap_context 'when the result has a value' do
       all_scenarios = {
-        value:
-          value_scenarios.merge('a matching value' => 'returned value'),
+        value:  value_scenarios.merge('a matching value' => 'returned value'),
         error:  error_scenarios,
         status: status_scenarios
       }
@@ -149,8 +149,7 @@ RSpec.describe Cuprum::Result do
       include_context 'when the result has an error'
 
       all_scenarios = {
-        value:
-          value_scenarios.merge('a matching value' => 'returned value'),
+        value:  value_scenarios.merge('a matching value' => 'returned value'),
         error:  error_scenarios.merge(
           'a matching error' => Cuprum::Error.new(
             message: 'Something went wrong.'
@@ -190,7 +189,7 @@ RSpec.describe Cuprum::Result do
     include_examples 'should not have writer', :error
 
     wrap_context 'when the result has an error' do
-      it { expect(instance.error).to be error }
+      it { expect(result.error).to be error }
     end
   end
 
@@ -198,23 +197,23 @@ RSpec.describe Cuprum::Result do
     include_examples 'should have predicate', :failure?, false
 
     wrap_context 'when the result has an error' do
-      it { expect(instance.failure?).to be true }
+      it { expect(result.failure?).to be true }
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.failure?).to be true }
+        it { expect(result.failure?).to be true }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.failure?).to be false }
+        it { expect(result.failure?).to be false }
       end
     end
 
     wrap_context 'when the result has status: :failure' do
-      it { expect(instance.failure?).to be true }
+      it { expect(result.failure?).to be true }
     end
 
     wrap_context 'when the result has status: :success' do
-      it { expect(instance.failure?).to be false }
+      it { expect(result.failure?).to be false }
     end
   end
 
@@ -222,23 +221,23 @@ RSpec.describe Cuprum::Result do
     include_examples 'should have reader', :status, :success
 
     wrap_context 'when the result has an error' do
-      it { expect(instance.status).to be :failure }
+      it { expect(result.status).to be :failure }
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.status).to be :failure }
+        it { expect(result.status).to be :failure }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.status).to be :success }
+        it { expect(result.status).to be :success }
       end
     end
 
     wrap_context 'when the result has status: :failure' do
-      it { expect(instance.status).to be :failure }
+      it { expect(result.status).to be :failure }
     end
 
     wrap_context 'when the result has status: :success' do
-      it { expect(instance.status).to be :success }
+      it { expect(result.status).to be :success }
     end
   end
 
@@ -246,28 +245,28 @@ RSpec.describe Cuprum::Result do
     include_examples 'should have predicate', :success?, true
 
     wrap_context 'when the result has an error' do
-      it { expect(instance.success?).to be false }
+      it { expect(result.success?).to be false }
 
       wrap_context 'when the result has status: :failure' do
-        it { expect(instance.success?).to be false }
+        it { expect(result.success?).to be false }
       end
 
       wrap_context 'when the result has status: :success' do
-        it { expect(instance.success?).to be true }
+        it { expect(result.success?).to be true }
       end
     end
 
     wrap_context 'when the result has status: :failure' do
-      it { expect(instance.success?).to be false }
+      it { expect(result.success?).to be false }
     end
 
     wrap_context 'when the result has status: :success' do
-      it { expect(instance.success?).to be true }
+      it { expect(result.success?).to be true }
     end
   end
 
   describe '#to_cuprum_result' do
-    include_examples 'should have reader', :to_cuprum_result, ->() { instance }
+    include_examples 'should have reader', :to_cuprum_result, -> { result }
   end
 
   describe '#value' do
@@ -279,14 +278,14 @@ RSpec.describe Cuprum::Result do
       let(:value)  { 'result value' }
       let(:params) { super().merge(value: value) }
 
-      it { expect(instance.value).to be value }
+      it { expect(result.value).to be value }
     end
 
     context 'when initialized with a string value' do
       let(:value)  { { key: 'returned value' } }
       let(:params) { super().merge(value: value) }
 
-      it { expect(instance.value).to be value }
+      it { expect(result.value).to be value }
     end
   end
 end

@@ -47,7 +47,7 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
     end
 
     describe 'with a non-matching Error with no message' do
-      let(:other) { Cuprum::Error.new(message: 'An error occurred.') }
+      let(:other) { Cuprum::Error.new }
 
       it { expect(error == other).to be false }
     end

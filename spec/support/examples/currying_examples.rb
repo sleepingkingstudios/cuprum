@@ -11,7 +11,7 @@ module Spec::Examples
     shared_examples 'should implement the Currying interface' do
       describe '#curry' do
         it 'should define the method' do
-          expect(instance)
+          expect(subject)
             .to respond_to(:curry)
             .with_unlimited_arguments
             .and_any_keywords
@@ -22,7 +22,7 @@ module Spec::Examples
     shared_examples 'should implement the Currying methods' do
       describe '#curry' do
         shared_examples 'should curry the command' do
-          let(:curried_command) { instance.curry(*arguments, **keywords) }
+          let(:curried_command) { subject.curry(*arguments, **keywords) }
 
           it 'should return a curried command' do
             expect(curried_command).to be_a Cuprum::Currying::CurriedCommand
@@ -33,7 +33,7 @@ module Spec::Examples
           end
 
           it 'should set the command' do
-            expect(curried_command.command).to be instance
+            expect(curried_command.command).to be subject
           end
 
           it 'should set the command' do
@@ -46,7 +46,7 @@ module Spec::Examples
 
         describe 'with no arguments or keywords' do
           it 'should return the command' do
-            expect(instance.curry).to be instance
+            expect(subject.curry).to be subject
           end
         end
 

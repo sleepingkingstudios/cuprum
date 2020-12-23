@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/command'
 require 'cuprum/errors/operation_not_called'
 
@@ -26,8 +28,8 @@ module Cuprum
   #       @book = operation.value
   #
   #       render :new
-  #     end # if-else
-  #   end # create
+  #     end
+  #   end
   #
   # Like a Command, an Operation can be defined directly by passing an
   # implementation block to the constructor or by creating a subclass that
@@ -41,7 +43,7 @@ module Cuprum
     # @example
     #   class CustomOperation < CustomCommand
     #     include Cuprum::Operation::Mixin
-    #   end # class
+    #   end
     module Mixin
       # @return [Cuprum::Result] The result from the most recent call of the
       #   operation.
@@ -62,32 +64,32 @@ module Cuprum
       #     implementation.
       #
       # @see Cuprum::Command#call
-      def call *args, **kwargs, &block
+      def call(*args, **kwargs, &block)
         reset! if called? # Clear reference to most recent result.
 
         @result = super
 
         self
-      end # method call
+      end
 
       # @return [Boolean] true if the operation has been called and has a
       #   reference to the most recent result; otherwise false.
       def called?
         !result.nil?
-      end # method called?
+      end
 
       # @return [Object] the error (if any) from the most recent result, or nil
       #   if the operation has not been called.
       def error
         called? ? result.error : nil
-      end # method error
+      end
 
       # @return [Boolean] true if the most recent result had an error, or false
       #   if the most recent result had no error or if the operation has not
       #   been called.
       def failure?
         called? ? result.failure? : false
-      end # method failure?
+      end
 
       # Clears the reference to the most recent call of the operation, if any.
       # This allows the result and any referenced data to be garbage collected.
@@ -99,7 +101,7 @@ module Cuprum
       # an error.
       def reset!
         @result = nil
-      end # method reset
+      end
 
       # @return [Symbol, nil] the status of the most recent result, or nil if
       #   the operation has not been called.
@@ -112,7 +114,7 @@ module Cuprum
       #   been called.
       def success?
         called? ? result.success? : false
-      end # method success?
+      end
 
       # Returns the most result if the operation was previously called.
       # Otherwise, returns a failing result.
@@ -130,8 +132,8 @@ module Cuprum
       #   operation has not been called.
       def value
         called? ? result.value : nil
-      end # method value
-    end # module
+      end
+    end
     include Mixin
 
     # @!method call
@@ -160,5 +162,5 @@ module Cuprum
 
     # @!method value
     #   (see Cuprum::Operation::Mixin#value)
-  end # class
-end # module
+  end
+end

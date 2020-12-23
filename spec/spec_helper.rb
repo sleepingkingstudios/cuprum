@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 unless ENV['COVERAGE'] == 'false'
   require 'simplecov'
 
   SimpleCov.start
-end # unless
+end
 
 require 'rspec/sleeping_king_studios/all'
 require 'byebug'
@@ -43,7 +45,7 @@ RSpec.configure do |config|
     expectations.syntax = :expect
 
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
-  end # configure expectations
+  end
 
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
@@ -54,7 +56,7 @@ RSpec.configure do |config|
     # Prevents you from mocking or stubbing a method that does not exist on
     # a real object. This is generally recommended.
     mocks.verify_partial_doubles = true
-  end # configure mocks
+  end
 
   # This option will default to `:apply_to_host_groups` in RSpec 4 (and will
   # have no way to turn it off -- the option exists only for backwards
@@ -62,4 +64,4 @@ RSpec.configure do |config|
   # inherited by the metadata hash of host groups and examples, rather than
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
-end # configure
+end

@@ -25,21 +25,21 @@ module Spec::Examples
         let(:other_value)  { kwargs.fetch(:value) }
         let(:other_error)  { kwargs.fetch(:error) }
         let(:other_status) { kwargs.fetch(:status) }
-        let(:result) do
+        let(:other_result) do
           described_class.new(
             value:  other_value,
             error:  other_error,
             status: other_status
           )
         end
-        let(:other) { defined?(super()) ? super() : result }
+        let(:other) { defined?(super()) ? super() : other_result }
         let(:expected) do
           %i[error status value]
-            .map { |method| instance.send(method) == other.send(method) }
+            .map { |method| result.send(method) == other.send(method) }
             .reduce(true) { |memo, bool| memo && bool }
         end
 
-        it { expect(instance == other).to be expected }
+        it { expect(result == other).to be expected }
       end
 
       shared_examples 'should compare the results in each scenario' \

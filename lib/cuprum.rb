@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A lightweight, functional-lite toolkit for making business logic a first-class
 # citizen of your application.
 module Cuprum
@@ -10,6 +12,6 @@ module Cuprum
     # @return [String] The current version of the gem.
     def version
       VERSION
-    end # method version
-  end # eigenclass
-end # module
+    end
+  end
+end

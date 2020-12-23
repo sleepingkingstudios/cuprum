@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/command'
 require 'cuprum/command_factory'
 
@@ -31,6 +33,8 @@ module Spec
 
   class PublishBookCommand < Cuprum::Command
     def initialize(publisher:)
+      super()
+
       @publisher = publisher
     end
 
@@ -90,6 +94,8 @@ module Spec
     end
 
     def initialize(books:)
+      super()
+
       @books_collection = books
     end
 
@@ -121,7 +127,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
 
     it { expect(instance.build).to be_a Spec::BuildBookCommand }
 
-    it 'should build a book' do
+    it 'should build a book', :aggregate_failures do
       command = instance.build
       result  = command.call(attributes, **{})
       book    = result.value
@@ -189,7 +195,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
 
     it { expect(instance.save).to be_a instance::Save }
 
-    it 'should save the book' do
+    it 'should save the book', :aggregate_failures do
       command = instance.save
 
       expect { command.call(book) }.to change(books_collection, :count).by(1)
@@ -206,7 +212,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
     describe 'with an invalid book' do
       let(:book) { Spec::Book.new title: 'The Tombs of Atuan' }
 
-      it 'should validate the book' do
+      it 'should validate the book', :aggregate_failures do
         command = instance.validate
         result  = command.call(book)
         error   = result.error
@@ -223,7 +229,7 @@ RSpec.describe Spec::BookFactory do # rubocop:disable RSpec/FilePath
         Spec::Book.new title: 'The Farthest Shore', author: 'Ursula K. Le Guin'
       end
 
-      it 'should validate the book' do
+      it 'should validate the book', :aggregate_failures do
         command = instance.validate
         result  = command.call(book)
 

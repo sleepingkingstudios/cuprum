@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/currying'
 require 'cuprum/processing'
 require 'cuprum/steps'
@@ -19,14 +21,14 @@ module Cuprum
   #   class MultiplyCommand < Cuprum::Command
   #     def initialize multiplier
   #       @multiplier = multiplier
-  #     end # constructor
+  #     end
   #
   #     private
   #
   #     def process int
   #       int * @multiplier
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   triple_command = MultiplyCommand.new(3)
   #   result         = command_command.call(5)
@@ -37,7 +39,7 @@ module Cuprum
   #   class DivideCommand < Cuprum::Command
   #     def initialize divisor
   #       @divisor = divisor
-  #     end # constructor
+  #     end
   #
   #     private
   #
@@ -47,8 +49,8 @@ module Cuprum
   #       end
   #
   #       int / @divisor
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   halve_command = DivideCommand.new(2)
   #   result        = halve_command.call(10)
@@ -66,14 +68,14 @@ module Cuprum
   #   class AddCommand < Cuprum::Command
   #     def initialize addend
   #       @addend = addend
-  #     end # constructor
+  #     end
   #
   #     private
   #
   #     def process int
   #       int + @addend
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   double_and_add_one = MultiplyCommand.new(2).chain(AddCommand.new(1))
   #   result             = double_and_add_one(5)
@@ -88,8 +90,8 @@ module Cuprum
   #       return int if int.even?
   #
   #       Cuprum::Errors.new(error: 'errors.messages.not_even')
-  #     end # method process
-  #   end # class
+  #     end
+  #   end
   #
   #   # The next step in a Collatz sequence is determined as follows:
   #   # - If the number is even, divide it by 2.
@@ -121,16 +123,16 @@ module Cuprum
     #   #call method will wrap the block and set the result #value to the return
     #   value of the block. This overrides the implementation in #process, if
     #   any.
-    def initialize &implementation
+    def initialize(&implementation)
       return unless implementation
 
       define_singleton_method :process, &implementation
 
       singleton_class.send(:private, :process)
-    end # method initialize
+    end
 
     def call(*args, **kwargs, &block)
       steps { super }
     end
-  end # class
-end # module
+  end
+end

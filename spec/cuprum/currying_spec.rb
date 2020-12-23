@@ -7,7 +7,7 @@ require 'support/examples/currying_examples'
 RSpec.describe Cuprum::Currying do
   include Spec::Examples::CurryingExamples
 
-  subject(:instance) { described_class.new }
+  subject { described_class.new }
 
   let(:described_class) { Class.new { include Cuprum::Currying } }
 

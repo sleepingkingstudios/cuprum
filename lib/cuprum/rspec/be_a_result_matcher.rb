@@ -46,9 +46,9 @@ module Cuprum::RSpec
       message = "expected #{actual.inspect} to #{description}"
 
       if !actual_is_result?
-        message + ', but the object is not a result'
+        "#{message}, but the object is not a result"
       elsif actual_is_uncalled_operation?
-        message + ', but the object is an uncalled operation'
+        "#{message}, but the object is an uncalled operation"
       elsif !properties_match?
         message + properties_failure_message
       else
@@ -182,7 +182,6 @@ module Cuprum::RSpec
       ' positives, since any other result will match.'
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def properties_description
       msg = ''
@@ -200,7 +199,6 @@ module Cuprum::RSpec
 
       msg + " and status: #{expected_status.inspect}"
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/AbcSize
 
     def properties_failure_message

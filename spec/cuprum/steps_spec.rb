@@ -10,7 +10,7 @@ RSpec.describe Cuprum::Steps do
   include Spec::Examples::ResultHelpersExamples
   include Spec::Examples::StepsExamples
 
-  subject(:instance) { described_class.new }
+  subject { described_class.new }
 
   let(:described_class) do
     Class.new do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/built_in'
 require 'cuprum/command'
 
@@ -13,6 +15,6 @@ module Cuprum::BuiltIn
   class NullCommand < Cuprum::Command
     private
 
-    def process *_args; end
-  end # class
-end # module
+    def process(*_args); end
+  end
+end

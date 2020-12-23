@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum/built_in/identity_operation'
 
 require 'support/examples/operation_examples'
@@ -7,59 +9,60 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   include Spec::Examples::OperationExamples
   include Spec::Examples::ProcessingExamples
 
-  subject(:instance) { described_class.new }
+  subject(:operation) { described_class.new }
 
-  let(:value)  { 'returned value'.freeze }
-  let(:error)  { Cuprum::Error.new(message: 'Something went wrong.') }
-  let(:result) { Cuprum::Result.new(value: value, error: error) }
+  let(:command) { operation }
+  let(:value)   { 'returned value' }
+  let(:error)   { Cuprum::Error.new(message: 'Something went wrong.') }
+  let(:result)  { Cuprum::Result.new(value: value, error: error) }
 
   include_examples 'should implement the Operation methods'
 
   include_examples 'should implement the Processing interface'
 
   describe '#call' do
-    it { expect(instance).to respond_to(:call).with(0..1).arguments }
+    it { expect(operation).to respond_to(:call).with(0..1).arguments }
 
-    it { expect(instance.call).to be instance }
-  end # describe
+    it { expect(operation.call).to be operation }
+  end
 
   describe '#error' do
-    it { expect(instance.error).to be nil }
+    it { expect(operation.error).to be nil }
 
-    it { expect(instance.call.error).to be nil }
+    it { expect(operation.call.error).to be nil }
 
-    it { expect(instance.call(value).error).to be nil }
+    it { expect(operation.call(value).error).to be nil }
 
-    it { expect(instance.call(result).error).to be == error }
-  end # describe
+    it { expect(operation.call(result).error).to be == error }
+  end
 
   describe '#failure?' do
-    it { expect(instance.failure?).to be false }
+    it { expect(operation.failure?).to be false }
 
-    it { expect(instance.call.failure?).to be false }
+    it { expect(operation.call.failure?).to be false }
 
-    it { expect(instance.call(value).failure?).to be false }
+    it { expect(operation.call(value).failure?).to be false }
 
-    it { expect(instance.call(result).failure?).to be true }
-  end # describe
+    it { expect(operation.call(result).failure?).to be true }
+  end
 
   describe '#success?' do
-    it { expect(instance.success?).to be false }
+    it { expect(operation.success?).to be false }
 
-    it { expect(instance.call.success?).to be true }
+    it { expect(operation.call.success?).to be true }
 
-    it { expect(instance.call(value).success?).to be true }
+    it { expect(operation.call(value).success?).to be true }
 
-    it { expect(instance.call(result).success?).to be false }
-  end # describe
+    it { expect(operation.call(result).success?).to be false }
+  end
 
   describe '#value' do
-    it { expect(instance.value).to be nil }
+    it { expect(operation.value).to be nil }
 
-    it { expect(instance.call.value).to be nil }
+    it { expect(operation.call.value).to be nil }
 
-    it { expect(instance.call(value).value).to be == value }
+    it { expect(operation.call(value).value).to be == value }
 
-    it { expect(instance.call(result).value).to be == value }
-  end # describe
-end # describe
+    it { expect(operation.call(result).value).to be == value }
+  end
+end

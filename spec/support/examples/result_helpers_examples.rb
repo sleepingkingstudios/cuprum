@@ -11,7 +11,7 @@ module Spec::Examples
     shared_examples 'should implement the ResultHelpers interface' do
       describe '#build_result' do
         it 'should define the method' do
-          expect(instance)
+          expect(subject)
             .to respond_to(:build_result, true)
             .with(0).arguments
             .and_keywords(:error, :status, :value)
@@ -20,13 +20,13 @@ module Spec::Examples
 
       describe '#failure' do
         it 'should define the method' do
-          expect(instance).to respond_to(:failure, true).with(1).argument
+          expect(subject).to respond_to(:failure, true).with(1).argument
         end
       end
 
       describe '#success' do
         it 'should define the method' do
-          expect(instance).to respond_to(:success, true).with(1).argument
+          expect(subject).to respond_to(:success, true).with(1).argument
         end
       end
     end
@@ -36,17 +36,17 @@ module Spec::Examples
         let(:value) { 'returned value' }
         let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
 
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:build_result)
+        it { expect(subject).not_to respond_to(:build_result) }
 
-          expect(instance)
+        it 'should define the private method' do
+          expect(subject)
             .to respond_to(:build_result, true)
             .with(0).arguments
             .and_keywords(:error, :status, :value)
         end
 
         describe 'with no keywords' do
-          let(:result) { instance.send(:build_result) }
+          let(:result) { subject.send(:build_result) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -57,15 +57,15 @@ module Spec::Examples
           it { expect(result.value).to be nil }
 
           it 'should return a new object each time it is called' do
-            result = instance.send(:build_result)
+            result = subject.send(:build_result)
 
-            expect(instance.send :build_result)
+            expect(subject.send :build_result)
               .not_to be result
           end
         end
 
         describe 'with error: an error' do
-          let(:result) { instance.send(:build_result, error: error) }
+          let(:result) { subject.send(:build_result, error: error) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -76,16 +76,16 @@ module Spec::Examples
           it { expect(result.value).to be nil }
 
           it 'should return a new object each time it is called' do
-            result = instance.send(:build_result, error: error)
+            result = subject.send(:build_result, error: error)
 
-            expect(instance.send :build_result, error: error)
+            expect(subject.send :build_result, error: error)
               .not_to be result
           end
         end
 
         describe 'with error: an error and status: :failure' do
           let(:result) do
-            instance.send(:build_result, error: error, status: :failure)
+            subject.send(:build_result, error: error, status: :failure)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -98,16 +98,16 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, error: error, status: :failure)
+              subject.send(:build_result, error: error, status: :failure)
 
-            expect(instance.send :build_result, error: error, status: :failure)
+            expect(subject.send :build_result, error: error, status: :failure)
               .not_to be result
           end
         end
 
         describe 'with error: an error and status: :success' do
           let(:result) do
-            instance.send(:build_result, error: error, status: :success)
+            subject.send(:build_result, error: error, status: :success)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -120,16 +120,16 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, error: error, status: :success)
+              subject.send(:build_result, error: error, status: :success)
 
-            expect(instance.send :build_result, error: error, status: :success)
+            expect(subject.send :build_result, error: error, status: :success)
               .not_to be result
           end
         end
 
         describe 'with error: an error and value: a value' do
           let(:result) do
-            instance.send(:build_result, error: error, value: value)
+            subject.send(:build_result, error: error, value: value)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -142,15 +142,15 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, error: error, value: value)
+              subject.send(:build_result, error: error, value: value)
 
-            expect(instance.send :build_result, error: error, value: value)
+            expect(subject.send :build_result, error: error, value: value)
               .not_to be result
           end
         end
 
         describe 'with status: :failure' do
-          let(:result) { instance.send(:build_result, status: :failure) }
+          let(:result) { subject.send(:build_result, status: :failure) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -161,16 +161,16 @@ module Spec::Examples
           it { expect(result.value).to be nil }
 
           it 'should return a new object each time it is called' do
-            result = instance.send(:build_result, status: :failure)
+            result = subject.send(:build_result, status: :failure)
 
-            expect(instance.send :build_result, status: :failure)
+            expect(subject.send :build_result, status: :failure)
               .not_to be result
           end
         end
 
         describe 'with status: :failure and value: a value' do
           let(:result) do
-            instance.send(:build_result, status: :failure, value: value)
+            subject.send(:build_result, status: :failure, value: value)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -183,15 +183,15 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, status: :failure, value: value)
+              subject.send(:build_result, status: :failure, value: value)
 
-            expect(instance.send :build_result, status: :failure, value: value)
+            expect(subject.send :build_result, status: :failure, value: value)
               .not_to be result
           end
         end
 
         describe 'with status: :success' do
-          let(:result) { instance.send(:build_result, status: :success) }
+          let(:result) { subject.send(:build_result, status: :success) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -202,16 +202,16 @@ module Spec::Examples
           it { expect(result.value).to be nil }
 
           it 'should return a new object each time it is called' do
-            result = instance.send(:build_result, status: :success)
+            result = subject.send(:build_result, status: :success)
 
-            expect(instance.send :build_result, status: :success)
+            expect(subject.send :build_result, status: :success)
               .not_to be result
           end
         end
 
         describe 'with status: :success and value: a value' do
           let(:result) do
-            instance.send(:build_result, status: :success, value: value)
+            subject.send(:build_result, status: :success, value: value)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -224,15 +224,15 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, status: :success, value: value)
+              subject.send(:build_result, status: :success, value: value)
 
-            expect(instance.send :build_result, status: :success, value: value)
+            expect(subject.send :build_result, status: :success, value: value)
               .not_to be result
           end
         end
 
         describe 'with value: a value' do
-          let(:result) { instance.send(:build_result, value: value) }
+          let(:result) { subject.send(:build_result, value: value) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -243,16 +243,16 @@ module Spec::Examples
           it { expect(result.value).to be value }
 
           it 'should return a new object each time it is called' do
-            result = instance.send(:build_result, value: value)
+            result = subject.send(:build_result, value: value)
 
-            expect(instance.send :build_result, value: value)
+            expect(subject.send :build_result, value: value)
               .not_to be result
           end
         end
 
         describe 'with an error, status: :failure, and a value' do
           let(:result) do
-            instance.send(
+            subject.send(
               :build_result,
               error:  error,
               status: :failure,
@@ -270,16 +270,16 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, status: :failure, value: value)
+              subject.send(:build_result, status: :failure, value: value)
 
-            expect(instance.send :build_result, status: :failure, value: value)
+            expect(subject.send :build_result, status: :failure, value: value)
               .not_to be result
           end
         end
 
         describe 'with an error, status: :success, and a value' do
           let(:result) do
-            instance.send(
+            subject.send(
               :build_result,
               error:  error,
               status: :success,
@@ -297,9 +297,9 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              instance.send(:build_result, status: :success, value: value)
+              subject.send(:build_result, status: :success, value: value)
 
-            expect(instance.send :build_result, status: :success, value: value)
+            expect(subject.send :build_result, status: :success, value: value)
               .not_to be result
           end
         end
@@ -308,22 +308,22 @@ module Spec::Examples
       describe '#failure' do
         let(:error) { Cuprum::Error.new(message: 'Something went wrong.') }
 
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:failure)
+        it { expect(subject).not_to respond_to(:failure) }
 
-          expect(instance).to respond_to(:failure, true).with(1).argument
+        it 'should define the private method' do
+          expect(subject).to respond_to(:failure, true).with(1).argument
         end
 
         it 'should delegate to #build_result' do
-          allow(instance).to receive(:build_result)
+          allow(subject).to receive(:build_result)
 
-          instance.send(:failure, error)
+          subject.send(:failure, error)
 
-          expect(instance).to have_received(:build_result).with(error: error)
+          expect(subject).to have_received(:build_result).with(error: error)
         end
 
         it 'should return a failing result', :aggregate_failures do
-          result = instance.send(:failure, error)
+          result = subject.send(:failure, error)
 
           expect(result).to be_a Cuprum::Result
           expect(result.status).to be :failure
@@ -335,22 +335,22 @@ module Spec::Examples
       describe '#success' do
         let(:value) { 'result value' }
 
-        it 'should define the private method' do
-          expect(instance).not_to respond_to(:success)
+        it { expect(subject).not_to respond_to(:success) }
 
-          expect(instance).to respond_to(:success, true).with(1).argument
+        it 'should define the private method' do
+          expect(subject).to respond_to(:success, true).with(1).argument
         end
 
         it 'should delegate to #build_result' do
-          allow(instance).to receive(:build_result)
+          allow(subject).to receive(:build_result)
 
-          instance.send(:success, value)
+          subject.send(:success, value)
 
-          expect(instance).to have_received(:build_result).with(value: value)
+          expect(subject).to have_received(:build_result).with(value: value)
         end
 
         it 'should return a passing result', :aggregate_failures do
-          result = instance.send(:success, value)
+          result = subject.send(:success, value)
 
           expect(result).to be_a Cuprum::Result
           expect(result.status).to be :success

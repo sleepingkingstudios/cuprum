@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'cuprum'
 
 require 'sleeping_king_studios/tools/toolbelt'
@@ -147,7 +149,7 @@ module Cuprum
       def command_class(name, **metadata, &defn)
         guard_abstract_factory!
 
-        raise ArgumentError, 'must provide a block'.freeze unless block_given?
+        raise ArgumentError, 'must provide a block' unless block_given?
 
         method_name = normalize_command_name(name)
 
@@ -227,13 +229,13 @@ module Cuprum
 
         raise NotImplementedError,
           'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
-          'define commands for a factory.'.freeze
+          'define commands for a factory.'
       end
 
       def guard_invalid_definition!(command_class)
         return if command_class.is_a?(Class) && command_class < Cuprum::Command
 
-        raise ArgumentError, 'definition must be a command class'.freeze
+        raise ArgumentError, 'definition must be a command class'
       end
 
       def normalize_command_name(command_name)
@@ -241,7 +243,7 @@ module Cuprum
       end
 
       def require_definition!
-        raise ArgumentError, 'must provide a command class or a block'.freeze
+        raise ArgumentError, 'must provide a command class or a block'
       end
 
       def tools
@@ -263,7 +265,7 @@ module Cuprum
     end
 
     # @private
-    def const_defined?(const_name, inherit = true)
+    def const_defined?(const_name, inherit = true) # rubocop:disable Style/OptionalBooleanParameter
       command?(const_name) || super
     end
 

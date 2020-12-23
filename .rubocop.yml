@@ -1,7 +1,8 @@
 require: rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
+  NewCops: enable
   Include:
     - 'lib/**/*.rb'
     - 'spec/**/*.rb'
@@ -9,16 +10,19 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
 
-Layout/AlignParameters:
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/HashAlignment:
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/LineLength:
+  Max: 80
+
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
   IndentationWidth: ~
-
-Layout/DotPosition:
-  # Disabled while transitioning to modern syntax.
-  Enabled: false
-
-Layout/EmptyLineBetweenDefs:
-  AllowAdjacentOneLineDefs: true
 
 Metrics/BlockLength:
   Exclude:
@@ -28,10 +32,9 @@ Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
 
-Performance/RedundantBlockCall:
-  # Incompatible with documentation/testing requirement of explicitly defining
-  # a block argument.
-  Enabled: false
+Naming/FileName:
+  Exclude:
+    - Gemfile
 
 RSpec/ExampleLength:
   Max: 10
@@ -42,8 +45,11 @@ RSpec/ExampleWording:
 RSpec/HookArgument:
   EnforcedStyle: example
 
-RSpec/MultipleExpectations:
-  Enabled: false
+RSpec/LeadingSubject:
+  Enabled: false # Expects subject to precede shared examples.
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
 
 RSpec/RepeatedDescription:
   # Does not recognize :wrap_context nodes.
@@ -64,22 +70,6 @@ Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/DoubleNegation:
-  Enabled: false
-
-Style/FileName:
-  Exclude:
-    - Gemfile
-
-Style/FrozenStringLiteralComment:
-  # Incompatible with file location comments.
-  Enabled: false
-
-Style/HashSyntax:
-  # Disabled while transitioning to modern syntax.
-  Enabled: false
-
-Style/MethodDefParentheses:
-  # Disabled while transitioning to modern syntax.
   Enabled: false
 
 Style/MultilineBlockChain:

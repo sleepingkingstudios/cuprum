@@ -264,8 +264,10 @@ module Cuprum
     #   result.class    #=> Cuprum::Result
     #   result.success? #=> false
     #   result.error    #=> 'second step'
-    def steps
-      result = catch(:cuprum_failed_step) { yield }
+    def steps(&block)
+      raise ArgumentError, 'no block given' unless block_given?
+
+      result = catch(:cuprum_failed_step) { block.call }
 
       return result if result.respond_to?(:to_cuprum_result)
 
