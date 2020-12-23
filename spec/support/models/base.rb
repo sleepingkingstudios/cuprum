@@ -5,20 +5,28 @@ require 'securerandom'
 module Spec::Models
   class Base
     class << self
-      alias_method :attribute, :attr_accessor
+      def attribute(attr_name)
+        attributes << attr_name
+
+        attr_accessor attr_name
+      end
+
+      def attributes
+        @attributes ||= []
+      end
 
       def count
         models.count
       end
 
       def find(id)
-        models.find { |item| item.id == id }
+        models.find { |item| item.id == id }.dup
       end
 
       def persist(model)
         index = models.find_index { |item| item.id == model.id }
 
-        models[index || models.size] = model
+        models[index || models.size] = model.dup
 
         model
       end
@@ -41,6 +49,16 @@ module Spec::Models
     attribute :id
 
     attr_reader :errors
+
+    def ==(other)
+      other.class == self.class && other.attributes == attributes
+    end
+
+    def attributes
+      self.class.attributes.each.with_object({}) do |attr_name, hsh|
+        hsh[attr_name] = send(attr_name)
+      end
+    end
 
     def save
       self.class.persist(self)

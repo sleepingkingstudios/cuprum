@@ -30,7 +30,7 @@ RSpec.describe Spec::Commands::FindModel do
 
       before(:example) { directory.save }
 
-      it { expect(result).to be_a_passing_result.with_value(directory) }
+      it { expect(result).to be_a_passing_result.with_value(be == directory) }
     end
   end
 

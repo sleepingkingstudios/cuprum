@@ -46,6 +46,11 @@ RSpec.describe Spec::Commands::CreateModel do
       before(:example) { directory.save }
 
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
+
+      it 'should not create a post' do
+        expect { command.call(attributes: attributes) }
+          .not_to change(model_class, :count)
+      end
     end
 
     describe 'with valid attributes' do
