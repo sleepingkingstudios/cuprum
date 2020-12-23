@@ -5,7 +5,6 @@
 The "Look On My Works, Ye Mighty, and Despair" Update
 
 - Integration specs.
-- Code cleanup: Hash syntax, remove end comments, remove file headers
 - Status Badges!
 
 Steps Case Study: |
