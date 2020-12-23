@@ -7,6 +7,10 @@ module Spec::Models
     class << self
       alias_method :attribute, :attr_accessor
 
+      def count
+        models.count
+      end
+
       def find(id)
         models.find { |item| item.id == id }
       end
@@ -34,10 +38,26 @@ module Spec::Models
       self.id = SecureRandom.uuid if id.nil?
     end
 
+    attribute :id
+
+    attr_reader :errors
+
     def save
       self.class.persist(self)
+
+      self
     end
 
-    attribute :id
+    def valid?
+      @errors = validation_errors
+
+      errors.empty?
+    end
+
+    private
+
+    def validation_errors
+      []
+    end
   end
 end

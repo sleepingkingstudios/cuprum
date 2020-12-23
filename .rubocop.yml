@@ -63,6 +63,9 @@ RSpec/RepeatedExample:
   # Does not recognize :wrap_context nodes.
   Enabled: false
 
+Style/AccessorGrouping:
+  Enabled: false
+
 Style/Alias:
   EnforcedStyle: prefer_alias_method
 

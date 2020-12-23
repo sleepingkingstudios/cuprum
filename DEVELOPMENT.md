@@ -20,6 +20,7 @@ Steps Case Study: |
   Create Content
   Create ContentVersion
   Tags.each { FindOrCreate Tag }
+  Publish Post # Requires that post have content
 
 ### Commands
 
