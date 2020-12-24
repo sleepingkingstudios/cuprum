@@ -134,5 +134,15 @@ module Cuprum
     def call(*args, **kwargs, &block)
       steps { super }
     end
+
+    def to_proc
+      @to_proc ||= lambda do |*args, **kwargs, &block|
+        if kwargs.empty?
+          call(*args, &block)
+        else
+          call(*args, **kwargs, &block)
+        end
+      end
+    end
   end
 end
