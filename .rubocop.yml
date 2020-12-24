@@ -42,6 +42,10 @@ RSpec/ExampleLength:
 RSpec/ExampleWording:
   Enabled: false
 
+RSpec/FilePath:
+  Exclude:
+    - 'spec/integration/**/*.rb'
+
 RSpec/HookArgument:
   EnforcedStyle: example
 
@@ -57,6 +61,9 @@ RSpec/RepeatedDescription:
 
 RSpec/RepeatedExample:
   # Does not recognize :wrap_context nodes.
+  Enabled: false
+
+Style/AccessorGrouping:
   Enabled: false
 
 Style/Alias:

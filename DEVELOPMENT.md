@@ -5,7 +5,6 @@
 The "Look On My Works, Ye Mighty, and Despair" Update
 
 - Integration specs.
-- Code cleanup: Hash syntax, remove end comments, remove file headers
 - Status Badges!
 
 Steps Case Study: |
@@ -21,6 +20,7 @@ Steps Case Study: |
   Create Content
   Create ContentVersion
   Tags.each { FindOrCreate Tag }
+  Publish Post # Requires that post have content
 
 ### Commands
 
