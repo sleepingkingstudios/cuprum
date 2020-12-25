@@ -4,7 +4,8 @@
 
 The "Look On My Works, Ye Mighty, and Despair" Update
 
-- Integration specs.
+- Ruby 3 support.
+  - `.rbs` files?
 - Status Badges!
 
 Steps Case Study: |
@@ -12,19 +13,16 @@ Steps Case Study: |
   CMS application - creating a new post.
   Directory has many Posts
   Post has a Content
-  Content has many ContentVersions
   Post has many Tags
 
   Find Directory
   Create Post
   Create Content
-  Create ContentVersion
   Tags.each { FindOrCreate Tag }
   Publish Post # Requires that post have content
 
 ### Commands
 
-- Remove `Cuprum::Chaining`.
 - Implement `Command#to_proc`.
 
 ## Future Versions

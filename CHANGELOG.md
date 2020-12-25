@@ -6,6 +6,8 @@ The "Look On My Works, Ye Mighty, and Despair" Update
 
 ### Commands
 
+Implemented the `#to_proc` method, which allows for constructs such as `array.map(&command)`.
+
 Removed the deprecated chaining mechanic.
 
 #### Steps
