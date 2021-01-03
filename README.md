@@ -18,7 +18,7 @@ Traditional frameworks such as Rails focus on the objects of your application - 
 - **Consistency:** Use the same Commands to underlie controller actions, worker processes and test factories.
 - **Encapsulation:** Each Command is defined and run in isolation, and dependencies must be explicitly provided to the command when it is initialized or run. This makes it easier to reason about the command's behavior and keep it insulated from changes elsewhere in the code.
 - **Testability:** Because the logic is extracted from unnecessary context, testing its behavior is much cleaner and easier.
-- **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [Chaining](#label-Chaining+Commands) feature allows for complex control flows.
+- **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [step](#label-Command+Steps) feature allows for complex control flows.
 - **Reusability:** Logic common to multiple data models or instances in your code, such as "persist an object to the database" or "find all records with a given user and created in a date range" can be refactored into parameterized commands.
 
 ### Alternatives
