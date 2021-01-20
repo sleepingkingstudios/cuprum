@@ -21,11 +21,9 @@ Steps Case Study: |
   Tags.each { FindOrCreate Tag }
   Publish Post # Requires that post have content
 
-### Commands
-
-- Implement `Command#to_proc`.
-
 ## Future Versions
+
+Add `.rbs` files
 
 ### Commands
 

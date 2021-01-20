@@ -64,53 +64,6 @@ module Cuprum
   #   result.error #=> 'errors.messages.divide_by_zero'
   #   result.value #=> nil
   #
-  # @example Command Chaining
-  #   class AddCommand < Cuprum::Command
-  #     def initialize addend
-  #       @addend = addend
-  #     end
-  #
-  #     private
-  #
-  #     def process int
-  #       int + @addend
-  #     end
-  #   end
-  #
-  #   double_and_add_one = MultiplyCommand.new(2).chain(AddCommand.new(1))
-  #   result             = double_and_add_one(5)
-  #
-  #   result.value #=> 5
-  #
-  # @example Conditional Chaining
-  #   class EvenCommand < Cuprum::Command
-  #     private
-  #
-  #     def process int
-  #       return int if int.even?
-  #
-  #       Cuprum::Errors.new(error: 'errors.messages.not_even')
-  #     end
-  #   end
-  #
-  #   # The next step in a Collatz sequence is determined as follows:
-  #   # - If the number is even, divide it by 2.
-  #   # - If the number is odd, multiply it by 3 and add 1.
-  #   collatz_command =
-  #     EvenCommand.new.
-  #       chain(DivideCommand.new(2), :on => :success).
-  #       chain(
-  #         MultiplyCommand.new(3).chain(AddCommand.new(1),
-  #         :on => :failure
-  #       )
-  #
-  #   result = collatz_command.new(5)
-  #   result.value #=> 16
-  #
-  #   result = collatz_command.new(16)
-  #   result.value #=> 8
-  #
-  # @see Cuprum::Chaining
   # @see Cuprum::Processing
   class Command
     include Cuprum::Processing
