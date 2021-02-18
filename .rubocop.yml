@@ -26,6 +26,7 @@ Layout/ParameterAlignment:
 
 Metrics/BlockLength:
   Exclude:
+    - '*.gemspec'
     - 'spec/**/*.rb'
 
 Metrics/ModuleLength:

@@ -7,7 +7,6 @@ require 'cuprum/version'
 Gem::Specification.new do |gem|
   gem.name        = 'cuprum'
   gem.version     = Cuprum::VERSION
-  gem.date        = Time.now.utc.strftime '%Y-%m-%d'
   gem.summary     = 'An opinionated implementation of the Command pattern.'
 
   description = <<~DESCRIPTION
@@ -21,6 +20,11 @@ Gem::Specification.new do |gem|
   gem.email       = ['merlin@sleepingkingstudios.com']
   gem.homepage    = 'http://sleepingkingstudios.com'
   gem.license     = 'MIT'
+
+  gem.metadata = {
+    'bug_tracker_uri' => 'https://github.com/sleepingkingstudios/cuprum/issues',
+    'source_code_uri' => 'https://github.com/sleepingkingstudios/cuprum'
+  }
 
   gem.required_ruby_version = '>= 2.5.0'
   gem.require_path = 'lib'
