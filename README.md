@@ -4,10 +4,10 @@ An opinionated implementation of the Command pattern for Ruby applications. Cupr
 
 It defines the following concepts:
 
-- [Commands](#label-Commands) - A function-like object that responds to `#call` and returns a `Result`.
-- [Operations](#label-Operations) - A stateful `Command` that wraps and delegates to its most recent `Result`.
-- [Results](#label-Results) - An immutable data object with a status (either `:success` or `:failure`), and either a `#value` or an `#error` object.
-- [Errors](#label-Errors) - Encapsulates a failure state of a command.
+- [Commands](#Commands) - A function-like object that responds to `#call` and returns a `Result`.
+- [Operations](#Operations) - A stateful `Command` that wraps and delegates to its most recent `Result`.
+- [Results](#Results) - An immutable data object with a status (either `:success` or `:failure`), and either a `#value` or an `#error` object.
+- [Errors](#Errors) - Encapsulates a failure state of a command.
 
 ## About
 
@@ -59,6 +59,8 @@ To contribute code, please fork the repository, make the desired updates, and th
 Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached [on GitHub](https://github.com/sleepingkingstudios/cuprum) or [via email](mailto:merlin@sleepingkingstudios.com). I look forward to hearing from you!
 
 ## Concepts
+
+<a id="Commands"></a>
 
 ### Commands
 
@@ -625,6 +627,8 @@ A few things to note about this example. First, we have a couple of examples of 
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
 
+<a id="Results"></a>
+
 ### Results
 
     require 'cuprum'
@@ -695,6 +699,8 @@ result.status   #=> :success
 result.success? #=> true
 result.failure? #=> false
 ```
+
+<a id="Errors"></a>
 
 ### Errors
 
@@ -797,6 +803,8 @@ class WrongColorError < Cuprum::Error
   end
 end
 ```
+
+<a id="Operations"></a>
 
 ### Operations
 
