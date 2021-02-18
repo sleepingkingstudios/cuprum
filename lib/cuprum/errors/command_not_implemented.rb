@@ -20,16 +20,10 @@ module Cuprum::Errors
       class_name = command&.class&.name || 'command'
       message    = MESSAGE_FORMAT % class_name
 
-      super(message: message)
+      super(command: command, message: message)
     end
 
     # @return [Cuprum::Command] The command called without a definition.
     attr_reader :command
-
-    private
-
-    def comparable_properties
-      COMPARABLE_PROPERTIES
-    end
   end
 end

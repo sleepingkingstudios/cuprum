@@ -14,6 +14,10 @@ Removed the deprecated chaining mechanic.
 
 The error type and message when calling `#steps` without a block has changed.
 
+### Errors
+
+Errors can now define their comparable properties by passing additional keywords to the constructor (or `super` for error subclasses).
+
 ## 0.10.0
 
 The "One Small Step" Update

@@ -7,13 +7,12 @@ module Cuprum
   # Additional details can be passed by setting the #message or by using a
   # subclass of Cuprum::Error.
   class Error
-    COMPARABLE_PROPERTIES = %i[message].freeze
-    private_constant :COMPARABLE_PROPERTIES
-
     # @param message [String] Optional message describing the nature of the
     #   error.
-    def initialize(message: nil)
-      @message = message
+    # @param properties [Hash] Additional properties used to compare errors.
+    def initialize(message: nil, **properties)
+      @message               = message
+      @comparable_properties = properties.merge(message: message)
     end
 
     # @return [String] Optional message describing the nature of the error.
@@ -21,17 +20,15 @@ module Cuprum
 
     # @param other [Cuprum::Error] The other object to compare.
     #
-    # @return [Boolean] true if the other object has the same class and message;
-    #   otherwise false.
+    # @return [Boolean] true if the other object has the same class and
+    #   properties; otherwise false.
     def ==(other)
       other.instance_of?(self.class) &&
-        comparable_properties.all? { |prop| send(prop) == other.send(prop) }
+        other.comparable_properties == comparable_properties
     end
 
-    private
+    protected
 
-    def comparable_properties
-      self.class.const_get(:COMPARABLE_PROPERTIES)
-    end
+    attr_reader :comparable_properties
   end
 end

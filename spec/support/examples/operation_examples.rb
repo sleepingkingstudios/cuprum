@@ -21,7 +21,7 @@ module Spec::Examples
         keys      =
           params.select { |(type, _)| type == :keyreq }.map { |(_, key)| key }
         arguments = Array.new(count)
-        keywords  = Hash[keys.map { |key| [key, nil] }]
+        keywords  = keys.map { |key| [key, nil] }.to_h
 
         keywords.empty? ? arguments : arguments << keywords
       end
