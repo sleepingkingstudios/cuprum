@@ -1,4 +1,4 @@
-# Cuprum
+## Cuprum
 
 An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a consistent, object-oriented interface and features status and error management, composability and control flow management.
 
@@ -739,6 +739,64 @@ end
 ```
 
 It is optional but recommended to use a `Cuprum::Error` when returning a failed result from a command.
+
+#### Comparing Errors
+
+There are circumstances when it is useful to compare Error objects, such as when writing tests to specify the failure states of a command. To accommodate this, you can pass additional properties to `Cuprum::Error.new` (or to `super` when defining a subclass). These "comparable properties", plus the message, are used to compare the errors.
+
+An instance of `Cuprum::Error` is equal to another (using the `#==` equality comparison) if and only if the two errors have the same `class` and the two errors have the same comparable properties.
+
+```ruby
+red     = Cuprum::Error.new(message: 'wrong color', color: 'red')
+blue    = Cuprum::Error.new(message: 'wrong color', color: 'blue')
+crimson = Cuprum::Error.new(message: 'wrong color', color: 'red')
+
+red == blue
+#=> false
+
+red == crimson
+#=> true
+```
+
+This can be particularly important when defining Error subclasses. By passing the constructor parameters to `super`, below, we will be able to compare different instances of the `NotFoundError`. The errors will only be equal if they have the same message, resource, and resource_id properties.
+
+```ruby
+class NotFoundError < Cuprum::Error
+  def initialize(resource:, resource_id:)
+    @resource    = resource
+    @resource_id = resource_id
+
+    super(
+      message:     "#{resource} not found with id #{resource_id}",
+      resource:    resource,
+      resource_id: resource_id,
+    )
+  end
+
+  attr_reader :resource, :resource_id
+end
+```
+
+Finally, by overriding the `#comparable_properties` method, you can customize how Error instances are compared.
+
+```ruby
+class WrongColorError < Cuprum::Error
+  def initialize(color:, shape:)
+    super(message: "the #{shape} is the wrong color")
+
+    @color = color
+    @shape = shape
+  end
+
+  attr_reader :color
+
+  protected
+
+  def comparable_properties
+    { color: color }
+  end
+end
+```
 
 ### Operations
 
