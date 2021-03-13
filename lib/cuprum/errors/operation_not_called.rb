@@ -10,6 +10,9 @@ module Cuprum::Errors
     # Format for generating error message.
     MESSAGE_FORMAT = '%s was not called and does not have a result'
 
+    # Short string used to identify the type of error.
+    TYPE = 'cuprum.errors.operation_not_called'
+
     # @param operation [Cuprum::Operation] The uncalled operation.
     def initialize(operation:)
       @operation = operation
