@@ -1,5 +1,9 @@
 # Development
 
+## Version 0.11.0
+
+Deprecate #step with a method name.
+
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
@@ -7,6 +11,7 @@ The "Look On My Works, Ye Mighty, and Despair" Update
 - Ruby 3 support.
   - `.rbs` files?
 - Status Badges!
+- Documentation pass.
 
 Steps Case Study: |
 

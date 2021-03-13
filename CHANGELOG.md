@@ -1,8 +1,8 @@
 # Changelog
 
-## 1.0.0
+## 0.11.0
 
-The "Look On My Works, Ye Mighty, and Despair" Update
+The "One Giant Leap" Update
 
 ### Commands
 
@@ -18,6 +18,10 @@ The error type and message when calling `#steps` without a block has changed.
 
 Errors can now define their comparable properties by passing additional keywords to the constructor (or `super` for error subclasses).
 
+Added the `#type` method and property.
+
+Added serialization via the `#as_json` method.
+
 ## 0.10.0
 
 The "One Small Step" Update
@@ -30,7 +34,7 @@ Implemented the `#curry` method, which performs partial application of arguments
 
 #### Chaining
 
-Added deprecation warnings to all chaining methods, and `Cuprum::Command` no longer includes `Cuprum::Chaining` by default. The `Cuprum::Chaining` module will be removed in version 1.0.
+Added deprecation warnings to all chaining methods, and `Cuprum::Command` no longer includes `Cuprum::Chaining` by default. The `Cuprum::Chaining` module will be removed in version 0.11.
 
 #### Steps
 

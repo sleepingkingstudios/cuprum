@@ -13,6 +13,9 @@ module Cuprum::Errors
     # Format for generating error message.
     MESSAGE_FORMAT = 'no implementation defined for %s'
 
+    # Short string used to identify the type of error.
+    TYPE = 'cuprum.errors.command_not_implemented'
+
     # @param command [Cuprum::Command] The command called without a definition.
     def initialize(command:)
       @command = command
@@ -25,5 +28,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Command] The command called without a definition.
     attr_reader :command
+
+    private
+
+    def as_json_data
+      command ? { 'class_name' => command.class.name } : {}
+    end
   end
 end

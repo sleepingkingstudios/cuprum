@@ -3,10 +3,19 @@
 require 'cuprum/error'
 
 RSpec.describe Cuprum::Error do
-  subject(:error) { described_class.new(message: message, **properties) }
+  subject(:error) do
+    described_class.new(message: message, type: type, **properties)
+  end
 
   let(:message)    { nil }
   let(:properties) { {} }
+  let(:type)       { nil }
+
+  describe '::TYPE' do
+    include_examples 'should define immutable constant',
+      :TYPE,
+      'cuprum.error'
+  end
 
   describe '::new' do
     it 'should define the constructor' do
@@ -51,6 +60,12 @@ RSpec.describe Cuprum::Error do
       it { expect(error == other).to be false }
     end
 
+    describe 'with an error with non-matching type' do
+      let(:other) { described_class.new(type: 'spec.non_matching_type') }
+
+      it { expect(error == other).to be false }
+    end
+
     describe 'with an Error subclass with no message' do
       include_context 'when there is an error subclass'
 
@@ -71,6 +86,14 @@ RSpec.describe Cuprum::Error do
       include_context 'when there is an error subclass'
 
       let(:other) { Spec::Error.new(color: 'red') }
+
+      it { expect(error == other).to be false }
+    end
+
+    describe 'with an Error subclass with non-matching type' do
+      include_context 'when there is an error subclass'
+
+      let(:other) { Spec::Error.new(type: 'spec.non_matching_type') }
 
       it { expect(error == other).to be false }
     end
@@ -132,6 +155,62 @@ RSpec.describe Cuprum::Error do
       end
     end
 
+    context 'when initialized with a type' do
+      let(:type) { 'spec.custom_error' }
+
+      describe 'with nil' do
+        # rubocop:disable Style/NilComparison
+        it { expect(error == nil).to be false }
+        # rubocop:enable Style/NilComparison
+      end
+
+      describe 'with an Object' do
+        it { expect(error == Object.new.freeze).to be false }
+      end
+
+      describe 'with an Error with no type' do
+        let(:other) { described_class.new }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error with non-matching type' do
+        let(:other) { described_class.new(type: 'spec.non_matching_type') }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error with matching type' do
+        let(:other) { described_class.new(type: type) }
+
+        it { expect(error == other).to be true }
+      end
+
+      describe 'with an Error subclass with no type' do
+        include_context 'when there is an error subclass'
+
+        let(:other) { Spec::Error.new }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error subclass with non-matching type' do
+        include_context 'when there is an error subclass'
+
+        let(:other) { Spec::Error.new(type: 'spec.non_matching_type') }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error subclass with matching type' do
+        include_context 'when there is an error subclass'
+
+        let(:other) { Spec::Error.new(type: type) }
+
+        it { expect(error == other).to be false }
+      end
+    end
+
     context 'when initialized with properties' do
       let(:properties) { { color: 'red', shape: 'möbius strip' } }
 
@@ -176,9 +255,10 @@ RSpec.describe Cuprum::Error do
       end
     end
 
-    context 'when initialized with properties and a message' do
+    context 'when initialized with custom values' do
       let(:message)    { 'Something went wrong.' }
       let(:properties) { { color: 'red', shape: 'möbius strip' } }
+      let(:type)       { 'spec.custom_error' }
 
       describe 'with nil' do
         # rubocop:disable Style/NilComparison
@@ -190,7 +270,7 @@ RSpec.describe Cuprum::Error do
         it { expect(error == Object.new.freeze).to be false }
       end
 
-      describe 'with an Error with no message or properties' do
+      describe 'with an Error with no values' do
         let(:other) { described_class.new }
 
         it { expect(error == other).to be false }
@@ -204,6 +284,18 @@ RSpec.describe Cuprum::Error do
 
       describe 'with an Error with matching message' do
         let(:other) { described_class.new(message: message) }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error with non-matching type' do
+        let(:other) { described_class.new(type: 'spec.non_matching_type') }
+
+        it { expect(error == other).to be false }
+      end
+
+      describe 'with an Error with matching type' do
+        let(:other) { described_class.new(type: type) }
 
         it { expect(error == other).to be false }
       end
@@ -226,10 +318,11 @@ RSpec.describe Cuprum::Error do
         it { expect(error == other).to be false }
       end
 
-      describe 'with an Error with matching properties and message' do
+      describe 'with an Error with matching values' do
         let(:other) do
           described_class.new(
             message: message,
+            type:    type,
             color:   'red',
             shape:   'möbius strip'
           )
@@ -303,6 +396,32 @@ RSpec.describe Cuprum::Error do
     # rubocop:enable RSpec/NestedGroups
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {},
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    it { expect(error).to respond_to(:as_json).with(0).arguments }
+
+    it { expect(error.as_json).to be == expected }
+
+    context 'when initialized with a message' do
+      let(:message) { 'Something went wrong.' }
+
+      it { expect(error.as_json).to be == expected }
+    end
+
+    context 'when initialized with a type' do
+      let(:type) { 'spec.custom_error' }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#message' do
     include_examples 'should have reader', :message, nil
 
@@ -316,6 +435,30 @@ RSpec.describe Cuprum::Error do
       let(:message) { 'Something went wrong.' }
 
       it { expect(error.message).to be == message }
+    end
+  end
+
+  describe '#type' do
+    include_examples 'should define reader', :type, -> { described_class::TYPE }
+
+    context 'when initialized with a type' do
+      let(:type) { 'spec.custom_error' }
+
+      it { expect(error.type).to be == type }
+    end
+
+    context 'when there is an error subclass' do
+      example_class 'Spec::Error', described_class do |klass|
+        klass.const_set :TYPE, 'spec.example_error'
+      end
+
+      it { expect(error.type).to be == described_class::TYPE }
+
+      context 'when initialized with a type' do # rubocop:disable RSpec/NestedGroups
+        let(:type) { 'spec.custom_error' }
+
+        it { expect(error.type).to be == type }
+      end
     end
   end
 end

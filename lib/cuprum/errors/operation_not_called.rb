@@ -10,6 +10,9 @@ module Cuprum::Errors
     # Format for generating error message.
     MESSAGE_FORMAT = '%s was not called and does not have a result'
 
+    # Short string used to identify the type of error.
+    TYPE = 'cuprum.errors.operation_not_called'
+
     # @param operation [Cuprum::Operation] The uncalled operation.
     def initialize(operation:)
       @operation = operation
@@ -22,5 +25,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Operation] The uncalled operation.
     attr_reader :operation
+
+    private
+
+    def as_json_data
+      operation ? { 'class_name' => operation.class.name } : {}
+    end
   end
 end

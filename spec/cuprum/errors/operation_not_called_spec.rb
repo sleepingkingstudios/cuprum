@@ -9,6 +9,12 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
 
   example_class 'Spec::ExampleOperation', Cuprum::Operation
 
+  describe '::TYPE' do
+    include_examples 'should define immutable constant',
+      :TYPE,
+      'cuprum.errors.operation_not_called'
+  end
+
   describe '::new' do
     it 'should define the constructor' do
       expect(described_class)
@@ -83,12 +89,33 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
     end
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {
+          'class_name' => 'Spec::ExampleOperation'
+        },
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    include_examples 'should define reader', :as_json, -> { be == expected }
+
+    context 'when initialized with a nil operation' do
+      let(:operation) { nil }
+      let(:expected)  { super().merge('data' => {}) }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#message' do
     let(:expected_message) do
       'Spec::ExampleOperation was not called and does not have a result'
     end
 
-    include_examples 'should have reader',
+    include_examples 'should define reader',
       :message,
       -> { be == expected_message }
 
@@ -103,6 +130,10 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
   end
 
   describe '#operation' do
-    include_examples 'should have reader', :operation, -> { operation }
+    include_examples 'should define reader', :operation, -> { operation }
+  end
+
+  describe '#type' do
+    include_examples 'should define reader', :type, -> { described_class::TYPE }
   end
 end

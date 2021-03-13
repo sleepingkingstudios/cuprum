@@ -9,6 +9,12 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
 
   example_class 'Spec::ExampleCommand', Cuprum::Command
 
+  describe '::TYPE' do
+    include_examples 'should define immutable constant',
+      :TYPE,
+      'cuprum.errors.command_not_implemented'
+  end
+
   describe '::new' do
     it 'should define the constructor' do
       expect(described_class)
@@ -83,8 +89,29 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
     end
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {
+          'class_name' => 'Spec::ExampleCommand'
+        },
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    include_examples 'should define reader', :as_json, -> { be == expected }
+
+    context 'when initialized with a nil command' do
+      let(:command)  { nil }
+      let(:expected) { super().merge('data' => {}) }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#command' do
-    include_examples 'should have reader', :command, -> { command }
+    include_examples 'should define reader', :command, -> { command }
   end
 
   describe '#message' do
@@ -92,7 +119,7 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
       'no implementation defined for Spec::ExampleCommand'
     end
 
-    include_examples 'should have reader',
+    include_examples 'should define reader',
       :message,
       -> { be == expected_message }
 
@@ -104,5 +131,9 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
 
       it { expect(error.message).to be == expected_message }
     end
+  end
+
+  describe '#type' do
+    include_examples 'should define reader', :type, -> { described_class::TYPE }
   end
 end
