@@ -28,5 +28,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Command] The command called without a definition.
     attr_reader :command
+
+    private
+
+    def as_json_data
+      command ? { 'class_name' => command.class.name } : {}
+    end
   end
 end

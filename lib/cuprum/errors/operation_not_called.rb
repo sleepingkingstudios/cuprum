@@ -25,5 +25,11 @@ module Cuprum::Errors
 
     # @return [Cuprum::Operation] The uncalled operation.
     attr_reader :operation
+
+    private
+
+    def as_json_data
+      operation ? { 'class_name' => operation.class.name } : {}
+    end
   end
 end

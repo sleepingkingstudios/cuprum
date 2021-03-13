@@ -89,6 +89,27 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
     end
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {
+          'class_name' => 'Spec::ExampleCommand'
+        },
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    include_examples 'should define reader', :as_json, -> { be == expected }
+
+    context 'when initialized with a nil command' do
+      let(:command)  { nil }
+      let(:expected) { super().merge('data' => {}) }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#command' do
     include_examples 'should define reader', :command, -> { command }
   end

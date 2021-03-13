@@ -41,8 +41,23 @@ module Cuprum
         other.comparable_properties == comparable_properties
     end
 
+    # @return [Hash] a serializable hash representation of the error.
+    def as_json
+      {
+        'data'    => as_json_data,
+        'message' => message,
+        'type'    => type
+      }
+    end
+
     protected
 
     attr_reader :comparable_properties
+
+    private
+
+    def as_json_data
+      {}
+    end
   end
 end

@@ -396,6 +396,32 @@ RSpec.describe Cuprum::Error do
     # rubocop:enable RSpec/NestedGroups
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {},
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    it { expect(error).to respond_to(:as_json).with(0).arguments }
+
+    it { expect(error.as_json).to be == expected }
+
+    context 'when initialized with a message' do
+      let(:message) { 'Something went wrong.' }
+
+      it { expect(error.as_json).to be == expected }
+    end
+
+    context 'when initialized with a type' do
+      let(:type) { 'spec.custom_error' }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#message' do
     include_examples 'should have reader', :message, nil
 

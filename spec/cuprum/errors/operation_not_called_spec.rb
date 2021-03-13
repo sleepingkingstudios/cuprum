@@ -89,6 +89,27 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
     end
   end
 
+  describe '#as_json' do
+    let(:expected) do
+      {
+        'data'    => {
+          'class_name' => 'Spec::ExampleOperation'
+        },
+        'message' => error.message,
+        'type'    => error.type
+      }
+    end
+
+    include_examples 'should define reader', :as_json, -> { be == expected }
+
+    context 'when initialized with a nil operation' do
+      let(:operation) { nil }
+      let(:expected)  { super().merge('data' => {}) }
+
+      it { expect(error.as_json).to be == expected }
+    end
+  end
+
   describe '#message' do
     let(:expected_message) do
       'Spec::ExampleOperation was not called and does not have a result'
