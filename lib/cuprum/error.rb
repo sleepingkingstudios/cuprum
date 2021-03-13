@@ -41,7 +41,15 @@ module Cuprum
         other.comparable_properties == comparable_properties
     end
 
-    # @return [Hash] a serializable hash representation of the error.
+    # Generates a serializable representation of the error object.
+    #
+    # By default, contains the #type and #message properties and an empty :data
+    # Hash. This can be overriden in subclasses by overriding the private method
+    # #as_json_data; this should always return a Hash with String keys and whose
+    # values are basic objects or data structures of the same.
+    #
+    # @return [Hash<String, Object>] a serializable hash representation of the
+    #   error.
     def as_json
       {
         'data'    => as_json_data,
