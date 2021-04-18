@@ -62,8 +62,20 @@ module Spec::Examples
 
         let(:returned_value) { Object.new.freeze }
 
+        before(:example) do
+          allow(SleepingKingStudios::Tools::CoreTools)
+            .to receive(:deprecate)
+            .and_raise
+        end
+
+        def wrap_exception
+          yield
+        rescue StandardError
+          # Do nothing.
+        end
+
         describe 'with no arguments' do
-          let(:error_message) { 'expected a block or a method name' }
+          let(:error_message) { 'expected a block' }
 
           it 'should raise an exception' do
             expect { subject.step }
@@ -88,9 +100,20 @@ module Spec::Examples
         describe 'with nil' do
           let(:error_message) { 'expected a block or a method name' }
 
+          before(:example) do
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+          end
+
           it 'should raise an exception' do
             expect { subject.step(nil) }
               .to raise_error ArgumentError, error_message
+          end
+
+          it 'should display a deprecation warning' do
+            wrap_exception { subject.step(nil) }
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
         end
 
@@ -99,18 +122,40 @@ module Spec::Examples
             'expected method name to be a String or Symbol'
           end
 
+          before(:example) do
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+          end
+
           it 'should raise an exception' do
             expect { subject.step(Object.new.freeze) }
               .to raise_error ArgumentError, error_message
+          end
+
+          it 'should display a deprecation warning' do
+            wrap_exception { subject.step(nil) }
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
         end
 
         describe 'with an empty method name' do
           let(:error_message) { "method name can't be blank" }
 
+          before(:example) do
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
+          end
+
           it 'should raise an exception' do
             expect { subject.step('') }
               .to raise_error ArgumentError, error_message
+          end
+
+          it 'should display a deprecation warning' do
+            wrap_exception { subject.step(nil) }
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
         end
 
@@ -125,12 +170,21 @@ module Spec::Examples
             subject.singleton_class.send(:define_method, method_name) { nil }
 
             allow(subject).to receive(method_name).and_return(returned_value)
+
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
           end
 
           it 'should call the method' do
             subject.step(method_name)
 
             expect(subject).to have_received(method_name).with(no_args)
+          end
+
+          it 'should display a deprecation warning' do
+            subject.step(method_name)
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
 
           include_examples 'should wrap the returned value'
@@ -148,6 +202,8 @@ module Spec::Examples
             # :nocov:
 
             allow(subject).to receive(method_name).and_return(returned_value)
+
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
           end
 
           def call_step
@@ -158,6 +214,13 @@ module Spec::Examples
             subject.step(method_name, *method_args)
 
             expect(subject).to have_received(method_name).with(*method_args)
+          end
+
+          it 'should display a deprecation warning' do
+            subject.step(method_name, *method_args)
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
 
           include_examples 'should wrap the returned value'
@@ -175,6 +238,8 @@ module Spec::Examples
             # :nocov:
 
             allow(subject).to receive(method_name).and_return(returned_value)
+
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
           end
 
           def call_step
@@ -185,6 +250,13 @@ module Spec::Examples
             subject.step(method_name, **method_kwargs)
 
             expect(subject).to have_received(method_name).with(**method_kwargs)
+          end
+
+          it 'should display a deprecation warning' do
+            subject.step(method_name, **method_kwargs)
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
 
           include_examples 'should wrap the returned value'
@@ -202,6 +274,8 @@ module Spec::Examples
 
               returned_value
             end
+
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
           end
 
           def call_step
@@ -217,6 +291,13 @@ module Spec::Examples
           it 'should yield the block' do
             expect { |block| subject.step(method_name, &block) }
               .to yield_control
+          end
+
+          it 'should display a deprecation warning' do
+            subject.step(method_name, &method_block)
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
 
           include_examples 'should wrap the returned value'
@@ -240,6 +321,8 @@ module Spec::Examples
 
               returned_value
             end
+
+            allow(SleepingKingStudios::Tools::CoreTools).to receive(:deprecate)
           end
 
           def call_step(&block)
@@ -262,6 +345,18 @@ module Spec::Examples
           it 'should yield the block' do
             expect { |block| call_step(&block) }
               .to yield_control
+          end
+
+          it 'should display a deprecation warning' do
+            subject.step(
+              method_name,
+              *method_args,
+              **method_kwargs,
+              &method_block
+            )
+
+            expect(SleepingKingStudios::Tools::CoreTools)
+              .to have_received(:deprecate)
           end
 
           include_examples 'should wrap the returned value'
