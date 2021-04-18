@@ -12,6 +12,8 @@ Removed the deprecated chaining mechanic.
 
 #### Steps
 
+Deprecated calling `#step` with a method name.
+
 The error type and message when calling `#steps` without a block has changed.
 
 ### Errors

@@ -63,6 +63,9 @@ module Cuprum
   module Steps
     include Cuprum::ResultHelpers
 
+    UNDEFINED = Object.new.freeze
+    private_constant :UNDEFINED
+
     class << self
       # @!visibility private
       def execute_method(receiver, method_name, *args, **kwargs, &block)
@@ -110,109 +113,62 @@ module Cuprum
       # rubocop:enable Metrics/MethodLength
     end
 
-    # @overload step()
-    #   Executes the block and returns the value, or halts on a failure.
+    # Executes the block and returns the value, or halts on a failure.
     #
-    #   @yield Called with no parameters.
+    # @yield Called with no parameters.
     #
-    #   @return [Object] the #value of the result, or the returned object.
+    # @return [Object] the #value of the result, or the returned object.
     #
-    #   The #step method is used to evaluate a sequence of processes, and to
-    #   fail fast and halt processing if any of the steps returns a failing
-    #   result. Each invocation of #step should be wrapped in a #steps block,
-    #   or used inside the #process method of a Command.
+    # The #step method is used to evaluate a sequence of processes, and to
+    # fail fast and halt processing if any of the steps returns a failing
+    # result. Each invocation of #step should be wrapped in a #steps block,
+    # or used inside the #process method of a Command.
     #
-    #   If the object returned by the block is a Cuprum result or compatible
-    #   object (such as a called operation), the value is converted to a Cuprum
-    #   result via the #to_cuprum_result method. Otherwise, the object is
-    #   returned directly from #step.
+    # If the object returned by the block is a Cuprum result or compatible
+    # object (such as a called operation), the value is converted to a Cuprum
+    # result via the #to_cuprum_result method. Otherwise, the object is
+    # returned directly from #step.
     #
-    #   If the returned object is a passing result, the #value of the result is
-    #   returned by #step.
+    # If the returned object is a passing result, the #value of the result is
+    # returned by #step.
     #
-    #   If the returned object is a failing result, then #step will throw
-    #   :cuprum_failed_result and the failing result. This is caught by the
-    #   #steps block, and halts execution of any subsequent steps.
+    # If the returned object is a failing result, then #step will throw
+    # :cuprum_failed_result and the failing result. This is caught by the
+    # #steps block, and halts execution of any subsequent steps.
     #
-    #   @example Calling a Step
-    #     # The #do_something method returns the string 'some value'.
-    #     step { do_something() } #=> 'some value'
+    # @example Calling a Step
+    #   # The #do_something method returns the string 'some value'.
+    #   step { do_something() } #=> 'some value'
     #
-    #     value = step { do_something() }
-    #     value #=> 'some value'
+    #   value = step { do_something() }
+    #   value #=> 'some value'
     #
-    #   @example Calling a Step with a Passing Result
-    #     # The #do_something_else method returns a Cuprum result with a value
-    #     # of 'another value'.
-    #     step { do_something_else() } #=> 'another value'
+    # @example Calling a Step with a Passing Result
+    #   # The #do_something_else method returns a Cuprum result with a value
+    #   # of 'another value'.
+    #   step { do_something_else() } #=> 'another value'
     #
-    #     # The result is passing, so the value is extracted and returned.
-    #     value = step { do_something_else() }
-    #     value #=> 'another value'
+    #   # The result is passing, so the value is extracted and returned.
+    #   value = step { do_something_else() }
+    #   value #=> 'another value'
     #
-    #   @example Calling a Step with a Failing Result
-    #     # The #do_something_wrong method returns a failing Cuprum result.
-    #     step { do_something_wrong() } # Throws the :cuprum_failed_step symbol.
-    #
-    # @overload step(method_name, *arguments, **keywords)
-    #   Calls the method and returns the value, or halts on a failure.
-    #
-    #   @param method_name [String, Symbol] The name of the method to call. Must
-    #     be the name of a method on the current object.
-    #   @param arguments [Array] Positional arguments to pass to the method.
-    #   @param keywords [Hash] Keyword arguments to pass to the method.
-    #
-    #   @yield A block to pass to the method.
-    #
-    #   @return [Object] the #value of the result, or the returned object.
-    #
-    #   The #step method is used to evaluate a sequence of processes, and to
-    #   fail fast and halt processing if any of the steps returns a failing
-    #   result. Each invocation of #step should be wrapped in a #steps block,
-    #   or used inside the #process method of a Command.
-    #
-    #   If the object returned by the block is a Cuprum result or compatible
-    #   object (such as a called operation), the value is converted to a Cuprum
-    #   result via the #to_cuprum_result method. Otherwise, the object is
-    #   returned directly from #step.
-    #
-    #   If the returned object is a passing result, the #value of the result is
-    #   returned by #step.
-    #
-    #   If the returned object is a failing result, then #step will throw
-    #   :cuprum_failed_result and the failing result. This is caught by the
-    #   #steps block, and halts execution of any subsequent steps.
-    #
-    #   @example Calling a Step
-    #     # The #zero method returns the integer 0.
-    #     step :zero #=> 0
-    #
-    #     value = step :zero
-    #     value #=> 0
-    #
-    #   @example Calling a Step with a Passing Result
-    #     # The #add method adds the numbers and returns a Cuprum result with a
-    #     # value equal to the sum.
-    #     step :add, 2, 2
-    #     #=> 4
-    #
-    #     # The result is passing, so the value is extracted and returned.
-    #     value = step :add, 2, 2
-    #     value #=> 4
-    #
-    #   @example Calling a Step with a Failing Result
-    #     # The #divide method returns a failing Cuprum result when the second
-    #     # argument is zero.
-    #     step :divide, 1, 0
-    #     # Throws the :cuprum_failed_step symbol, which should be caught by the
-    #     # enclosing #steps block.
-    def step(method_name = nil, *args, **kwargs, &block)
+    # @example Calling a Step with a Failing Result
+    #   # The #do_something_wrong method returns a failing Cuprum result.
+    #   step { do_something_wrong() } # Throws the :cuprum_failed_step symbol.
+    def step(method_name = UNDEFINED, *args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
       result =
-        if !block_given? || method_name || !args.empty? || !kwargs.empty?
+        if method_name != UNDEFINED || !args.empty? || !kwargs.empty?
+          SleepingKingStudios::Tools::CoreTools.deprecate(
+            "#{self.class}#step(method_name)",
+            message: 'Use the block form: step { method_name(*args, **kwargs) }'
+          )
+
           Cuprum::Steps.validate_method_name(method_name)
 
           Cuprum::Steps
             .execute_method(self, method_name, *args, **kwargs, &block)
+        elsif !block_given?
+          raise ArgumentError, 'expected a block'
         else
           block.call
         end

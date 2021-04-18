@@ -528,42 +528,6 @@ result.success? #=> true
 result.value    #=> an instance of BookReservation
 ```
 
-#### Using Methods As Steps
-
-Steps can also be defined as method calls. Instead of providing a block to `#step`, provide the name of the method as the first argument, either as a symbol or as a string. Any subsequent arguments, keywords, or a block is passed to the method when it is called.
-
-A step defined with a method behaves the same as a step defined with a block. If the method returns a successful result, then `#step` will return the value of the result. If the method returns a failing result, then `#step` will throw `:cuprum_failed_result` and the result, to be caught by the `#process` method or the containing `#steps` block.
-
-We can use this to rewrite our `ReserveBookByTitle` command to use methods:
-
-```ruby
-class ReserveBookByTitle < Cuprum::Result
-  private
-
-  def check_user_status(user)
-    CheckUserStatus.new(user)
-  end
-
-  def create_book_reservation(book:, user:)
-    CreateBookReservation.new(book: book, user: user)
-  end
-
-  def find_book_by_title(title)
-    FindBookByTitle.new.call(title)
-  end
-
-  def process(title:, user:)
-    step :check_user_status, user
-
-    book = step :find_book_by_title, title
-
-    create_book_reservation, book: book, user: user
-  end
-end
-```
-
-In this case, our methods simply delegate to our previously defined commands. However, a more complex example could include other logic in each method, or even a sequence of steps defining subtasks for the method. The only requirement is that the method returns a result. You can use the `#success` helpers to wrap a non-result value, or the `#failure` helper to generate a failing result.
-
 #### Using Steps Outside Of Commands
 
 Steps can also be used outside of a command. For example, a controller action might define a sequence of steps to run when the corresponding endpoint is called.
