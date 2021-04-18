@@ -1,9 +1,9 @@
 # Build Options
 language: ruby
 rvm:
-  - 2.5.8
-  - 2.6.6
-  - 2.7.1
+  - 2.6.7
+  - 2.7.3
+  - 3.0.1
 before_script:
   - cp .rspec.example .rspec
 script:
