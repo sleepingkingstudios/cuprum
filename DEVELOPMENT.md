@@ -2,20 +2,10 @@
 
 ## Version 0.11.0
 
-### RSpec
-
-Move RSpec matcher macros into Cuprum::RSpec::Matchers namespace.
-
-- be_callable matcher
-  - delegates to respond_to(), but check arguments of private #process method
-
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
 
-- Ruby 3 support.
-  - `.rbs` files?
-- Status Badges!
 - Documentation pass.
 
 Steps Case Study: |

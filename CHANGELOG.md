@@ -24,6 +24,10 @@ Added the `#type` method and property.
 
 Added serialization via the `#as_json` method.
 
+### RSpec
+
+Added the `#be_callable` macro, which is a wrapper for `#respond_to` that references the `#process` method.
+
 ## 0.10.0
 
 The "One Small Step" Update
