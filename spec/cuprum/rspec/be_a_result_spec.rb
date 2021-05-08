@@ -2,7 +2,9 @@
 
 require 'cuprum/rspec/be_a_result'
 
-RSpec.describe RSpec::Matchers do # rubocop:disable RSpec/FilePath
+RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
+  include Cuprum::RSpec::Matchers # rubocop:disable RSpec/DescribedClass
+
   let(:example_group) { self }
 
   describe '#be_a_failing_result' do

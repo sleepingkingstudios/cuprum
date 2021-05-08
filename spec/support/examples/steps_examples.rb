@@ -364,6 +364,8 @@ module Spec::Examples
       end
 
       describe '#steps' do
+        include Cuprum::RSpec::Matchers
+
         describe 'without a block' do
           let(:error_message) { 'no block given' }
 

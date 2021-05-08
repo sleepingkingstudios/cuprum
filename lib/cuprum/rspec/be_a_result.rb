@@ -2,7 +2,7 @@
 
 require 'cuprum/rspec/be_a_result_matcher'
 
-module RSpec
+module Cuprum::RSpec
   module Matchers # rubocop:disable Style/Documentation
     def be_a_failing_result
       be_a_result.with_status(:failure)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/publish_post'
 require 'support/models/content'
@@ -8,6 +9,8 @@ require 'support/models/directory'
 require 'support/models/post'
 
 RSpec.describe Spec::Commands::PublishPost do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new }
 
   after(:example) do
@@ -29,6 +32,13 @@ RSpec.describe Spec::Commands::PublishPost do
     before(:example) do
       directory.save
       post.save
+    end
+
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:post)
     end
 
     context 'when the post does not have a content' do

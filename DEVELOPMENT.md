@@ -2,15 +2,10 @@
 
 ## Version 0.11.0
 
-Deprecate #step with a method name.
-
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
 
-- Ruby 3 support.
-  - `.rbs` files?
-- Status Badges!
 - Documentation pass.
 
 Steps Case Study: |
@@ -88,8 +83,6 @@ Add `.rbs` files
 
 ### RSpec
 
-- be_callable matcher - delegates to respond_to(), but check arguments of
-  private #process method
 - call_command_step matcher
 - (optionally) alias be_a_result family as have_result for operations
 

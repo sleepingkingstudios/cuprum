@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/create_and_publish_post'
 require 'support/models/content'
@@ -10,6 +11,8 @@ require 'support/models/tag'
 require 'support/models/tagging'
 
 RSpec.describe Spec::Commands::CreateAndPublishPost do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new }
 
   after(:example) do
@@ -21,6 +24,13 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes)
+    end
+
     context 'when the directory does not exist' do
       let(:directory_id) { '00000000-0000-0000-0000-000000000000' }
       let(:attributes)   { { directory_id: directory_id } }

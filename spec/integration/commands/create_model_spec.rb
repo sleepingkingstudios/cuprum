@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/create_model'
 require 'support/models/directory'
 require 'support/models/post'
 
 RSpec.describe Spec::Commands::CreateModel do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Post }
@@ -17,6 +20,13 @@ RSpec.describe Spec::Commands::CreateModel do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes)
+    end
+
     describe 'with empty attributes' do
       let(:attributes) { {} }
       let(:result)     { command.call(attributes: attributes) }

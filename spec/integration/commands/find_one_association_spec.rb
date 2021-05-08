@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/find_one_association'
 require 'support/models/content'
 
 RSpec.describe Spec::Commands::FindOneAssociation do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) do
     described_class.new(foreign_key: foreign_key, model_class: model_class)
   end
@@ -18,6 +21,13 @@ RSpec.describe Spec::Commands::FindOneAssociation do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:id)
+    end
+
     context 'when the associated model does not exist' do
       let(:post_id) { '00000000-0000-0000-0000-000000000000' }
       let(:result)  { command.call(id: post_id) }
