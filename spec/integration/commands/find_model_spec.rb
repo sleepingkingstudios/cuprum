@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/find_model'
 require 'support/models/directory'
@@ -17,6 +18,13 @@ RSpec.describe Spec::Commands::FindModel do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:id)
+    end
+
     context 'when the model does not exist' do
       let(:directory_id) { '00000000-0000-0000-0000-000000000000' }
       let(:result)       { command.call(id: directory_id) }

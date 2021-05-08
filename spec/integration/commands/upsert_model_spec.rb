@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/upsert_model'
 require 'support/models/post'
@@ -18,6 +19,13 @@ RSpec.describe Spec::Commands::UpsertModel do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes)
+    end
+
     context 'when the model does not exist' do
       # rubocop:disable RSpec/NestedGroups
       describe 'with empty attributes' do

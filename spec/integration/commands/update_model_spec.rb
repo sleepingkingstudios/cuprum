@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/update_model'
 require 'support/models/post'
@@ -34,6 +35,13 @@ RSpec.describe Spec::Commands::UpdateModel do
     before(:example) do
       directory.save
       model.save
+    end
+
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes, :model)
     end
 
     describe 'with empty attributes' do

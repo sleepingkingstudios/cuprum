@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/build_book'
 require 'support/models/book'
@@ -11,6 +12,13 @@ RSpec.describe Spec::Commands::BuildBook do
   subject(:command) { described_class.new }
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes)
+    end
+
     describe 'with an empty hash' do
       let(:attributes) { {} }
       let(:result)     { command.call(attributes: attributes) }

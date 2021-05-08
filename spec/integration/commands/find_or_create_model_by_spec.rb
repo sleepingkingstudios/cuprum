@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/find_or_create_model_by'
 require 'support/models/tag'
@@ -17,6 +18,13 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
   end
 
   describe '#call' do
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:attributes)
+    end
+
     context 'when a matching model does not exist' do
       # rubocop:disable RSpec/NestedGroups
       describe 'with invalid attributes' do

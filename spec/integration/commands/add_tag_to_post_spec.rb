@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'cuprum/rspec/be_a_result'
+require 'cuprum/rspec/be_callable'
 
 require 'support/commands/add_tag_to_post'
 require 'support/models/post'
@@ -21,6 +22,13 @@ RSpec.describe Spec::Commands::AddTagToPost do
     let(:post) { Spec::Models::Post.new(attributes: { title: 'Stem Bolt' }) }
 
     before(:example) { post.save }
+
+    it 'should define the method' do
+      expect(command)
+        .to be_callable
+        .with(0).arguments
+        .and_keywords(:post, :tag_attributes)
+    end
 
     context 'when the tag does not exist' do
       # rubocop:disable RSpec/NestedGroups
