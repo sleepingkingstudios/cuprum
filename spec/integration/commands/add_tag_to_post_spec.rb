@@ -7,6 +7,8 @@ require 'support/models/post'
 require 'support/models/tag'
 
 RSpec.describe Spec::Commands::AddTagToPost do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new }
 
   after(:example) do

@@ -6,6 +6,8 @@ require 'support/commands/save_book_to_collection'
 require 'support/models/book'
 
 RSpec.describe Spec::Commands::SaveBookToCollection do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(collection: collection) }
 
   let(:collection) { [] }

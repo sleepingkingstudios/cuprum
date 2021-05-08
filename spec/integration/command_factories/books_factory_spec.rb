@@ -8,6 +8,8 @@ require 'support/command_factories/books_factory'
 require 'support/models/book'
 
 RSpec.describe Spec::CommandFactories::BooksFactory do
+  include Cuprum::RSpec::Matchers
+
   subject(:instance) { described_class.new(books: books_collection) }
 
   let(:books_collection) { [] }

@@ -6,6 +6,8 @@ require 'support/commands/find_model'
 require 'support/models/directory'
 
 RSpec.describe Spec::Commands::FindModel do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Directory }

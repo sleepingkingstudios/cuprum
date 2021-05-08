@@ -6,6 +6,8 @@ require 'support/commands/find_or_create_model_by'
 require 'support/models/tag'
 
 RSpec.describe Spec::Commands::FindOrCreateModelBy do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Tag }

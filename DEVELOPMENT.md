@@ -2,7 +2,12 @@
 
 ## Version 0.11.0
 
-Deprecate #step with a method name.
+### RSpec
+
+Move RSpec matcher macros into Cuprum::RSpec::Matchers namespace.
+
+- be_callable matcher
+  - delegates to respond_to(), but check arguments of private #process method
 
 ## Version 1.0.0
 
@@ -88,8 +93,6 @@ Add `.rbs` files
 
 ### RSpec
 
-- be_callable matcher - delegates to respond_to(), but check arguments of
-  private #process method
 - call_command_step matcher
 - (optionally) alias be_a_result family as have_result for operations
 

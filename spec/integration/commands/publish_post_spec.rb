@@ -8,6 +8,8 @@ require 'support/models/directory'
 require 'support/models/post'
 
 RSpec.describe Spec::Commands::PublishPost do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new }
 
   after(:example) do

@@ -6,6 +6,8 @@ require 'support/commands/find_one_association'
 require 'support/models/content'
 
 RSpec.describe Spec::Commands::FindOneAssociation do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) do
     described_class.new(foreign_key: foreign_key, model_class: model_class)
   end

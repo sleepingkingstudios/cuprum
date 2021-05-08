@@ -10,6 +10,8 @@ require 'support/models/tag'
 require 'support/models/tagging'
 
 RSpec.describe Spec::Commands::CreateAndPublishPost do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new }
 
   after(:example) do

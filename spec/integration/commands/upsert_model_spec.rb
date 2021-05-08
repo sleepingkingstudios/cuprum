@@ -6,6 +6,8 @@ require 'support/commands/upsert_model'
 require 'support/models/post'
 
 RSpec.describe Spec::Commands::UpsertModel do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Post }

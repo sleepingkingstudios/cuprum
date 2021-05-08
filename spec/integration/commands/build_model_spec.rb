@@ -6,6 +6,8 @@ require 'support/commands/build_model'
 require 'support/models/book'
 
 RSpec.describe Spec::Commands::BuildModel do
+  include Cuprum::RSpec::Matchers
+
   subject(:command) { described_class.new(model_class) }
 
   let(:model_class) { Spec::Models::Book }
