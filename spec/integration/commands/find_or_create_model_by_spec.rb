@@ -26,7 +26,6 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
     end
 
     context 'when a matching model does not exist' do
-      # rubocop:disable RSpec/NestedGroups
       describe 'with invalid attributes' do
         let(:attributes) { { name: '' } }
         let(:result)     { command.call(attributes: attributes) }
@@ -66,7 +65,6 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
             .by(1)
         end
       end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     context 'when a matching model exists' do

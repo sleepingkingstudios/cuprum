@@ -31,7 +31,6 @@ RSpec.describe Spec::Commands::AddTagToPost do
     end
 
     context 'when the tag does not exist' do
-      # rubocop:disable RSpec/NestedGroups
       describe 'with invalid attributes' do
         let(:attributes) { { name: '' } }
         let(:result) do
@@ -110,7 +109,6 @@ RSpec.describe Spec::Commands::AddTagToPost do
           expect(tagging).to be_a(Spec::Models::Tagging)
         end
       end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     context 'when the tag exists' do

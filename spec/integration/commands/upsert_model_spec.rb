@@ -27,7 +27,6 @@ RSpec.describe Spec::Commands::UpsertModel do
     end
 
     context 'when the model does not exist' do
-      # rubocop:disable RSpec/NestedGroups
       describe 'with empty attributes' do
         let(:attributes) { {} }
         let(:result)     { command.call(attributes: attributes) }
@@ -93,7 +92,6 @@ RSpec.describe Spec::Commands::UpsertModel do
           )
         end
       end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     context 'when the model exists' do
@@ -115,7 +113,6 @@ RSpec.describe Spec::Commands::UpsertModel do
         model.save
       end
 
-      # rubocop:disable RSpec/NestedGroups
       describe 'with empty attributes' do
         let(:attributes) { { id: model.id } }
         let(:result)     { command.call(attributes: attributes) }
@@ -176,7 +173,6 @@ RSpec.describe Spec::Commands::UpsertModel do
           expect(post).to have_attributes(model_attributes.merge(attributes))
         end
       end
-      # rubocop:enable RSpec/NestedGroups
     end
   end
 

@@ -56,6 +56,9 @@ RSpec/LeadingSubject:
 RSpec/MultipleMemoizedHelpers:
   Max: 10
 
+RSpec/NestedGroups:
+  Max: 5
+
 RSpec/RepeatedDescription:
   # Does not recognize :wrap_context nodes.
   Enabled: false
