@@ -152,8 +152,10 @@ module Cuprum
     # called with no parameters. If there is no clause matching the result,
     # #call will instead raise a Cuprum::Matching::NoMatchError.
     #
-    # If the matcher defines a non-nil #matching_context, then instead of
-    # calling the block, it is instead executed in the context of the
+    # The match clause is executed in the context of the matcher object. This
+    # allows instance methods defined for the matcher to be called as part of
+    # the match clause block. If the matcher defines a non-nil
+    # #matching_context, the block is instead executed in the context of the
     # matching_context using #instance_exec.
     #
     # @param result [Cuprum::Result] The result to match.
@@ -224,9 +226,7 @@ module Cuprum
     def call_match(block:, result:)
       args = block.arity.zero? ? [] : [result]
 
-      return block.call(*args) unless match_context?
-
-      match_context.instance_exec(*args, &block)
+      (match_context || self).instance_exec(*args, &block)
     end
   end
 end

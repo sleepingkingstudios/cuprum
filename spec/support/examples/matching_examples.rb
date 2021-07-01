@@ -259,6 +259,52 @@ module Spec::Examples
             it { expect(matcher.call(result)).to be == message }
           end
 
+          context 'when the matcher defines instance methods' do
+            let(:matcher) do
+              described_class.new.tap { |obj| obj.extend(Spec::MatcherHelpers) }
+            end
+            let(:implementation) do
+              ->(msg, result = nil) { helper(msg, result) }
+            end
+
+            example_constant 'Spec::MatcherHelpers' do
+              Module.new do
+                def helper(message, _result)
+                  message.upcase
+                end
+              end
+            end
+
+            it { expect(matcher.call(result)).to be == message.upcase }
+
+            it 'should call the helper method' do
+              allow(matcher).to receive(:helper).and_call_original
+
+              matcher.call(result)
+
+              expect(matcher).to have_received(:helper).with(message, nil)
+            end
+
+            context 'when the match clause takes a result parameter' do
+              def wrapper(message)
+                msg  = message
+                impl = implementation
+
+                ->(result) { instance_exec(msg, result, &impl) }
+              end
+
+              it { expect(matcher.call(result)).to be == message.upcase }
+
+              it 'should call the helper method' do
+                allow(matcher).to receive(:helper)
+
+                matcher.call(result)
+
+                expect(matcher).to have_received(:helper).with(message, result)
+              end
+            end
+          end
+
           wrap_context 'when the matcher has a context' do
             it { expect(matcher.call(result)).to be == message.upcase }
 

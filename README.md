@@ -8,6 +8,7 @@ It defines the following concepts:
 - [Operations](#Operations) - A stateful `Command` that wraps and delegates to its most recent `Result`.
 - [Results](#Results) - An immutable data object with a status (either `:success` or `:failure`), and optional `#value` and/or `#error` objects.
 - [Errors](#Errors) - Encapsulates a failure state of a command.
+- [Matchers](#Matchers) - Define handling for results based on status, error, and value.
 
 ## About
 
@@ -872,6 +873,175 @@ An operation inherits the `#call` method from Cuprum::Command (see above), and d
 [Module Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation%2FMixin)
 
 The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
+
+<a id="Matchers"></a>
+
+### Matchers
+
+    require 'cuprum/matcher'
+
+[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FMatcher)
+
+A Matcher provides a simple DSL for defining behavior based on a Cuprum result object.
+
+```ruby
+matcher = Cuprum::Matcher.new do
+  match(:failure) { 'Something went wrong' }
+
+  match(:success) { 'Ok' }
+end
+
+matcher.call(Cuprum::Result.new(status: :failure))
+#=> 'Something went wrong'
+
+matcher.call(Cuprum::Result.new(status: :success))
+#=> 'Ok'
+```
+
+First, the matcher defines possible matches using the `.match` method. This can either be called on a subclass of `Cuprum::Matcher` or by passing a block to the constructor, as above. Each match clause must have the matching status, and a block that is executed when a result matches that clause. The clause can also filter by the result value or error (see Matching Values And Errors, below).
+
+Once the matcher has found a matching clause, it then calls the block in the clause definition. If the block accepts an argument, the result is passed to the block; otherwise, the block is called with no arguments. This allows the match clause to use the error or value of the result.
+
+```ruby
+matcher = Cuprum::Matcher.new do
+  match(:failure) { |result| result.error.message }
+end
+
+error = Cuprum::Error.new(message: 'An error has occurred.')
+matcher.call(Cuprum::Result.new(error: error))
+#=> 'An error has occurred.'
+```
+
+If the result does not match any of the clauses, a `Cuprum::Matching::NoMatchError` is raised.
+
+```ruby
+matcher = Cuprum::Matcher.new do
+  match(:success) { :ok }
+end
+
+matcher.call(Cuprum::Result.new(status: :failure))
+#=> raises Cuprum::Matching::NoMatchError
+```
+
+#### Matching Values And Errors
+
+In addition to a status, match clauses can specify the type of the value or error of a matching result. The error or value must be a Class or Module, and the clause will then match only results whose error or value is an instance of the specified Class or Module (or a subclass of the Class).
+
+```ruby
+class MagicSmokeError < Cuprum::Error; end
+
+matcher = Cuprum::Matcher.new do
+  match(:failure) { 'Something went wrong.' }
+
+  match(:failure, error: Cuprum::Error) do |result|
+    "ERROR: #{result.error.message}"
+  end
+
+  match(:failure, error: MagicSmokeError) do
+    "PANIC: #{result.error.message}"
+  end
+end
+
+matcher.call(Cuprum::Result.new(status: :failure))
+#=> 'Something went wrong.'
+
+error = Cuprum::Error.new(message: 'An error has occurred.')
+matcher.call(Cuprum::Result.new(error: error)
+#=> 'ERROR: An error has occurred.'
+
+error = MagicSmokeError.new(message: 'The magic smoke is escaping.')
+matcher.call(Cuprum::Result.new(error: error))
+#=> 'PANIC: The magic smoke is escaping.'
+```
+
+The matcher will always apply the most specific match clause. In the example above, the result with a `MagicSmokeError` matches all three clauses, but only the final clause is executed.
+
+You can also specify the value of a matching result:
+
+```ruby
+matcher = Cuprum::Matcher.new do
+  match(:success, value: String) { 'a String' }
+
+  match(:success, value: Symbol) { 'a Symbol' }
+end
+
+matcher.call(Cuprum::Result.new(value: 'Greetings, programs!'))
+#=> 'a String'
+
+matcher.call(Cuprum::Result.new(value: :greetings_starfighter))
+#=> 'a Symbol'
+```
+
+#### Using Matcher Classes
+
+Matcher classes allow you to define custom behavior that can be called as part of the defined match clauses.
+
+```ruby
+class LogMatcher < Cuprum::Matcher
+  match(:failure) { |result| log(:error, result.error.message) }
+
+  match(:success) { log(:info, 'Ok') }
+
+  def log(level, message)
+    puts "#{level.upcase}: #{message}"
+  end
+end
+
+matcher = LogMatcher.new
+matcher.call(Cuprum::Result.new(status: :success))
+#=> prints "INFO: Ok" to STDOUT
+```
+
+Match clauses are also inherited by matcher subclasses. Inherited clauses are sorted the same as clauses defined on the matcher directly - the most specific clause is matched first, followed by less specific clauses and finally the generic clause (if any) for that result status.
+
+```ruby
+class CustomLogMatcher < Cuprum::Matcher
+  match(:failure, error: ReallyBadError) do |result|
+    log(:fatal, result.error.message)
+  end
+end
+
+matcher = CustomLogMatcher.new
+result  = Cuprum::Result.new(error: Cuprum::Error.new('Something went wrong.'))
+matcher.call(result)
+#=> prints "ERROR: Something went wrong." to STDOUT
+
+result  = Cuprum::Result.new(error: ReallyBadError.new('Computer on fire.'))
+matcher.call(result)
+#=> prints "FATAL: Computer on fire." to STDOUT
+```
+
+#### Match Contexts
+
+Match contexts provide an alternative to defining custom matcher classes - instead of defining custom behavior in the matcher itself, the match clauses can be executed in the context of another object.
+
+```ruby
+class Inflector
+  def capitalize(message)
+    message.split(' ').map(&:capitalize).join(' ')
+  end
+end
+
+matcher = Cuprum::Matcher.new(inflector) do
+  match(:success) { |result| capitalize(result.value) }
+end
+matcher.call(Cuprum::Result.new(value: 'greetings starfighter'))
+#=> 'Greetings Starfighter'
+```
+
+For example, a controller in a web framework might need to define behavior for handling different success and error cases for business logic that is defined as Commands. The controller itself defines methods such as `#render` and `#redirect` - by creating a matcher using the controller as the match context, the matcher can call upon those methods to generate a response.
+
+You can also call an existing matcher with a new context. The `#with_context` method returns a copy of the matcher with the given object set as the match context.
+
+```ruby
+matcher = Cuprum::Matcher.new do
+  match(:success) { |result| capitalize(result.value) }
+end
+matcher
+  .with_context(inflector)
+  .call(Cuprum::Result.new(value: 'greetings starfighter'))
+#=> 'Greetings Starfighter'
+```
 
 ### Command Factories
 

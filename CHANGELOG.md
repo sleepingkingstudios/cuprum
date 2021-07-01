@@ -24,6 +24,10 @@ Added the `#type` method and property.
 
 Added serialization via the `#as_json` method.
 
+### Matchers
+
+Implemented `Cuprum::Matcher`, which provides a way to handle different result cases.
+
 ### RSpec
 
 Added the `#be_callable` macro, which is a wrapper for `#respond_to` that references the `#process` method.

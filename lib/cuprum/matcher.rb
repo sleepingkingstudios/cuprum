@@ -81,6 +81,7 @@ module Cuprum
     def with_context(match_context)
       clone.tap { |copy| copy.match_context = match_context }
     end
+    alias_method :using_context, :with_context
 
     protected
 

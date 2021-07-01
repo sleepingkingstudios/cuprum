@@ -64,6 +64,11 @@ RSpec.describe Cuprum::Matcher do
 
     it { expect(matcher).to respond_to(:with_context).with(1).argument }
 
+    it 'should alias the method as #using_context' do
+      expect(matcher.method(:using_context))
+        .to be == matcher.method(:with_context)
+    end
+
     it { expect(copy).to be_a described_class }
 
     it { expect(copy).not_to be matcher }
