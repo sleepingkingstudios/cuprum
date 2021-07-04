@@ -4,6 +4,8 @@
 
 The "One Giant Leap" Update
 
+**Note:** This will be the last feature update before 1.0.
+
 ### Commands
 
 Implemented the `#to_proc` method, which allows for constructs such as `array.map(&command)`.

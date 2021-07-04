@@ -1043,6 +1043,67 @@ matcher
 #=> 'Greetings Starfighter'
 ```
 
+#### Matcher Lists
+
+Matcher lists handle matching a result against an ordered group of matchers.
+
+When given a result, a matcher list will check for the most specific matching clause in each of the matchers. A clause matching both the value and error will match first, followed by a clause matching only the result value or error, and finally a clause matching only the result status will match.
+
+If none of the matchers have a clause that matches the result, a `Cuprum::Matching::NoMatchError` will be raised.
+
+```ruby
+generic_matcher = Cuprum::Matcher.new do
+  match(:failure) { 'generic failure' }
+  #
+  match(:failure, error: CustomError) { 'custom failure' }
+end
+specific_matcher = Cuprum::Matcher.new do
+  match(:failure, error: Cuprum::Error) { 'specific failure' }
+end
+matcher_list = Cuprum::MatcherList.new(
+  [
+    specific_matcher,
+    generic_matcher
+  ]
+)
+
+generic_matcher = Cuprum::Matcher.new do
+  match(:failure) { 'generic failure' }
+
+  match(:failure, error: CustomError) { 'custom failure' }
+end
+specific_matcher = Cuprum::Matcher.new do
+  match(:failure, error: Cuprum::Error) { 'specific failure' }
+end
+matcher_list = Cuprum::MatcherList.new(
+  [
+    specific_matcher,
+    generic_matcher
+  ]
+)
+
+# A failure without an error does not match the first matcher, so the
+# matcher list continues on to the next matcher in the list.
+result = Cuprum::Result.new(status: :failure)
+matcher_list.call(result)
+#=> 'generic failure'
+
+# A failure with an error matches the first matcher.
+error  = Cuprum::Error.new(message: 'Something went wrong.')
+result = Cuprum::Result.new(error: error)
+matcher_list.call(result)
+#=> 'specific failure'
+
+# A failure with an error subclass still matches the first matcher, even
+# though the second matcher has a more exact match.
+error  = CustomError.new(message: 'The magic smoke is escaping.')
+result = Cuprum::Result.new(error: error)
+matcher_list.call(result)
+#=> 'specific failure'
+```
+
+One use case for matcher lists would be in defining hierarchies of classes or objects that have matching functionality. For example, a generic controller class might define default success and failure behavior, an included mixin might provide handling for a particular scope of errors, and a specific controller might override the default behavior for a given action. Using a matcher list allows each class or module to define its own behavior as independent matchers, which the matcher list then composes together.
+
 ### Command Factories
 
 [Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommandFactory)

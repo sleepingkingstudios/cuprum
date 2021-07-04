@@ -8,11 +8,6 @@
   - calls super()
   - on raised StandardError, returns a failing result with UncaughtException error
 
-### Matcher
-
-- Handle success(), failure(), failure(SomeError) cases.
-  - Custom matcher to handle additional cases - halted, pending, etc?
-
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
