@@ -4,6 +4,8 @@
 # citizen of your application.
 module Cuprum
   autoload :Command,   'cuprum/command'
+  autoload :Error,     'cuprum/error'
+  autoload :Matcher,   'cuprum/matcher'
   autoload :Operation, 'cuprum/operation'
   autoload :Result,    'cuprum/result'
   autoload :Steps,     'cuprum/steps'

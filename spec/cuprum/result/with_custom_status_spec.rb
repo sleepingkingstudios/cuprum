@@ -29,7 +29,6 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
           .and_keywords(:error, :status, :value)
       end
 
-      # rubocop:disable RSpec/NestedGroups
       describe 'with status: :failure' do
         let(:result) { described_class.new(status: :failure) }
 
@@ -85,7 +84,6 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
             .to raise_error ArgumentError, error_message
         end
       end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     describe '#==' do
@@ -113,7 +111,6 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         status: status_scenarios
       }
 
-      # rubocop:disable RSpec/NestedGroups
       describe 'with nil' do
         # rubocop:disable Style/NilComparison
         it { expect(result == nil).to be false }
@@ -226,7 +223,6 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         include_examples 'should compare the results in each scenario',
           default_scenarios
       end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     describe '#failure?' do

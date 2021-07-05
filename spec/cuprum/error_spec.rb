@@ -98,7 +98,6 @@ RSpec.describe Cuprum::Error do
       it { expect(error == other).to be false }
     end
 
-    # rubocop:disable RSpec/NestedGroups
     context 'when initialized with a message' do
       let(:message) { 'Something went wrong.' }
 
@@ -393,7 +392,6 @@ RSpec.describe Cuprum::Error do
         end
       end
     end
-    # rubocop:enable RSpec/NestedGroups
   end
 
   describe '#as_json' do
@@ -454,7 +452,7 @@ RSpec.describe Cuprum::Error do
 
       it { expect(error.type).to be == described_class::TYPE }
 
-      context 'when initialized with a type' do # rubocop:disable RSpec/NestedGroups
+      context 'when initialized with a type' do
         let(:type) { 'spec.custom_error' }
 
         it { expect(error.type).to be == type }

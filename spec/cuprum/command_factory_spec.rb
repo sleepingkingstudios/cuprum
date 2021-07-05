@@ -87,7 +87,6 @@ RSpec.describe Cuprum::CommandFactory do
   end
 
   shared_examples 'should define the helper method' do
-    # rubocop:disable RSpec/NestedGroups
     describe '#${command_name}' do
       before(:example) { define_command }
 
@@ -134,7 +133,6 @@ RSpec.describe Cuprum::CommandFactory do
         end
       end
     end
-    # rubocop:enable RSpec/NestedGroups
   end
 
   shared_examples 'should call the #build_command method' do

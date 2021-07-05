@@ -4,6 +4,8 @@
 
 The "One Giant Leap" Update
 
+**Note:** This will be the last feature update before 1.0.
+
 ### Commands
 
 Implemented the `#to_proc` method, which allows for constructs such as `array.map(&command)`.
@@ -23,6 +25,10 @@ Errors can now define their comparable properties by passing additional keywords
 Added the `#type` method and property.
 
 Added serialization via the `#as_json` method.
+
+### Matchers
+
+Implemented `Cuprum::Matcher`, which provides a way to handle different result cases.
 
 ### RSpec
 

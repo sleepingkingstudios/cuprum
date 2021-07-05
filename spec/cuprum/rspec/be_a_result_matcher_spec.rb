@@ -286,7 +286,6 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
   end
 
-  # rubocop:disable RSpec/NestedGroups
   describe '#matches?' do
     shared_examples 'should set the failure message' do
       it 'should set the failure message' do
@@ -1550,7 +1549,6 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
     end
   end
-  # rubocop:enable RSpec/NestedGroups
 
   describe '#with_error' do
     let(:expected_error) { Cuprum::Error.new(message: 'Something went wrong.') }

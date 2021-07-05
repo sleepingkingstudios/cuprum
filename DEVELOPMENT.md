@@ -2,6 +2,12 @@
 
 ## Version 0.11.0
 
+### ExceptionHandling
+
+- wraps #call
+  - calls super()
+  - on raised StandardError, returns a failing result with UncaughtException error
+
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
@@ -55,11 +61,6 @@ Add `.rbs` files
   as array
 - RetryCommand - takes command, retry count
   - optional only:, except: - restrict what errors are retried
-
-### Matcher
-
-- Handle success(), failure(), failure(SomeError) cases.
-  - Custom matcher to handle additional cases - halted, pending, etc?
 
 ### Middleware
 
