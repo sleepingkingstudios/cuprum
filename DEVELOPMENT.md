@@ -8,6 +8,8 @@
   - calls super()
   - on raised StandardError, returns a failing result with UncaughtException error
 
+### Middleware
+
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update

@@ -37,6 +37,9 @@ Naming/FileName:
   Exclude:
     - Gemfile
 
+Naming/RescuedExceptionsVariableName:
+  PreferredName: exception
+
 RSpec/ExampleLength:
   Max: 10
 
