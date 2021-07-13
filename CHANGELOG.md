@@ -12,6 +12,12 @@ Implemented the `#to_proc` method, which allows for constructs such as `array.ma
 
 Removed the deprecated chaining mechanic.
 
+#### Exception Handling
+
+Defined `Cuprum::ExceptionHandling` to rescue uncaught errors in commands.
+
+Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
+
 #### Steps
 
 Deprecated calling `#step` with a method name.

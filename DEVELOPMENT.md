@@ -2,11 +2,12 @@
 
 ## Version 0.11.0
 
-### ExceptionHandling
+### Middleware
 
-- wraps #call
-  - calls super()
-  - on raised StandardError, returns a failing result with UncaughtException error
+- Implement Cuprum::Middleware
+  - #process takes next command, \*args, \*\*kwargs
+    - calls next command with \*args, \*\*kwargs
+  - .apply takes middleware: array, root: command
 
 ## Version 1.0.0
 
@@ -66,10 +67,6 @@ Add `.rbs` files
 
 - Implement Command.subclass
   - Curries constructor arguments
-- Implement Cuprum::Middleware
-  - #process takes next command, \*args, \*\*kwargs
-    - calls next command with \*args, \*\*kwargs
-  - .apply takes middleware: array, root: command
 - Implement Cuprum::AppliedMiddleware < Cuprum::Command
   - has readers #root (Class), #middleware (Array<Class>)
   - #initialize

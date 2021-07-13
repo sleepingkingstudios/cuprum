@@ -270,7 +270,7 @@ multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
 
-### Composing Commands
+#### Composing Commands
 
 Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
 
@@ -331,7 +331,7 @@ add_two_command.call(8).value #=> 10
 
 You can achieve even more powerful composition by passing in a command as an argument to a method, or by creating a method that returns a command.
 
-#### Commands As Arguments
+##### Commands As Arguments
 
 Since commands are objects, they can be passed in as arguments to a method or to another command. For example, consider a command that calls another command a given number of times:
 
@@ -383,7 +383,7 @@ end
 
 This pattern is also useful for testing. When writing specs for the FulfillOrder command, simply pass in a mock double as the delivery command. This removes any need to stub out the implementation of whatever shipping method is used (or worse, calls to external services).
 
-#### Commands As Returned Values
+##### Commands As Returned Values
 
 We can also return commands as an object from a method call or from another command. One use case for this is the Abstract Factory pattern.
 
@@ -413,7 +413,7 @@ Notice that our factory includes error handling - if the user does not have a va
 
 The [Command Factory](#label-Command+Factories) defined by Cuprum is another example of using the Abstract Factory pattern to return command instances. One use case for a command factory would be defining CRUD operations for data records. Depending on the class or the type of record passed in, the factory could return a generic command or a specific command tied to that specific record type.
 
-### Command Steps
+#### Command Steps
 
 Separating out business logic into commands is a powerful tool, but it does come with some overhead, particularly when checking whether a result is passing, or when converting between results and values. When a process has many steps, each of which can fail or return a value, this can result in a lot of boilerplate.
 
@@ -529,7 +529,7 @@ result.success? #=> true
 result.value    #=> an instance of BookReservation
 ```
 
-#### Using Steps Outside Of Commands
+##### Using Steps Outside Of Commands
 
 Steps can also be used outside of a command. For example, a controller action might define a sequence of steps to run when the corresponding endpoint is called.
 
@@ -591,6 +591,39 @@ end
 A few things to note about this example. First, we have a couple of examples of wrapping existing code in a result, both by rescuing exceptions (in `#build_book`) or by checking a returned status (in `#persist_book`). Second, note that each of our helper methods can be reused in other controller actions. For even more encapsulation and reusability, the next step might be to convert those methods to commands of their own.
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
+
+#### Handling Exceptions
+
+    require 'cuprum/exception_handling'
+
+Cuprum defines a utility module to rescue uncaught exceptions when calling a command.
+
+```ruby
+class UnsafeCommand < Cuprum::Command
+  private
+
+  def process
+    raise 'Something went wrong.'
+  end
+end
+
+class SafeCommand < UnsafeCommand
+  include Cuprum::ExceptionHandling
+end
+
+UnsafeCommand.new.call
+#=> raises a StandardError
+
+result = SafeCommand.new.call
+#=> a Cuprum::Result
+result.error
+#=> a Cuprum::Errors::UncaughtException error.
+result.error.message
+#=> 'uncaught exception in SafeCommand -' \
+    ' StandardError: Something went wrong.'
+```
+
+Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
 
 <a id="Results"></a>
 
