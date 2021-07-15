@@ -12,11 +12,19 @@ Implemented the `#to_proc` method, which allows for constructs such as `array.ma
 
 Removed the deprecated chaining mechanic.
 
+#### Currying
+
+Added support for currying block parameters.
+
 #### Exception Handling
 
 Defined `Cuprum::ExceptionHandling` to rescue uncaught errors in commands.
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
+
+#### Middleware
+
+Defined `Cuprum::Middleware` to define a wrapper that calls other commands.
 
 #### Steps
 
@@ -39,6 +47,8 @@ Implemented `Cuprum::Matcher`, which provides a way to handle different result c
 ### RSpec
 
 Added the `#be_callable` macro, which is a wrapper for `#respond_to` that references the `#process` method.
+
+RSpec matchers are no longer automatically included when the macro is required. To use the Cuprum matchers, add `config.include Cuprum::RSpec::Matchers` to your RSpec configuration, or add `include Cuprum::RSpec::Matchers` to your example groups.
 
 ## 0.10.0
 

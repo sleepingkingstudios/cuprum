@@ -56,10 +56,12 @@ module Cuprum::Currying
     # @param arguments [Array] The arguments to pass to the curried command.
     # @param command [Cuprum::Command] The original command to curry.
     # @param keywords [Hash] The keywords to pass to the curried command.
-    def initialize(command:, arguments: [], keywords: {})
+    # @yield A block to pass to the curried command.
+    def initialize(command:, arguments: [], block: nil, keywords: {})
       super()
 
       @arguments = arguments
+      @block     = block
       @command   = command
       @keywords  = keywords
     end
@@ -89,6 +91,9 @@ module Cuprum::Currying
     # @return [Array] the arguments to pass to the curried command.
     attr_reader :arguments
 
+    # @return [Proc, nil] a block to pass to the curried command.
+    attr_reader :block
+
     # @return [Cuprum::Command] the original command to curry.
     attr_reader :command
 
@@ -97,14 +102,14 @@ module Cuprum::Currying
 
     private
 
-    def process(*args, **kwargs, &block)
+    def process(*args, **kwargs, &override)
       args   = [*arguments, *args]
       kwargs = keywords.merge(kwargs)
 
       if kwargs.empty?
-        command.call(*args, &block)
+        command.call(*args, &(override || block))
       else
-        command.call(*args, **kwargs, &block)
+        command.call(*args, **kwargs, &(override || block))
       end
     end
   end

@@ -1,14 +1,5 @@
 # Development
 
-## Version 0.11.0
-
-### Middleware
-
-- Implement Cuprum::Middleware
-  - #process takes next command, \*args, \*\*kwargs
-    - calls next command with \*args, \*\*kwargs
-  - .apply takes middleware: array, root: command
-
 ## Version 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update

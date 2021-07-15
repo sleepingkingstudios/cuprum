@@ -65,11 +65,12 @@ module Cuprum
     # @return [Cuprum::Currying::CurriedCommand] the curried command.
     #
     # @see Cuprum::Currying::CurriedCommand#call
-    def curry(*arguments, **keywords)
-      return self if arguments.empty? && keywords.empty?
+    def curry(*arguments, **keywords, &block)
+      return self if arguments.empty? && keywords.empty? && block.nil?
 
       Cuprum::Currying::CurriedCommand.new(
         arguments: arguments,
+        block:     block,
         command:   self,
         keywords:  keywords
       )
