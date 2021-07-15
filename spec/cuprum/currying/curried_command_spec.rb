@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 require 'cuprum/currying/curried_command'
+require 'cuprum/rspec/be_a_result'
 
 RSpec.describe Cuprum::Currying::CurriedCommand do
+  include Cuprum::RSpec::Matchers
+
   shared_context 'when initialized with one argument' do
     let(:arguments) { %i[ichi] }
   end
@@ -19,19 +22,31 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     let(:keywords) { { foo: 'foo', bar: 'bar', baz: 'baz' } }
   end
 
+  shared_context 'when initialized with a block' do
+    let(:block) { -> {} }
+  end
+
   shared_context 'when initialized with many arguments and keywords' do
     include_context 'when initialized with many arguments'
     include_context 'when initialized with many keywords'
   end
 
+  shared_context 'when initialized with arguments, keywords, and a block' do
+    include_context 'when initialized with many arguments'
+    include_context 'when initialized with many keywords'
+    include_context 'when initialized with a block'
+  end
+
   subject(:instance) do
     described_class.new(
       arguments: arguments,
+      block:     block,
       command:   command,
       keywords:  keywords
     )
   end
 
+  let(:block)     { nil }
   let(:command)   { Cuprum::Command.new }
   let(:arguments) { [] }
   let(:keywords)  { {} }
@@ -41,7 +56,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:arguments, :command, :keywords)
+        .and_keywords(:arguments, :block, :command, :keywords)
     end
   end
 
@@ -59,9 +74,26 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     wrap_context 'when initialized with many arguments and keywords' do
       it { expect(instance.arguments).to be == arguments }
     end
+
+    wrap_context 'when initialized with arguments, keywords, and a block' do
+      it { expect(instance.arguments).to be == arguments }
+    end
+  end
+
+  describe '#block' do
+    include_examples 'should have reader', :block, nil
+
+    wrap_context 'when initialized with a block' do
+      it { expect(instance.block).to be == block }
+    end
+
+    wrap_context 'when initialized with arguments, keywords, and a block' do
+      it { expect(instance.block).to be == block }
+    end
   end
 
   describe '#call' do
+    # rubocop:disable RSpec/MultipleMemoizedHelpers
     shared_examples 'should call the command with the expected parameters' do
       let(:expected_arguments) do
         [*arguments, *args]
@@ -79,6 +111,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
 
         params.empty? ? no_args : params
       end
+      let(:expected_block) { blk || block }
 
       it 'should call the command with the expected parameters' do
         call_curried_command
@@ -86,16 +119,19 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
         expect(command).to have_received(:call).with(*expected_parameters)
       end
 
+      it 'should call the command with the expected block' do
+        expect(call_curried_command)
+          .to be_a_passing_result
+          .with_value(expected_block)
+      end
+
       it 'should return the result' do
+        allow(command).to receive(:call).and_return(result)
+
         expect(call_curried_command).to be result
       end
-
-      it 'should yield the block to the command' do
-        allow(command).to receive(:call).and_yield
-
-        expect { |block| call_curried_command(&block) }.to yield_control
-      end
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     shared_examples 'should curry the arguments and keywords' do
       describe 'with no arguments' do
@@ -126,31 +162,43 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
         include_examples 'should call the command with the expected parameters'
       end
 
+      describe 'with a block' do
+        let(:blk) { -> {} }
+
+        include_examples 'should call the command with the expected parameters'
+      end
+
       describe 'with many arguments and keywords' do
         let(:args)   { %w[uno dos tres] }
         let(:kwargs) { { daito: 'medium', shoto: 'short', tachi: 'long' } }
 
         include_examples 'should call the command with the expected parameters'
       end
-    end
 
-    let(:args)   { [] }
-    let(:kwargs) { {} }
-    let(:result) { Cuprum::Result.new }
+      describe 'with arguments, keywords, and a block' do
+        let(:args)   { %w[uno dos tres] }
+        let(:kwargs) { { daito: 'medium', shoto: 'short', tachi: 'long' } }
+        let(:blk)    { -> {} }
 
-    before(:example) { allow(command).to receive(:call).and_return(result) }
-
-    def call_curried_command(&block) # rubocop:disable Metrics/AbcSize
-      if block_given? && kwargs.empty?
-        instance.call(*args, &block)
-      elsif block_given?
-        instance.call(*args, **kwargs, &block)
-      elsif kwargs.empty?
-        instance.call(*args)
-      else
-        instance.call(*args, **kwargs)
+        include_examples 'should call the command with the expected parameters'
       end
     end
+
+    let(:command) { Cuprum::Command.new { |*_, **_, &block| block } }
+    let(:args)    { [] }
+    let(:kwargs)  { {} }
+    let(:blk)     { nil }
+    let(:result)  { Cuprum::Result.new }
+
+    def call_curried_command
+      if kwargs.empty?
+        instance.call(*args, &blk)
+      else
+        instance.call(*args, **kwargs, &blk)
+      end
+    end
+
+    before(:example) { allow(command).to receive(:call).and_call_original }
 
     it { expect(instance).to respond_to(:call).with_unlimited_arguments }
 
@@ -184,6 +232,10 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
       end
     end
 
+    wrap_context 'when initialized with a block' do
+      include_examples 'should curry the arguments and keywords'
+    end
+
     wrap_context 'when initialized with many arguments and keywords' do
       include_examples 'should curry the arguments and keywords'
 
@@ -192,6 +244,10 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
 
         include_examples 'should call the command with the expected parameters'
       end
+    end
+
+    wrap_context 'when initialized with arguments, keywords, and a block' do
+      include_examples 'should curry the arguments and keywords'
     end
   end
 
@@ -211,6 +267,10 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     end
 
     wrap_context 'when initialized with many arguments and keywords' do
+      it { expect(instance.keywords).to be == keywords }
+    end
+
+    wrap_context 'when initialized with arguments, keywords, and a block' do
       it { expect(instance.keywords).to be == keywords }
     end
   end
