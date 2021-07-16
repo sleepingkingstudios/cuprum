@@ -10,13 +10,13 @@ module Cuprum
     # Major version.
     MAJOR = 0
     # Minor version.
-    MINOR = 10
+    MINOR = 11
     # Patch version.
     PATCH = 0
     # Prerelease version.
-    PRERELEASE = nil
+    PRERELEASE = :rc
     # Build metadata.
-    BUILD = nil
+    BUILD = 0
 
     class << self
       # Generates the gem version string from the Version constants.
@@ -30,10 +30,10 @@ module Cuprum
         str = "#{MAJOR}.#{MINOR}.#{PATCH}"
 
         prerelease = value_of(:PRERELEASE)
-        str << ".#{prerelease}" if prerelease
+        str = "#{str}.#{prerelease}" if prerelease
 
         build = value_of(:BUILD)
-        str << ".#{build}" if build
+        str = "#{str}.#{build}" if build
 
         str
       end
