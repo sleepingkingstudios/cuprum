@@ -37,8 +37,6 @@ Cuprum is tested against Ruby (MRI) 2.6 through 3.0.
 
 ### Documentation
 
-Method and class documentation is available courtesy of [RubyDoc](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master).
-
 Documentation is generated using [YARD](https://yardoc.org/), and can be generated locally using the `yard` gem.
 
 ### License
@@ -55,15 +53,9 @@ To report a bug or submit a feature request, please use the [Issue Tracker](http
 
 To contribute code, please fork the repository, make the desired updates, and then provide a [Pull Request](https://github.com/sleepingkingstudios/cuprum/pulls). Pull requests must include appropriate tests for consideration, and all code must be properly formatted.
 
-### Credits
-
-Hi, I'm Rob Smith, a Ruby Engineer and the developer of this library. I use these tools every day, but they're not just written for me. If you find this project helpful in your own work, or if you have any questions, suggestions or critiques, please feel free to get in touch! I can be reached [on GitHub](https://github.com/sleepingkingstudios/cuprum) or [via email](mailto:merlin@sleepingkingstudios.com). I look forward to hearing from you!
-
-## Concepts
-
 <a id="Commands"></a>
 
-### Commands
+## Commands
 
     require 'cuprum'
 
@@ -71,9 +63,7 @@ Commands are the core feature of Cuprum. In a nutshell, each `Cuprum::Command` i
 
 Each Command implements a `#call` method that wraps your defined business logic and returns an instance of `Cuprum::Result`. The result has a status (either `:success` or `:failure`), and may have a `#value` and/or an `#error` object. For more details about Cuprum::Result, [see below](#label-Results).
 
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommand)
-
-#### Defining Commands
+### Defining Commands
 
 The recommended way to define commands is to create a subclass of `Cuprum::Command` and override the `#process` method.
 
@@ -144,7 +134,7 @@ inspect_command = Cuprum::Command.new(&:inspect) # Equivalent to above.
 
 Commands defined using `Cuprum::Command.new` are quick to use, but more difficult to read and to reuse. Defining your own command class is recommended if a command definition takes up more than one line, or if the command will be used in more than one place.
 
-#### Result Values
+### Result Values
 
 Calling the `#call` method on a `Cuprum::Command` instance will always return an instance of `Cuprum::Result`. The result's `#value` property is determined by the object returned by the `#process` method (if the command is defined as a class) or the block (if the command is defined by passing a block to `Cuprum::Command.new`).
 
@@ -168,7 +158,7 @@ result.class #=> Cuprum::Result
 result.value #=> 'Greetings, programs!'
 ```
 
-#### Success, Failure, and Errors
+### Success, Failure, and Errors
 
 Each Result has a status, either `:success` or `:failure`. A Result will have a status of `:failure` when it was created with an error object. Otherwise, a Result will have a status of `:success`. Returning a failing Result from a Command indicates that something went wrong while executing the Command.
 
@@ -216,13 +206,13 @@ result.value    #=> book
 book.published? #=> false
 ```
 
-#### Command Currying
+### Command Currying
 
 Cuprum::Command defines the `#curry` method, which allows for partial application of command objects. Partial application (more commonly referred to, if imprecisely, as currying) refers to fixing some number of arguments to a function, resulting in a function with a smaller number of arguments.
 
 In Cuprum's case, a curried (partially applied) command takes an original command and pre-defines some of its arguments. When the curried command is called, the predefined arguments and/or keywords will be combined with the arguments passed to #call.
 
-##### Currying Arguments
+#### Currying Arguments
 
 We start by defining the base command. In this case, our base command takes two string arguments - a greeting and a person to be greeted.
 
@@ -250,7 +240,7 @@ recruit_command.call
 #=> returns a result with value 'Greetings, starfighter!'
 ```
 
-##### Currying Keywords
+#### Currying Keywords
 
 We can also pass keywords to `#curry`. Again, we start by defining our base command. In this case, our base command takes a mathematical operation (addition, subtraction, multiplication, etc) and a list of operands.
 
@@ -270,7 +260,7 @@ multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
 
-#### Composing Commands
+### Composing Commands
 
 Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
 
@@ -331,7 +321,7 @@ add_two_command.call(8).value #=> 10
 
 You can achieve even more powerful composition by passing in a command as an argument to a method, or by creating a method that returns a command.
 
-##### Commands As Arguments
+#### Commands As Arguments
 
 Since commands are objects, they can be passed in as arguments to a method or to another command. For example, consider a command that calls another command a given number of times:
 
@@ -383,7 +373,7 @@ end
 
 This pattern is also useful for testing. When writing specs for the FulfillOrder command, simply pass in a mock double as the delivery command. This removes any need to stub out the implementation of whatever shipping method is used (or worse, calls to external services).
 
-##### Commands As Returned Values
+#### Commands As Returned Values
 
 We can also return commands as an object from a method call or from another command. One use case for this is the Abstract Factory pattern.
 
@@ -413,7 +403,7 @@ Notice that our factory includes error handling - if the user does not have a va
 
 The [Command Factory](#label-Command+Factories) defined by Cuprum is another example of using the Abstract Factory pattern to return command instances. One use case for a command factory would be defining CRUD operations for data records. Depending on the class or the type of record passed in, the factory could return a generic command or a specific command tied to that specific record type.
 
-#### Command Steps
+### Command Steps
 
 Separating out business logic into commands is a powerful tool, but it does come with some overhead, particularly when checking whether a result is passing, or when converting between results and values. When a process has many steps, each of which can fail or return a value, this can result in a lot of boilerplate.
 
@@ -529,7 +519,7 @@ result.success? #=> true
 result.value    #=> an instance of BookReservation
 ```
 
-##### Using Steps Outside Of Commands
+#### Using Steps Outside Of Commands
 
 Steps can also be used outside of a command. For example, a controller action might define a sequence of steps to run when the corresponding endpoint is called.
 
@@ -592,7 +582,7 @@ A few things to note about this example. First, we have a couple of examples of 
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
 
-#### Handling Exceptions
+### Handling Exceptions
 
     require 'cuprum/exception_handling'
 
@@ -627,11 +617,9 @@ Exception handling is *not* included by default - add `include Cuprum::Exception
 
 <a id="Results"></a>
 
-### Results
+## Results
 
     require 'cuprum'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FResult)
 
 A `Cuprum::Result` is a data object that encapsulates the result of calling a Cuprum command. Each result has a `#value`, an `#error` object (defaults to `nil`), and a `#status` (either `:success` or `:failure`, and accessible via the `#success?` and `#failure?` predicates).
 
@@ -700,11 +688,9 @@ result.failure? #=> false
 
 <a id="Errors"></a>
 
-### Errors
+## Errors
 
     require 'cuprum/error'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FError)
 
 A `Cuprum::Error` encapsulates a specific failure state of a Command. Each Error has a `#message` property which defaults to nil. Each Error also has a `#type` property which is determined by the Error class or subclass, although it can be overridden by passing a `:type` parameter to the constructor.
 
@@ -760,7 +746,7 @@ end
 
 It is optional but recommended to use a `Cuprum::Error` when returning a failed result from a command.
 
-#### Comparing Errors
+### Comparing Errors
 
 There are circumstances when it is useful to compare Error objects, such as when writing tests to specify the failure states of a command. To accommodate this, you can pass additional properties to `Cuprum::Error.new` (or to `super` when defining a subclass). These "comparable properties", plus the type and message (if any), are used to compare the errors.
 
@@ -818,7 +804,7 @@ class WrongColorError < Cuprum::Error
 end
 ```
 
-#### Serializing Errors
+### Serializing Errors
 
 Some use cases require serializing error objects - for example, rendering an error response as JSON. To handle this, `Cuprum::Error` defines an `#as_json` method, which generates a representation of the error as a `Hash` with `String` keys. By default, this includes the `#type` and `#message` (if any) as well as an empty `:data` Hash.
 
@@ -866,7 +852,7 @@ error.as_json #=>
 
 <a id="Middleware"></a>
 
-### Middleware
+## Middleware
 
 ```ruby
 require 'cuprum/middleware'
@@ -936,11 +922,9 @@ Middleware is loosely coupled, meaning that one middleware command can wrap any 
 
 <a id="Operations"></a>
 
-### Operations
+## Operations
 
     require 'cuprum'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation)
 
 An Operation is like a Command, but with two key differences. First, an Operation retains a reference to the result object from the most recent time the operation was called, and delegates the methods defined by `Cuprum::Result` to the most recent result. This allows a called Operation to replace a `Cuprum::Result` in any code that expects or returns a result. Second, the `#call` method returns the operation instance, rather than the result itself.
 
@@ -971,19 +955,15 @@ Like a Command, an Operation can be defined directly by passing an implementatio
 
 An operation inherits the `#call` method from Cuprum::Command (see above), and delegates the `#value`, `#error`, `#success?`, and `#failure` methods to the most recent result. If the operation has not been called, these methods will return default values.
 
-#### The Operation Mixin
-
-[Module Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FOperation%2FMixin)
+### The Operation Mixin
 
 The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
 
 <a id="Matchers"></a>
 
-### Matchers
+## Matchers
 
     require 'cuprum/matcher'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FMatcher)
 
 A Matcher provides a simple DSL for defining behavior based on a Cuprum result object.
 
@@ -1026,7 +1006,7 @@ matcher.call(Cuprum::Result.new(status: :failure))
 #=> raises Cuprum::Matching::NoMatchError
 ```
 
-#### Matching Values And Errors
+### Matching Values And Errors
 
 In addition to a status, match clauses can specify the type of the value or error of a matching result. The error or value must be a Class or Module, and the clause will then match only results whose error or value is an instance of the specified Class or Module (or a subclass of the Class).
 
@@ -1075,7 +1055,7 @@ matcher.call(Cuprum::Result.new(value: :greetings_starfighter))
 #=> 'a Symbol'
 ```
 
-#### Using Matcher Classes
+### Using Matcher Classes
 
 Matcher classes allow you to define custom behavior that can be called as part of the defined match clauses.
 
@@ -1114,7 +1094,7 @@ matcher.call(result)
 #=> prints "FATAL: Computer on fire." to STDOUT
 ```
 
-#### Match Contexts
+### Match Contexts
 
 Match contexts provide an alternative to defining custom matcher classes - instead of defining custom behavior in the matcher itself, the match clauses can be executed in the context of another object.
 
@@ -1146,7 +1126,7 @@ matcher
 #=> 'Greetings Starfighter'
 ```
 
-#### Matcher Lists
+### Matcher Lists
 
 Matcher lists handle matching a result against an ordered group of matchers.
 
@@ -1207,9 +1187,7 @@ matcher_list.call(result)
 
 One use case for matcher lists would be in defining hierarchies of classes or objects that have matching functionality. For example, a generic controller class might define default success and failure behavior, an included mixin might provide handling for a particular scope of errors, and a specific controller might override the default behavior for a given action. Using a matcher list allows each class or module to define its own behavior as independent matchers, which the matcher list then composes together.
 
-### Command Factories
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FCommandFactory)
+## Command Factories
 
 Commands are powerful and flexible objects, but they do have a few disadvantages compared to traditional service objects which allow the developer to group together related functionality and shared implementation details. To bridge this gap, Cuprum implements the CommandFactory class. Command factories provide a DSL to quickly group together related commands and create context-specific command classes or instances.
 
@@ -1262,7 +1240,7 @@ book.author    #=> 'Ursula K. Le Guin'
 book.publisher #=> nil
 ```
 
-#### The ::command Method And A Command Class
+### The ::command Method And A Command Class
 
 The first way to define a command for a factory is by calling the `::command` method and passing it the name of the command and a command class:
 
@@ -1274,7 +1252,7 @@ end
 
 This makes the command class available on a factory instance as `::Build`, and generates the `#build` method which returns an instance of `BuildBookCommand`.
 
-#### The ::command Method And A Block
+### The ::command Method And A Block
 
 By calling the `::command` method with a block, you can define a command with additional control over how the generated command. The block must return an instance of a subclass of Cuprum::Command.
 
@@ -1383,7 +1361,7 @@ ary     = result.value              #=> an array with the selected books
 ary.count #=> 1
 ```
 
-#### The ::command_class Method
+### The ::command_class Method
 
 The final way to define a command for a factory is calling the `::command_class` method with the command name and a block. The block must return a subclass (not an instance) of Cuprum::Command. This offers a balance between flexibility and power.
 
@@ -1507,15 +1485,13 @@ books.count          #=> 4
 books.include?(book) #=> true
 ```
 
-### Built In Commands
+## Built In Commands
 
 Cuprum includes a small number of predefined commands and their equivalent operations.
 
-#### IdentityCommand
+### IdentityCommand
 
     require 'cuprum/built_in/identity_command'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityCommand)
 
 A pregenerated command that returns the value or result with which it was called.
 
@@ -1526,11 +1502,9 @@ result.value    #=> 'expected value'
 result.success? #=> true
 ```
 
-#### IdentityOperation
+### IdentityOperation
 
     require 'cuprum/built_in/identity_operation'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FIdentityOperation)
 
 A pregenerated operation that sets its result to the value or result with which it was called.
 
@@ -1540,11 +1514,9 @@ operation.value    #=> 'expected value'
 operation.success? #=> true
 ```
 
-#### NullCommand
+### NullCommand
 
     require 'cuprum/built_in/null_command'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullCommand)
 
 A pregenerated command that does nothing when called. Accepts any arguments.
 
@@ -1555,11 +1527,9 @@ result.value    #=> nil
 result.success? #=> true
 ```
 
-#### NullOperation
+### NullOperation
 
     require 'cuprum/built_in/null_operation'
-
-[Class Documentation](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master/Cuprum%2FBuiltIn%2FNullOperation)
 
 A pregenerated operation that does nothing when called. Accepts any arguments.
 
@@ -1568,7 +1538,3 @@ operation = Cuprum::BuiltIn::NullOperation.new.call
 operation.value    #=> nil
 operation.success? #=> true
 ```
-
-## Reference
-
-Method and class documentation is available courtesy of [RubyDoc](http://www.rubydoc.info/github/sleepingkingstudios/cuprum/master).

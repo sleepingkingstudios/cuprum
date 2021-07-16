@@ -5,6 +5,7 @@ require 'cuprum'
 module Cuprum
   # Data object that encapsulates the result of calling a Cuprum command.
   class Result
+    # Enumerates the default permitted values for a Result#status.
     STATUSES = %i[success failure].freeze
 
     # @param value [Object] The value returned by calling the command.

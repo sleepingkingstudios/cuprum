@@ -128,7 +128,7 @@ module Cuprum::Utils
       end
     end
 
-    # (see Cuprum::Command#call)
+    # (see Cuprum::Processing#call)
     def call(*args, **kwargs, &block)
       if kwargs.empty?
         Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
