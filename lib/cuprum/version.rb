@@ -52,5 +52,6 @@ module Cuprum
     end
   end
 
+  # The current version of the gem.
   VERSION = Version.to_gem_version
 end

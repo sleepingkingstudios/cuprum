@@ -158,7 +158,7 @@ module Cuprum
     #   (see Cuprum::Operation::Mixin#success?)
 
     # @!method to_cuprum_result
-    #   (see Cuprum::Operation::Mixin#to_cuprum_result?)
+    #   (see Cuprum::Operation::Mixin#to_cuprum_result)
 
     # @!method value
     #   (see Cuprum::Operation::Mixin#value)

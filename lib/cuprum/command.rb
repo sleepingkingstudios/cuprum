@@ -84,10 +84,17 @@ module Cuprum
       singleton_class.send(:private, :process)
     end
 
+    # (see Cuprum::Processing#call)
     def call(*args, **kwargs, &block)
       steps { super }
     end
 
+    # Wraps the command in a proc.
+    #
+    # Calling the proc will call the command with the given arguments, keywords,
+    # and block.
+    #
+    # @return [Proc] the wrapping proc.
     def to_proc
       @to_proc ||= lambda do |*args, **kwargs, &block|
         if kwargs.empty?
