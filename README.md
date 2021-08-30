@@ -12,8 +12,6 @@ It defines the following concepts:
 
 ## About
 
-[comment]: # "Status Badges will go here."
-
 Traditional frameworks such as Rails focus on the objects of your application - the "nouns" such as User, Post, or Item. Using Cuprum or a similar library allows you the developer to make your business logic - the "verbs" such as Create User, Update Post or Ship Item - a first-class citizen of your project. This provides several advantages:
 
 - **Consistency:** Use the same Commands to underlie controller actions, worker processes and test factories.
@@ -22,14 +20,13 @@ Traditional frameworks such as Rails focus on the objects of your application - 
 - **Composability:** Complex logic such as "find the object with this ID, update it with these attributes, and log the transaction to the reporting service" can be extracted into a series of simple Commands and composed together. The [step](#label-Command+Steps) feature allows for complex control flows.
 - **Reusability:** Logic common to multiple data models or instances in your code, such as "persist an object to the database" or "find all records with a given user and created in a date range" can be refactored into parameterized commands.
 
-### Alternatives
+### Why Cuprum?
 
-If you want to extract your logic but Cuprum is not the right solution for you, there are a number of alternatives, including
-[ActiveInteraction](https://github.com/AaronLasseigne/active_interaction),
-[Dry::Monads](https://dry-rb.org/gems/dry-monads/),
-[Interactor](https://github.com/collectiveidea/interactor),
-[Trailblazer](http://trailblazer.to/) Operations,
-and [Waterfall](https://github.com/apneadiving/waterfall).
+Cuprum allows you to define or extract business logic from models, controllers, jobs or freeform services, and to control the flow of that logic by composing together atomic commands. At its heart, Cuprum relies on three features: commands, results, and control flow using steps.
+
+There are a number of other Ruby libraries and frameworks that provide similar solutions, such as [ActiveInteraction](https://github.com/AaronLasseigne/active_interaction), [Interactor](https://github.com/collectiveidea/interactor), and [Waterfall](https://github.com/apneadiving/waterfall). These libraries may focus on only one aspect (e.g. defining commands or control flow), or include features deliberately omitted from Cuprum such as hooks or callbacks.
+
+On the opposite end of the scale, frameworks such as [Dry::Monads](https://dry-rb.org/gems/dry-monads/) or [Trailblazer](http://trailblazer.to/) can also provide similar functionality to Cuprum. These frameworks require a larger commitment to use, particularly for a smaller team or on a smaller project, and often use idiosyncratic syntax that requires a steep learning curve. Cuprum is designed to offer a lightweight alternative that should be much more accessible to new developers.
 
 ### Compatibility
 
@@ -41,7 +38,7 @@ Documentation is generated using [YARD](https://yardoc.org/), and can be generat
 
 ### License
 
-Copyright (c) 2019 Rob Smith
+Copyright (c) 2019-2021 Rob Smith
 
 Cuprum is released under the [MIT License](https://opensource.org/licenses/MIT).
 
@@ -53,9 +50,317 @@ To report a bug or submit a feature request, please use the [Issue Tracker](http
 
 To contribute code, please fork the repository, make the desired updates, and then provide a [Pull Request](https://github.com/sleepingkingstudios/cuprum/pulls). Pull requests must include appropriate tests for consideration, and all code must be properly formatted.
 
-<a id="Commands"></a>
+### Code of Conduct
 
-## Commands
+Please note that the `Cuprum` project is released with a [Contributor Code of Conduct](https://github.com/sleepingkingstudios/cuprum/blob/master/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+
+## Getting Started
+
+Let's take a look at using Cuprum to define some business logic. Consider the following case study: we are defining an API for a lending library. We'll start by looking at our core models:
+
+- A `Patron` is a user who can borrow books from the library.
+- A `Title` represents a book, of which the library may have one or many copies.
+- A `PhysicalBook` represents one specific copy of a book. Each `PhysicalBook` belongs to a `Title`, and each `Title` can have zero, one, or many `PhysicalBook`s. A given `PhysicalBook` may or may not be available to lend out (borrowed by a patron, missing, or damaged).
+- A `BookLoan` indicates that a specific `PhysicalBook` is either being held for or checked out by a `Patron`.
+
+Some books are more popular than others, so library patrons have asked for a way to reserve a book so they can borrow it when a copy becomes available. We could build this feature in the traditional Rails fashion, but the logic is a bit more complicated and our controller will get kind of messy. Let's try building the logic using commands instead. We've already built our new model:
+
+- A `BookReservation` indicates that a `Patron` is waiting for the next available copy of a `Title`. Whenever the next `PhysicalBook` is available, then the oldest `BookReservation` will convert into a `BookLoan`.
+
+Here is the logic required to fulfill a reserve book request:
+
+- Validate the `Patron` making the request, based on the `patron_id` API parameter.
+    - Does the patron exist?
+    - Is the patron active?
+    - Does the patron have unpaid fines?
+- Validate the `Title` requested, based on the `title_id` API parameter.
+    - Does the book exist in the system?
+    - Are there any physical copies of the book in the system?
+- Are all of the physical books checked out?
+    - If so, we create a `BookReservation` for the `Title` and the `Patron`.
+    - If not, we create a `BookLoan` for a `PhysicalBook` and the `Patron`.
+
+Let's get started by handling the `Patron` validation.
+
+```ruby
+class FindValidPatron < Cuprum::Command
+  private
+
+  def check_active(patron)
+    return if patron.active?
+
+    failure(Cuprum::Error.new(message: "Patron #{patron.id} is not active"))
+  end
+
+  def check_unpaid_fines(patron)
+    return unless patron.unpaid_fines.empty?
+
+    failure(Cuprum::Error.new(message: "Patron #{patron_id} has unpaid fines"))
+  end
+
+  def find_patron(patron_id)
+    Patron.find(patron_id)
+  rescue ActiveRecord::RecordNotFound
+    failure(Cuprum::Error.new(message: "Unable to find patron #{patron_id}"))
+  end
+
+  def process(patron_id)
+    patron = step { find_patron(patron_id) }
+
+    step { check_active(patron) }
+
+    step { check_unpaid_fines(patron) }
+
+    success(patron)
+  end
+end
+```
+
+There's a lot going on there, so let's dig in. We start by defining a subclass of `Cuprum::Command`. Each command must define a `#process` method, which implements the business logic of the command. In our case, `#process` is a method that takes one argument (the `patron_id`) and defines a series of steps.
+
+Steps are a key feature of Cuprum that allows managing control flow through a command. Each `step` has a code block, which can return either a `Cuprum::Result` (either passing or failing) or any Ruby object. If the block returns an object or a passing result, the step passes and returns the object or the result value. However, if the block returns a failing result, then the step fails and halts execution of the command, which immediately returns the failing result.
+
+In our `FindValidPatron` command, we are defining three steps to run in sequence. This allows us to eschew conditional logic - we don't need to assert that a Patron exists before checking whether they are active, because the `step` flow handles that automatically. Looking at the first line in `#process`, we also see that a passing `step` returns the *value* of the result, rather than the result itself - there's no need for an explicit call to `result.value`.
+
+Finally, `Cuprum::Command` defines some helper methods. Each of our three methods includes a `failure()` call. This is a helper method that wraps the given error in a `Cuprum::Result` with status: `:failure`. Likewise, the final line in `#process` has a `success()` call, which wraps the value in a result with status: `:success`.
+
+Let's move on to finding and validating the `Title`.
+
+```ruby
+class FindValidTitle < Cuprum::Command
+  private
+
+  def find_title(title_id)
+    Title.find(title_id)
+  rescue ActiveRecord::RecordNotFound
+    failure(Cuprum::Error.new(message: "Unable to find title #{title_id}"))
+  end
+
+  def has_physical_copies?(title)
+    return unless title.physical_books.empty?
+
+    failure(Cuprum::Error.new(message: "No copies of title #{title_id}"))
+  end
+
+  def process(title_id)
+    title = step { find_title(title_id) }
+
+    step { has_physical_copies?(title) }
+
+    success(title)
+  end
+end
+```
+
+This command is pretty similar to the `FindValidPatron` command. We define a `#process` method that has a few steps, each of which delegates to a helper method. Note that we have a couple of different interaction types here. The `#find_title` method captures exception handling and translates it into a Cuprum result, while the `#has_physical_copies?` method handles conditional logic. We can also see using the first `step` in the `#process` method to easily transition from Cuprum into plain Ruby.
+
+We've captured some of our logic in sub-commands - let's see what it looks like putting it all together.
+
+```ruby
+class LoanOrReserveTitle < Cuprum::Command
+  private
+
+  def available_copies?(title)
+    title.physical_books.any?(&:available?)
+  end
+
+  def loan_book(patron:, title:)
+    physical_book = title.physical_books.select(&:available?).first
+    loan          = BookLoan.new(loanable: physical_book, patron: patron)
+
+    if loan.valid?
+      loan.save
+
+      success(loan)
+    else
+      message = "Unable to loan title #{title.id}:" \
+                " #{reservation.errors.full_messages.join(' ')}"
+      error   = Cuprum::Error.new(message: message)
+
+      failure(error)
+    end
+  end
+
+  def process(title_id:, patron_id:)
+    patron = step { FindValidPatron.new.call(patron_id) }
+    title  = step { FindValidTitle.new.call(title_id) }
+
+    if available_copies?(title)
+      loan_book(patron: patron, title: title)
+    else
+      reserve_title(patron: patron, title: title)
+    end
+  end
+
+  def reserve_title(patron:, title:)
+    reservation = BookReservation.new(patron: patron, title: title)
+
+    if reservation.valid?
+      reservation.save
+
+      success(reservation)
+    else
+      message = "Unable to reserve title #{title.id}:" \
+                " #{reservation.errors.full_messages.join(' ')}"
+      error   = Cuprum::Error.new(message: message)
+
+      failure(error)
+    end
+  end
+end
+```
+
+This command pulls everything together. Instead of using helper methods to power our steps, we are instead using our previously defined commands.
+
+Through the magic of composition, each of the checks we defined in our prior commands is used to gate the control flow - the patron must exist, be active and have no unpaid fines, and the book must exist and have physical copies. If any of those steps fail, the command will halt execution and return the relevant error. Conversely, we're able to encapsulate that logic - reading through `ReserveBook`, we don't need to know the details of what makes a valid patron or book (but if we do need to look into things, we know right where that logic lives and how it was structured).
+
+Finally, we're using plain old Ruby conditionals to determine whether to reserve the book or add the patron to a wait list. Cuprum is a powerful tool, but you don't have to use it for everything - it's specifically designed to be easy to move back and forth between Cuprum and plain Ruby. We could absolutely define a `HasAvailableCopies` command, but we don't have to.
+
+### Using The Command
+
+We've defined our `LoanOrReserveTitle` command. How can we put it to work?
+
+```ruby
+command = LoanOrReserveTitle.new
+
+# With invalid parameters.
+result = command.call(patron_id: 1_000, title_id: 0)
+result.status   #=> :failure
+result.success? #=> false
+result.error    #=> A Cuprum::Error with message "Unable to find patron 1000"
+
+# With valid parameters.
+result = command.call(patron_id: 0, title_id: 0)
+result.status   #=> :success
+result.success? #=> true
+result.value    #=> An instance of BookReservation or WaitingListReservation.
+```
+
+Using a `Cuprum` command is simple:
+
+First, instantiate the command. In our case, we haven't defined any constructor parameters, but other commands might. For example, a `SearchRecords` command might take a `record_class` parameter to specify which model class to search.
+
+Second, call the command using the `#call` method. Here, we are passing in `book_id` and `patron_id` keywords. Internally, the command is delegating to the `#process` method we defined (with some additional logic around handling `step`s and ensuring that a result object is returned).
+
+The return value of `#call` will always be a `Cuprum::Result`. Each result has the following properties:
+
+- A `#status`, either `:success` or `:failure`. Also defines corresponding helper methods `#success?` and `#failure?`.
+- A `#value`. By convention, most successful results will have a non-`nil` value, such as the records returned by a query.
+- An `#error`. Each failing result should have a non-`nil` error. Using an instance of `Cuprum::Error` or a subclass is strongly recommended, but a result error could be a simple message or other errors object.
+
+In rare cases, a result may have both a value and an error, such as the result for a partial query.
+
+Now that we know how to use a command, how can we integrate it into our application? Our original use case is defining an API, so let's build a controller action.
+
+```ruby
+class ReservationsController
+  def create
+    command = LoanOrReserveTitle.new
+    result  = command.call(patron_id: patron_id, title_id: title_id)
+
+    if result.failure?
+      render json: { ok: false, message: result.error.message }
+    elsif result.value.is_a?(BookReservation)
+      render json: {
+        ok:      true,
+        message: "You've been added to the wait list."
+      }
+    else
+      render json: {
+        ok:      true,
+        message: 'Your book is waiting at your local library!'
+      }
+    end
+  end
+
+  private
+
+  def patron_id
+    params.require(:patron_id)
+  end
+
+  def title_id
+    params.require(:title_id)
+  end
+end
+```
+
+All of the complexity of the business logic is encapsulated in the command definition - all the controller needs to do is call the command and check the result.
+
+### Next Steps
+
+We've defined a command to encapsulate our business logic, and we've incorporated that command into our application. Where can we go from here?
+
+One path forward is extracting out more of the logic into commands. Looking back over our code, we're relying heavily on some of the pre-existing methods on our models. Extracting this logic lets us simplify our models.
+
+We can also use Cuprum to reduce redundancy. Take another look at `LoanOrReserveTitle` - the `#loan_book` and `#reserve_title` helper methods look pretty similar. Both methods take a set of attributes, build a record, validate the record, and then save the record to the database. We can build a command that implements this behavior for any record class.
+
+```ruby
+class InvalidRecordError < Cuprum::Error
+  def initialize(errors:, message: nil)
+    @errors = errors
+
+    super(message: generate_message(message))
+  end
+
+  attr_reader :errors
+
+  private
+
+  def generate_message(message)
+    "#{message}: #{errors.full_messages.join(' ')}"
+  end
+end
+
+class CreateRecord
+  def initialize(record_class:, short_message: nil)
+    @record_class  = record_class
+    @short_message = short_message
+  end
+
+  attr_reader :record_class
+
+  def short_message
+    @short_message ||= "create #{record_class_name}"
+  end
+
+  private
+
+  def process(attributes:)
+    record = record_class.new(attributes)
+
+    step { validate_record(record) }
+
+    record.save
+
+    success(record)
+  end
+
+  def record_class_name
+    record_class.name.split('::').last.underscore.tr('_', ' ')
+  end
+
+  def validate_record(record)
+    return if record.valid?
+
+    error = InvalidRecordError.new(
+      errors:  record.errors,
+      message: "Unable to #{short_message}"
+    )
+    failure(error)
+  end
+end
+```
+
+This command is a little more advanced than the ones we've built previously. We start by defining a constructor for the command. This allows us to customize the behavior of the command for each use case, in this case specifying what type of record we are building. We continue using steps to manage control flow and handle errors, and helper methods to keep the `#process` method clean and readable. In a production-ready version of this command, we would probably add additional steps to encompass building the record (which can fail given invalid attribute names) and persisting the record to the database (which can fail even for valid records due to database constraints or unavailable connections).
+
+We're also defining a custom error class, which gives us three benefits. First, it allows us to move some of our presentation logic (the error message) out of the command itself. Second, it lets us pass additional context with the error, in this case the `errors` object for the invalid record object. Third, an error class gives us a method to identify what kind of error occurred.
+
+The latter two are particularly important when handling errors returned by a failing command. For example, an API response for a failed validation might include a JSON object serializing the validation errors. Likewise, the application should have different responses to an `InvalidSession` error (redirect to a login page) compared to a `BookNotFound` error (display a message and return to book selection) or a `PatronUnpaidFines` error (show a link to pay outstanding fines). Using custom error classes allows the application to adapt its behavior based on the type of failure, either with a conventional Ruby conditional or `case` statement, or by using a `Cuprum::Matcher`.
+
+## Reference
+
+### Commands
 
     require 'cuprum'
 
@@ -63,7 +368,7 @@ Commands are the core feature of Cuprum. In a nutshell, each `Cuprum::Command` i
 
 Each Command implements a `#call` method that wraps your defined business logic and returns an instance of `Cuprum::Result`. The result has a status (either `:success` or `:failure`), and may have a `#value` and/or an `#error` object. For more details about Cuprum::Result, [see below](#label-Results).
 
-### Defining Commands
+#### Defining Commands
 
 The recommended way to define commands is to create a subclass of `Cuprum::Command` and override the `#process` method.
 
@@ -134,7 +439,7 @@ inspect_command = Cuprum::Command.new(&:inspect) # Equivalent to above.
 
 Commands defined using `Cuprum::Command.new` are quick to use, but more difficult to read and to reuse. Defining your own command class is recommended if a command definition takes up more than one line, or if the command will be used in more than one place.
 
-### Result Values
+#### Result Values
 
 Calling the `#call` method on a `Cuprum::Command` instance will always return an instance of `Cuprum::Result`. The result's `#value` property is determined by the object returned by the `#process` method (if the command is defined as a class) or the block (if the command is defined by passing a block to `Cuprum::Command.new`).
 
@@ -158,7 +463,7 @@ result.class #=> Cuprum::Result
 result.value #=> 'Greetings, programs!'
 ```
 
-### Success, Failure, and Errors
+#### Success, Failure, and Errors
 
 Each Result has a status, either `:success` or `:failure`. A Result will have a status of `:failure` when it was created with an error object. Otherwise, a Result will have a status of `:success`. Returning a failing Result from a Command indicates that something went wrong while executing the Command.
 
@@ -206,13 +511,13 @@ result.value    #=> book
 book.published? #=> false
 ```
 
-### Command Currying
+#### Command Currying
 
 Cuprum::Command defines the `#curry` method, which allows for partial application of command objects. Partial application (more commonly referred to, if imprecisely, as currying) refers to fixing some number of arguments to a function, resulting in a function with a smaller number of arguments.
 
 In Cuprum's case, a curried (partially applied) command takes an original command and pre-defines some of its arguments. When the curried command is called, the predefined arguments and/or keywords will be combined with the arguments passed to #call.
 
-#### Currying Arguments
+##### Currying Arguments
 
 We start by defining the base command. In this case, our base command takes two string arguments - a greeting and a person to be greeted.
 
@@ -240,7 +545,7 @@ recruit_command.call
 #=> returns a result with value 'Greetings, starfighter!'
 ```
 
-#### Currying Keywords
+##### Currying Keywords
 
 We can also pass keywords to `#curry`. Again, we start by defining our base command. In this case, our base command takes a mathematical operation (addition, subtraction, multiplication, etc) and a list of operands.
 
@@ -260,7 +565,7 @@ multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
 
-### Composing Commands
+#### Composing Commands
 
 Because Cuprum::Command instances are proper objects, they can be composed like any other object. For example, we could define some basic mathematical operations by composing commands:
 
@@ -321,7 +626,7 @@ add_two_command.call(8).value #=> 10
 
 You can achieve even more powerful composition by passing in a command as an argument to a method, or by creating a method that returns a command.
 
-#### Commands As Arguments
+##### Commands As Arguments
 
 Since commands are objects, they can be passed in as arguments to a method or to another command. For example, consider a command that calls another command a given number of times:
 
@@ -373,7 +678,7 @@ end
 
 This pattern is also useful for testing. When writing specs for the FulfillOrder command, simply pass in a mock double as the delivery command. This removes any need to stub out the implementation of whatever shipping method is used (or worse, calls to external services).
 
-#### Commands As Returned Values
+##### Commands As Returned Values
 
 We can also return commands as an object from a method call or from another command. One use case for this is the Abstract Factory pattern.
 
@@ -403,7 +708,7 @@ Notice that our factory includes error handling - if the user does not have a va
 
 The [Command Factory](#label-Command+Factories) defined by Cuprum is another example of using the Abstract Factory pattern to return command instances. One use case for a command factory would be defining CRUD operations for data records. Depending on the class or the type of record passed in, the factory could return a generic command or a specific command tied to that specific record type.
 
-### Command Steps
+#### Command Steps
 
 Separating out business logic into commands is a powerful tool, but it does come with some overhead, particularly when checking whether a result is passing, or when converting between results and values. When a process has many steps, each of which can fail or return a value, this can result in a lot of boilerplate.
 
@@ -519,7 +824,7 @@ result.success? #=> true
 result.value    #=> an instance of BookReservation
 ```
 
-#### Using Steps Outside Of Commands
+##### Using Steps Outside Of Commands
 
 Steps can also be used outside of a command. For example, a controller action might define a sequence of steps to run when the corresponding endpoint is called.
 
@@ -582,7 +887,7 @@ A few things to note about this example. First, we have a couple of examples of 
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
 
-### Handling Exceptions
+#### Handling Exceptions
 
     require 'cuprum/exception_handling'
 
@@ -615,9 +920,7 @@ result.error.message
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
 
-<a id="Results"></a>
-
-## Results
+### Results
 
     require 'cuprum'
 
@@ -686,9 +989,7 @@ result.success? #=> true
 result.failure? #=> false
 ```
 
-<a id="Errors"></a>
-
-## Errors
+### Errors
 
     require 'cuprum/error'
 
@@ -746,7 +1047,7 @@ end
 
 It is optional but recommended to use a `Cuprum::Error` when returning a failed result from a command.
 
-### Comparing Errors
+#### Comparing Errors
 
 There are circumstances when it is useful to compare Error objects, such as when writing tests to specify the failure states of a command. To accommodate this, you can pass additional properties to `Cuprum::Error.new` (or to `super` when defining a subclass). These "comparable properties", plus the type and message (if any), are used to compare the errors.
 
@@ -804,7 +1105,7 @@ class WrongColorError < Cuprum::Error
 end
 ```
 
-### Serializing Errors
+#### Serializing Errors
 
 Some use cases require serializing error objects - for example, rendering an error response as JSON. To handle this, `Cuprum::Error` defines an `#as_json` method, which generates a representation of the error as a `Hash` with `String` keys. By default, this includes the `#type` and `#message` (if any) as well as an empty `:data` Hash.
 
@@ -850,9 +1151,7 @@ error.as_json #=>
 
 **Important Note:** Be careful when serializing error data - this may expose sensitive information or internal details about your system that you don't want to display to users. Recommended practice is to have a whitelist of serializable errors; all other errors will display a generic error message instead.
 
-<a id="Middleware"></a>
-
-## Middleware
+### Middleware
 
 ```ruby
 require 'cuprum/middleware'
@@ -920,9 +1219,7 @@ end
 
 Middleware is loosely coupled, meaning that one middleware command can wrap any number of other commands. One example would be logging middleware, which could record when a command is called and with what parameters. For a more involved example, consider authorization in a web application. If individual actions are defined as commands, then a single authorization middleware class could wrap each individual action, reducing both the testing burden and the amount of code that must be maintained.
 
-<a id="Operations"></a>
-
-## Operations
+### Operations
 
     require 'cuprum'
 
@@ -955,13 +1252,11 @@ Like a Command, an Operation can be defined directly by passing an implementatio
 
 An operation inherits the `#call` method from Cuprum::Command (see above), and delegates the `#value`, `#error`, `#success?`, and `#failure` methods to the most recent result. If the operation has not been called, these methods will return default values.
 
-### The Operation Mixin
+#### The Operation Mixin
 
 The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
 
-<a id="Matchers"></a>
-
-## Matchers
+### Matchers
 
     require 'cuprum/matcher'
 
@@ -1006,7 +1301,7 @@ matcher.call(Cuprum::Result.new(status: :failure))
 #=> raises Cuprum::Matching::NoMatchError
 ```
 
-### Matching Values And Errors
+#### Matching Values And Errors
 
 In addition to a status, match clauses can specify the type of the value or error of a matching result. The error or value must be a Class or Module, and the clause will then match only results whose error or value is an instance of the specified Class or Module (or a subclass of the Class).
 
@@ -1055,7 +1350,7 @@ matcher.call(Cuprum::Result.new(value: :greetings_starfighter))
 #=> 'a Symbol'
 ```
 
-### Using Matcher Classes
+#### Using Matcher Classes
 
 Matcher classes allow you to define custom behavior that can be called as part of the defined match clauses.
 
@@ -1094,7 +1389,7 @@ matcher.call(result)
 #=> prints "FATAL: Computer on fire." to STDOUT
 ```
 
-### Match Contexts
+#### Match Contexts
 
 Match contexts provide an alternative to defining custom matcher classes - instead of defining custom behavior in the matcher itself, the match clauses can be executed in the context of another object.
 
@@ -1126,7 +1421,7 @@ matcher
 #=> 'Greetings Starfighter'
 ```
 
-### Matcher Lists
+#### Matcher Lists
 
 Matcher lists handle matching a result against an ordered group of matchers.
 
@@ -1187,7 +1482,7 @@ matcher_list.call(result)
 
 One use case for matcher lists would be in defining hierarchies of classes or objects that have matching functionality. For example, a generic controller class might define default success and failure behavior, an included mixin might provide handling for a particular scope of errors, and a specific controller might override the default behavior for a given action. Using a matcher list allows each class or module to define its own behavior as independent matchers, which the matcher list then composes together.
 
-## Command Factories
+### Command Factories
 
 Commands are powerful and flexible objects, but they do have a few disadvantages compared to traditional service objects which allow the developer to group together related functionality and shared implementation details. To bridge this gap, Cuprum implements the CommandFactory class. Command factories provide a DSL to quickly group together related commands and create context-specific command classes or instances.
 
@@ -1240,7 +1535,7 @@ book.author    #=> 'Ursula K. Le Guin'
 book.publisher #=> nil
 ```
 
-### The ::command Method And A Command Class
+#### The ::command Method And A Command Class
 
 The first way to define a command for a factory is by calling the `::command` method and passing it the name of the command and a command class:
 
@@ -1252,7 +1547,7 @@ end
 
 This makes the command class available on a factory instance as `::Build`, and generates the `#build` method which returns an instance of `BuildBookCommand`.
 
-### The ::command Method And A Block
+#### The ::command Method And A Block
 
 By calling the `::command` method with a block, you can define a command with additional control over how the generated command. The block must return an instance of a subclass of Cuprum::Command.
 
@@ -1361,7 +1656,7 @@ ary     = result.value              #=> an array with the selected books
 ary.count #=> 1
 ```
 
-### The ::command_class Method
+#### The ::command_class Method
 
 The final way to define a command for a factory is calling the `::command_class` method with the command name and a block. The block must return a subclass (not an instance) of Cuprum::Command. This offers a balance between flexibility and power.
 
@@ -1485,11 +1780,11 @@ books.count          #=> 4
 books.include?(book) #=> true
 ```
 
-## Built In Commands
+### Built In Commands
 
 Cuprum includes a small number of predefined commands and their equivalent operations.
 
-### IdentityCommand
+#### IdentityCommand
 
     require 'cuprum/built_in/identity_command'
 
@@ -1502,7 +1797,7 @@ result.value    #=> 'expected value'
 result.success? #=> true
 ```
 
-### IdentityOperation
+#### IdentityOperation
 
     require 'cuprum/built_in/identity_operation'
 
@@ -1514,7 +1809,7 @@ operation.value    #=> 'expected value'
 operation.success? #=> true
 ```
 
-### NullCommand
+#### NullCommand
 
     require 'cuprum/built_in/null_command'
 
@@ -1527,7 +1822,7 @@ result.value    #=> nil
 result.success? #=> true
 ```
 
-### NullOperation
+#### NullOperation
 
     require 'cuprum/built_in/null_operation'
 
