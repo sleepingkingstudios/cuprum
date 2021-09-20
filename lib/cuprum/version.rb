@@ -8,15 +8,15 @@ module Cuprum
   # @see http://semver.org/
   module Version
     # Major version.
-    MAJOR = 0
+    MAJOR = 1
     # Minor version.
-    MINOR = 11
+    MINOR = 0
     # Patch version.
     PATCH = 0
     # Prerelease version.
-    PRERELEASE = nil
+    PRERELEASE = :rc
     # Build metadata.
-    BUILD = nil
+    BUILD = 0
 
     class << self
       # Generates the gem version string from the Version constants.
