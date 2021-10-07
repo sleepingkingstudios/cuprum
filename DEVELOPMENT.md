@@ -1,24 +1,5 @@
 # Development
 
-## Version 1.0.0
-
-The "Look On My Works, Ye Mighty, and Despair" Update
-
-- Documentation pass.
-
-Steps Case Study: |
-
-  CMS application - creating a new post.
-  Directory has many Posts
-  Post has a Content
-  Post has many Tags
-
-  Find Directory
-  Create Post
-  Create Content
-  Tags.each { FindOrCreate Tag }
-  Publish Post # Requires that post have content
-
 ## Future Versions
 
 Add `.rbs` files

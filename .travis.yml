@@ -1,9 +1,11 @@
 # Build Options
 language: ruby
 rvm:
-  - 2.6.7
-  - 2.7.3
-  - 3.0.1
+  - 2.6.8
+  - 2.7.4
+  - 3.0.2
+before_install:
+  - sudo apt-get update && sudo apt-get install apt-transport-https ca-certificates -y && sudo update-ca-certificates
 before_script:
   - cp .rspec.example .rspec
 script:
@@ -11,4 +13,4 @@ script:
 
 # Travis-CI Configuration
 cache: bundler
-sudo:  false # Enable containerized builds.
+dist: focal

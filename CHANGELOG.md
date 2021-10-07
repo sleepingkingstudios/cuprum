@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+
+The "Look On My Works, Ye Mighty, and Despair" Update
+
+Updated documentation.
+
 ## 0.11.0
 
 The "One Giant Leap" Update
