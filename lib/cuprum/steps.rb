@@ -63,56 +63,6 @@ module Cuprum
   module Steps
     include Cuprum::ResultHelpers
 
-    UNDEFINED = Object.new.freeze
-    private_constant :UNDEFINED
-
-    class << self
-      # @!visibility private
-      def execute_method(receiver, method_name, *args, **kwargs, &block)
-        if block_given? && kwargs.empty?
-          receiver.send(method_name, *args, &block)
-        elsif block_given?
-          receiver.send(method_name, *args, **kwargs, &block)
-        elsif kwargs.empty?
-          receiver.send(method_name, *args)
-        else
-          receiver.send(method_name, *args, **kwargs)
-        end
-      end
-
-      # @!visibility private
-      def extract_result_value(result)
-        return result unless result.respond_to?(:to_cuprum_result)
-
-        result = result.to_cuprum_result
-
-        return result.value if result.success?
-
-        throw :cuprum_failed_step, result
-      end
-
-      # rubocop:disable Metrics/MethodLength
-      # @!visibility private
-      def validate_method_name(method_name)
-        if method_name.nil?
-          raise ArgumentError,
-            'expected a block or a method name',
-            caller(1..-1)
-        end
-
-        unless method_name.is_a?(String) || method_name.is_a?(Symbol)
-          raise ArgumentError,
-            'expected method name to be a String or Symbol',
-            caller(1..-1)
-        end
-
-        return unless method_name.empty?
-
-        raise ArgumentError, "method name can't be blank", caller(1..-1)
-      end
-      # rubocop:enable Metrics/MethodLength
-    end
-
     # Executes the block and returns the value, or halts on a failure.
     #
     # @yield Called with no parameters.
@@ -155,25 +105,18 @@ module Cuprum
     # @example Calling a Step with a Failing Result
     #   # The #do_something_wrong method returns a failing Cuprum result.
     #   step { do_something_wrong() } # Throws the :cuprum_failed_step symbol.
-    def step(method_name = UNDEFINED, *args, **kwargs, &block) # rubocop:disable Metrics/MethodLength
-      result =
-        if method_name != UNDEFINED || !args.empty? || !kwargs.empty?
-          SleepingKingStudios::Tools::CoreTools.deprecate(
-            "#{self.class}#step(method_name)",
-            message: 'Use the block form: step { method_name(*args, **kwargs) }'
-          )
+    def step
+      raise ArgumentError, 'expected a block' unless block_given?
 
-          Cuprum::Steps.validate_method_name(method_name)
+      result = yield
 
-          Cuprum::Steps
-            .execute_method(self, method_name, *args, **kwargs, &block)
-        elsif !block_given?
-          raise ArgumentError, 'expected a block'
-        else
-          block.call
-        end
+      return result unless result.respond_to?(:to_cuprum_result)
 
-      Cuprum::Steps.extract_result_value(result)
+      result = result.to_cuprum_result
+
+      return result.value if result.success?
+
+      throw :cuprum_failed_step, result
     end
 
     # Returns the first failing #step result, or the final result if none fail.
