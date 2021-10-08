@@ -4,7 +4,9 @@
 
 The "Look On My Works, Ye Mighty, and Despair" Update
 
-Updated documentation.
+#### Steps
+
+Removed calling `#step` with a method name.
 
 ## 0.11.0
 
