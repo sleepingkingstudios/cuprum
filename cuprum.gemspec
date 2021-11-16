@@ -22,8 +22,9 @@ Gem::Specification.new do |gem|
   gem.license     = 'MIT'
 
   gem.metadata = {
-    'bug_tracker_uri' => 'https://github.com/sleepingkingstudios/cuprum/issues',
-    'source_code_uri' => 'https://github.com/sleepingkingstudios/cuprum'
+    'bug_tracker_uri'       => 'https://github.com/sleepingkingstudios/cuprum/issues',
+    'source_code_uri'       => 'https://github.com/sleepingkingstudios/cuprum',
+    'rubygems_mfa_required' => 'true'
   }
 
   gem.required_ruby_version = '>= 2.5.0'
