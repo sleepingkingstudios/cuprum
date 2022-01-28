@@ -1555,7 +1555,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     it { expect(matcher).to respond_to(:with_error).with(1).argument }
 
-    it { expect(matcher).to alias_method(:with_error).as(:and_error) }
+    it { expect(matcher).to have_aliased_method(:with_error).as(:and_error) }
 
     it { expect(matcher.with_error expected_error).to be matcher }
   end
@@ -1563,7 +1563,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
   describe '#with_status' do
     it { expect(matcher).to respond_to(:with_status).with(1).argument }
 
-    it { expect(matcher).to alias_method(:with_status).as(:and_status) }
+    it { expect(matcher).to have_aliased_method(:with_status).as(:and_status) }
 
     it { expect(matcher.with_status :success).to be matcher }
   end
@@ -1571,7 +1571,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
   describe '#with_value' do
     it { expect(matcher).to respond_to(:with_value).with(1).argument }
 
-    it { expect(matcher).to alias_method(:with_value).as(:and_value) }
+    it { expect(matcher).to have_aliased_method(:with_value).as(:and_value) }
 
     it { expect(matcher.with_value 'returned value').to be matcher }
   end

@@ -234,7 +234,7 @@ module Cuprum::RSpec
 
       return message if ary.size == 1
 
-      message + ary[1..-1].map { |str| ".and_#{str}()" }.join
+      message + ary[1..].map { |str| ".and_#{str}()" }.join
     end
 
     def result
