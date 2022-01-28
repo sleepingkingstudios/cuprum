@@ -48,7 +48,7 @@ RSpec.describe Cuprum::Errors::UncaughtException do
     context 'when the exception has a cause' do
       let(:raised) do
         raise 'Something went wrong.'
-      rescue StandardError => cause # rubocop:disable Naming/RescuedExceptionsVariableName
+      rescue StandardError => cause
         begin
           raise 'Things got worse.'
         rescue StandardError => exception
@@ -95,7 +95,7 @@ RSpec.describe Cuprum::Errors::UncaughtException do
     context 'when the exception has a cause' do
       let(:raised) do
         raise 'Something went wrong.'
-      rescue StandardError => cause # rubocop:disable Naming/RescuedExceptionsVariableName
+      rescue StandardError => cause
         begin
           raise 'Things got worse.'
         rescue StandardError => exception

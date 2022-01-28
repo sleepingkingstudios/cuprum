@@ -35,7 +35,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency 'rspec',                       '~> 3.10'
   gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.7'
-  gem.add_development_dependency 'rubocop',                     '~> 1.10.0'
-  gem.add_development_dependency 'rubocop-rspec',               '~> 2.1'
-  gem.add_development_dependency 'simplecov',                   '~> 0.15'
+  gem.add_development_dependency 'rubocop',                     '~> 1.25'
+  gem.add_development_dependency 'rubocop-rspec',               '~> 2.8'
+  gem.add_development_dependency 'simplecov',                   '~> 0.21'
 end

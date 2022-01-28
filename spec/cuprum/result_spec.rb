@@ -108,6 +108,7 @@ RSpec.describe Cuprum::Result do
       include_examples 'should compare the results in each scenario',
         all_scenarios
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         include_examples 'should compare the results in each scenario',
           all_scenarios
@@ -117,6 +118,7 @@ RSpec.describe Cuprum::Result do
         include_examples 'should compare the results in each scenario',
           all_scenarios
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
     wrap_context 'when the result has an error' do
@@ -133,6 +135,7 @@ RSpec.describe Cuprum::Result do
       include_examples 'should compare the results in each scenario',
         all_scenarios
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         include_examples 'should compare the results in each scenario',
           all_scenarios
@@ -142,6 +145,7 @@ RSpec.describe Cuprum::Result do
         include_examples 'should compare the results in each scenario',
           all_scenarios
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
     context 'when the result has a value and an error' do
@@ -161,6 +165,7 @@ RSpec.describe Cuprum::Result do
       include_examples 'should compare the results in each scenario',
         all_scenarios
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         include_examples 'should compare the results in each scenario',
           all_scenarios
@@ -170,8 +175,10 @@ RSpec.describe Cuprum::Result do
         include_examples 'should compare the results in each scenario',
           all_scenarios
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when the result has status: :failure' do
       include_examples 'should compare the results in each scenario',
         default_scenarios
@@ -181,6 +188,7 @@ RSpec.describe Cuprum::Result do
       include_examples 'should compare the results in each scenario',
         default_scenarios
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#error' do

@@ -383,6 +383,7 @@ module Spec::Examples
 
           include_examples 'should raise a NoMatchError'
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             include_examples 'should call the match clause', 'failure'
           end
@@ -412,6 +413,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             include_examples 'should call the match clause', 'failure'
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with a failing result with an error' do
@@ -448,6 +450,7 @@ module Spec::Examples
             end
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure and a value' do
             include_examples 'should raise a NoMatchError'
           end
@@ -457,6 +460,7 @@ module Spec::Examples
           do
             include_examples 'should raise a NoMatchError'
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
 
           wrap_context 'when the matcher matches multiple statuses' do
             describe 'with a non-matching error' do
@@ -533,6 +537,7 @@ module Spec::Examples
 
           include_examples 'should raise a NoMatchError'
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             include_examples 'should call the match clause', 'failure'
           end
@@ -598,6 +603,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             include_examples 'should call the match clause', 'failure'
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with a failing result with a value and an error' do
@@ -770,6 +776,7 @@ module Spec::Examples
 
           include_examples 'should raise a NoMatchError'
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :success' do
             include_examples 'should call the match clause', 'success'
           end
@@ -789,6 +796,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             include_examples 'should call the match clause', 'success'
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with a passing result with a value' do
@@ -959,6 +967,7 @@ module Spec::Examples
 
           it { expect(matcher.matches?(result)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it { expect(matcher.matches?(result)).to be true }
           end
@@ -988,6 +997,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(result)).to be true }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with result: a failing result with an error' do
@@ -1022,6 +1032,7 @@ module Spec::Examples
             end
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure and a value' do
             it { expect(matcher.matches?(result)).to be false }
           end
@@ -1091,6 +1102,7 @@ module Spec::Examples
               it { expect(matcher.matches?(result)).to be true }
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with result: a failing result with a value' do
@@ -1101,6 +1113,7 @@ module Spec::Examples
 
           it { expect(matcher.matches?(result)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it { expect(matcher.matches?(result)).to be true }
           end
@@ -1146,6 +1159,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(result)).to be true }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with result: a failing result with a value and an error' do
@@ -1230,6 +1244,7 @@ module Spec::Examples
             end
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches multiple statuses' do
             describe 'with a non-matching error' do
               let(:error) { Class.new(Cuprum::Error) }
@@ -1289,6 +1304,7 @@ module Spec::Examples
               it { expect(matcher.matches?(result)).to be true }
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with result: a passing result' do
@@ -1296,6 +1312,7 @@ module Spec::Examples
 
           it { expect(matcher.matches?(result)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :success' do
             it { expect(matcher.matches?(result)).to be true }
           end
@@ -1315,6 +1332,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(result)).to be true }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with result: a passing result with a value' do
@@ -1349,6 +1367,7 @@ module Spec::Examples
             end
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches multiple statuses' do
             describe 'with a non-matching value' do
               let(:value) { Object }
@@ -1408,11 +1427,13 @@ module Spec::Examples
               it { expect(matcher.matches?(result)).to be true }
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: :failure' do
           it { expect(matcher.matches?(:failure)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it { expect(matcher.matches?(:failure)).to be true }
           end
@@ -1442,6 +1463,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(:failure)).to be true }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: :failure and error: a Class' do
@@ -1449,6 +1471,7 @@ module Spec::Examples
 
           it { expect(matcher.matches?(:failure, error: error)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it { expect(matcher.matches?(:failure, error: error)).to be false }
           end
@@ -1550,6 +1573,7 @@ module Spec::Examples
               it { expect(matcher.matches?(:failure, error: error)).to be true }
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: :failure and value: a Class' do
@@ -1557,6 +1581,7 @@ module Spec::Examples
 
           it { expect(matcher.matches?(:failure, value: value)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it { expect(matcher.matches?(:failure, value: value)).to be false }
           end
@@ -1622,6 +1647,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(:failure, value: value)).to be false }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: failure, error: a Class, and value: a Class' do
@@ -1633,6 +1659,7 @@ module Spec::Examples
               .to be false
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it 'should not match the parameters' do
               expect(matcher.matches?(:failure, error: error, value: value))
@@ -1708,11 +1735,13 @@ module Spec::Examples
                 .to be false
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: :success' do
           it { expect(matcher.matches?(:success)).to be false }
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :success' do
             it { expect(matcher.matches?(:success)).to be true }
           end
@@ -1732,6 +1761,7 @@ module Spec::Examples
           wrap_context 'when the matcher includes another matcher' do
             it { expect(matcher.matches?(:success)).to be true }
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
 
         describe 'with status: :success and value: a Class' do
@@ -1743,6 +1773,7 @@ module Spec::Examples
             it { expect(matcher.matches?(:success, value: value)).to be false }
           end
 
+          # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :success and a value' do
             describe 'with a non-matching value' do
               let(:value) { Object }
@@ -1830,6 +1861,7 @@ module Spec::Examples
               it { expect(matcher.matches?(:success, value: value)).to be true }
             end
           end
+          # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
       end
     end

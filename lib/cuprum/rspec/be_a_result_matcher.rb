@@ -142,7 +142,7 @@ module Cuprum::RSpec
       return '' if error_matches?
 
       "\n   expected error: #{inspect_expected(expected_error)}" \
-      "\n     actual error: #{result.error.inspect}"
+        "\n     actual error: #{result.error.inspect}"
     end
 
     def error_matches?
@@ -179,7 +179,7 @@ module Cuprum::RSpec
 
     def negated_matcher_warning
       "Using `expect().not_to be_a_result#{properties_warning}` risks false" \
-      ' positives, since any other result will match.'
+        ' positives, since any other result will match.'
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -219,7 +219,7 @@ module Cuprum::RSpec
       ary << 'error'  unless error_matches?
 
       ", but the #{tools.array_tools.humanize_list(ary)}" \
-      " #{tools.integer_tools.pluralize(ary.size, 'does', 'do')} not match:"
+        " #{tools.integer_tools.pluralize(ary.size, 'does', 'do')} not match:"
     end
 
     def properties_warning
@@ -251,7 +251,7 @@ module Cuprum::RSpec
       return '' if status_matches?
 
       "\n  expected status: #{expected_status.inspect}" \
-      "\n    actual status: #{result.status.inspect}"
+        "\n    actual status: #{result.status.inspect}"
     end
 
     def status_matches?
@@ -270,7 +270,7 @@ module Cuprum::RSpec
       return '' if value_matches?
 
       "\n   expected value: #{inspect_expected(expected_value)}" \
-      "\n     actual value: #{result.value.inspect}"
+        "\n     actual value: #{result.value.inspect}"
     end
 
     def value_matches?

@@ -202,7 +202,7 @@ RSpec.describe Cuprum::CommandFactory do
     end
     let(:error_message) do
       'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
-      'define commands for a factory.'
+        'define commands for a factory.'
     end
 
     it 'should define the class method' do
@@ -236,6 +236,7 @@ RSpec.describe Cuprum::CommandFactory do
       end
     end
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when a factory subclass is defined' do
       describe 'with a name' do
         let(:error_message) { 'must provide a command class or a block' }
@@ -553,6 +554,7 @@ RSpec.describe Cuprum::CommandFactory do
         wrap_examples 'should call the #build_command method'
       end
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '::command_class' do
@@ -569,7 +571,7 @@ RSpec.describe Cuprum::CommandFactory do
     end
     let(:error_message) do
       'Cuprum::CommandFactory is an abstract class. Create a subclass to ' \
-      'define commands for a factory.'
+        'define commands for a factory.'
     end
 
     it 'should define the class method' do
@@ -596,6 +598,7 @@ RSpec.describe Cuprum::CommandFactory do
       end
     end
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when a factory subclass is defined' do
       describe 'with a name' do
         let(:error_message) { 'must provide a block' }
@@ -751,6 +754,7 @@ RSpec.describe Cuprum::CommandFactory do
         wrap_examples 'should call the #build_command method'
       end
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#command?' do
@@ -758,6 +762,7 @@ RSpec.describe Cuprum::CommandFactory do
 
     it { expect(instance.command?(:defenestrate)).to be false }
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when a factory subclass is defined' do
       wrap_context 'when a command is defined with a block' do
         describe 'with an invalid command name' do
@@ -845,11 +850,13 @@ RSpec.describe Cuprum::CommandFactory do
         end
       end
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#commands' do
     include_examples 'should have reader', :commands, -> { be == [] }
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when a factory subclass is defined' do
       wrap_context 'when a command is defined with a block' do
         it { expect(instance.commands).to contain_exactly(command_name.intern) }
@@ -877,5 +884,6 @@ RSpec.describe Cuprum::CommandFactory do
         it { expect(instance.commands).to contain_exactly(command_name.intern) }
       end
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 end

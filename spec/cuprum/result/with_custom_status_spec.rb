@@ -130,6 +130,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         include_examples 'should compare the results in each scenario',
           all_scenarios
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :failure' do
           include_examples 'should compare the results in each scenario',
             all_scenarios
@@ -144,6 +145,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
           include_examples 'should compare the results in each scenario',
             all_scenarios
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       wrap_context 'when the result has an error' do
@@ -160,6 +162,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         include_examples 'should compare the results in each scenario',
           all_scenarios
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :failure' do
           include_examples 'should compare the results in each scenario',
             all_scenarios
@@ -174,6 +177,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
           include_examples 'should compare the results in each scenario',
             all_scenarios
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       context 'when the result has a value and an error' do
@@ -193,6 +197,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         include_examples 'should compare the results in each scenario',
           all_scenarios
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :failure' do
           include_examples 'should compare the results in each scenario',
             all_scenarios
@@ -207,8 +212,10 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
           include_examples 'should compare the results in each scenario',
             all_scenarios
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         include_examples 'should compare the results in each scenario',
           default_scenarios
@@ -223,6 +230,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         include_examples 'should compare the results in each scenario',
           default_scenarios
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
     describe '#failure?' do
@@ -235,6 +243,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
           it { expect(result.failure?).to be true }
         end
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :halted' do
           it { expect(result.failure?).to be false }
         end
@@ -242,12 +251,14 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         wrap_context 'when the result has status: :success' do
           it { expect(result.failure?).to be false }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       wrap_context 'when the result has status: :failure' do
         it { expect(result.failure?).to be true }
       end
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :halted' do
         it { expect(result.failure?).to be false }
       end
@@ -255,6 +266,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
       wrap_context 'when the result has status: :success' do
         it { expect(result.failure?).to be false }
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
     describe '#halted?' do
@@ -263,6 +275,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
       wrap_context 'when the result has an error' do
         it { expect(result.halted?).to be false }
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :failure' do
           it { expect(result.halted?).to be false }
         end
@@ -274,8 +287,10 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         wrap_context 'when the result has status: :success' do
           it { expect(result.halted?).to be false }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         it { expect(result.halted?).to be false }
       end
@@ -287,6 +302,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
       wrap_context 'when the result has status: :success' do
         it { expect(result.halted?).to be false }
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
     end
 
     describe '#success?' do
@@ -295,6 +311,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
       wrap_context 'when the result has an error' do
         it { expect(result.success?).to be false }
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has status: :failure' do
           it { expect(result.success?).to be false }
         end
@@ -302,12 +319,14 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
         wrap_context 'when the result has status: :halted' do
           it { expect(result.success?).to be false }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
 
         wrap_context 'when the result has status: :success' do
           it { expect(result.success?).to be true }
         end
       end
 
+      # rubocop:disable RSpec/RepeatedExampleGroupBody
       wrap_context 'when the result has status: :failure' do
         it { expect(result.success?).to be false }
       end
@@ -315,6 +334,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
       wrap_context 'when the result has status: :halted' do
         it { expect(result.success?).to be false }
       end
+      # rubocop:enable RSpec/RepeatedExampleGroupBody
 
       wrap_context 'when the result has status: :success' do
         it { expect(result.success?).to be true }
