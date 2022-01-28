@@ -1,7 +1,8 @@
-require: rubocop-rspec
+require:
+  - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.6
   NewCops: enable
   Include:
     - 'lib/**/*.rb'
@@ -9,6 +10,33 @@ AllCops:
   Exclude:
     - 'tmp/**/*'
     - 'vendor/**/*'
+
+RSpec:
+  Language:
+    ExampleGroups:
+      Regular:
+        - context
+        - describe
+        - wrap_context
+      Skipped:
+        - xcontext
+        - xdescribe
+        - xwrap_context
+      Focused:
+        - fcontext
+        - fdescribe
+        - fwrap_context
+    Includes:
+      Examples:
+        - finclude_contract
+        - finclude_examples
+        - fwrap_examples
+        - include_contract
+        - include_examples
+        - wrap_examples
+        - xinclude_contract
+        - xinclude_examples
+        - xwrap_examples
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation

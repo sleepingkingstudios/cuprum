@@ -27,15 +27,15 @@ Gem::Specification.new do |gem|
     'rubygems_mfa_required' => 'true'
   }
 
-  gem.required_ruby_version = '>= 2.5.0'
+  gem.required_ruby_version = '>= 2.6.0'
   gem.require_path = 'lib'
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
   gem.add_runtime_dependency 'sleeping_king_studios-tools', '~> 1.0'
 
   gem.add_development_dependency 'rspec',                       '~> 3.10'
-  gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.5'
-  gem.add_development_dependency 'rubocop',                     '~> 1.10.0'
-  gem.add_development_dependency 'rubocop-rspec',               '~> 2.1'
-  gem.add_development_dependency 'simplecov',                   '~> 0.15'
+  gem.add_development_dependency 'rspec-sleeping_king_studios', '~> 2.7'
+  gem.add_development_dependency 'rubocop',                     '~> 1.25'
+  gem.add_development_dependency 'rubocop-rspec',               '~> 2.8'
+  gem.add_development_dependency 'simplecov',                   '~> 0.21'
 end

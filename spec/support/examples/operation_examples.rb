@@ -21,7 +21,7 @@ module Spec::Examples
         keys      =
           params.select { |(type, _)| type == :keyreq }.map { |(_, key)| key }
         arguments = Array.new(count)
-        keywords  = keys.map { |key| [key, nil] }.to_h
+        keywords  = keys.to_h { |key| [key, nil] }
 
         keywords.empty? ? arguments : arguments << keywords
       end
@@ -100,6 +100,7 @@ module Spec::Examples
       describe '#failure?' do
         include_examples 'should have predicate', :failure?, false
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has a value' do
           it { expect(operation.failure?).to be false }
         end
@@ -115,6 +116,7 @@ module Spec::Examples
         wrap_context 'when the result has status: :success' do
           it { expect(operation.failure?).to be false }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       describe '#reset!' do
@@ -148,6 +150,7 @@ module Spec::Examples
       describe '#status' do
         include_examples 'should have reader', :status, nil
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has a value' do
           it { expect(operation.status).to be :success }
         end
@@ -163,11 +166,13 @@ module Spec::Examples
         wrap_context 'when the result has status: :success' do
           it { expect(operation.status).to be :success }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       describe '#success?' do
         include_examples 'should have predicate', :success?, false
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has a value' do
           it { expect(operation.success?).to be true }
         end
@@ -183,6 +188,7 @@ module Spec::Examples
         wrap_context 'when the result has status: :success' do
           it { expect(operation.success?).to be true }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
 
       describe '#to_cuprum_result' do
@@ -208,6 +214,7 @@ module Spec::Examples
       describe '#value' do
         include_examples 'should have reader', :value, nil
 
+        # rubocop:disable RSpec/RepeatedExampleGroupBody
         wrap_context 'when the result has a value' do
           it { expect(operation.value).to be value }
         end
@@ -215,6 +222,7 @@ module Spec::Examples
         wrap_context 'when the result has an error' do
           it { expect(operation.value).to be value }
         end
+        # rubocop:enable RSpec/RepeatedExampleGroupBody
       end
     end
   end

@@ -63,6 +63,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
   describe '#arguments' do
     include_examples 'should have reader', :arguments, -> { arguments }
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with one argument' do
       it { expect(instance.arguments).to be == arguments }
     end
@@ -78,11 +79,13 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     wrap_context 'when initialized with arguments, keywords, and a block' do
       it { expect(instance.arguments).to be == arguments }
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#block' do
     include_examples 'should have reader', :block, nil
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with a block' do
       it { expect(instance.block).to be == block }
     end
@@ -90,6 +93,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     wrap_context 'when initialized with arguments, keywords, and a block' do
       it { expect(instance.block).to be == block }
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#call' do
@@ -204,6 +208,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
 
     include_examples 'should curry the arguments and keywords'
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with one argument' do
       include_examples 'should curry the arguments and keywords'
     end
@@ -249,6 +254,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     wrap_context 'when initialized with arguments, keywords, and a block' do
       include_examples 'should curry the arguments and keywords'
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#command' do
@@ -258,6 +264,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
   describe '#keywords' do
     include_examples 'should have reader', :keywords, -> { keywords }
 
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with one keyword' do
       it { expect(instance.keywords).to be == keywords }
     end
@@ -273,6 +280,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
     wrap_context 'when initialized with arguments, keywords, and a block' do
       it { expect(instance.keywords).to be == keywords }
     end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
 
   describe '#process' do

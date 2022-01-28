@@ -109,9 +109,6 @@ module Spec::Examples
       end
 
       wrap_context 'when the implementation is defined' do
-        let(:result_class)   { defined?(super()) ? super() : Cuprum::Result }
-        let(:expected_class) { defined?(super()) ? super() : result_class }
-
         shared_examples 'should return an empty result' do
           it { expect(command.call).to be_a expected_class }
 
@@ -148,7 +145,9 @@ module Spec::Examples
           it { expect(command.call.failure?).to be true }
         end
 
-        let(:value) { nil }
+        let(:result_class)   { defined?(super()) ? super() : Cuprum::Result }
+        let(:expected_class) { defined?(super()) ? super() : result_class }
+        let(:value)          { nil }
 
         include_examples 'should return an empty result'
 
@@ -241,7 +240,7 @@ module Spec::Examples
         end
 
         context 'when the implementation returns a result-like object with ' \
-                 'a value' \
+                'a value' \
         do
           include_context 'when a custom result class is defined'
 
@@ -258,7 +257,7 @@ module Spec::Examples
         end
 
         context 'when the implementation returns a result-like object with ' \
-                 'an error' \
+                'an error' \
         do
           include_context 'when a custom result class is defined'
 
