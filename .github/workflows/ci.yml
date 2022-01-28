@@ -12,9 +12,10 @@ on:
   - pull_request
 
 jobs:
-  test:
+  rspec:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['2.6', '2.7', '3.0', '3.1']
 
@@ -29,5 +30,43 @@ jobs:
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Setup RSpec configuration
       run: cp .rspec.example .rspec
-    - name: Run tests
-      run: bundle exec thor ci:steps
+    - name: Run RSpec tests
+      run: bundle exec rspec
+
+  rspec_each:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['2.6', '2.7', '3.0', '3.1']
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
+    # change this to (see https://github.com/ruby/setup-ruby#versioning):
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Setup RSpec configuration
+      run: cp .rspec.example .rspec
+    - name: Run each RSpec test
+      run: bundle exec thor ci:rspec_each
+
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+    # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
+    # change this to (see https://github.com/ruby/setup-ruby#versioning):
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '2.7'
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - name: Setup RuboCop configuration
+      run: cp .rubocop.example .rubocop
+    - name: Run RuboCop linter
+      run: bundle exec rubocop
