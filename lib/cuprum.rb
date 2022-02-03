@@ -9,6 +9,7 @@ module Cuprum
   autoload :Middleware, 'cuprum/middleware'
   autoload :Operation,  'cuprum/operation'
   autoload :Result,     'cuprum/result'
+  autoload :ResultList, 'cuprum/result_list'
   autoload :Steps,      'cuprum/steps'
 
   class << self

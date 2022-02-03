@@ -21,7 +21,7 @@ module Cuprum::Errors
       )
     end
 
-    # @param [Array<Cuprum::Error>] the wrapped errors.
+    # @return [Array<Cuprum::Error>] the wrapped errors.
     attr_reader :errors
 
     private
