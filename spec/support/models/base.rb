@@ -62,6 +62,10 @@ module Spec::Models
       other.class == self.class && other.attributes == attributes
     end
 
+    def as_json
+      attributes.transform_keys(&:to_s)
+    end
+
     def attributes
       self.class.attributes.each.with_object({}) do |attr_name, hsh|
         hsh[attr_name] = send(attr_name)
