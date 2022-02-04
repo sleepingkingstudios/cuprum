@@ -5,6 +5,7 @@
 module Cuprum
   autoload :Command,    'cuprum/command'
   autoload :Error,      'cuprum/error'
+  autoload :MapCommand, 'cuprum/map_command'
   autoload :Matcher,    'cuprum/matcher'
   autoload :Middleware, 'cuprum/middleware'
   autoload :Operation,  'cuprum/operation'
