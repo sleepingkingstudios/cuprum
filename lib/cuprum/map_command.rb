@@ -56,28 +56,111 @@ module Cuprum
   #   titleize_command = TitleizeCommand.new
   #
   # @example With an Array with passing Results
-  #   results = titleize_command.call('hello world', 'greetings programs')
+  #   results = titleize_command.call(['hello world', 'greetings programs'])
   #   results.class
   #   #=> Cuprum::ResultsList
   #   results.status
-  #   #=> :succes
+  #   #=> :success
   #   results.value
-  #   #=> ['Hello World', 'Greetings, Programs']
+  #   #=> ['Hello World', 'Greetings Programs']
+  #   results.values
+  #   #=> ['Hello World', 'Greetings Programs']
+  #   results.error
+  #   #=> nil
+  #   results.errors
+  #   #=> [nil, nil]
   #
   # @example With an Array with failing Results
-  #   @todo
+  #   results = titleize_command.call([nil, ''])
+  #   results.status
+  #   #=> :failure
+  #   results.value
+  #   #=> [nil, nil]
+  #   results.values
+  #   #=> [nil, nil]
+  #   results.error.class
+  #   #=> Cuprum::Errors::MultipleErrors
+  #   results.errors.map(&:class)
+  #   #=> [Cuprum::Error, Cuprum::Error]
+  #   results.errors.first.message
+  #   #=> "can't be blank"
   #
   # @example With an Array with mixed passing and failing Results
-  #   @todo
+  #   results = titleize_command.call([nil, 'greetings programs'])
+  #   results.status
+  #   #=> :failure
+  #   results.value
+  #   #=> [nil, "Greetings Programs"]
+  #   results.values
+  #   #=> [nil, "Greetings Programs"]
+  #   results.error.class
+  #   #=> Cuprum::Errors::MultipleErrors
+  #   results.errors.map(&:class)
+  #   #=> [Cuprum::Error, nil]
+  #   results.errors.first.message
+  #   #=> "can't be blank"
   #
   # @example With an Empty Array
-  #   @todo
+  #   results = titleize_command.call([])
+  #   results.status
+  #   #=> :success
+  #   results.value
+  #   #=> []
+  #   results.values
+  #   #=> []
+  #   results.error
+  #   #=> nil
+  #   results.errors
+  #   #=> []
   #
   # @example With a Hash
-  #   @todo
+  #   inspect_command = Cuprum::MapCommand.new do |key, value|
+  #     "#{key.inspect} => #{value.inspect}"
+  #   end
+  #
+  #   results = inspect_command.call({ ichi: 1, "ni" => 2 })
+  #   results.status
+  #   #=> :success
+  #   results.value
+  #   #=> [':ichi => 1', '"ni" => 2']
+  #   results.values
+  #   #=> [':ichi => 1', '"ni" => 2']
+  #   results.error
+  #   #=> nil
+  #   results.errors
+  #   #=> [nil, nil]
   #
   # @example With an Enumerable
-  #   @todo
+  #   square_command = Cuprum::MapCommand.new { |i| i ** 2 }
+  #
+  #   results = square_command.call(0...4)
+  #   results.status
+  #   #=> :success
+  #   results.value
+  #   #=> [0, 1, 4, 9]
+  #   results.values
+  #   #=> [0, 1, 4, 9]
+  #
+  # @example With allow_partial: true
+  #   maybe_upcase_command = Cuprum::MapCommand.new do |str|
+  #     next str.upcase if str.is_a?(String)
+  #
+  #     failure(Cuprum::Error.new(message: 'not a String'))
+  #   end
+  #
+  #   results = maybe_upcase_command.call([nil, 'greetings', 'programs'])
+  #   results.status
+  #   #=> :success
+  #   results.value
+  #   #=> [nil, 'GREETINGS', 'PROGRAMS']
+  #   results.values
+  #   #=> [nil, 'GREETINGS', 'PROGRAMS']
+  #   results.error.class
+  #   #=> Cuprum::Errors::MultipleErrors
+  #   results.errors.map(&:class)
+  #   #=> [Cuprum::Error, nil, nil]
+  #   results.errors.first.message
+  #   #=> 'not a String'
   #
   # @see Cuprum::Command
   # @see Cuprum::ResultList

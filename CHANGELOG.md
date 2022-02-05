@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.1.0
+
+The "Second Star To The Right" Update
+
+### Commands
+
+Implemented `Cuprum::MapCommand`, which calls its implementation once for each item in the given collection and returns a `ResultList` (see below) containing the results of each call.
+
+### Errors
+
+Added the `Cuprum::Errors::MultipleErrors` error class, which is used when converting a `ResultList` to a singular `Result`.
+
+### Results
+
+Implemented `Cuprum::ResultList`, which implements the `Cuprum::Result` interface and aggregates an ordered list of results (such as the results of running a bulk action).
+
 ## 1.0.0
 
 The "Look On My Works, Ye Mighty, and Despair" Update
