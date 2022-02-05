@@ -920,6 +920,77 @@ result.error.message
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
 
+<a id="map-commands"></a>
+
+#### Map Commands
+
+`require 'cuprum/map_command'`
+
+A MapCommand is a special type of command that acts on each item in a collection or other Enumerable object.
+
+A regular `Cuprum::Command` is called with a set of parameters, calls the command implementation once with those parameters, and returns the Result. In contrast, a `Cuprum::MapCommand` is called with an `Enumerable` object, such as an `Array`, a `Hash`, or an `Enumerator` (e.g. by calling `#each` without a block). The MapCommand implementation is then called with each item in the Enumerable - for example, if called with an Array with three items, the MapCommand implementation would be called three times, once with each item. Finally, the Results returned by calling the implementation with each item are aggregated together into a [Cuprum::ResultList](#result-lists).
+
+Like a standard Command, a MapCommand can be defined either by passing a block to the constructor, or by defining a subclass of MapCommand and implementing the `#process` method.
+
+```ruby
+class TitleizeCommand < Cuprum::MapCommand
+  private
+
+  def process(str)
+    if str.nil? || str.empty?
+      return failure(Cuprum::Error.new(message: "can't be blank"))
+    end
+
+    str.split(' ').map(&:capitalize).join(' ')
+  end
+end
+```
+
+With an Enumerable with valid items, the MapCommand will return a passing ResultList:
+
+```ruby
+titleize_command = TitleizeCommand.new
+result = titleize_command.call(['hello world', 'greetings programs'])
+result.class
+#=> Cuprum::ResultsList
+result.status
+#=> :success
+result.value
+#=> ['Hello World', 'Greetings Programs']
+result.error
+#=> nil
+```
+
+With an Enumerable with invalid items, the MapCommand will return a failing ResultList:
+
+```ruby
+titleize_command = TitleizeCommand.new
+result = titleize_command.call([nil, 'greetings programs'])
+result.status
+#=> :failure
+result.value
+#=> [nil, 'Greetings Programs']
+result.error
+#=> an instance of Cuprum::Errors::MultipleErrors
+```
+
+We can also view the individual results. See [Cuprum::ResultList](#result-lists) for details.
+
+If the given block or the #process method accepts more than one argument, the enumerable item is destructured using the splat operator (`*`); this enables using a MapCommand to map over the keys and values of a Hash. This is the same behavior seen when passing a block with multiple arguments to a native `#each` method.
+
+```ruby
+inspect_command = Cuprum::MapCommand.new do |key, value|
+  "#{key.inspect} => #{value.inspect}"
+end
+result = inspect_command.call({ ichi: 1, 'ni' => 2 })
+result.status
+#=> :success
+result.value
+#=> [':ichi => 1', '"ni" => 2']
+result.error
+#=> nil
+```
+
 ### Results
 
     require 'cuprum'
@@ -989,9 +1060,100 @@ result.success? #=> true
 result.failure? #=> false
 ```
 
+<a id="result-lists"></a>
+
+#### Result Lists
+
+```ruby
+require 'cuprum/result_list'
+```
+
+A `Cuprum::ResultList` is an ordered collection of `Cuprum::Result`s. Each ResultList implements the same interface as a singular Result (such as the `#status`, `#error`, and `#value` methods), while also allowing the user to iterate over the results it contains. This is useful when representing the results of a sequence of commands, such as a [MapCommand](#map-commands) or a controller bulk action.
+
+Each ResultList is initialized with and wraps an Array of Results:
+
+```ruby
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :success),
+  Cuprum::Result.new(value: 'example value'),
+  Cuprum::Result.new(error: Cuprum::Error.new(message: 'Something went wrong.'))
+)
+result_list.results
+#=> [
+#     a passing Result,
+#     a passing Result with value 'example value'
+#     a failing result with error message 'Something went wrong'
+#   ]
+result_list.statuses
+#=> [:success, :success, :failure]
+result_list.values
+#=> [nil, 'example value', nil]
+result_list.errors
+#=> [nil, nil, an Error with message 'Something went wrong']
+```
+
+The ResultList defines the `#results` method to return the list of results. In addition, it defines the `#statuses`, `#values` and `#errors` methods, which map the corresponding properties of the results.
+
+In addition, the ResultList implements the same interface as `Cuprum::Result`:
+
+- The `#value` method is an alias of `#values`, and returns an Array containing the `#value` of each Result in `#results`.
+- The `#error` method returns a `Cuprum::Errors::MultipleErrors` containing the `#error` of each Result in `#results`, or `nil` if none of the results have errors.
+- The `#status` method returns `:success` if there are no failing Results in `#results` (including if the `#results` are empty); otherwise, it returns `:failure`. If the ResultList was initialized with `allow_partial: true`, the `#status` method returns `:success` if the results are empty or if there is at least one passing result, even if there are failing results; if there are only failing results, it returns `:failure`.
+
+```ruby
+result_list = Cuprum::ResultList.new
+result_list.status
+#=> :success
+
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :success),
+  Cuprum::Result.new(status: :success)
+)
+result_list.status
+#=> :success
+
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :failure),
+  Cuprum::Result.new(status: :failure)
+)
+result_list.status
+#=> :failure
+
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :failure),
+  Cuprum::Result.new(status: :success)
+)
+result_list.status
+#=> :failure
+
+result_list = Cuprum::ResultList.new(allow_partial: true)
+result_list.status
+#=> :success
+
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :failure),
+  Cuprum::Result.new(status: :failure),
+  allow_partial: true
+)
+result_list.status
+#=> :failure
+
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :failure),
+  Cuprum::Result.new(status: :success),
+  allow_partial: true
+)
+result_list.status
+#=> :success
+```
+
+Finally, each ResultList implements the `#success?` and `#failure?` predicates, which function identically to the same methods on Result.
+
 ### Errors
 
-    require 'cuprum/error'
+```ruby
+require 'cuprum/error'
+```
 
 A `Cuprum::Error` encapsulates a specific failure state of a Command. Each Error has a `#message` property which defaults to nil. Each Error also has a `#type` property which is determined by the Error class or subclass, although it can be overridden by passing a `:type` parameter to the constructor.
 
@@ -1833,3 +1995,41 @@ operation = Cuprum::BuiltIn::NullOperation.new.call
 operation.value    #=> nil
 operation.success? #=> true
 ```
+
+### Built-In Errors
+
+#### CommandNotImplemented
+
+```ruby
+require 'cuprum/errors/command_not_implemented'
+```
+
+A `Cuprum::Errors::CommandNotImplemented` error is returned when calling a command that does not have an implementation, i.e. the constructor was not passed a block and the `#process` method was not overriden.
+
+#### MultipleErrors
+
+```ruby
+require 'cuprum/errors/multiple_errors'
+```
+
+A `Cuprum::Errors::MultipleErrors` error wraps an Array of errors, such as from a `MapCommand` or a bulk controller action. It defines the following methods:
+
+- `#errors`: Returns the wrapped Array of errors.
+
+#### OperationNotCalled
+
+```ruby
+require 'cuprum/errors/operation_not_called'
+```
+
+A `Cuprum::Errors::OperationNotCalled` error is returned when trying to get the result of an uncalled `Cuprum::Operation`.
+
+#### UncaughtException
+
+```ruby
+require 'cuprum/errors/uncaught_exception'
+```
+
+A `Cuprum::Errors::UncaughtException` error is returned when a command that includes `Cuprum::ExceptionHandling` encounters an exception that is not handled by its implementation. It defines the following methods:
+
+- `#exception`: Returns the caught exception.
