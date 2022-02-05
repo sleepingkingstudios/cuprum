@@ -20,6 +20,9 @@ module Cuprum
     extend  Forwardable
     include Enumerable
 
+    UNDEFINED = Object.new.freeze
+    private_constant :UNDEFINED
+
     # @!method each
     #   Iterates over the results.
     #
@@ -35,14 +38,21 @@ module Cuprum
     #   results as long as there is at least one passing result. Defaults to
     #   false.
     # @param results [Array<Cuprum::Result>] The wrapped results.
-    def initialize(*results, allow_partial: false)
+    # @param value [Object] The value of the result. Defaults to the mapped
+    #   values of the results.
+    def initialize(*results, allow_partial: false, value: UNDEFINED)
       @allow_partial = allow_partial
       @results       = normalize_results(results)
+      @value         = value == UNDEFINED ? values : value
     end
 
     # @return [Array<Cuprum::Result>] the wrapped results.
     attr_reader :results
     alias_method :to_a, :results
+
+    # @return [Object] The value of the result. Defaults to the mapped values of
+    #   the results.
+    attr_reader :value
 
     def_delegators :@results, :each
 
@@ -126,7 +136,6 @@ module Cuprum
     def values
       @values ||= results.map(&:value)
     end
-    alias_method :value, :values
 
     private
 

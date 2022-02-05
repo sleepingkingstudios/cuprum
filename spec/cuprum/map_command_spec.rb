@@ -614,5 +614,43 @@ RSpec.describe Cuprum::MapCommand do
 
       include_examples 'should map an Enumerable'
     end
+
+    context 'when a custom result object is returned' do
+      include_context 'with an implementation that yields one argument'
+
+      let(:described_class) { Spec::ExampleMapCommand }
+
+      example_class 'Spec::ExampleMapCommand', Cuprum::MapCommand do |klass| # rubocop:disable RSpec/DescribedClass
+        klass.define_method(:process, &implementation)
+
+        klass.define_method(:build_result_list) do |results|
+          Cuprum::ResultList.new(*results, value: 'custom value')
+        end
+      end
+
+      describe 'with an empty Array' do
+        include_context 'with an implementation that yields one argument'
+
+        it { expect(command.call([])).to be_a Cuprum::ResultList }
+
+        it { expect(command.call([]).value).to be == 'custom value' }
+      end
+
+      describe 'with an Array with matching items' do
+        include_context 'with an implementation that yields one argument'
+
+        let(:items) do
+          [
+            'Greetings, programs!',
+            'Greetings, starfighter!',
+            'Hello, world.'
+          ]
+        end
+
+        it { expect(command.call(items)).to be_a Cuprum::ResultList }
+
+        it { expect(command.call(items).value).to be == 'custom value' }
+      end
+    end
   end
 end

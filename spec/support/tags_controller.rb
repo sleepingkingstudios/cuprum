@@ -9,15 +9,27 @@ module Spec
   class TagsController
     extend Forwardable
 
+    class BulkCreateTags < Spec::Commands::BulkCreateModel
+      def initialize
+        super(Spec::Models::Tag)
+      end
+
+      private
+
+      def build_result_list(results)
+        Cuprum::ResultList.new(
+          *results,
+          value: { 'tags' => results.map(&:value) }
+        )
+      end
+    end
+
     def_delegators :@request,
       :params
 
     def bulk_create(request)
       @request = request
-      results  =
-        Spec::Commands::BulkCreateModel
-        .new(Spec::Models::Tag)
-        .call(params['tags'])
+      results  = BulkCreateTags.new.call(params['tags'])
 
       build_response(results)
     end
@@ -27,7 +39,9 @@ module Spec
     def build_response(results)
       {
         'ok'   => results.success?,
-        'data' => { 'tags' => results.value.map { |value| value&.as_json } }
+        'data' => results.value.transform_values do |ary|
+          ary.map { |item| item&.as_json }
+        end
       }
         .yield_self do |response|
           next response unless results.error
