@@ -1096,7 +1096,7 @@ The ResultList defines the `#results` method to return the list of results. In a
 
 In addition, the ResultList implements the same interface as `Cuprum::Result`:
 
-- The `#value` method is an alias of `#values`, and returns an Array containing the `#value` of each Result in `#results`.
+- The `#value` method is an alias of `#values`, and returns an Array containing the `#value` of each Result in `#results`. You can also set a custom value using the `:value` keyword.
 - The `#error` method returns a `Cuprum::Errors::MultipleErrors` containing the `#error` of each Result in `#results`, or `nil` if none of the results have errors.
 - The `#status` method returns `:success` if there are no failing Results in `#results` (including if the `#results` are empty); otherwise, it returns `:failure`. If the ResultList was initialized with `allow_partial: true`, the `#status` method returns `:success` if the results are empty or if there is at least one passing result, even if there are failing results; if there are only failing results, it returns `:failure`.
 

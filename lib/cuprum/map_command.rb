@@ -207,13 +207,16 @@ module Cuprum
     #
     # @return [Cuprum::ResultList] the aggregated results.
     def call(enumerable)
-      results =
+      build_result_list(
         enumerable.map { |item| splat_items? ? super(*item) : super(item) }
-
-      Cuprum::ResultList.new(*results, allow_partial: allow_partial?)
+      )
     end
 
     private
+
+    def build_result_list(results)
+      Cuprum::ResultList.new(*results, allow_partial: allow_partial?)
+    end
 
     def splat_items?
       return @splat_items unless @splat_items.nil?

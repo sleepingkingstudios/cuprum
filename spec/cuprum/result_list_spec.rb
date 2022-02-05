@@ -12,6 +12,11 @@ RSpec.describe Cuprum::ResultList do
     let(:constructor_options) { super().merge(allow_partial: true) }
   end
 
+  shared_context 'when initialized with value: an Object' do
+    let(:value)               { { 'values' => results.map(&:value) } }
+    let(:constructor_options) { super().merge(value: value) }
+  end
+
   shared_context 'when initialized with failing results' do
     let(:results) do
       [
@@ -78,7 +83,7 @@ RSpec.describe Cuprum::ResultList do
       expect(described_class)
         .to be_constructible
         .with_unlimited_arguments
-        .and_keywords(:allow_partial)
+        .and_keywords(:allow_partial, :value)
     end
 
     describe 'with nil' do
@@ -491,6 +496,15 @@ RSpec.describe Cuprum::ResultList do
         .and_error(result_list.error)
     end
 
+    wrap_context 'when initialized with value: an Object' do
+      it 'should return a passing result' do
+        expect(result_list.to_cuprum_result)
+          .to be_a_passing_result
+          .with_value(result_list.value)
+          .and_error(result_list.error)
+      end
+    end
+
     # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with failing results' do
       it 'should return a failing result' do
@@ -498,6 +512,15 @@ RSpec.describe Cuprum::ResultList do
           .to be_a_failing_result
           .with_value(result_list.value)
           .and_error(result_list.error)
+      end
+
+      wrap_context 'when initialized with value: an Object' do
+        it 'should return a passing result' do
+          expect(result_list.to_cuprum_result)
+            .to be_a_failing_result
+            .with_value(result_list.value)
+            .and_error(result_list.error)
+        end
       end
     end
 
@@ -508,6 +531,15 @@ RSpec.describe Cuprum::ResultList do
           .with_value(result_list.value)
           .and_error(result_list.error)
       end
+
+      wrap_context 'when initialized with value: an Object' do
+        it 'should return a passing result' do
+          expect(result_list.to_cuprum_result)
+            .to be_a_passing_result
+            .with_value(result_list.value)
+            .and_error(result_list.error)
+        end
+      end
     end
 
     wrap_context 'when initialized with mixed results' do
@@ -516,6 +548,15 @@ RSpec.describe Cuprum::ResultList do
           .to be_a_failing_result
           .with_value(result_list.value)
           .and_error(result_list.error)
+      end
+
+      wrap_context 'when initialized with value: an Object' do
+        it 'should return a passing result' do
+          expect(result_list.to_cuprum_result)
+            .to be_a_failing_result
+            .with_value(result_list.value)
+            .and_error(result_list.error)
+        end
       end
     end
     # rubocop:enable RSpec/RepeatedExampleGroupBody
@@ -552,22 +593,70 @@ RSpec.describe Cuprum::ResultList do
     end
   end
 
+  describe '#value' do
+    include_examples 'should define reader', :value, []
+
+    wrap_context 'when initialized with value: an Object' do
+      it { expect(result_list.value).to be == value }
+    end
+
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
+    wrap_context 'when initialized with failing results' do
+      it { expect(result_list.value).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.value).to be == value }
+      end
+    end
+
+    wrap_context 'when initialized with passing results' do
+      it { expect(result_list.value).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.value).to be == value }
+      end
+    end
+
+    wrap_context 'when initialized with mixed results' do
+      it { expect(result_list.value).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.value).to be == value }
+      end
+    end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
+  end
+
   describe '#values' do
     include_examples 'should define reader', :values, []
 
-    it { expect(result_list).to have_aliased_method(:values).as(:value) }
+    wrap_context 'when initialized with value: an Object' do
+      it { expect(result_list.values).to be == [] }
+    end
 
     # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with failing results' do
       it { expect(result_list.values).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.values).to be == results.map(&:value) }
+      end
     end
 
     wrap_context 'when initialized with passing results' do
       it { expect(result_list.values).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.values).to be == results.map(&:value) }
+      end
     end
 
     wrap_context 'when initialized with mixed results' do
       it { expect(result_list.values).to be == results.map(&:value) }
+
+      wrap_context 'when initialized with value: an Object' do
+        it { expect(result_list.values).to be == results.map(&:value) }
+      end
     end
     # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
