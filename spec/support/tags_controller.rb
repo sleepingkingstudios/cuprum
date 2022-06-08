@@ -43,7 +43,7 @@ module Spec
           ary.map { |item| item&.as_json }
         end
       }
-        .yield_self do |response|
+        .then do |response|
           next response unless results.error
 
           response.merge('error' => results.error.as_json)
