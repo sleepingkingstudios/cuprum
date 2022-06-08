@@ -126,7 +126,7 @@ RSpec.describe Cuprum::Operation do
 
     it { expect(result.error).to be == expected_error }
 
-    it { expect(nil.yield_self(&operation)).to be operation }
+    it { expect(nil.then(&operation)).to be operation }
 
     it 'should call the operation with arguments' do
       # rubocop:disable RSpec/SubjectStub
@@ -171,7 +171,7 @@ RSpec.describe Cuprum::Operation do
 
       it { expect(result.value).to be == expected_value }
 
-      it { expect(value.yield_self(&operation).value).to be == expected_value }
+      it { expect(value.then(&operation).value).to be == expected_value }
     end
   end
 end

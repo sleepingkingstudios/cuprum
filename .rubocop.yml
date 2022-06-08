@@ -68,6 +68,9 @@ Naming/FileName:
 Naming/RescuedExceptionsVariableName:
   PreferredName: exception
 
+RSpec/BeNil:
+  Enabled: false
+
 RSpec/ExampleLength:
   Max: 10
 

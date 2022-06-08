@@ -113,7 +113,7 @@ RSpec.describe Cuprum::Command do
 
     it { expect(result.error).to be == expected_error }
 
-    it { expect(nil.yield_self(&command)).to be_a(Cuprum::Result) }
+    it { expect(nil.then(&command)).to be_a(Cuprum::Result) }
 
     it 'should call the command with arguments' do
       # rubocop:disable RSpec/SubjectStub
@@ -158,7 +158,7 @@ RSpec.describe Cuprum::Command do
 
       it { expect(result.value).to be == expected_value }
 
-      it { expect(value.yield_self(&command).value).to be == expected_value }
+      it { expect(value.then(&command).value).to be == expected_value }
     end
   end
 end
