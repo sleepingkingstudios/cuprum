@@ -62,7 +62,7 @@ module Cuprum
   #     end
   #   end
   #
-  #   command    = Command.new { |**opts| "Called with #{opts.inspect}" }
+  #   command    = ExampleCommand.new
   #   middleware = LoggingMiddleware.new
   #   result     = middleware.call(command, { id: 0 })
   #   #=> logs "Calling command ExampleCommand"

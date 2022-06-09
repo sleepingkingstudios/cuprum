@@ -25,5 +25,8 @@ Cuprum defines the following core components:
 - **[Errors](./errors)**
   <br>
   An object representing the failure state of a command.
+- **[Matchers](./matchers)**
+  <br>
+  Define handling for results based on `#status`, `#error`, and `#value`.
 
 For a full list of defined classes and objects, see [Reference](./reference).

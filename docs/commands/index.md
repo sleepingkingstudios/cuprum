@@ -23,6 +23,7 @@ Each Command implements a `#call` method that wraps your defined business logic 
 - [Command Currying](./currying)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
+- [Middleware](./middleware)
 
 ## Defining Commands
 
@@ -201,6 +202,7 @@ book.published? #=> false
 - [Command Currying](./currying)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
+- [Middleware](./middleware)
 
 ---
 
