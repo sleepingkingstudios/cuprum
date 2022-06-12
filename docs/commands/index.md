@@ -21,9 +21,11 @@ Each Command implements a `#call` method that wraps your defined business logic 
 
 - [Composing Commands](./composition)
 - [Command Currying](./currying)
+- [Command Factories](../factories)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
 - [Middleware](./middleware)
+- [Operations](./operations)
 
 ## Defining Commands
 
@@ -200,9 +202,11 @@ book.published? #=> false
 
 - [Composing Commands](./composition)
 - [Command Currying](./currying)
+- [Command Factories](../factories)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
 - [Middleware](./middleware)
+- [Operations](./operations)
 
 ---
 

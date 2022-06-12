@@ -25,6 +25,9 @@ Cuprum defines the following core components:
 - **[Errors](./errors)**
   <br>
   An object representing the failure state of a command.
+- **[Factories](./factories)**
+  <br>
+  Provides a DSL to build commands with shared configuration or context.
 - **[Matchers](./matchers)**
   <br>
   Define handling for results based on `#status`, `#error`, and `#value`.
