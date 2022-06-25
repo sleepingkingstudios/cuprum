@@ -1,4 +1,7 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: './'
 ---
 
 # Matchers
@@ -239,6 +242,4 @@ matcher_list.call(result)
 
 One use case for matcher lists would be in defining hierarchies of classes or objects that have matching functionality. For example, a generic controller class might define default success and failure behavior, an included mixin might provide handling for a particular scope of errors, and a specific controller might override the default behavior for a given action. Using a matcher list allows each class or module to define its own behavior as independent matchers, which the matcher list then composes together.
 
----
-
-[Back to Cuprum](./)
+{% include breadcrumbs.md %}

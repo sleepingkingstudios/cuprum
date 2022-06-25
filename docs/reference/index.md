@@ -1,10 +1,11 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
 ---
 
 # Cuprum Reference
 
 > @todo
 
----
-
-[Back to Cuprum](../)
+{% include breadcrumbs.md %}

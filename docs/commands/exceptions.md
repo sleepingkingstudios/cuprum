@@ -1,4 +1,9 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
+  - name: Commands
+    path: '../commands'
 ---
 
 ## Handling Exceptions
@@ -36,8 +41,4 @@ result.error.message
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
 
----
-
-[Back to Cuprum](../)
-|
-[Back to Commands](../commands)
+{% include breadcrumbs.md %}

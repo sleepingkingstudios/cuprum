@@ -1,4 +1,7 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: './'
 ---
 
 # Results
@@ -72,6 +75,4 @@ result.success? #=> true
 result.failure? #=> false
 ```
 
----
-
-[Back to Cuprum](./)
+{% include breadcrumbs.md %}

@@ -1,4 +1,7 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: './'
 ---
 
 # Command Factories
@@ -308,6 +311,4 @@ books.count          #=> 4
 books.include?(book) #=> true
 ```
 
----
-
-[Back to Cuprum](../)
+{% include breadcrumbs.md %}

@@ -1,4 +1,9 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
+  - name: Commands
+    path: '../commands'
 ---
 
 # Operations
@@ -44,8 +49,4 @@ An operation inherits the `#call` method from Cuprum::Command (see above), and d
 
 The implementation of `Cuprum::Operation` is defined by the `Cuprum::Operation::Mixin` module, which provides the methods defined above. Any command class or instance can be converted to an operation by including (for a class) or extending (for an instance) the operation mixin.
 
----
-
-[Back to Cuprum](../)
-|
-[Back to Commands](../commands)
+{% include breadcrumbs.md %}

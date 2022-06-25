@@ -1,4 +1,9 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
+  - name: Commands
+    path: '../commands'
 ---
 
 # Command Steps
@@ -180,8 +185,4 @@ A few things to note about this example. First, we have a couple of examples of 
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
 
----
-
-[Back to Cuprum](../)
-|
-[Back to Commands](../commands)
+{% include breadcrumbs.md %}

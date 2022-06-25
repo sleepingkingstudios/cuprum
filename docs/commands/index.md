@@ -1,4 +1,7 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
 ---
 
 # Commands
@@ -208,6 +211,4 @@ book.published? #=> false
 - [Middleware](./middleware)
 - [Operations](./operations)
 
----
-
-[Back to Cuprum](../)
+{% include breadcrumbs.md %}

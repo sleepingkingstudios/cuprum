@@ -1,4 +1,7 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: './'
 ---
 
 # Cuprum

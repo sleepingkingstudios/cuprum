@@ -1,4 +1,9 @@
 ---
+breadcrumbs:
+  - name: Documentation
+    path: '../'
+  - name: Commands
+    path: '../commands'
 ---
 
 # Command Currying
@@ -55,8 +60,4 @@ multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
 
----
-
-[Back to Cuprum](../)
-|
-[Back to Commands](../commands)
+{% include breadcrumbs.md %}
