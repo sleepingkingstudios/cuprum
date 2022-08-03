@@ -2,8 +2,13 @@
 
 source 'https://rubygems.org'
 
+gem 'byebug'
 gem 'github-pages', group: :jekyll_plugins
 gem 'jekyll-docs'
+gem 'sleeping_king_studios-yard',
+  branch:  'main',
+  git:     'https://github.com/sleepingkingstudios/sleeping_king_studios-yard',
+  require: false
 gem 'webrick'
 
 ruby '3.1.2'

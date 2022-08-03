@@ -1,2 +1,15 @@
 ---
+collections:
+  classes:
+    output: false
+  constants:
+    output: false
+  methods:
+    output: false
+  modules:
+    output: false
+  namespaces:
+    output: false
+debug: true
+markdown: kramdown
 safe: true

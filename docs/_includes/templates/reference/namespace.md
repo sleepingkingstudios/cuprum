@@ -1,0 +1,32 @@
+{% if include.label %}
+  {% capture url -%}
+    /reference/{{ include.namespace.data_path }}
+  {%- endcapture %}
+  <a href="{{ url }}">{{ include.namespace.name }}</a>
+  {% if include.namespace.type == "class" %}
+  {% assign parent_class = include.namespace.inherited_classes | map: "name" | first | default: "Object" %}
+  &lt; {{ parent_class }}
+  {% endif %}
+{% endif %}
+
+{% assign empty_array = "" | split: "," %}
+{% assign defined_classes = include.namespace.defined_classes | default: empty_array %}
+{% assign defined_modules = include.namespace.defined_modules | default: empty_array %}
+{% assign definitions = defined_classes | concat: defined_modules | sort: "name" %}
+
+<ul>
+{% for definition in definitions %}
+  <li>
+    {% capture data_path %}
+      {{- include.namespace.data_path -}}
+      {% if include.namespace.data_path.size > 0 %}/{% endif %}
+      {{- definition.slug -}}
+    {% endcapture %}
+    {% assign matched = site.modules | where: "data_path", data_path | where: "version", include.namespace.version | first %}
+    {% unless matched %}
+      {% assign matched = site.classes | where: "data_path", data_path | where: "version", include.namespace.version | first %}
+    {% endunless %}
+    {% include templates/reference/namespace.md label=true namespace=matched %}
+  </li>
+{% endfor %}
+</ul>
