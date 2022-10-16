@@ -1,8 +1,5 @@
 {% if include.label %}
-  {% capture url -%}
-    /reference/{{ include.namespace.data_path }}
-  {%- endcapture %}
-  <a href="{{ url }}">{{ include.namespace.name }}</a>
+  {% include templates/reference/reference_link.md label=include.namespace.name path=include.namespace.data_path -%}
   {% if include.namespace.type == "class" %}
   {% assign parent_class = include.namespace.inherited_classes | map: "name" | first | default: "Object" %}
   &lt; {{ parent_class }}
