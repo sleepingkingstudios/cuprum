@@ -3,5 +3,5 @@
 {% endif %}
 
 {% for constant in include.definition.constants %}
-{% include templates/reference/constant.md constant=constant %}
+{% include templates/reference/constant.md name=constant.name path=constant.path %}
 {% endfor %}

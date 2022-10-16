@@ -16,6 +16,10 @@
 {{ include.definition.short_description }}
 {% endif %}
 
+{% if include.definition.description %}
+{{ include.definition.description }}
+{% endif %}
+
 {% if include.definition.metadata.examples.size > 0 %}
 ### Examples
 

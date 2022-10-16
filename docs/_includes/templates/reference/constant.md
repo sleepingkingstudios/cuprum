@@ -1,3 +1,3 @@
-### Constant: {{ include.constant.name }}
+### Constant: {{ include.name }}
 
 > @todo

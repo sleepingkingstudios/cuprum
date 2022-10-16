@@ -1,3 +1,3 @@
-### Method: {{ include.method.name }}
+### Method: {{ include.name }}
 
 > @todo

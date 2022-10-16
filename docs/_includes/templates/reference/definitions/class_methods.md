@@ -2,6 +2,6 @@
 ## Class Methods
 
 {% for class_method in include.definition.class_methods %}
-{% include templates/reference/method.md method=class_method type="class" %}
+{% include templates/reference/method.md name=class_method.name path=class_method.path type="class" %}
 {% endfor %}
 {% endif %}

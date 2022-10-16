@@ -1,3 +1,12 @@
+{% if include.definition.inherited_classes.size > 0 %}
+Inherited Classes
+: {% for inherited_class in include.definition.inherited_classes -%}
+  {% include templates/reference/reference_link.md label=inherited_class.name path=inherited_class.path %}
+  &gt;
+  {% endfor -%}
+  Object
+{% endif %}
+
 {% if include.definition.extended_modules.size > 0 %}
 Extended Modules
 : {% for extended_module in include.definition.extended_modules -%}
