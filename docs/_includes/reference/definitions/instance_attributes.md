@@ -1,7 +1,7 @@
 {% if include.definition.instance_attributes.size > 0 %}
 ## Instance Attributes
+{% endif %}
 
 {% for instance_attribute in include.definition.instance_attributes %}
-{% include templates/reference/attribute.md attribute=instance_attribute type="instance" %}
+{% include reference/attribute.md attribute=instance_attribute write=instance_attribute.write type="instance" inherited=instance_attribute.inherited %}
 {% endfor %}
-{% endif %}

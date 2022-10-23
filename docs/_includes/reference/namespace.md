@@ -1,5 +1,5 @@
 {% if include.label %}
-  {% include templates/reference/reference_link.md label=include.namespace.name path=include.namespace.data_path -%}
+  {% include reference/reference_link.md label=include.namespace.name path=include.namespace.data_path -%}
   {% if include.namespace.type == "class" %}
   {% assign parent_class = include.namespace.inherited_classes | map: "name" | first | default: "Object" %}
   &lt; {{ parent_class }}
@@ -23,7 +23,7 @@
     {% unless matched %}
       {% assign matched = site.classes | where: "data_path", data_path | where: "version", include.namespace.version | first %}
     {% endunless %}
-    {% include templates/reference/namespace.md label=true namespace=matched %}
+    {% include reference/namespace.md label=true namespace=matched %}
   </li>
 {% endfor %}
 </ul>

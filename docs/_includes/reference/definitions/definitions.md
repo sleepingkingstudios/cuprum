@@ -6,7 +6,7 @@
 Classes
 : {% for defined_class in include.definition.defined_classes -%}
   {% capture path %}{{ include.definition.data_path }}/{{ defined_class.slug }}{% endcapture %}
-  {% include templates/reference/reference_link.md label=defined_class.name path=path -%}
+  {% include reference/reference_link.md label=defined_class.name path=path -%}
   {% unless forloop.last %}, {% endunless %}
   {%- endfor %}
 {% endif %}
@@ -15,7 +15,7 @@ Classes
 Modules
 : {% for defined_module in include.definition.defined_modules -%}
   {% capture path %}{{ include.definition.data_path }}/{{ defined_module.slug }}{% endcapture %}
-  {% include templates/reference/reference_link.md label=defined_module.name path=path -%}
+  {% include reference/reference_link.md label=defined_module.name path=path -%}
   {% unless forloop.last %}, {% endunless %}
   {%- endfor %}
 {% endif %}

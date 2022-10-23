@@ -2,7 +2,7 @@
 ## Direct Subclasses
 
 {% for subclass in include.definition.direct_subclasses -%}
-{% include templates/reference/reference_link.md label=subclass.name path=subclass.path -%}
+{% include reference/reference_link.md label=subclass.name path=subclass.path -%}
 {% unless forloop.last %}, {% endunless %}
 {%- endfor %}
 {% endif %}

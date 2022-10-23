@@ -8,6 +8,6 @@ breadcrumbs:
 
 # Cuprum Reference
 
-{% include templates/reference/namespace.md label=false namespace=root_namespace %}
+{% include reference/namespace.md label=false namespace=root_namespace %}
 
 {% include breadcrumbs.md %}

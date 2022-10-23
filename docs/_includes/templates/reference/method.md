@@ -1,3 +1,0 @@
-### Method: {{ include.name }}
-
-> @todo

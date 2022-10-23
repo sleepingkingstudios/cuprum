@@ -35,6 +35,6 @@
 ### See Also
 
 {% for see in include.definition.metadata.see %}
-- {% include templates/reference/reference_link.md label=see.text path=see.path -%}
+- {% include reference/reference_link.md label=see.text path=see.path -%}
 {% endfor %}
 {% endif %}
