@@ -1,8 +1,9 @@
 {% if include.method.raises.size > 0 %}
 #### Raises
 {: #{{ include.heading_id }}--raises }
+<ul>
 {% for raised in include.method.raises -%}
-{% capture type_list %}{%- include reference/type_list.md types=raised.type -%}{% endcapture %}
-- ({{ type_list | strip }}){% if raised.description %} — {{ raised.description }}{% endif %}
+<li>({%- include reference/type_list.md types=raised.type -%}){% if raised.description.size > 0 %} — {{ raised.description }}{% endif %}</li>
 {%- endfor %}
+</ul>
 {% endif %}
