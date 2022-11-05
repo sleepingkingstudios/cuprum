@@ -19,8 +19,13 @@
 {% endif %}
 
 {% if include.method.metadata.examples.size > 0 %}
+{% if include.overload %}
+###### Examples
+{: #{{ include.heading_id }}--examples }
+{% else %}
 #### Examples
 {: #{{ include.heading_id }}--examples }
+{% endif %}
 {% for example in include.method.metadata.examples %}
 **{{ example.name }}**
 
