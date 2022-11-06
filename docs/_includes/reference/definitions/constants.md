@@ -3,5 +3,5 @@
 {% endif %}
 
 {% for constant in include.definition.constants %}
-{% include reference/constant.md name=constant.name path=constant.path %}
+{% include reference/constant.md constant=constant inherited=constant.inherited %}
 {% endfor %}

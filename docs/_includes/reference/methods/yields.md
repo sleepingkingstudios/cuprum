@@ -21,7 +21,7 @@
 {% endif %}
 <ul>
 {% for param in include.method.yield_params -%}
-<li><strong>{{ param.name -}}</strong> ({%- include reference/type_list.md types=param.type -%}){% if param.description.size > 0 %} — {{ param.description }}{% endif %}</li>
+<li><strong>{{ param.name -}}</strong> {% if param.type.size > 0 %}({%- include reference/type_list.md types=param.type -%}){% endif %}{% if param.description.size > 0 %} — {{ param.description }}{% endif %}</li>
 {%- endfor %}
 </ul>
 {% endif %}
@@ -36,7 +36,7 @@
 {% endif %}
 <ul>
 {% for return in include.method.yield_returns -%}
-<li>({%- include reference/type_list.md types=return.type -%}){% if return.description.size > 0 %} — {{ return.description }}{% endif %}</li>
+<li>{% if return.type.size > 0 %}({%- include reference/type_list.md types=return.type -%}){% endif %}{% if return.type.size > 0 and return.description.size > 0 %} — {% endif %}{% if return.description.size > 0 %}{{ return.description }}{% endif %}</li>
 {%- endfor %}
 </ul>
 {% endif %}

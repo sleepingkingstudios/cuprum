@@ -6,6 +6,6 @@
 
 {% for instance_method in include.definition.instance_methods %}
 {% unless instance_method.constructor %}
-{% include reference/method.md name=instance_method.name path=instance_method.path type="instance" %}
+{% include reference/method.md name=instance_method.name path=instance_method.path type="instance" inherited=instance_method.inherited %}
 {% endunless %}
 {% endfor %}
