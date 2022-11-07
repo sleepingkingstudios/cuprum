@@ -1,3 +1,8 @@
+{% if include.definition.parent_path.size > 0 %}
+Parent Namespace
+: {% include reference/parent_link.md parent_path=include.definition.parent_path -%}
+{% endif %}
+
 {% if include.definition.inherited_classes.size > 0 %}
 Inherited Classes
 : {% for inherited_class in include.definition.inherited_classes -%}

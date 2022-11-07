@@ -21,3 +21,5 @@
 {% include reference/definitions/instance_attributes.md definition=definition %}
 
 {% include reference/definitions/instance_methods.md definition=definition constructor=definition.constructor %}
+
+{% include reference/definitions/breadcrumbs.md definition=definition %}
