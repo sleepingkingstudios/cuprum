@@ -1,3 +1,11 @@
+{% if include.method.metadata.deprecated %}
+> **Deprecated.** {{ include.method.metadata.deprecated }}
+{% endif %}
+
+{% if include.method.metadata.abstract %}
+> **This method is abstract.** {{ include.method.metadata.abstract }}
+{% endif %}
+
 {% if include.method.metadata.todos.size > 0 %}
 {% for todo in include.method.metadata.todos %}
 > **Todo:** {{ todo }}
@@ -27,8 +35,7 @@
 {: #{{ include.heading_id }}--examples }
 {% endif %}
 {% for example in include.method.metadata.examples %}
-**{{ example.name }}**
-
+{% if example.name.size > 0 %}**{{ example.name }}**{% endif %}
 {% highlight ruby %}{{ example.text }}{% endhighlight %}
 {% endfor %}
 {% endif %}

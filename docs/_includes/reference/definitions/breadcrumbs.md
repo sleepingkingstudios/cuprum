@@ -9,7 +9,13 @@
 
 Back to
 [Documentation]({{site.baseurl}}/) |
+{%- if page.version == "*" %}
 [Reference]({{site.baseurl}}/reference)
+{%- else %}
+[Versions]({{site.baseurl}}/versions) |
+[{{ page.version }}]({{site.baseurl}}/versions/{{page.version}}) |
+[Reference]({{site.baseurl}}/versions/{{page.version}}/reference)
+{% endif %}
 {%- endif %}
 {% endcapture %}
 {{ breadcrumbs | strip }}

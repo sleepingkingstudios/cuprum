@@ -1,4 +1,5 @@
 {% assign method = site.methods | where: "data_path", include.path | where: "version", page.version | first %}
+{% if method %}
 {% capture prefix %}{{ include.type }}-method{% endcapture %}
 {% capture heading_id %}{{ prefix }}-{{ method.slug | replace: "=", "--equals" }}{% endcapture %}
 
@@ -18,4 +19,7 @@
 
 {% include reference/methods/raises.md heading_id=heading_id method=method %}
 
-{% include reference/methods/see_also.md heading_id=heading_id method=method %}
+{% include reference/methods/post_overview.md heading_id=heading_id method=method %}
+{% else %}
+### Missing Method: {{ include.path }} @ {{ page.version }}
+{% endif %}

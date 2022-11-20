@@ -2,9 +2,10 @@
 breadcrumbs:
   - name: Documentation
     path: '../'
+version: '*'
 ---
 
-{% assign root_namespace = site.namespaces | where: "version", "*" | first %}
+{% assign root_namespace = site.namespaces | where: "version", page.version | first %}
 
 # Cuprum Reference
 
