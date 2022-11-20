@@ -27,4 +27,6 @@
   </li>
 {% endfor %}
 </ul>
+{% else %}
+{% unless include.label %}This namespace does not define any classes or modules.{% endunless %}
 {% endif %}
