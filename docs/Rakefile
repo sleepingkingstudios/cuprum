@@ -1,0 +1,72 @@
+# frozen_string_literal: true
+
+require 'fileutils'
+
+require 'sleeping_king_studios/yard'
+
+module RakeUtils
+  DATA_PATHS = %w[_classes _constants _methods _modules _namespaces].freeze
+
+  class << self
+    def clobber_current
+      DATA_PATHS.each do |dirname|
+        clobber_directory(dirname, except: [/\Aversion--/])
+      end
+
+      clobber_directory('reference', except: [/\Aindex.md\z/])
+    end
+
+    def clobber_version(version)
+      DATA_PATHS.each do |dirname|
+        filename = File.join(dirname, "version--#{version}")
+
+        next unless File.exist?(filename)
+
+        FileUtils.remove_entry_secure(filename)
+      end
+
+      clobber_directory(
+        File.join('versions', version, 'reference'),
+        except: [/\Aindex.md\z/]
+      )
+    end
+
+    def generate(version)
+      options = version ? { version: version } : {}
+      command = SleepingKingStudios::Yard::Commands::Generate.new(
+        docs_path: File.expand_path('./docs'),
+        **options
+      )
+
+      command.call
+    end
+
+    private
+
+    def clobber_directory(dirname, except: [])
+      Dir.each_child(dirname) do |child|
+        next if except.any? { |pattern| pattern.match?(child) }
+
+        filename = File.expand_path(File.join(dirname, child))
+
+        next unless File.exist?(filename)
+
+        FileUtils.remove_entry_secure(filename)
+      end
+    end
+  end
+end
+
+task :clobber, %i[version] do |_, args|
+  if args.version
+    RakeUtils.clobber_version(args.version)
+  else
+    RakeUtils.clobber_current
+  end
+end
+
+task :generate, %i[version] => %i[clobber] do |_, args|
+  Dir.chdir('..') do
+    RakeUtils.generate(args.version)
+  end
+end

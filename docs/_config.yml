@@ -1,0 +1,18 @@
+---
+collections:
+  classes:
+    output: false
+  constants:
+    output: false
+  methods:
+    output: false
+  modules:
+    output: false
+  namespaces:
+    output: false
+debug: true
+markdown: kramdown
+plugins:
+  - jekyll-remote-theme
+safe: true
+remote_theme: pages-themes/dinky@v0.2.0
