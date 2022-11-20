@@ -1,7 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: './'
+    path: '../../'
+  - name: Versions
+    path: '../'
 ---
 
 # Cuprum
@@ -10,10 +12,10 @@ Cuprum implements the Command pattern for Ruby.
 
 ## Documentation
 
-This is the documentation for the [current development build](https://github.com/sleepingkingstudios/cuprum) of Cuprum.
+This is the documentation for Version 1.0 of Cuprum.
 
-- For the most recent release, see [Version 1.0]({{site.baseurl}}/versions/1.0).
-- For previous releases, see the [Versions]({{site.baseurl}}/versions) page.
+- For the current development build, see [Documentation]({{site.baseurl}}/).
+- For other releases, see the [Versions]({{site.baseurl}}/versions) page.
 
 ## Reference
 
@@ -36,3 +38,5 @@ Cuprum defines the following core components:
   Define handling for results based on `#status`, `#error`, and `#value`.
 
 For a full list of defined classes and objects, see [Reference](./reference).
+
+{% include breadcrumbs.md %}

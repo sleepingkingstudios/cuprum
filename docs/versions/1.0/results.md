@@ -1,6 +1,10 @@
 ---
 breadcrumbs:
   - name: Documentation
+    path: '../../'
+  - name: Versions
+    path: '../'
+  - name: '1.0'
     path: './'
 ---
 
