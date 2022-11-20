@@ -4,6 +4,8 @@
 
 {% include reference/definitions/details.md definition=definition %}
 
+{% include reference/definitions/table-of-contents.md definition=definition %}
+
 {% include reference/definitions/overview.md definition=definition %}
 
 {% include reference/definitions/definitions.md definition=definition %}

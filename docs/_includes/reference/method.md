@@ -1,7 +1,7 @@
 {% assign method = site.methods | where: "data_path", include.path | where: "version", page.version | first %}
 {% if method %}
 {% capture prefix %}{{ include.type }}-method{% endcapture %}
-{% capture heading_id %}{{ prefix }}-{{ method.slug | replace: "=", "--equals" }}{% endcapture %}
+{% capture heading_id %}{{ prefix }}-{{ method.slug | replace: "=", "--equals" | replace: "?", "--predicate" }}{% endcapture %}
 
 {% include reference/methods/heading.md heading_id=heading_id method=method type=include.type %}
 

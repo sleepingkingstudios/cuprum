@@ -10,8 +10,8 @@
 {% assign defined_classes = include.namespace.defined_classes | default: empty_array %}
 {% assign defined_modules = include.namespace.defined_modules | default: empty_array %}
 {% assign definitions = defined_classes | concat: defined_modules | sort: "name" %}
-
-<ul>
+{% if definitions.size > 0 %}
+<ul style="margin-bottom: 0px;">
 {% for definition in definitions %}
   <li>
     {% capture data_path %}
@@ -23,7 +23,8 @@
     {% unless matched %}
       {% assign matched = site.classes | where: "data_path", data_path | where: "version", include.namespace.version | first %}
     {% endunless %}
-    {% include reference/namespace.md label=true namespace=matched %}
+    {% include reference/namespace.md label=true namespace=matched -%}
   </li>
 {% endfor %}
 </ul>
+{% endif %}

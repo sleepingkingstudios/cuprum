@@ -1,6 +1,5 @@
 {% if include.definition.defined_classes.size > 0 or include.definitions.defined_modules.size > 0 %}
 ## Defined Under Namespace
-{% endif %}
 
 {% if include.definition.defined_classes.size > 0 %}
 Classes
@@ -18,4 +17,7 @@ Modules
   {% include reference/reference_link.md label=defined_module.name path=path -%}
   {% unless forloop.last %}, {% endunless %}
   {%- endfor %}
+{% endif %}
+
+[Back To Top](#)
 {% endif %}
