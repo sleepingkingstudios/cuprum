@@ -12,4 +12,7 @@ collections:
     output: false
 debug: true
 markdown: kramdown
+plugins:
+  - jekyll-remote-theme
 safe: true
+remote_theme: pages-themes/dinky@v0.2.0
