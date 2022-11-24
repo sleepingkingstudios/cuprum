@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::CommandNotImplemented::TYPE
+parent_path: cuprum/errors/command-not-implemented
+slug: type
+short_description: Short string used to identify the type of error.
+value: "'cuprum.errors.command_not_implemented'"
+data_path: cuprum/errors/command-not-implemented/type
+version: '1.0'

@@ -1,0 +1,23 @@
+---
+name: Cuprum::Command#initialize
+parent_path: cuprum/command
+signature: initialize(&implementation)
+slug: initialize
+constructor: true
+data_path: cuprum/command/i-initialize
+returns:
+- description: a new instance of Command
+  type:
+  - name: Command
+short_description: Returns a new instance of Cuprum::Command.
+yields:
+- description: |-
+    If a block is given, the
+    #call method will wrap the block and set the result #value to the return
+    value of the block. This overrides the implementation in #process, if
+    any.
+  parameters:
+  - "*arguments"
+  - "**keywords"
+  - "&block"
+version: '1.0'

@@ -1,0 +1,14 @@
+---
+name: Cuprum::Operation::Mixin#error
+parent_path: cuprum/operation/mixin
+signature: error
+slug: error
+constructor: false
+data_path: cuprum/operation/mixin/i-error
+returns:
+- description: |-
+    the error (if any) from the most recent result, or nil
+    if the operation has not been called.
+  type:
+  - name: Object
+version: '1.0'

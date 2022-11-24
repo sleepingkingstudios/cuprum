@@ -1,0 +1,13 @@
+---
+name: Cuprum::Result#to_cuprum_result
+parent_path: cuprum/result
+signature: to_cuprum_result
+slug: to-cuprum-result
+constructor: false
+data_path: cuprum/result/i-to-cuprum-result
+returns:
+- description: The result.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+version: '1.0'

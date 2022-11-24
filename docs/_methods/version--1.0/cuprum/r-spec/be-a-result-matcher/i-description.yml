@@ -1,0 +1,14 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#description
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: description
+slug: description
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-description
+returns:
+- description: |-
+    a short description of the matcher and expected
+    properties.
+  type:
+  - name: String
+version: '1.0'

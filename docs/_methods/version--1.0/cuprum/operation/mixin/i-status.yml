@@ -1,0 +1,15 @@
+---
+name: Cuprum::Operation::Mixin#status
+parent_path: cuprum/operation/mixin
+signature: status
+slug: status
+constructor: false
+data_path: cuprum/operation/mixin/i-status
+returns:
+- description: |-
+    the status of the most recent result, or nil if
+    the operation has not been called.
+  type:
+  - name: Symbol
+  - name: nil
+version: '1.0'

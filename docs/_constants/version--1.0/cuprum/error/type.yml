@@ -1,0 +1,13 @@
+---
+name: Cuprum::Error::TYPE
+parent_path: cuprum/error
+slug: type
+short_description: Short string used to identify the type of error.
+value: "'cuprum.error'"
+data_path: cuprum/error/type
+description: |-
+  Primarily used for serialization. This value can be overriden by passing
+  in the :type parameter to the constructor.
+
+  Subclasses of Cuprum::Error should define their own default TYPE constant.
+version: '1.0'

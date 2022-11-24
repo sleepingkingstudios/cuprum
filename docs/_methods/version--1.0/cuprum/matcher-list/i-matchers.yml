@@ -1,0 +1,15 @@
+---
+name: Cuprum::MatcherList#matchers
+parent_path: cuprum/matcher-list
+signature: matchers
+slug: matchers
+constructor: false
+data_path: cuprum/matcher-list/i-matchers
+returns:
+- description: the matchers to match against a result.
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Matching
+      path: cuprum/matching
+version: '1.0'

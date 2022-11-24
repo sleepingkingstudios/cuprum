@@ -1,0 +1,66 @@
+---
+name: Cuprum::Currying
+slug: currying
+type: module
+files:
+- lib/cuprum/currying.rb
+- lib/cuprum/currying/curried_command.rb
+parent_path: cuprum
+short_description: Implements partial application for command objects.
+defined_classes:
+- name: CurriedCommand
+  slug: curried-command
+instance_methods:
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: false
+data_path: cuprum/currying
+description: |-
+  Partial application (more commonly referred to, if imprecisely, as currying)
+  refers to fixing some number of arguments to a function, resulting in a
+  function with a smaller number of arguments.
+
+  In Cuprum's case, a curried (partially applied) command takes an original
+  command and pre-defines some of its arguments. When the curried command is
+  called, the predefined arguments and/or keywords will be combined with the
+  arguments passed to #call.
+metadata:
+  examples:
+  - name: Currying Arguments
+    text: |-
+      # Our base command takes two arguments.
+      say_command = Cuprum::Command.new do |greeting, person|
+        "#{greeting}, #{person}!"
+      end
+      say_command.call('Hello', 'world')
+      #=> returns a result with value 'Hello, world!'
+
+      # Next, we create a curried command. This sets the first argument to
+      # always be 'Greetings', so our curried command only takes one argument,
+      # namely the name of the person being greeted.
+      greet_command = say_command.curry('Greetings')
+      greet_command.call('programs')
+      #=> returns a result with value 'Greetings, programs!'
+
+      # Here, we are creating a curried command that passes both arguments.
+      # Therefore, our curried command does not take any arguments.
+      recruit_command = say_command.curry('Greetings', 'starfighter')
+      recruit_command.call
+      #=> returns a result with value 'Greetings, starfighter!'
+  - name: Currying Keywords
+    text: |-
+      # Our base command takes two keywords: a math operation and an array of
+      # integers.
+      math_command = Cuprum::Command.new do |operands:, operation:|
+        operations.reduce(&operation)
+      end
+      math_command.call(operands: [2, 2], operation: :+)
+      #=> returns a result with value 4
+
+      # Our curried command still takes two keywords, but now the operation
+      # keyword is optional. It now defaults to :*, for multiplication.
+      multiply_command = math_command.curry(operation: :*)
+      multiply_command.call(operands: [3, 3])
+      #=> returns a result with value 9
+version: '1.0'

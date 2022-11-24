@@ -1,0 +1,14 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#failure_message_when_negated
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: failure_message_when_negated
+slug: failure-message-when-negated
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-failure-message-when-negated
+returns:
+- description: |-
+    a summary message describing a failed negated
+    expectation.
+  type:
+  - name: String
+version: '1.0'
