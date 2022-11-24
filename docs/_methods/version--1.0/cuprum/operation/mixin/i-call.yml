@@ -1,0 +1,42 @@
+---
+name: Cuprum::Operation::Mixin#call
+parent_path: cuprum/operation/mixin
+signature: call(*args, **kwargs, &block)
+slug: call
+constructor: false
+data_path: cuprum/operation/mixin/i-call
+metadata:
+  see:
+  - label: Cuprum::Command#call
+    path: cuprum/command#instance-method-call
+    text:
+    type: reference
+overloads:
+- name: Cuprum::Operation::Mixin#call
+  parent_path: cuprum/operation/mixin
+  signature: call(*arguments, **keywords, &block)
+  slug: call
+  constructor: false
+  params:
+  - description: Arguments to be passed to the implementation.
+    name: arguments
+    type:
+    - name: Array
+  - description: Keywords to be passed to the implementation.
+    name: keywords
+    type:
+    - name: Hash
+  returns:
+  - description: the called operation.
+    type:
+    - name: Cuprum::Operation
+      path: cuprum/operation
+  short_description: |-
+    Executes the logic encoded in the constructor block, or the #process
+    method if no block was passed to the constructor, and returns the
+    operation object.
+  yields:
+  - description: |-
+      If a block argument is given, it will be passed to the
+      implementation.
+version: '1.0'

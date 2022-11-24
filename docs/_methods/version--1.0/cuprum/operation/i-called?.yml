@@ -1,0 +1,14 @@
+---
+name: Cuprum::Operation#called?
+parent_path: cuprum/operation
+signature: called?
+slug: called?
+constructor: false
+data_path: cuprum/operation/i-called?
+returns:
+- description: |-
+    true if the operation has been called and has a
+    reference to the most recent result; otherwise false.
+  type:
+  - name: Boolean
+version: '1.0'

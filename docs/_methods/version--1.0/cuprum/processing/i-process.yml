@@ -1,0 +1,38 @@
+---
+name: Cuprum::Processing#process
+parent_path: cuprum/processing
+signature: process(*_args)
+slug: process
+constructor: false
+data_path: cuprum/processing/i-process
+metadata:
+  notes:
+  - This is a private method.
+overloads:
+- name: Cuprum::Processing#process
+  parent_path: cuprum/processing
+  signature: process(*arguments, **keywords, &block)
+  slug: process
+  constructor: false
+  params:
+  - description: 'The arguments, if any, passed from #call.'
+    name: arguments
+    type:
+    - name: Array
+  - description: 'The keywords, if any, passed from #call.'
+    name: keywords
+    type:
+    - name: Hash
+  returns:
+  - description: 'the value of the result object to be returned by #call.'
+    type:
+    - name: Object
+  short_description: |-
+    The implementation of the command, to be executed when the #call method
+    is called. If #process returns a result, that result will be returned by
+    #call; otherwise, the value returned by #process will be wrapped in a
+    successful Cuprum::Result object. This method should not be called
+    directly.
+  yields:
+  - description: 'The block, if any, passed from #call.'
+version: '1.0'

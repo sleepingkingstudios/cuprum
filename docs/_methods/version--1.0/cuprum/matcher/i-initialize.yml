@@ -1,0 +1,22 @@
+---
+name: Cuprum::Matcher#initialize
+parent_path: cuprum/matcher
+signature: initialize(match_context = nil, &block)
+slug: initialize
+constructor: true
+data_path: cuprum/matcher/i-initialize
+params:
+- description: the execution context for a matching clause.
+  name: match_context
+  type:
+  - name: Object
+  default: nil
+returns:
+- description: a new instance of Matcher
+  type:
+  - name: Matcher
+yields:
+- description: |-
+    Executes the block in the context of the singleton class. This is
+    used to define match clauses when instantiating a Matcher instance.
+version: '1.0'

@@ -1,0 +1,14 @@
+---
+name: Cuprum::Matching::NoMatchError
+slug: no-match-error
+type: class
+files:
+- lib/cuprum/matching.rb
+parent_path: cuprum/matching
+short_description: Exception raised when the matcher does not match a result.
+data_path: cuprum/matching/no-match-error
+constructor: false
+inherited_classes:
+- name: StandardError
+  slug: standard-error
+version: '1.0'

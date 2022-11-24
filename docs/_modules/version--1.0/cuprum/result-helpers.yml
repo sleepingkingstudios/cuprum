@@ -1,0 +1,10 @@
+---
+name: Cuprum::ResultHelpers
+slug: result-helpers
+type: module
+files:
+- lib/cuprum/result_helpers.rb
+parent_path: cuprum
+short_description: Helper methods for generating Cuprum result objects.
+data_path: cuprum/result-helpers
+version: '1.0'

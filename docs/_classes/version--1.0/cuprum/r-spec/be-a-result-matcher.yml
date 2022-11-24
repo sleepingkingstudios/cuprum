@@ -1,0 +1,63 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher
+slug: be-a-result-matcher
+type: class
+files:
+- lib/cuprum/rspec/be_a_result_matcher.rb
+parent_path: cuprum/r-spec
+short_description: |-
+  Custom matcher that asserts the actual object is a Cuprum result object with
+  the specified properties.
+instance_methods:
+- name: and_error
+  path: cuprum/r-spec/be-a-result-matcher/i-and-error
+  slug: and-error
+  inherited: false
+- name: and_status
+  path: cuprum/r-spec/be-a-result-matcher/i-and-status
+  slug: and-status
+  inherited: false
+- name: and_value
+  path: cuprum/r-spec/be-a-result-matcher/i-and-value
+  slug: and-value
+  inherited: false
+- name: description
+  path: cuprum/r-spec/be-a-result-matcher/i-description
+  slug: description
+  inherited: false
+- name: does_not_match?
+  path: cuprum/r-spec/be-a-result-matcher/i-does-not-match?
+  slug: does-not-match?
+  inherited: false
+- name: failure_message
+  path: cuprum/r-spec/be-a-result-matcher/i-failure-message
+  slug: failure-message
+  inherited: false
+- name: failure_message_when_negated
+  path: cuprum/r-spec/be-a-result-matcher/i-failure-message-when-negated
+  slug: failure-message-when-negated
+  inherited: false
+- name: initialize
+  path: cuprum/r-spec/be-a-result-matcher/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: matches?
+  path: cuprum/r-spec/be-a-result-matcher/i-matches?
+  slug: matches?
+  inherited: false
+- name: with_error
+  path: cuprum/r-spec/be-a-result-matcher/i-with-error
+  slug: with-error
+  inherited: false
+- name: with_status
+  path: cuprum/r-spec/be-a-result-matcher/i-with-status
+  slug: with-status
+  inherited: false
+- name: with_value
+  path: cuprum/r-spec/be-a-result-matcher/i-with-value
+  slug: with-value
+  inherited: false
+data_path: cuprum/r-spec/be-a-result-matcher
+constructor: true
+version: '1.0'

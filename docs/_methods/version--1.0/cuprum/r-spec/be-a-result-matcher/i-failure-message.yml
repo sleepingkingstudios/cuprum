@@ -1,0 +1,12 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#failure_message
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: failure_message
+slug: failure-message
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-failure-message
+returns:
+- description: a summary message describing a failed expectation.
+  type:
+  - name: String
+version: '1.0'

@@ -1,0 +1,12 @@
+---
+name: Cuprum.version
+parent_path: cuprum
+signature: version
+slug: version
+constructor: false
+data_path: cuprum/c-version
+returns:
+- description: The current version of the gem.
+  type:
+  - name: String
+version: '1.0'

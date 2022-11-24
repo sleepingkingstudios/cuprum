@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::CommandNotImplemented::MESSAGE_FORMAT
+parent_path: cuprum/errors/command-not-implemented
+slug: message-format
+short_description: Format for generating error message.
+value: "'no implementation defined for %s'"
+data_path: cuprum/errors/command-not-implemented/message-format
+version: '1.0'

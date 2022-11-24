@@ -1,0 +1,43 @@
+---
+name: Cuprum::Matching
+slug: matching
+type: module
+files:
+- lib/cuprum/matching.rb
+- lib/cuprum/matching/match_clause.rb
+parent_path: cuprum
+short_description: Implements result matching based on result status, error, and value.
+defined_classes:
+- name: NoMatchError
+  slug: no-match-error
+defined_modules:
+- name: ClassMethods
+  slug: class-methods
+instance_attributes:
+- name: match_context
+  read: true
+  write: false
+  path: cuprum/matching/i-match-context
+  slug: match-context
+  inherited: false
+instance_methods:
+- name: call
+  path: cuprum/matching/i-call
+  slug: call
+  inherited: false
+- name: match_context?
+  path: cuprum/matching/i-match-context?
+  slug: match-context?
+  inherited: false
+- name: matches?
+  path: cuprum/matching/i-matches?
+  slug: matches?
+  inherited: false
+data_path: cuprum/matching
+metadata:
+  see:
+  - label: Cuprum::Matcher
+    path: cuprum/matcher
+    text:
+    type: reference
+version: '1.0'

@@ -1,4 +1,4 @@
-{% if include.definition.defined_classes.size > 0 or include.definitions.defined_modules.size > 0 %}
+{% if include.definition.defined_classes.size > 0 or include.definition.defined_modules.size > 0 %}
 ## Defined Under Namespace
 
 {% if include.definition.defined_classes.size > 0 %}

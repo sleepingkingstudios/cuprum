@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::OperationNotCalled::MESSAGE_FORMAT
+parent_path: cuprum/errors/operation-not-called
+slug: message-format
+short_description: Format for generating error message.
+value: "'%s was not called and does not have a result'"
+data_path: cuprum/errors/operation-not-called/message-format
+version: '1.0'

@@ -1,0 +1,14 @@
+---
+name: Cuprum::Utils
+slug: utils
+type: module
+files:
+- lib/cuprum/utils.rb
+- lib/cuprum/utils/instance_spy.rb
+parent_path: cuprum
+short_description: Namespace for utility modules.
+defined_modules:
+- name: InstanceSpy
+  slug: instance-spy
+data_path: cuprum/utils
+version: '1.0'

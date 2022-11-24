@@ -1,0 +1,19 @@
+---
+name: Cuprum::Matcher#using_context
+parent_path: cuprum/matcher
+signature: using_context(def with_context(match_context)
+slug: using-context
+constructor: false
+data_path: cuprum/matcher/i-using-context
+params:
+- description: the execution context for a matching clause.
+  name: match_context
+  type:
+  - name: Object
+returns:
+- description: the copied matcher.
+  type:
+  - name: Cuprum::Matcher
+    path: cuprum/matcher
+short_description: Returns a copy of the matcher with the given execution context.
+version: '1.0'

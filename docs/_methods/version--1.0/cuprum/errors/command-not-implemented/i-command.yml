@@ -1,0 +1,13 @@
+---
+name: Cuprum::Errors::CommandNotImplemented#command
+parent_path: cuprum/errors/command-not-implemented
+signature: command
+slug: command
+constructor: false
+data_path: cuprum/errors/command-not-implemented/i-command
+returns:
+- description: The command called without a definition.
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+version: '1.0'

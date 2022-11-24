@@ -1,0 +1,18 @@
+---
+name: Cuprum::Utils::InstanceSpy::Spy
+slug: spy
+type: class
+files:
+- lib/cuprum/utils/instance_spy.rb
+parent_path: cuprum/utils/instance-spy
+short_description: |-
+  Minimal class that implements a #call method to mirror method calls to
+  instances of an instrumented command class.
+instance_methods:
+- name: call
+  path: cuprum/utils/instance-spy/spy/i-call
+  slug: call
+  inherited: false
+data_path: cuprum/utils/instance-spy/spy
+constructor: false
+version: '1.0'

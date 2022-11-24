@@ -1,0 +1,22 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#matches?
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: matches?(actual)
+slug: matches?
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-matches?
+params:
+- description: The actual object to match.
+  name: actual
+  type:
+  - name: Object
+returns:
+- description: |-
+    true if the actual object is a result with the expected
+    properties; otherwise false.
+  type:
+  - name: Boolean
+short_description: |-
+  Checks that the given actual object is a Cuprum result or compatible
+  object and has the specified properties.
+version: '1.0'

@@ -1,0 +1,16 @@
+---
+name: Cuprum::Operation#to_cuprum_result
+parent_path: cuprum/operation
+signature: to_cuprum_result
+slug: to-cuprum-result
+constructor: false
+data_path: cuprum/operation/i-to-cuprum-result
+returns:
+- description: the most recent result or failing result.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: |-
+  Returns the most result if the operation was previously called.
+  Otherwise, returns a failing result.
+version: '1.0'
