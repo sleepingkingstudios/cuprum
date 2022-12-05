@@ -5,8 +5,15 @@ require 'cuprum/processing'
 require 'cuprum/steps'
 
 module Cuprum
-  # Functional object that encapsulates a business logic operation with a
-  # consistent interface and tracking of result value and status.
+  # Functional object that encapsulates a business logic operation or step.
+  #
+  # Using commands allows the developer to maintain a state or context, such as
+  # by passing context into the constructor. It provides a consistent interface
+  # by always returning a Cuprum::Result object, which tracks the status of the
+  # command call, the returned value, and the error object (if any). Finally, as
+  # a full-fledged Ruby object a Command can be passed around like any other
+  # object, including returned from a method (or another Command) or passed in
+  # as a parameter.
   #
   # A Command can be defined either by passing a block to the constructor, or
   # by defining a subclass of Command and implementing the #process method.
@@ -19,13 +26,11 @@ module Cuprum
   #
   # @example A Command subclass
   #   class MultiplyCommand < Cuprum::Command
-  #     def initialize multiplier
+  #     def initialize(multiplier)
   #       @multiplier = multiplier
   #     end
   #
-  #     private
-  #
-  #     def process int
+  #     private def process(int)
   #       int * @multiplier
   #     end
   #   end
@@ -37,13 +42,11 @@ module Cuprum
   #
   # @example A Command with an error state
   #   class DivideCommand < Cuprum::Command
-  #     def initialize divisor
+  #     def initialize(divisor)
   #       @divisor = divisor
   #     end
   #
-  #     private
-  #
-  #     def process int
+  #     private def process(int)
   #       if @divisor.zero?
   #         return Cuprum::Result.new(error: 'errors.messages.divide_by_zero')
   #       end
@@ -72,10 +75,16 @@ module Cuprum
 
     # Returns a new instance of Cuprum::Command.
     #
-    # @yield [*arguments, **keywords, &block] If a block is given, the
-    #   #call method will wrap the block and set the result #value to the return
-    #   value of the block. This overrides the implementation in #process, if
-    #   any.
+    # @yield If a block is given, the block is used to define a private #process
+    #   method. This overwrites any existing #process method. When the command
+    #   is called, #process will be called internally and passed the parameters.
+    #
+    # @yieldparam arguments [Array] the arguments passed to #call.
+    # @yieldparam keywords [Hash] the keywords passed to #call.
+    # @yieldparam block [Proc, nil] the block passed to call, #if any.
+    #
+    # @yieldreturn [Cuprum::Result, Object] the returned result or object is
+    #   converted to a Cuprum::Result and returned by #call.
     def initialize(&implementation)
       return unless implementation
 

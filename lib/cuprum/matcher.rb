@@ -63,6 +63,8 @@ module Cuprum
   class Matcher
     include Cuprum::Matching
 
+    # @!parse extend Cuprum::Matching::ClassMethods
+
     # @param match_context [Object] the execution context for a matching clause.
     #
     # @yield Executes the block in the context of the singleton class. This is

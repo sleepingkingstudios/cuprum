@@ -76,10 +76,10 @@ module Cuprum
     #
     # @param result [Cuprum::Result] The result to match.
     #
-    # @raise Cuprum::Matching::NoMatchError if none of the matchers match the
+    # @raise [Cuprum::Matching::NoMatchError] if none of the matchers match the
     #   given result.
     #
-    # @see Cuprum::Matcher#call.
+    # @see Cuprum::Matching#call.
     def call(result)
       unless result.respond_to?(:to_cuprum_result)
         raise ArgumentError, 'result must be a Cuprum::Result'

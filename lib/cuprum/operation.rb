@@ -37,8 +37,9 @@ module Cuprum
   #
   # @see Cuprum::Command
   class Operation < Cuprum::Command
-    # Module-based implementation of the Operation methods. Use this to convert
-    # an already-defined command into an operation.
+    # Module-based implementation of the Operation methods.
+    #
+    # Use this to convert an already-defined command into an operation.
     #
     # @example
     #   class CustomOperation < CustomCommand
@@ -50,9 +51,7 @@ module Cuprum
       attr_reader :result
 
       # @overload call(*arguments, **keywords, &block)
-      #   Executes the logic encoded in the constructor block, or the #process
-      #   method if no block was passed to the constructor, and returns the
-      #   operation object.
+      #   Calls the command implementation and stores the result.
       #
       #   @param arguments [Array] Arguments to be passed to the implementation.
       #
@@ -63,7 +62,7 @@ module Cuprum
       #   @yield If a block argument is given, it will be passed to the
       #     implementation.
       #
-      # @see Cuprum::Command#call
+      #   @see Cuprum::Command#call
       def call(*args, **kwargs, &block)
         reset! if called? # Clear reference to most recent result.
 
@@ -116,10 +115,9 @@ module Cuprum
         called? ? result.success? : false
       end
 
-      # Returns the most result if the operation was previously called.
-      # Otherwise, returns a failing result.
-      #
-      # @return [Cuprum::Result] the most recent result or failing result.
+      # @return [Cuprum::Result] the most recent result if the operation was
+      #   previously called; otherwise, returns a failing result with a
+      #   Cuprum::Errors::OperationNotCalled error.
       def to_cuprum_result
         return result if result
 

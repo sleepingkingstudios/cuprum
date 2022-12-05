@@ -4,7 +4,7 @@ require 'cuprum/error'
 require 'cuprum/errors'
 
 module Cuprum::Errors
-  # An error returned when a command encounters an unhandled exception.
+  # Error returned when a command encounters an unhandled exception.
   class UncaughtException < Cuprum::Error
     # Short string used to identify the type of error.
     TYPE = 'cuprum.collections.errors.uncaught_exception'

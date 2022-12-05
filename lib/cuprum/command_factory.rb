@@ -9,11 +9,11 @@ module Cuprum
   #
   # @example
   #   class SpaceFactory < Cuprum::CommandFactory
-  #     command :build, BuildCommand
+  #     command(:build, BuildCommand)
   #
-  #     command :fly { |launch_site:| FlyCommand.new(launch_site) }
+  #     command(:fly) { |launch_site:| FlyCommand.new(launch_site) }
   #
-  #     command_class :dream { DreamCommand }
+  #     command_class(:dream) { DreamCommand }
   #   end
   #
   #   factory = SpaceFactory.new
@@ -81,7 +81,7 @@ module Cuprum
       #
       #   @yield The block will be executed in the context of the factory
       #     instance.
-      #   @yieldparam *args [Array] Any arguments given to the method
+      #   @yieldparam args [Array] Any arguments given to the method
       #     factory.name() will be passed on the block.
       #   @yieldreturn [Cuprum::Command] The block return an instance of a
       #     Cuprum::Command subclass, or else raise an error.

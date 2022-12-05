@@ -128,7 +128,8 @@ module Cuprum
     #
     # @yield Called with no parameters.
     #
-    # @yieldreturn A Cuprum result, or an object to be wrapped in a result.
+    # @yieldreturn [Cuprum::Result, Object] a Cuprum result, or an object to be
+    #   wrapped in a result.
     #
     # @return [Cuprum::Result] the result or object returned by the block,
     #   wrapped in a Cuprum result.
@@ -163,6 +164,8 @@ module Cuprum
     #   result.class    #=> Cuprum::Result
     #   result.success? #=> false
     #   result.error    #=> 'second step'
+    #
+    # @raise [ArgumentError] if a block is not given.
     def steps(&block)
       raise ArgumentError, 'no block given' unless block_given?
 

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# A lightweight, functional-lite toolkit for making business logic a first-class
-# citizen of your application.
+# Toolkit for implementing business logic as function objects.
 module Cuprum
   autoload :Command,    'cuprum/command'
   autoload :Error,      'cuprum/error'

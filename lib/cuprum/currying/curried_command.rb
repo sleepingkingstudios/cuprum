@@ -3,7 +3,7 @@
 require 'cuprum/currying'
 
 module Cuprum::Currying
-  # A CurriedCommand wraps another command and passes preset args to #call.
+  # A CurriedCommand wraps another command and passes preset params to #call.
   #
   # @example Currying Arguments
   #   # Our base command takes two arguments.

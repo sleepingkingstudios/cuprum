@@ -1,6 +1,8 @@
 # Cuprum
 
-An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a consistent, object-oriented interface and features status and error management, composability and control flow management.
+Toolkit for implementing business logic as function objects.
+
+Cuprum defines a Command object, which is a callable object that encapsulates some piece of business logic. Each call to a Command returns a Result with a status and optionally data or an error object. As objects, Commands can be passed as parameters, returned from methods (or other Commands). Commands also define a #step method, which can be used to gracefully handle failure states and define complex operations by combining simpler components.
 
 It defines the following concepts:
 

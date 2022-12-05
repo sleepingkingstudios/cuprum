@@ -81,8 +81,8 @@ module Cuprum
   #     end
   #   end
   #
-  #   command    = Command.new { |**opts| "Called with #{opts.inspect}" }
-  #   middleware = LoggingMiddleware.new
+  #   command    = Command.new { |**options| "Options: #{options.inspect}" }
+  #   middleware = ApiMiddleware.new
   #   result     = middleware.call(command, { id: 0 })
   #   result.value
   #   #=> "Options: { id: 0, api_key: '12345' }"
@@ -92,8 +92,8 @@ module Cuprum
   #     include Cuprum::Middleware
   #
   #     # The middleware runs the command once. On a failing result, the
-  #     # middleware discards the failing result and returns a result with a
-  #     # value of nil.
+  #     # middleware discards the failing result and returns a passing result
+  #     # with a value of nil.
   #     private def process(next_command, *args, **kwargs)
   #       result = super
   #
@@ -103,16 +103,23 @@ module Cuprum
   #     end
   #   end
   #
-  #   command    = Command.new { |**opts| "Called with #{opts.inspect}" }
-  #   middleware = LoggingMiddleware.new
-  #   result     = middleware.call(command, { id: 0 })
-  #   result.success?
-  #   #=> true
-  #   result.value
-  #   #=> "Options: { id: 0, api_key: '12345' }"
+  #   middleware = IgnoreFailure.new
+  #   command    = Command.new do |number|
+  #     return success('number is even') if number.even?
   #
-  #   error      = Cuprum::Error.new(message: 'Something went wrong.')
-  #   result     = middleware.call(command, error: error)
+  #     error = Cuprum::Error.new(message: 'number is odd')
+  #     failure(error)
+  #   end
+  #
+  #   # Calling the command without the middleware.
+  #   result = command.call(1)
+  #   result.success?
+  #   #=> false
+  #   result.error.message
+  #   #=> 'number is odd'
+  #
+  #   # Calling the command with the middleware.
+  #   result = middleware.call(command, 1)
   #   result.success?
   #   #=> true
   #   result.value

@@ -24,6 +24,10 @@ module Cuprum::BuiltIn
   #   result.error
   #   #=> 'errors.messages.unknown'
   class IdentityCommand < Cuprum::Command
+    def initialize
+      super(&nil)
+    end
+
     private
 
     def process(value = nil)
