@@ -160,5 +160,22 @@ RSpec.describe Cuprum::Command do
 
       it { expect(value.then(&command).value).to be == expected_value }
     end
+
+    context 'when the command is defined with another command' do
+      subject(:command) { described_class.new(&inner_command) }
+
+      let(:inner_command)  { Cuprum::Command.new } # rubocop:disable RSpec/DescribedClass
+      let(:implementation) { inner_command.to_proc }
+
+      before(:example) do
+        allow(inner_command).to receive(:call)
+      end
+
+      it 'should call the inner command' do
+        command.call('ichi', ni: 2)
+
+        expect(inner_command).to have_received(:call).with('ichi', ni: 2)
+      end
+    end
   end
 end
