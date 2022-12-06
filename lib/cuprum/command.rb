@@ -96,11 +96,13 @@ module Cuprum
     #
     # @return [Proc] the wrapping proc.
     def to_proc
+      command = self
+
       @to_proc ||= lambda do |*args, **kwargs, &block|
         if kwargs.empty?
-          call(*args, &block)
+          command.call(*args, &block)
         else
-          call(*args, **kwargs, &block)
+          command.call(*args, **kwargs, &block)
         end
       end
     end
