@@ -1,0 +1,15 @@
+---
+name: Cuprum::MapCommand#allow_partial?
+parent_path: cuprum/map-command
+signature: allow_partial?
+slug: allow-partial?
+constructor: false
+data_path: cuprum/map-command/i-allow-partial?
+returns:
+- description: |-
+    if true, allows for some failing results as long as
+    there is at least one passing result. Defaults to false.
+  type:
+  - name: 'true'
+  - name: 'false'
+version: "*"

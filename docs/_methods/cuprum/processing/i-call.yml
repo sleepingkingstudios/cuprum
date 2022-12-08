@@ -1,0 +1,37 @@
+---
+name: Cuprum::Processing#call
+parent_path: cuprum/processing
+signature: call(*arguments, **keywords, &block)
+slug: call
+constructor: false
+data_path: cuprum/processing/i-call
+description: |-
+  Each time #call is invoked, the object performs the following steps:
+
+  1. The #process method is called, passing the arguments, keywords, and
+     block that were passed to #call.
+  2. If the value returned by #process is a Cuprum::Result or compatible
+     object, that result is directly returned by #call.
+  3. Otherwise, the value returned by #process will be wrapped in a
+     successful result, which will be returned by #call.
+params:
+- description: Arguments to be passed to the implementation.
+  name: arguments
+  type:
+  - name: Array
+- description: Keywords to be passed to the implementation.
+  name: keywords
+  type:
+  - name: Hash
+returns:
+- description: The result object for the command.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Executes the command and returns a Cuprum::Result or compatible
+  object.
+yields:
+- description: |-
+    If a block argument is given, it will be passed to the
+    implementation.
+version: "*"

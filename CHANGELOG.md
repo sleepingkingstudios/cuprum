@@ -4,6 +4,8 @@
 
 The "Second Star To The Right" Update
 
+Extracted the documentation from the README to a dedicated Jekyll site at http://sleepingkingstudios.github.io/cuprum (or see the /docs directory).
+
 ### Commands
 
 Implemented `Cuprum::MapCommand`, which calls its implementation once for each item in the given collection and returns a `ResultList` (see below) containing the results of each call.

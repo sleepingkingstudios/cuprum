@@ -14,15 +14,15 @@ module Cuprum::BuiltIn
   #   #=> true
   #
   # @example With a result.
-  #   errors    = ['errors.messages.unknown']
-  #   value     = Cuprum::Result.new('result value', :errors => errors)
+  #   error     = 'errors.messages.unknown'
+  #   value     = Cuprum::Result.new(value: 'result value', error: error)
   #   operation = IdentityOperation.new.call(value)
   #   operation.value
   #   #=> 'result value'
   #   operation.success?
   #   #=> false
-  #   operation.errors
-  #   #=> ['errors.messages.unknown']
+  #   operation.error
+  #   #=> 'errors.messages.unknown'
   class IdentityOperation < Cuprum::BuiltIn::IdentityCommand
     include Cuprum::Operation::Mixin
   end

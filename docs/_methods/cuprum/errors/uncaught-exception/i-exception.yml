@@ -1,0 +1,12 @@
+---
+name: Cuprum::Errors::UncaughtException#exception
+parent_path: cuprum/errors/uncaught-exception
+signature: exception
+slug: exception
+constructor: false
+data_path: cuprum/errors/uncaught-exception/i-exception
+returns:
+- description: the exception that was raised.
+  type:
+  - name: StandardError
+version: "*"

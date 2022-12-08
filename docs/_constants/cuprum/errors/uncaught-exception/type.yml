@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::UncaughtException::TYPE
+parent_path: cuprum/errors/uncaught-exception
+slug: type
+short_description: Short string used to identify the type of error.
+value: "'cuprum.collections.errors.uncaught_exception'"
+data_path: cuprum/errors/uncaught-exception/type
+version: "*"

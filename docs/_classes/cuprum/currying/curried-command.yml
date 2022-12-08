@@ -1,0 +1,121 @@
+---
+name: Cuprum::Currying::CurriedCommand
+slug: curried-command
+type: class
+files:
+- lib/cuprum/currying/curried_command.rb
+parent_path: cuprum/currying
+short_description: 'A CurriedCommand wraps another command and passes preset params
+  to #call.'
+instance_attributes:
+- name: arguments
+  read: true
+  write: false
+  path: cuprum/currying/curried-command/i-arguments
+  slug: arguments
+  inherited: false
+- name: block
+  read: true
+  write: false
+  path: cuprum/currying/curried-command/i-block
+  slug: block
+  inherited: false
+- name: command
+  read: true
+  write: false
+  path: cuprum/currying/curried-command/i-command
+  slug: command
+  inherited: false
+- name: keywords
+  read: true
+  write: false
+  path: cuprum/currying/curried-command/i-keywords
+  slug: keywords
+  inherited: false
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/currying/curried-command/i-call
+  slug: call
+  inherited: false
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: initialize
+  path: cuprum/currying/curried-command/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+data_path: cuprum/currying/curried-command
+metadata:
+  examples:
+  - name: Currying Arguments
+    text: |-
+      # Our base command takes two arguments.
+      say_command = Cuprum::Command.new do |greeting, person|
+        "#{greeting}, #{person}!"
+      end
+      say_command.call('Hello', 'world')
+      #=> returns a result with value 'Hello, world!'
+
+      # Next, we create a curried command. This sets the first argument to
+      # always be 'Greetings', so our curried command only takes one argument,
+      # namely the name of the person being greeted.
+      greet_command =
+        Cuprum::CurriedCommand.new(
+          arguments: ['Greetings'],
+          command:   say_command
+        )
+      greet_command.call('programs')
+      #=> returns a result with value 'Greetings, programs!'
+
+      # Here, we are creating a curried command that passes both arguments.
+      # Therefore, our curried command does not take any arguments.
+      recruit_command =
+        Cuprum::CurriedCommand.new(
+          arguments: ['Greetings', 'starfighter'],
+          command:   say_command
+        )
+      recruit_command.call
+      #=> returns a result with value 'Greetings, starfighter!'
+  - name: Currying Keywords
+    text: |-
+      # Our base command takes two keywords: a math operation and an array of
+      # integers.
+      math_command = Cuprum::Command.new do |operands:, operation:|
+        operations.reduce(&operation)
+      end
+      math_command.call(operands: [2, 2], operation: :+)
+      #=> returns a result with value 4
+
+      # Our curried command still takes two keywords, but now the operation
+      # keyword is optional. It now defaults to :*, for multiplication.
+      multiply_command =
+        Cuprum::CurriedCommand.new(
+          command:  math_command,
+          keywords: { operation: :* }
+        )
+      multiply_command.call(operands: [3, 3])
+      #=> returns a result with value 9
+constructor: true
+inherited_classes:
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: "*"

@@ -3,6 +3,8 @@ name: Cuprum::Matcher#with_context
 parent_path: cuprum/matcher
 signature: with_context(match_context)
 slug: with-context
+aliases:
+- using_context
 constructor: false
 data_path: cuprum/matcher/i-with-context
 params:

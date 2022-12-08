@@ -13,8 +13,12 @@ module Cuprum::BuiltIn
   #   result.success?
   #   #=> true
   class NullCommand < Cuprum::Command
+    def initialize
+      super(&nil)
+    end
+
     private
 
-    def process(*_args); end
+    def process(*_args, **_kwargs); end
   end
 end

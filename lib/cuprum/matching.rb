@@ -114,6 +114,8 @@ module Cuprum
       end
     end
 
+    # @!parse extend ClassMethods
+
     # @return [Object, nil] the execution context for a matching clause.
     attr_reader :match_context
 
@@ -164,7 +166,7 @@ module Cuprum
     #
     # @raise [NoMatchError] if there is no clause matching the result.
     #
-    # @see ClassMethods::match
+    # @see ClassMethods#match
     # @see #match_context
     def call(result)
       unless result.respond_to?(:to_cuprum_result)

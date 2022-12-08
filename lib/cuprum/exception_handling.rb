@@ -3,7 +3,7 @@
 require 'cuprum/errors/uncaught_exception'
 
 module Cuprum
-  # Utility class for handling uncaught exceptions in commands.
+  # Utility module for handling uncaught exceptions in commands.
   #
   # @example
   #   class UnsafeCommand < Cuprum::Command
@@ -27,7 +27,7 @@ module Cuprum
   #   #=> a Cuprum::Errors::UncaughtException error.
   #   result.error.message
   #   #=> 'uncaught exception in SafeCommand -' \
-  #       ' StandardError: Something went wrong.'
+  #   #   ' StandardError: Something went wrong.'
   module ExceptionHandling
     # Wraps the #call method with a rescue clause matching any StandardError.
     #
@@ -37,6 +37,8 @@ module Cuprum
     #
     # @return [Cuprum::Result] the result of calling the superclass method, or
     #   a failing result if a StandardError is raised.
+    #
+    # @see Cuprum::Processing#call
     def call(*args, **kwargs, &block)
       super
     rescue StandardError => exception

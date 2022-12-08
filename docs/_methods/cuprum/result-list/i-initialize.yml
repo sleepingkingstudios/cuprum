@@ -1,0 +1,36 @@
+---
+name: Cuprum::ResultList#initialize
+parent_path: cuprum/result-list
+signature: 'initialize(*results, allow_partial: false, value: UNDEFINED)'
+slug: initialize
+constructor: true
+data_path: cuprum/result-list/i-initialize
+params:
+- description: |-
+    If true, allows for some failing
+    results as long as there is at least one passing result. Defaults to
+    false.
+  name: allow_partial
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: 'false'
+- description: The wrapped results.
+  name: results
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Result
+      path: cuprum/result
+- description: |-
+    The value of the result. Defaults to the mapped
+    values of the results.
+  name: value
+  type:
+  - name: Object
+  default: UNDEFINED
+returns:
+- description: a new instance of ResultList
+  type:
+  - name: ResultList
+version: "*"

@@ -4,11 +4,10 @@ require 'cuprum/error'
 require 'cuprum/errors'
 
 module Cuprum::Errors
-  # Error class to be used when trying to access the result of an uncalled
-  # Operation.
+  # Error returned when trying to access the result of an uncalled Operation.
   class OperationNotCalled < Cuprum::Error
-    # Format for generating error message.
     MESSAGE_FORMAT = '%s was not called and does not have a result'
+    private_constant :MESSAGE_FORMAT
 
     # Short string used to identify the type of error.
     TYPE = 'cuprum.errors.operation_not_called'

@@ -1,0 +1,33 @@
+---
+name: Cuprum::Operation#call
+parent_path: cuprum/operation
+signature: call(*arguments, **keywords, &block)
+slug: call
+constructor: false
+data_path: cuprum/operation/i-call
+metadata:
+  see:
+  - label: Cuprum::Command#call
+    path: cuprum/command#instance-method-call
+    text:
+    type: reference
+params:
+- description: Arguments to be passed to the implementation.
+  name: arguments
+  type:
+  - name: Array
+- description: Keywords to be passed to the implementation.
+  name: keywords
+  type:
+  - name: Hash
+returns:
+- description: the called operation.
+  type:
+  - name: Cuprum::Operation
+    path: cuprum/operation
+short_description: Calls the command implementation and stores the result.
+yields:
+- description: |-
+    If a block argument is given, it will be passed to the
+    implementation.
+version: "*"

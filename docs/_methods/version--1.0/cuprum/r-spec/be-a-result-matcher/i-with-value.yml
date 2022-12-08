@@ -3,6 +3,8 @@ name: Cuprum::RSpec::BeAResultMatcher#with_value
 parent_path: cuprum/r-spec/be-a-result-matcher
 signature: with_value(value)
 slug: with-value
+aliases:
+- and_value
 constructor: false
 data_path: cuprum/r-spec/be-a-result-matcher/i-with-value
 params:

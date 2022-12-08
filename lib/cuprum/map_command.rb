@@ -170,7 +170,7 @@ module Cuprum
     #     results as long as there is at least one passing result. Defaults to
     #     false.
     #
-    # @overload initialize(allow_partial: false)
+    # @overload initialize(allow_partial: false) { |item| }
     #   @param allow_partial [true, false] If true, allows for some failing
     #     results as long as there is at least one passing result. Defaults to
     #     false.
@@ -179,7 +179,7 @@ module Cuprum
     #     any.
     #   @yieldparam [Object] item Each item in the given Enumerable.
     #
-    # @overload initialize(allow_partial: false)
+    # @overload initialize(allow_partial: false) { |key, value| }
     #   @param allow_partial [true, false] If true, allows for some failing
     #     results as long as there is at least one passing result. Defaults to
     #     false.

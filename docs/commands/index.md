@@ -23,6 +23,7 @@ Each Command implements a `#call` method that wraps your defined business logic 
 - [Command Factories](../factories)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
+- [Map Commands](./map-commands)
 - [Middleware](./middleware)
 - [Operations](./operations)
 
@@ -84,7 +85,7 @@ Conversely, if the call to `#persist` fails, we're returning a Result with a sta
 
 Note also that we are reusing the same command three times, rather than creating a new save command for each book. Each book is persisted to the `books_repository`. This is also an example of how using commands can simplify code - notice that nothing about the `SaveBookCommand` is specific to the `Book` model. Thus, we could refactor this into a generic `SaveModelCommand`.
 
-A command can also be defined by passing block to `Cuprum::Command.new`.
+A command can also be defined by passing a block to `Cuprum::Command.new`.
 
 ```ruby
 increment_command = Cuprum::Command.new { |int| int + 1 }
@@ -116,31 +117,7 @@ result.class #=> Cuprum::Result
 result.value #=> 'Greetings, programs!'
 ```
 
-If the object returned by `#process` is a result object, then result is returned directly.
-
-```ruby
-command = Cuprum::Command.new { Cuprum::Result.new(value: 'Greetings, programs!') }
-result  = command.call
-result.class #=> Cuprum::Result
-result.value #=> 'Greetings, programs!'
-```
-
-## Command Results
-
-Calling the `#call` method on a `Cuprum::Command` instance will always return an instance of `Cuprum::Result`. The result's `#value` property is determined by the object returned by the `#process` method (if the command is defined as a class) or the block (if the command is defined by passing a block to `Cuprum::Command.new`).
-
-The `#value` depends on whether or not the returned object is a result or is compatible with the result interface. Specifically, any object that responds to the method `#to_cuprum_result` is considered to be a result.
-
-If the object returned by `#process` is **not** a result, then the `#value` of the returned result is set to the object.
-
-```ruby
-command = Cuprum::Command.new { 'Greetings, programs!' }
-result  = command.call
-result.class #=> Cuprum::Result
-result.value #=> 'Greetings, programs!'
-```
-
-If the object returned by `#process` is a result object, then result is returned directly.
+If the object returned by `#process` is a result object, then the result is returned directly.
 
 ```ruby
 command = Cuprum::Command.new { Cuprum::Result.new(value: 'Greetings, programs!') }

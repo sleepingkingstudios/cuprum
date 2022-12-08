@@ -1,0 +1,13 @@
+---
+name: Cuprum::Currying::CurriedCommand#block
+parent_path: cuprum/currying/curried-command
+signature: block
+slug: block
+constructor: false
+data_path: cuprum/currying/curried-command/i-block
+returns:
+- description: a block to pass to the curried command.
+  type:
+  - name: Proc
+  - name: nil
+version: "*"

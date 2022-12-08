@@ -1,0 +1,53 @@
+---
+name: Cuprum::Errors::MultipleErrors
+slug: multiple-errors
+type: class
+files:
+- lib/cuprum/errors/multiple_errors.rb
+parent_path: cuprum/errors
+short_description: Error wrapping multiple errors from a collection command.
+constants:
+- name: TYPE
+  path: cuprum/errors/multiple-errors/type
+  slug: type
+  inherited: false
+instance_attributes:
+- name: errors
+  read: true
+  write: false
+  path: cuprum/errors/multiple-errors/i-errors
+  slug: errors
+  inherited: false
+- name: message
+  read: true
+  write: false
+  path: cuprum/error/i-message
+  slug: message
+  inherited: true
+- name: type
+  read: true
+  write: false
+  path: cuprum/error/i-type
+  slug: type
+  inherited: true
+instance_methods:
+- name: "=="
+  path: cuprum/error/i-==
+  slug: "=="
+  inherited: true
+- name: as_json
+  path: cuprum/error/i-as-json
+  slug: as-json
+  inherited: true
+- name: initialize
+  path: cuprum/errors/multiple-errors/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/errors/multiple-errors
+constructor: true
+inherited_classes:
+- name: Cuprum::Error
+  slug: error
+  path: cuprum/error
+version: "*"

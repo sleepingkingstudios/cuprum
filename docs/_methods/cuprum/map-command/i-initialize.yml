@@ -1,0 +1,82 @@
+---
+name: Cuprum::MapCommand#initialize
+parent_path: cuprum/map-command
+signature: 'initialize(allow_partial: false, &implementation)'
+slug: initialize
+constructor: true
+data_path: cuprum/map-command/i-initialize
+overloads:
+- name: Cuprum::MapCommand#initialize
+  parent_path: cuprum/map-command
+  signature: 'initialize(allow_partial: false)'
+  slug: initialize
+  constructor: true
+  params:
+  - description: |-
+      If true, allows for some failing
+      results as long as there is at least one passing result. Defaults to
+      false.
+    name: allow_partial
+    type:
+    - name: 'true'
+    - name: 'false'
+    default: 'false'
+- name: Cuprum::MapCommand#initialize
+  parent_path: cuprum/map-command
+  signature: 'initialize(allow_partial: false) { |item| }'
+  slug: initialize
+  constructor: true
+  params:
+  - description: |-
+      If true, allows for some failing
+      results as long as there is at least one passing result. Defaults to
+      false.
+    name: allow_partial
+    type:
+    - name: 'true'
+    - name: 'false'
+    default: 'false) { |item| '
+  yield_params:
+  - description: Each item in the given Enumerable.
+    name: item
+    type:
+    - name: Object
+  yields:
+  - description: |-
+      The command implementation, to be called with each successive
+      item in the given enumerable. This overrides the #process method, if
+      any.
+- name: Cuprum::MapCommand#initialize
+  parent_path: cuprum/map-command
+  signature: 'initialize(allow_partial: false) { |key, value| }'
+  slug: initialize
+  constructor: true
+  params:
+  - description: |-
+      If true, allows for some failing
+      results as long as there is at least one passing result. Defaults to
+      false.
+    name: allow_partial
+    type:
+    - name: 'true'
+    - name: 'false'
+    default: false) { |key
+  yield_params:
+  - description: Each key in the given Hash.
+    name: key
+    type:
+    - name: Object
+  - description: Each value in the given Hash.
+    name: value
+    type:
+    - name: Object
+  yields:
+  - description: |-
+      The command implementation, to be called with each successive
+      item in the given enumerable. This overrides the #process method, if
+      any.
+returns:
+- description: a new instance of MapCommand
+  type:
+  - name: MapCommand
+version: "*"

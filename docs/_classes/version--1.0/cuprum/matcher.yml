@@ -24,10 +24,6 @@ instance_methods:
   path: cuprum/matching/i-matches?
   slug: matches?
   inherited: true
-- name: using_context
-  path: cuprum/matcher/i-using-context
-  slug: using-context
-  inherited: false
 - name: with_context
   path: cuprum/matcher/i-with-context
   slug: with-context

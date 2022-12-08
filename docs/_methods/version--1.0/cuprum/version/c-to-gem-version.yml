@@ -12,6 +12,9 @@ description: |-
 metadata:
   api: private
   see:
-  - text: SleepingKingStudios::Tools::SemanticVersion#to_gem_version
+  - label: SleepingKingStudios::Tools::SemanticVersion#to_gem_version
+    path:
+    text:
+    type: reference
 short_description: Generates the gem version string from the Version constants.
 version: '1.0'

@@ -1,0 +1,26 @@
+---
+name: Cuprum::ExceptionHandling#call
+parent_path: cuprum/exception-handling
+signature: call(*args, **kwargs, &block)
+slug: call
+constructor: false
+data_path: cuprum/exception-handling/i-call
+description: |-
+  If a StandardError or subclass thereof is raised and not caught by #call,
+  then ExceptionHandling will rescue the exception and return a failing
+  Cuprum::Result with a Cuprum::Errors::UncaughtException error.
+metadata:
+  see:
+  - label: Cuprum::Processing#call
+    path: cuprum/processing#instance-method-call
+    text:
+    type: reference
+returns:
+- description: |-
+    the result of calling the superclass method, or
+    a failing result if a StandardError is raised.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: 'Wraps the #call method with a rescue clause matching any StandardError.'
+version: "*"

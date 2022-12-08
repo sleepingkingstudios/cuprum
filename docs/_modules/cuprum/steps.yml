@@ -1,0 +1,82 @@
+---
+name: Cuprum::Steps
+slug: steps
+type: module
+files:
+- lib/cuprum/steps.rb
+parent_path: cuprum
+short_description: The Steps supports step by step processes that halt on a failed
+  step.
+instance_methods:
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: false
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: false
+data_path: cuprum/steps
+description: |-
+  After including Cuprum::Steps, use the #steps instance method to wrap a
+  series of instructions. Each instruction is then defined using the #step
+  method. Steps can be defined either as a block or as a method invocation.
+
+  When the steps block is evaluated, each step is called in sequence. If the
+  step resolves to a passing result, the result value is returned and
+  execution continues to the next step. If all of the steps pass, then the
+  result of the final step is returned from the #steps block.
+
+  Conversely, if any step resolves to a failing result, that failing result is
+  immediately returned from the #steps block. No further steps will be called.
+
+  For example, consider updating a database record using a primary key and an
+  attributes hash. Broken down into its basics, this requires the following
+  instructions:
+
+  - Using the primary key, find the existing record in the database.
+  - Update the record object with the given attributes.
+  - Save the updated record back to the database.
+
+  Note that each of these steps can fail for different reasons. For example,
+  if a record with the given primary key does not exist in the database, then
+  the first instruction will fail, and the follow up steps should not be
+  executed. Further, whatever context is executing these steps probably wants
+  to know which step failed, and why.
+included_modules:
+- name: Cuprum::ResultHelpers
+  slug: result-helpers
+  path: cuprum/result-helpers
+metadata:
+  examples:
+  - name: Defining Methods As Steps
+    text: |-
+      def assign_attributes(record, attributes); end
+
+      def find_record(primary_key); end
+
+      def save_record(record); end
+
+      def update_record(primary_key, attributes)
+        steps do
+          record = step :find_record,       primary_key
+          record = step :assign_attributes, record, attributes
+          step :save_record, record
+        end
+      end
+  - name: Defining Blocks As Steps
+    text: |-
+      class AssignAttributes < Cuprum::Command; end
+
+      class FindRecord < Cuprum::Command; end
+
+      class SaveRecord < Cuprum::Command; end
+
+      def update_record(primary_key, attributes)
+        steps do
+          record = step { FindRecord.new.call(primary_key) }
+          record = step { AssignAttributes.new.call(record, attributes) }
+          step { SaveRecord.new.call(record) }
+        end
+      end
+version: "*"

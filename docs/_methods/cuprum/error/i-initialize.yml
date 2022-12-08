@@ -1,0 +1,29 @@
+---
+name: Cuprum::Error#initialize
+parent_path: cuprum/error
+signature: 'initialize(message: nil, type: nil, **properties)'
+slug: initialize
+constructor: true
+data_path: cuprum/error/i-initialize
+params:
+- description: |-
+    Optional message describing the nature of the
+    error.
+  name: message
+  type:
+  - name: String
+  default: nil
+- description: Additional properties used to compare errors.
+  name: properties
+  type:
+  - name: Hash
+- description: Short string used to identify the type of error.
+  name: type
+  type:
+  - name: String
+  default: nil
+returns:
+- description: a new instance of Error
+  type:
+  - name: Error
+version: "*"

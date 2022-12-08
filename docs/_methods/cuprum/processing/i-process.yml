@@ -1,0 +1,40 @@
+---
+name: Cuprum::Processing#process
+parent_path: cuprum/processing
+signature: process(*arguments, **keywords, &block)
+slug: process
+constructor: false
+data_path: cuprum/processing/i-process
+description: |-
+  Whereas the #call method provides the public interface for calling a
+  command, the #process method defines the actual implementation. This
+  method should not be called directly.
+
+  When the command is called via #call, the parameters are passed to
+  #process. If #process returns a result, that result will be returned by
+  #call; otherwise, the value returned by #process will be wrapped in a
+  successful Cuprum::Result object.
+metadata:
+  notes:
+  - This is a private method.
+params:
+- description: 'The arguments, if any, passed from #call.'
+  name: arguments
+  type:
+  - name: Array
+- description: 'The keywords, if any, passed from #call.'
+  name: keywords
+  type:
+  - name: Hash
+returns:
+- description: |-
+    a result object, or the value of the
+    result object to be returned by #call.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+  - name: Object
+short_description: The implementation of the command.
+yields:
+- description: 'The block, if any, passed from #call.'
+version: "*"

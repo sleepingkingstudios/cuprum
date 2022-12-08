@@ -60,18 +60,23 @@ module Cuprum
   module Processing
     include Cuprum::ResultHelpers
 
-    # Returns a nonnegative integer for commands that take a fixed number of
-    # arguments. For commands that take a variable number of arguments, returns
-    # -n-1, where n is the number of required arguments.
+    # Returns an indication of the number of arguments accepted by #call.
+    #
+    # If the method takes a fixed number N of arguments, returns N. If the
+    # method takes a variable number of arguments, returns -N-1, where N is the
+    # number of required arguments. Keyword arguments will be considered as a
+    # single additional argument, that argument being mandatory if any keyword
+    # argument is mandatory.
     #
     # @return [Integer] The number of arguments.
+    #
+    # @see Method#arity.
     def arity
       method(:process).arity
     end
 
     # @overload call(*arguments, **keywords, &block)
-    #   Executes the command implementation and returns a Cuprum::Result or
-    #   compatible object.
+    #   Executes the command and returns a Cuprum::Result or compatible object.
     #
     #   Each time #call is invoked, the object performs the following steps:
     #
@@ -107,11 +112,16 @@ module Cuprum
 
     # @!visibility public
     # @overload process(*arguments, **keywords, &block)
-    #   The implementation of the command, to be executed when the #call method
-    #   is called. If #process returns a result, that result will be returned by
+    #   The implementation of the command.
+    #
+    #   Whereas the #call method provides the public interface for calling a
+    #   command, the #process method defines the actual implementation. This
+    #   method should not be called directly.
+    #
+    #   When the command is called via #call, the parameters are passed to
+    #   #process. If #process returns a result, that result will be returned by
     #   #call; otherwise, the value returned by #process will be wrapped in a
-    #   successful Cuprum::Result object. This method should not be called
-    #   directly.
+    #   successful Cuprum::Result object.
     #
     #   @param arguments [Array] The arguments, if any, passed from #call.
     #
@@ -119,9 +129,10 @@ module Cuprum
     #
     #   @yield The block, if any, passed from #call.
     #
-    #   @return [Object] the value of the result object to be returned by #call.
+    #   @return [Cuprum::Result, Object] a result object, or the value of the
+    #     result object to be returned by #call.
     #
-    # @note This is a private method.
+    #   @note This is a private method.
     def process(*_args)
       error = Cuprum::Errors::CommandNotImplemented.new(command: self)
 

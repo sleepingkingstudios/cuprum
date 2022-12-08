@@ -1,0 +1,13 @@
+---
+name: Cuprum::Currying::CurriedCommand#command
+parent_path: cuprum/currying/curried-command
+signature: command
+slug: command
+constructor: false
+data_path: cuprum/currying/curried-command/i-command
+returns:
+- description: the original command to curry.
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+version: "*"

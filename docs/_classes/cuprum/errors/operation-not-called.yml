@@ -1,0 +1,54 @@
+---
+name: Cuprum::Errors::OperationNotCalled
+slug: operation-not-called
+type: class
+files:
+- lib/cuprum/errors/operation_not_called.rb
+parent_path: cuprum/errors
+short_description: Error returned when trying to access the result of an uncalled
+  Operation.
+constants:
+- name: TYPE
+  path: cuprum/errors/operation-not-called/type
+  slug: type
+  inherited: false
+instance_attributes:
+- name: message
+  read: true
+  write: false
+  path: cuprum/error/i-message
+  slug: message
+  inherited: true
+- name: operation
+  read: true
+  write: false
+  path: cuprum/errors/operation-not-called/i-operation
+  slug: operation
+  inherited: false
+- name: type
+  read: true
+  write: false
+  path: cuprum/error/i-type
+  slug: type
+  inherited: true
+instance_methods:
+- name: "=="
+  path: cuprum/error/i-==
+  slug: "=="
+  inherited: true
+- name: as_json
+  path: cuprum/error/i-as-json
+  slug: as-json
+  inherited: true
+- name: initialize
+  path: cuprum/errors/operation-not-called/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/errors/operation-not-called
+constructor: true
+inherited_classes:
+- name: Cuprum::Error
+  slug: error
+  path: cuprum/error
+version: "*"

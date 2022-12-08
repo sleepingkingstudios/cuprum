@@ -4,6 +4,8 @@
 
 {% include reference/attributes/heading.md attribute=include.attribute heading_id=heading_id method=method type=include.type %}
 
+{% include reference/methods/aliases.md method=method %}
+
 {% include reference/methods/inherited.md inherited=include.inherited method=method %}
 
 {% include reference/methods/overview.md method=method heading_id=heading_id prefix=prefix %}

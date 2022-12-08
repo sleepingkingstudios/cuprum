@@ -1,0 +1,52 @@
+---
+name: Cuprum::Utils::InstanceSpy
+slug: instance-spy
+type: module
+files:
+- lib/cuprum/utils/instance_spy.rb
+parent_path: cuprum/utils
+short_description: 'Instruments calls to the #call method of any instance of a command
+  class.'
+class_methods:
+- name: clear_spies
+  path: cuprum/utils/instance-spy/c-clear-spies
+  slug: clear-spies
+  inherited: false
+- name: spy_on
+  path: cuprum/utils/instance-spy/c-spy-on
+  slug: spy-on
+  inherited: false
+defined_classes:
+- name: Spy
+  slug: spy
+instance_methods:
+- name: call
+  path: cuprum/utils/instance-spy/i-call
+  slug: call
+  inherited: false
+data_path: cuprum/utils/instance-spy
+description: |-
+  This can be used to unobtrusively test the functionality of code that calls
+  a command without providing a reference to the command instance, such
+  methods that create and call a command instance.
+metadata:
+  examples:
+  - name: Observing calls to instances of a command.
+    text: |-
+      spy = Cuprum::Utils::InstanceSpy.spy_on(CustomCommand)
+
+      allow(spy).to receive(:call)
+
+      CustomCommand.new.call(1, 2, 3, :four => '4')
+
+      expect(spy).to have_received(:call).with(1, 2, 3, :four => '4')
+  - name: Block syntax
+    text: |-
+      Cuprum::Utils::InstanceSpy.spy_on(CustomCommand) do |spy|
+        allow(spy).to receive(:call)
+
+        CustomCommand.new.call
+
+        expect(spy).to have_received(:call)
+      end
+version: "*"

@@ -7,6 +7,48 @@ module Cuprum
   #
   # Additional details can be passed by setting the #message or by using a
   # subclass of Cuprum::Error.
+  #
+  # @example
+  #   error = Cuprum::Error.new(message: 'Something went wrong')
+  #   error.type
+  #   #=> 'cuprum.error'
+  #   error.message
+  #   #=> 'Something went wrong'
+  #
+  # @example An Error With Custom Type
+  #   error = Cuprum::Error.new(
+  #     message: 'Something went wrong',
+  #     type:    'custom.errors.generic',
+  #   )
+  #   error.type
+  #   #=> 'custom.errors.generic'
+  #
+  # @example An Error Subclass
+  #   class LightsError < Cuprum::Error
+  #     TYPE = 'custom.errors.wrong_number_of_lights'
+  #
+  #     def initialize(count)
+  #       super(message: "There are #{count} lights!")
+  #
+  #       @count = count
+  #     end
+  #
+  #     private def as_json_data
+  #       { 'count' => count }
+  #     end
+  #   end
+  #
+  #   error = LightsError.new(4)
+  #   error.type
+  #   #=> 'custom.errors.wrong_number_of_lights'
+  #   error.message
+  #   #=> 'There are 4 lights!'
+  #   error.as_json
+  #   #=> {
+  #   #     'data'    => { 'count' => 4 },
+  #   #     'message' => 'There are 4 lights!',
+  #   #     'type'    => 'custom.errors.wrong_number_of_lights'
+  #   #   }
   class Error
     # Short string used to identify the type of error.
     #

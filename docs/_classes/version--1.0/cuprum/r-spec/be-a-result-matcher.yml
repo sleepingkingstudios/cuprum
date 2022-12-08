@@ -9,18 +9,6 @@ short_description: |-
   Custom matcher that asserts the actual object is a Cuprum result object with
   the specified properties.
 instance_methods:
-- name: and_error
-  path: cuprum/r-spec/be-a-result-matcher/i-and-error
-  slug: and-error
-  inherited: false
-- name: and_status
-  path: cuprum/r-spec/be-a-result-matcher/i-and-status
-  slug: and-status
-  inherited: false
-- name: and_value
-  path: cuprum/r-spec/be-a-result-matcher/i-and-value
-  slug: and-value
-  inherited: false
 - name: description
   path: cuprum/r-spec/be-a-result-matcher/i-description
   slug: description

@@ -1,0 +1,23 @@
+---
+name: Cuprum::Error#as_json
+parent_path: cuprum/error
+signature: as_json
+slug: as-json
+constructor: false
+data_path: cuprum/error/i-as-json
+description: |-
+  By default, contains the #type and #message properties and an empty :data
+  Hash. This can be overriden in subclasses by overriding the private method
+  #as_json_data; this should always return a Hash with String keys and whose
+  values are basic objects or data structures of the same.
+returns:
+- description: |-
+    a serializable hash representation of the
+    error.
+  type:
+  - name: Hash
+    items:
+    - name: String
+    - name: Object
+short_description: Generates a serializable representation of the error object.
+version: "*"

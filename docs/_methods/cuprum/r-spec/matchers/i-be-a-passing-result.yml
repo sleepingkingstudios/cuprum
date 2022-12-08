@@ -1,0 +1,14 @@
+---
+name: Cuprum::RSpec::Matchers#be_a_passing_result
+parent_path: cuprum/r-spec/matchers
+signature: be_a_passing_result
+slug: be-a-passing-result
+constructor: false
+data_path: cuprum/r-spec/matchers/i-be-a-passing-result
+returns:
+- description: the generated matcher.
+  type:
+  - name: Cuprum::RSpec::BeAResultMatcher
+    path: cuprum/r-spec/be-a-result-matcher
+short_description: 'Asserts that the object is a Cuprum::Result with status: :success.'
+version: "*"

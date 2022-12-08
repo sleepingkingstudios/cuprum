@@ -1,0 +1,17 @@
+---
+name: Cuprum::Operation#reset!
+parent_path: cuprum/operation
+signature: reset!
+slug: reset!
+constructor: false
+data_path: cuprum/operation/i-reset!
+description: |-
+  If the operation cannot be run more than once, this method should raise
+  an error.
+short_description: |-
+  Clears the reference to the most recent call of the operation, if any.
+  This allows the result and any referenced data to be garbage collected.
+  Use this method to clear any instance variables or state internal to the
+  operation (an operation should never have external state apart from the
+  last result).
+version: "*"

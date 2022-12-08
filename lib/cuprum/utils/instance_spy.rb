@@ -3,54 +3,52 @@
 require 'cuprum/utils'
 
 module Cuprum::Utils
-  # Utility module for instrumenting calls to the #call method of any instance
-  # of a command class. This can be used to unobtrusively test the
-  # functionality of code that calls a command without providing a reference to
-  # the command instance, such as chained commands or methods that create and
-  # call a command instance.
+  # Instruments calls to the #call method of any instance of a command class.
+  #
+  # This can be used to unobtrusively test the functionality of code that calls
+  # a command without providing a reference to the command instance, such
+  # methods that create and call a command instance.
   #
   # @example Observing calls to instances of a command.
   #   spy = Cuprum::Utils::InstanceSpy.spy_on(CustomCommand)
   #
-  #   expect(spy).to receive(:call).with(1, 2, 3, :four => '4')
+  #   allow(spy).to receive(:call)
   #
   #   CustomCommand.new.call(1, 2, 3, :four => '4')
   #
-  # @example Observing calls to a chained command.
-  #   spy = Cuprum::Utils::InstanceSpy.spy_on(ChainedCommand)
-  #
-  #   expect(spy).to receive(:call)
-  #
-  #   Cuprum::Command.new {}.
-  #     chain { |result| ChainedCommand.new.call(result) }.
-  #     call
+  #   expect(spy).to have_received(:call).with(1, 2, 3, :four => '4')
   #
   # @example Block syntax
   #   Cuprum::Utils::InstanceSpy.spy_on(CustomCommand) do |spy|
-  #     expect(spy).to receive(:call)
+  #     allow(spy).to receive(:call)
   #
   #     CustomCommand.new.call
+  #
+  #     expect(spy).to have_received(:call)
   #   end
   module InstanceSpy
-    # Minimal class that implements a #call method to mirror method calls to
-    # instances of an instrumented command class.
+    # Minimal class double implementing the #call method.
     class Spy
-      # Empty method that accepts any arguments and an optional block.
-      def call(*_args, &block); end
+      # Empty method that accepts any parameters and an optional block.
+      def call(*_args, **_kwargs, &block); end
     end
 
     class << self
-      # Retires all spies. Subsequent calls to the #call method on command
-      # instances will not be mirrored to existing spy objects.
+      # Retires all spies.
+      #
+      # Subsequent calls to the #call method on command instances will not be
+      # mirrored to existing spy objects.
       def clear_spies
         Thread.current[:cuprum_instance_spies] = nil
 
         nil
       end
 
-      # Finds or creates a spy object for the given module or class. Each time
-      # that the #call method is called for an object of the given type, the
-      # spy's #call method will be invoked with the same arguments and block.
+      # Finds or creates a spy object for the given module or class.
+      #
+      # Each time that the #call method is called for an object of the given
+      # type, the spy's #call method will be invoked with the same arguments and
+      # block.
       #
       # @param command_class [Class, Module] The type of command to spy on.
       #   Must be either a Module, or a Class that extends Cuprum::Command.

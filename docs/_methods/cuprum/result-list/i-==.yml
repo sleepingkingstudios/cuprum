@@ -1,0 +1,15 @@
+---
+name: Cuprum::ResultList#==
+parent_path: cuprum/result-list
+signature: "==(other)"
+slug: "=="
+constructor: false
+data_path: cuprum/result-list/i-==
+returns:
+- description: |-
+    true if the other object is a ResultList with
+    matching results and options; otherwise false.
+  type:
+  - name: 'true'
+  - name: 'false'
+version: "*"
