@@ -1,0 +1,22 @@
+---
+name: Cuprum::MatcherList#initialize
+parent_path: cuprum/matcher-list
+signature: initialize(matchers)
+slug: initialize
+constructor: true
+data_path: cuprum/matcher-list/i-initialize
+params:
+- description: |-
+    The matchers to match against a
+    result, in order of descending priority.
+  name: matchers
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Matching
+      path: cuprum/matching
+returns:
+- description: a new instance of MatcherList
+  type:
+  - name: MatcherList
+version: "*"

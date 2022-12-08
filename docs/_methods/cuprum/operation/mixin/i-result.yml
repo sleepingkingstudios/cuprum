@@ -1,0 +1,15 @@
+---
+name: Cuprum::Operation::Mixin#result
+parent_path: cuprum/operation/mixin
+signature: result
+slug: result
+constructor: false
+data_path: cuprum/operation/mixin/i-result
+returns:
+- description: |-
+    The result from the most recent call of the
+    operation.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+version: "*"

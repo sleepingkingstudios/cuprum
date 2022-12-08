@@ -1,0 +1,12 @@
+---
+name: Cuprum::Currying::CurriedCommand#arguments
+parent_path: cuprum/currying/curried-command
+signature: arguments
+slug: arguments
+constructor: false
+data_path: cuprum/currying/curried-command/i-arguments
+returns:
+- description: the arguments to pass to the curried command.
+  type:
+  - name: Array
+version: "*"

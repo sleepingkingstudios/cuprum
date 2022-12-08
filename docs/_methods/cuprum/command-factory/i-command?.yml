@@ -1,0 +1,14 @@
+---
+name: Cuprum::CommandFactory#command?
+parent_path: cuprum/command-factory
+signature: command?(command_name)
+slug: command?
+constructor: false
+data_path: cuprum/command-factory/i-command?
+returns:
+- description: |-
+    true if the factory defines the given command, otherwise
+    false.
+  type:
+  - name: Boolean
+version: "*"

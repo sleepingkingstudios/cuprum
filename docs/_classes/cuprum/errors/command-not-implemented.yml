@@ -1,0 +1,54 @@
+---
+name: Cuprum::Errors::CommandNotImplemented
+slug: command-not-implemented
+type: class
+files:
+- lib/cuprum/errors/command_not_implemented.rb
+parent_path: cuprum/errors
+short_description: 'Error returned when a Command is called without defining a #process
+  method.'
+constants:
+- name: TYPE
+  path: cuprum/errors/command-not-implemented/type
+  slug: type
+  inherited: false
+instance_attributes:
+- name: command
+  read: true
+  write: false
+  path: cuprum/errors/command-not-implemented/i-command
+  slug: command
+  inherited: false
+- name: message
+  read: true
+  write: false
+  path: cuprum/error/i-message
+  slug: message
+  inherited: true
+- name: type
+  read: true
+  write: false
+  path: cuprum/error/i-type
+  slug: type
+  inherited: true
+instance_methods:
+- name: "=="
+  path: cuprum/error/i-==
+  slug: "=="
+  inherited: true
+- name: as_json
+  path: cuprum/error/i-as-json
+  slug: as-json
+  inherited: true
+- name: initialize
+  path: cuprum/errors/command-not-implemented/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/errors/command-not-implemented
+constructor: true
+inherited_classes:
+- name: Cuprum::Error
+  slug: error
+  path: cuprum/error
+version: "*"

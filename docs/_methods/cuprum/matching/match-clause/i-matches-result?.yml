@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching::MatchClause#matches_result?
+parent_path: cuprum/matching/match-clause
+signature: matches_result?(result:)
+slug: matches-result?
+constructor: false
+data_path: cuprum/matching/match-clause/i-matches-result?
+returns:
+- description: true if the result matches, otherwise false.
+  type:
+  - name: Boolean
+short_description: Checks if the match clause matches the given result.
+version: "*"

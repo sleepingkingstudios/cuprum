@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching::MatchClause#status
+parent_path: cuprum/matching/match-clause
+signature: status
+slug: status
+constructor: false
+data_path: cuprum/matching/match-clause/i-status
+returns:
+- description: the current value of status
+  type:
+  - name: Object
+short_description: Returns the value of attribute status
+version: "*"

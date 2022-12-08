@@ -1,0 +1,43 @@
+---
+name: Cuprum::Middleware.apply
+parent_path: cuprum/middleware
+signature: apply(command:, middleware:)
+slug: apply
+constructor: false
+data_path: cuprum/middleware/c-apply
+description: |-
+  This method takes the given command and middleware and returns a command
+  that will call the middleware in order, followed by the given command.
+  This is done via partial application: the last item in the middleware is
+  partially applied with the given command as the middleware's next command
+  parameter. The next to last middleware is then partially applied with the
+  last middleware as the next command and so on. This ensures that the
+  middleware commands will be called in the given order, and that each
+  middleware command wraps the next, down to the given command at the root.
+params:
+- description: The command to wrap with middleware.
+  name: command
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+- description: |-
+    The
+    middleware to wrap around the command. Will be called in the order they
+    are given.
+  name: middleware
+  type:
+  - name: Cuprum::Middleware
+    path: cuprum/middleware
+  - name: Array
+    items:
+    - name: Cuprum::Middleware
+      path: cuprum/middleware
+returns:
+- description: |-
+    the outermost middleware command, with the next
+    command parameter partially applied.
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+short_description: Helper method for wrapping a command with middleware.
+version: "*"

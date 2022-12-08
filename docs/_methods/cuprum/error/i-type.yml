@@ -1,0 +1,12 @@
+---
+name: Cuprum::Error#type
+parent_path: cuprum/error
+signature: type
+slug: type
+constructor: false
+data_path: cuprum/error/i-type
+returns:
+- description: short string used to identify the type of error.
+  type:
+  - name: String
+version: "*"

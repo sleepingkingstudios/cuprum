@@ -1,0 +1,15 @@
+---
+name: Cuprum::Matching::ClassMethods
+slug: class-methods
+type: module
+files:
+- lib/cuprum/matching.rb
+parent_path: cuprum/matching
+short_description: Class methods extend-ed into a class when the module is included.
+instance_methods:
+- name: match
+  path: cuprum/matching/class-methods/i-match
+  slug: match
+  inherited: false
+data_path: cuprum/matching/class-methods
+version: "*"

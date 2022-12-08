@@ -1,0 +1,28 @@
+---
+name: Cuprum::ResultList#to_cuprum_result
+parent_path: cuprum/result-list
+signature: to_cuprum_result
+slug: to-cuprum-result
+constructor: false
+data_path: cuprum/result-list/i-to-cuprum-result
+metadata:
+  see:
+  - label: "#error"
+    path: cuprum/result-list#instance-method-error
+    text:
+    type: reference
+  - label: "#status"
+    path: cuprum/result-list#instance-method-status
+    text:
+    type: reference
+  - label: "#value"
+    path: cuprum/result-list#instance-attribute-value
+    text:
+    type: reference
+returns:
+- description: the converted result.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Converts the result list to a Cuprum::Result.
+version: "*"

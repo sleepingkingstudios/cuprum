@@ -1,0 +1,28 @@
+---
+name: Cuprum::RSpec::Matchers
+slug: matchers
+type: module
+files:
+- lib/cuprum/rspec/be_a_result.rb
+- lib/cuprum/rspec/be_callable.rb
+parent_path: cuprum/r-spec
+short_description: rubocop:disable Style/Documentation
+instance_methods:
+- name: be_a_failing_result
+  path: cuprum/r-spec/matchers/i-be-a-failing-result
+  slug: be-a-failing-result
+  inherited: false
+- name: be_a_passing_result
+  path: cuprum/r-spec/matchers/i-be-a-passing-result
+  slug: be-a-passing-result
+  inherited: false
+- name: be_a_result
+  path: cuprum/r-spec/matchers/i-be-a-result
+  slug: be-a-result
+  inherited: false
+- name: be_callable
+  path: cuprum/r-spec/matchers/i-be-callable
+  slug: be-callable
+  inherited: false
+data_path: cuprum/r-spec/matchers
+version: "*"

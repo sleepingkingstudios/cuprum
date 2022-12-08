@@ -1,0 +1,58 @@
+---
+name: Cuprum::CommandFactory
+slug: command-factory
+type: class
+files:
+- lib/cuprum/command_factory.rb
+parent_path: cuprum
+short_description: Builder class for instantiating command objects.
+class_methods:
+- name: command
+  path: cuprum/command-factory/c-command
+  slug: command
+  inherited: false
+- name: command_class
+  path: cuprum/command-factory/c-command-class
+  slug: command-class
+  inherited: false
+instance_methods:
+- name: command?
+  path: cuprum/command-factory/i-command?
+  slug: command?
+  inherited: false
+- name: commands
+  path: cuprum/command-factory/i-commands
+  slug: commands
+  inherited: false
+data_path: cuprum/command-factory
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      class SpaceFactory < Cuprum::CommandFactory
+        command(:build, BuildCommand)
+
+        command(:fly) { |launch_site:| FlyCommand.new(launch_site) }
+
+        command_class(:dream) { DreamCommand }
+      end
+
+      factory = SpaceFactory.new
+
+      factory::Build #=> BuildCommand
+      factory.build  #=> an instance of BuildCommand
+
+      rocket = factory.build.call({ size: 'big' }) #=> an instance of Rocket
+      rocket.size                                  #=> 'big'
+
+      command = factory.fly(launch_site: 'KSC') #=> an instance of FlyCommand
+      command.call(rocket)
+      #=> launches the rocket from KSC
+
+      factory::Dream #=> DreamCommand
+      factory.dream  #=> an instance of DreamCommand
+constructor: false
+inherited_classes:
+- name: Module
+  slug: module
+version: "*"

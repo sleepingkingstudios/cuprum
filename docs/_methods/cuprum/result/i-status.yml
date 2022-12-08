@@ -1,0 +1,12 @@
+---
+name: Cuprum::Result#status
+parent_path: cuprum/result
+signature: status
+slug: status
+constructor: false
+data_path: cuprum/result/i-status
+returns:
+- description: the status of the result, either :success or :failure.
+  type:
+  - name: Symbol
+version: "*"

@@ -1,0 +1,70 @@
+---
+name: Cuprum::BuiltIn::IdentityCommand
+slug: identity-command
+type: class
+files:
+- lib/cuprum/built_in/identity_command.rb
+parent_path: cuprum/built-in
+short_description: A predefined command that returns the value or result it was called
+  with.
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/command/i-call
+  slug: call
+  inherited: true
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: initialize
+  path: cuprum/built-in/identity-command/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+data_path: cuprum/built-in/identity-command
+metadata:
+  examples:
+  - name: With a value.
+    text: |-
+      result = IdentityCommand.new.call('custom value')
+      result.value
+      #=> 'custom value'
+      result.success?
+      #=> true
+  - name: With a result.
+    text: |-
+      error  = 'errors.messages.unknown'
+      value  = Cuprum::Result.new(value: 'result value', error: error)
+      result = IdentityCommand.new.call(value)
+      result.value
+      #=> 'result value'
+      result.success?
+      #=> false
+      result.error
+      #=> 'errors.messages.unknown'
+constructor: true
+direct_subclasses:
+- name: Cuprum::BuiltIn::IdentityOperation
+  slug: identity-operation
+  path: cuprum/built-in/identity-operation
+inherited_classes:
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: "*"

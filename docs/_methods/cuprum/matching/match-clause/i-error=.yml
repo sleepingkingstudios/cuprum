@@ -1,0 +1,18 @@
+---
+name: Cuprum::Matching::MatchClause#error=
+parent_path: cuprum/matching/match-clause
+signature: error=(value)
+slug: error=
+constructor: false
+data_path: cuprum/matching/match-clause/i-error=
+params:
+- description: the value to set the attribute error to.
+  name: value
+  type:
+  - name: Object
+returns:
+- description: the newly set value
+  type:
+  - name: Object
+short_description: Sets the attribute error
+version: "*"
