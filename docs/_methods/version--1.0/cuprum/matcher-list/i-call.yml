@@ -22,7 +22,10 @@ description: |-
   Cuprum::Matching::NoMatchError will be raised.
 metadata:
   see:
-  - text: Cuprum::Matcher#call
+  - label: Cuprum::Matcher#call
+    path:
+    text:
+    type: reference
 params:
 - description: The result to match.
   name: result

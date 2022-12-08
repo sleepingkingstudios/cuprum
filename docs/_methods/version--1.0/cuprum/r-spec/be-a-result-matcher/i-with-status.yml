@@ -3,6 +3,8 @@ name: Cuprum::RSpec::BeAResultMatcher#with_status
 parent_path: cuprum/r-spec/be-a-result-matcher
 signature: with_status(status)
 slug: with-status
+aliases:
+- and_status
 constructor: false
 data_path: cuprum/r-spec/be-a-result-matcher/i-with-status
 params:

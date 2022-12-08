@@ -46,8 +46,14 @@ description: |-
   matching_context using #instance_exec.
 metadata:
   see:
-  - text: ClassMethods::match
-  - text: "#match_context"
+  - label: ClassMethods::match
+    path:
+    text:
+    type: reference
+  - label: "#match_context"
+    path: cuprum/matching#instance-attribute-match-context
+    text:
+    type: reference
 params:
 - description: The result to match.
   name: result
