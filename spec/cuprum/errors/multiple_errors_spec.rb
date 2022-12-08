@@ -74,7 +74,7 @@ RSpec.describe Cuprum::Errors::MultipleErrors do
   end
 
   describe '#message' do
-    let(:expected) { 'the command encountered multiple errors' }
+    let(:expected) { 'the command encountered one or more errors' }
 
     include_examples 'should define reader', :message, -> { expected }
 

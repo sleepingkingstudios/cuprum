@@ -33,7 +33,7 @@ module Cuprum::Errors
     end
 
     def default_message
-      'the command encountered multiple errors'
+      'the command encountered one or more errors'
     end
   end
 end
