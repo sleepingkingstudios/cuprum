@@ -11,6 +11,8 @@ collections:
   namespaces:
     output: false
 debug: true
+exclude:
+  - Rakefile
 markdown: kramdown
 plugins:
   - jekyll-remote-theme
