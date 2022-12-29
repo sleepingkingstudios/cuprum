@@ -45,7 +45,7 @@ module Cuprum::Errors
     end
 
     def generate_message(message)
-      message = "#{message} #{exception.class}: #{exception.message}"
+      message = "#{message.rstrip} #{exception.class}: #{exception.message}"
 
       return message unless cause
 

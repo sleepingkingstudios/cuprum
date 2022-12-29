@@ -90,6 +90,15 @@ RSpec.describe Cuprum::Errors::UncaughtException do
       end
 
       it { expect(error.message).to be == expected }
+
+      context 'when the message has trailing whitespace' do
+        let(:message) { 'a fatal error occurred - ' }
+        let(:expected) do
+          "#{message}#{exception.class}: #{exception.message}"
+        end
+
+        it { expect(error.message).to be == expected }
+      end
     end
 
     context 'when the exception has a cause' do
