@@ -37,18 +37,60 @@ module Cuprum
     # @param allow_partial [true, false] If true, allows for some failing
     #   results as long as there is at least one passing result. Defaults to
     #   false.
+    # @param error [Cuprum::Error] If given, sets the error for the result list
+    #   to the specified error object.
     # @param results [Array<Cuprum::Result>] The wrapped results.
+    # @param status [:success, :failure] If given, sets the status of the result
+    #   list to the specified value.
     # @param value [Object] The value of the result. Defaults to the mapped
     #   values of the results.
-    def initialize(*results, allow_partial: false, value: UNDEFINED)
+    def initialize(
+      *results,
+      allow_partial: false,
+      error: UNDEFINED,
+      status: UNDEFINED,
+      value: UNDEFINED
+    )
       @allow_partial = allow_partial
       @results       = normalize_results(results)
-      @value         = value == UNDEFINED ? values : value
+      @error         = error  == UNDEFINED ? build_error  : error
+      @status        = status == UNDEFINED ? build_status : status
+      @value         = value  == UNDEFINED ? values : value
     end
 
     # @return [Array<Cuprum::Result>] the wrapped results.
     attr_reader :results
     alias_method :to_a, :results
+
+    # Returns the error for the result list.
+    #
+    # If the result list was initialized with an error, returns that error.
+    #
+    # If any of the results have errors, aggregates the result errors into a
+    # Cuprum::MultipleErrors object.
+    #
+    # If none of the results have errors, returns nil.
+    #
+    # @return [Cuprum::Errors::MultipleErrors, Cuprum::Error, nil] the error for
+    #   the result list.
+    attr_reader :error
+
+    # Determines the status of the combined results.
+    #
+    # If the result list was initialize with a status, returns that status.
+    #
+    # If there are no failing results, i.e. the results array is empty or all of
+    # the results are passing, returns :success.
+    #
+    # If there is at least one failing result, it instead returns :failure.
+    #
+    # If the :allow_partial flag is set to true, returns :success if the results
+    # array is empty or there is at least one passing result. If there is at
+    # least one failing result and no passing results, it instead returns
+    # :failure.
+    #
+    # @return [:success, :failure] the status of the combined results.
+    attr_reader :status
 
     # @return [Object] The value of the result. Defaults to the mapped values of
     #   the results.
@@ -73,16 +115,6 @@ module Cuprum
       @allow_partial
     end
 
-    # @return [Cuprum::Errors::MultipleErrors, nil] the error, if any, for each
-    #   result, or nil if none of the results have errors.
-    def error
-      return @error if @error
-
-      return if errors.compact.empty?
-
-      @error = Cuprum::Errors::MultipleErrors.new(errors: errors)
-    end
-
     # @return [Array<Cuprum::Error, nil>] the error, if any, for each result.
     def errors
       @errors ||= results.map(&:error)
@@ -91,24 +123,6 @@ module Cuprum
     # @return [Boolean] true if the result status is :failure, otherwise false.
     def failure?
       status == :failure
-    end
-
-    # Determines the status of the combined results.
-    #
-    # By default, returns :success if there are no failing results, i.e. the
-    # results array is empty or all of the results are passing. If there is at
-    # least one failing result, it instead returns :failure.
-    #
-    # If the :allow_partial flag is set to true, returns :success if the results
-    # array is empty or there is at least one passing result. If there is at
-    # least one failing result and no passing results, it instead returns
-    # :failure.
-    #
-    # @return [:success, :failure] the status of the combined results.
-    def status
-      return @status if @status
-
-      @status = passing_result? ? :success : :failure
     end
 
     # @return [Array<Symbol>] the status for each result.
@@ -138,6 +152,16 @@ module Cuprum
     end
 
     private
+
+    def build_error
+      return if errors.compact.empty?
+
+      Cuprum::Errors::MultipleErrors.new(errors: errors)
+    end
+
+    def build_status
+      passing_result? ? :success : :failure
+    end
 
     def normalize_results(results)
       results.map do |obj|
