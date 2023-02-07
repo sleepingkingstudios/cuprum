@@ -152,6 +152,19 @@ result_list.status
 #=> :failure
 ```
 
+The status can also be specified directly. This will override the default status for the ResultList:
+
+```ruby
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :success),
+  Cuprum::Result.new(status: :success),
+  Cuprum::Result.new(status: :success),
+  status: :failure
+)
+result_list.status
+#=> :failure
+```
+
 #### Partial Success
 {: #result-list-partial-success }
 
@@ -221,6 +234,8 @@ result_list.errors
 
 If at least one of the results has an error object, the result errors are aggregated together into a `Cuprum::Errors::MultipleErrors` object.
 
+The individual errors can also be accessed via the `#errors` property of the result list.
+
 ```ruby
 result_list = Cuprum::ResultList.new(
   Cuprum::Result.new(status: :success),
@@ -239,6 +254,23 @@ result_list.errors
 #=> [nil, #<Cuprum::Error>, nil]
 ```
 
-The individual errors can also be accessed via the `#errors` property of the result list.
+The error can also be specified directly. This will override the default error for the ResultList:
+
+```ruby
+result_list = Cuprum::ResultList.new(
+  Cuprum::Result.new(status: :success),
+  Cuprum::Result.new(
+    status: :failure,
+    error: Cuprum::Error.new(message: 'Something went wrong')),
+  Cuprum::Result.new(status: :failure),
+  error: Cuprum::Error.new(message: 'Custom error message')
+)
+result_list.error.class
+#=> Cuprum::Error
+result_list.error.message
+#=> 'Custom error message'
+result_list.errors
+#=> [nil, #<Cuprum::Error>, nil]
+```
 
 {% include breadcrumbs.md %}

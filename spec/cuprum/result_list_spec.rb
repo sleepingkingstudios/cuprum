@@ -83,7 +83,7 @@ RSpec.describe Cuprum::ResultList do
       expect(described_class)
         .to be_constructible
         .with_unlimited_arguments
-        .and_keywords(:allow_partial, :value)
+        .and_keywords(:allow_partial, :error, :status, :value)
     end
 
     describe 'with nil' do
@@ -256,6 +256,15 @@ RSpec.describe Cuprum::ResultList do
   describe '#error' do
     include_examples 'should define reader', :error, nil
 
+    context 'when initialized with error: value' do
+      let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
+      let(:constructor_options) do
+        super().merge(error: error)
+      end
+
+      it { expect(result_list.error).to be error }
+    end
+
     context 'when initialized with results with no errors' do
       let(:results) do
         Array.new(3) do |index|
@@ -264,6 +273,15 @@ RSpec.describe Cuprum::ResultList do
       end
 
       it { expect(result_list.error).to be nil }
+
+      context 'when initialized with error: value' do
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
+        let(:constructor_options) do
+          super().merge(error: error)
+        end
+
+        it { expect(result_list.error).to be error }
+      end
     end
 
     # rubocop:disable RSpec/RepeatedExampleGroupBody
@@ -273,6 +291,15 @@ RSpec.describe Cuprum::ResultList do
       end
 
       it { expect(result_list.error).to be == expected_error }
+
+      context 'when initialized with error: value' do
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
+        let(:constructor_options) do
+          super().merge(error: error)
+        end
+
+        it { expect(result_list.error).to be error }
+      end
     end
 
     wrap_context 'when initialized with passing results' do
@@ -281,6 +308,15 @@ RSpec.describe Cuprum::ResultList do
       end
 
       it { expect(result_list.error).to be == expected_error }
+
+      context 'when initialized with error: value' do
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
+        let(:constructor_options) do
+          super().merge(error: error)
+        end
+
+        it { expect(result_list.error).to be error }
+      end
     end
 
     wrap_context 'when initialized with mixed results' do
@@ -289,6 +325,15 @@ RSpec.describe Cuprum::ResultList do
       end
 
       it { expect(result_list.error).to be == expected_error }
+
+      context 'when initialized with error: value' do
+        let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
+        let(:constructor_options) do
+          super().merge(error: error)
+        end
+
+        it { expect(result_list.error).to be error }
+      end
     end
     # rubocop:enable RSpec/RepeatedExampleGroupBody
   end
@@ -399,17 +444,65 @@ RSpec.describe Cuprum::ResultList do
   describe '#status' do
     include_examples 'should define reader', :status, :success
 
+    context 'when initialized with status: failure' do
+      let(:constructor_options) { super().merge(status: :failure) }
+
+      it { expect(result_list.status).to be :failure }
+    end
+
+    context 'when initialized with status: success' do
+      let(:constructor_options) { super().merge(status: :success) }
+
+      it { expect(result_list.status).to be :success }
+    end
+
     # rubocop:disable RSpec/RepeatedExampleGroupBody
     wrap_context 'when initialized with failing results' do
       it { expect(result_list.status).to be :failure }
+
+      context 'when initialized with status: failure' do
+        let(:constructor_options) { super().merge(status: :failure) }
+
+        it { expect(result_list.status).to be :failure }
+      end
+
+      context 'when initialized with status: success' do
+        let(:constructor_options) { super().merge(status: :success) }
+
+        it { expect(result_list.status).to be :success }
+      end
     end
 
     wrap_context 'when initialized with passing results' do
       it { expect(result_list.status).to be :success }
+
+      context 'when initialized with status: failure' do
+        let(:constructor_options) { super().merge(status: :failure) }
+
+        it { expect(result_list.status).to be :failure }
+      end
+
+      context 'when initialized with status: success' do
+        let(:constructor_options) { super().merge(status: :success) }
+
+        it { expect(result_list.status).to be :success }
+      end
     end
 
     wrap_context 'when initialized with mixed results' do
       it { expect(result_list.status).to be :failure }
+
+      context 'when initialized with status: failure' do
+        let(:constructor_options) { super().merge(status: :failure) }
+
+        it { expect(result_list.status).to be :failure }
+      end
+
+      context 'when initialized with status: success' do
+        let(:constructor_options) { super().merge(status: :success) }
+
+        it { expect(result_list.status).to be :success }
+      end
     end
     # rubocop:enable RSpec/RepeatedExampleGroupBody
 
