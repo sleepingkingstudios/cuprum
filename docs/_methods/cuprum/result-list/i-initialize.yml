@@ -1,7 +1,8 @@
 ---
 name: Cuprum::ResultList#initialize
 parent_path: cuprum/result-list
-signature: 'initialize(*results, allow_partial: false, value: UNDEFINED)'
+signature: 'initialize(*results, allow_partial: false, error: UNDEFINED, status: UNDEFINED,
+  value: UNDEFINED)'
 slug: initialize
 constructor: true
 data_path: cuprum/result-list/i-initialize
@@ -15,6 +16,14 @@ params:
   - name: 'true'
   - name: 'false'
   default: 'false'
+- description: |-
+    If given, sets the error for the result list
+    to the specified error object.
+  name: error
+  type:
+  - name: Cuprum::Error
+    path: cuprum/error
+  default: UNDEFINED
 - description: The wrapped results.
   name: results
   type:
@@ -22,6 +31,14 @@ params:
     items:
     - name: Cuprum::Result
       path: cuprum/result
+- description: |-
+    If given, sets the status of the result
+    list to the specified value.
+  name: status
+  type:
+  - name: ":success"
+  - name: ":failure"
+  default: UNDEFINED
 - description: |-
     The value of the result. Defaults to the mapped
     values of the results.

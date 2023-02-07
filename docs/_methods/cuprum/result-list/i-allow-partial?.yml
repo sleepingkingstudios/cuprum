@@ -8,7 +8,7 @@ data_path: cuprum/result-list/i-allow-partial?
 metadata:
   see:
   - label: "#status"
-    path: cuprum/result-list#instance-method-status
+    path: cuprum/result-list#instance-attribute-status
     text:
     type: reference
   - label: "#to_cuprum_result"

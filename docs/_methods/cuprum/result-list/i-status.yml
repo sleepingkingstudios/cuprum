@@ -6,9 +6,12 @@ slug: status
 constructor: false
 data_path: cuprum/result-list/i-status
 description: |-
-  By default, returns :success if there are no failing results, i.e. the
-  results array is empty or all of the results are passing. If there is at
-  least one failing result, it instead returns :failure.
+  If the result list was initialize with a status, returns that status.
+
+  If there are no failing results, i.e. the results array is empty or all of
+  the results are passing, returns :success.
+
+  If there is at least one failing result, it instead returns :failure.
 
   If the :allow_partial flag is set to true, returns :success if the results
   array is empty or there is at least one passing result. If there is at

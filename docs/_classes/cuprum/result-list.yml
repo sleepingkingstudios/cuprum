@@ -7,11 +7,23 @@ files:
 parent_path: cuprum
 short_description: Collection object that encapsulates a set of Cuprum results.
 instance_attributes:
+- name: error
+  read: true
+  write: false
+  path: cuprum/result-list/i-error
+  slug: error
+  inherited: false
 - name: results
   read: true
   write: false
   path: cuprum/result-list/i-results
   slug: results
+  inherited: false
+- name: status
+  read: true
+  write: false
+  path: cuprum/result-list/i-status
+  slug: status
   inherited: false
 - name: value
   read: true
@@ -32,10 +44,6 @@ instance_methods:
   path: cuprum/result-list/i-each
   slug: each
   inherited: false
-- name: error
-  path: cuprum/result-list/i-error
-  slug: error
-  inherited: false
 - name: errors
   path: cuprum/result-list/i-errors
   slug: errors
@@ -49,10 +57,6 @@ instance_methods:
   slug: initialize
   inherited: false
   constructor: true
-- name: status
-  path: cuprum/result-list/i-status
-  slug: status
-  inherited: false
 - name: statuses
   path: cuprum/result-list/i-statuses
   slug: statuses

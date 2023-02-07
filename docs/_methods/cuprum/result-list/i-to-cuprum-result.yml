@@ -8,11 +8,11 @@ data_path: cuprum/result-list/i-to-cuprum-result
 metadata:
   see:
   - label: "#error"
-    path: cuprum/result-list#instance-method-error
+    path: cuprum/result-list#instance-attribute-error
     text:
     type: reference
   - label: "#status"
-    path: cuprum/result-list#instance-method-status
+    path: cuprum/result-list#instance-attribute-status
     text:
     type: reference
   - label: "#value"

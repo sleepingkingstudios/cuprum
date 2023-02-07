@@ -7,6 +7,7 @@ Gemfile.lock
 # Ignore local and generated documentation.
 /coverage
 /doc
+/docs/.ruby-version
 /docs/_site
 .yardoc
 
