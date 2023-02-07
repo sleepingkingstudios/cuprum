@@ -1,0 +1,14 @@
+---
+name: Cuprum::RSpec::Matchers#be_a_result
+parent_path: cuprum/r-spec/matchers
+signature: be_a_result
+slug: be-a-result
+constructor: false
+data_path: cuprum/r-spec/matchers/i-be-a-result
+returns:
+- description: the generated matcher.
+  type:
+  - name: Cuprum::RSpec::BeAResultMatcher
+    path: cuprum/r-spec/be-a-result-matcher
+short_description: Asserts that the object is a Cuprum::Result.
+version: '1.1'

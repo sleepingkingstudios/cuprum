@@ -1,0 +1,43 @@
+---
+name: Cuprum::MatcherList#call
+parent_path: cuprum/matcher-list
+signature: call(result)
+slug: call
+constructor: false
+data_path: cuprum/matcher-list/i-call
+description: |-
+  When given a result, the matcher list will check through each of the
+  matchers in the order they were given for match clauses that match the
+  result. Each matcher is checked for a clause that matches the status,
+  error, and value of the result. If no matching clause is found, the
+  matchers are then checked for a clause matching the status and either the
+  error or value of the result. Finally, if there are still no matching
+  clauses, the matchers are checked for a clause that matches the result
+  status.
+
+  Once a matching clause is found, that clause is then called with the
+  given result.
+
+  If none of the matchers have a clause that matches the result, a
+  Cuprum::Matching::NoMatchError will be raised.
+metadata:
+  see:
+  - label: Cuprum::Matching#call
+    path: cuprum/matching#instance-method-call
+    text:
+    type: reference
+params:
+- description: The result to match.
+  name: result
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+raises:
+- description: |-
+    if none of the matchers match the
+    given result.
+  type:
+  - name: Cuprum::Matching::NoMatchError
+    path: cuprum/matching/no-match-error
+short_description: Finds and executes the best matching clause from the ordered matchers.
+version: '1.1'

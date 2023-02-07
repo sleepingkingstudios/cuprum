@@ -1,0 +1,58 @@
+---
+name: Cuprum::BuiltIn::NullCommand
+slug: null-command
+type: class
+files:
+- lib/cuprum/built_in/null_command.rb
+parent_path: cuprum/built-in
+short_description: A predefined command that does nothing when called.
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/command/i-call
+  slug: call
+  inherited: true
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: initialize
+  path: cuprum/built-in/null-command/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+data_path: cuprum/built-in/null-command
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      result = NullCommand.new.call
+      result.value
+      #=> nil
+      result.success?
+      #=> true
+constructor: true
+direct_subclasses:
+- name: Cuprum::BuiltIn::NullOperation
+  slug: null-operation
+  path: cuprum/built-in/null-operation
+inherited_classes:
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: '1.1'

@@ -1,0 +1,13 @@
+---
+name: Cuprum::Errors::OperationNotCalled#operation
+parent_path: cuprum/errors/operation-not-called
+signature: operation
+slug: operation
+constructor: false
+data_path: cuprum/errors/operation-not-called/i-operation
+returns:
+- description: The uncalled operation.
+  type:
+  - name: Cuprum::Operation
+    path: cuprum/operation
+version: '1.1'

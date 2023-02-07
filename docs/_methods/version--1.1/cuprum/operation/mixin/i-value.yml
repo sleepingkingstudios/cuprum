@@ -1,0 +1,14 @@
+---
+name: Cuprum::Operation::Mixin#value
+parent_path: cuprum/operation/mixin
+signature: value
+slug: value
+constructor: false
+data_path: cuprum/operation/mixin/i-value
+returns:
+- description: |-
+    the value of the most recent result, or nil if the
+    operation has not been called.
+  type:
+  - name: Object
+version: '1.1'

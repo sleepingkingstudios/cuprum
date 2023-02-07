@@ -1,0 +1,85 @@
+---
+name: Cuprum::Processing
+slug: processing
+type: module
+files:
+- lib/cuprum/processing.rb
+parent_path: cuprum
+short_description: |-
+  Functional implementation for creating a command object. Cuprum::Processing
+  defines a #call method, which performs the implementation defined by
+  #process and returns an instance of Cuprum::Result.
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: false
+- name: call
+  path: cuprum/processing/i-call
+  slug: call
+  inherited: false
+- name: process
+  path: cuprum/processing/i-process
+  slug: process
+  inherited: false
+data_path: cuprum/processing
+included_modules:
+- name: Cuprum::ResultHelpers
+  slug: result-helpers
+  path: cuprum/result-helpers
+metadata:
+  examples:
+  - name: Defining a command with Cuprum::Processing.
+    text: |-
+      class AdderCommand
+        include Cuprum::Processing
+
+        def initialize addend
+          @addend = addend
+        end
+
+        private
+
+        def process int
+          int + addend
+        end
+      end
+
+      adder  = AdderCommand.new(2)
+      result = adder.call(3)
+      #=> an instance of Cuprum::Result
+      result.value    #=> 5
+      result.success? #=> true
+  - name: Defining a command with error handling.
+    text: |-
+      class SquareRootCommand
+        include Cuprum::Processing
+
+        private
+
+        def process value
+          if value.negative?
+            return Cuprum::Result.new(error: 'value cannot be negative')
+          end
+
+          Math.sqrt(value)
+        end
+      end
+
+      result = SquareRootCommand.new.call(2)
+      result.value    #=> 1.414
+      result.success? #=> true
+      result.failure? #=> false
+      result.error    #=> nil
+
+      result = SquareRootCommand.new.call(-1)
+      result.value    #=> nil
+      result.success? #=> false
+      result.failure? #=> true
+      result.error    #=> 'value cannot be negative'
+  see:
+  - label: Cuprum::Command
+    path: cuprum/command
+    text:
+    type: reference
+version: '1.1'

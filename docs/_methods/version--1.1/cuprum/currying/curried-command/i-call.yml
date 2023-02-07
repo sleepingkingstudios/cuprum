@@ -1,0 +1,41 @@
+---
+name: Cuprum::Currying::CurriedCommand#call
+parent_path: cuprum/currying/curried-command
+signature: call(*args, **kwargs)
+slug: call
+constructor: false
+data_path: cuprum/currying/curried-command/i-call
+description: |-
+  First, the arguments array is created starting with the :arguments
+  passed to #initialize. Any positional arguments passed directly to #call
+  are then appended.
+
+  Second, the keyword arguments are created by merging the keywords passed
+  directly into #call into the keywods passed to #initialize. This means
+  that if a key is passed in both places, the value passed into #call will
+  take precedence.
+
+  Finally, the merged arguments and keywords are passed into the original
+  command's #call method.
+metadata:
+  see:
+  - label: Cuprum::Processing#call
+    path: cuprum/processing#instance-method-call
+    text:
+    type: reference
+params:
+- description: Additional arguments to pass to the curried command.
+  name: args
+  type:
+  - name: Array
+- description: Additional keywords to pass to the curried command.
+  name: kwargs
+  type:
+  - name: Hash
+returns:
+- description: ''
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Merges the arguments and keywords and calls the wrapped command.
+version: '1.1'

@@ -1,0 +1,103 @@
+---
+name: Cuprum::Matcher
+slug: matcher
+type: class
+files:
+- lib/cuprum/matcher.rb
+parent_path: cuprum
+short_description: Provides result matching based on result status, error, and value.
+class_methods:
+- name: match
+  path: cuprum/matching/class-methods/i-match
+  slug: match
+  inherited: true
+instance_methods:
+- name: call
+  path: cuprum/matching/i-call
+  slug: call
+  inherited: true
+- name: initialize
+  path: cuprum/matcher/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: match_context?
+  path: cuprum/matching/i-match-context?
+  slug: match-context?
+  inherited: true
+- name: matches?
+  path: cuprum/matching/i-matches?
+  slug: matches?
+  inherited: true
+- name: with_context
+  path: cuprum/matcher/i-with-context
+  slug: with-context
+  inherited: false
+data_path: cuprum/matcher
+description: |-
+  First, define match clauses using the .match DSL. Each match clause has a
+  status and optionally a value class and/or error class. A result will only
+  match the clause if the result status is the same as the clause's status.
+  If the clause sets a value class, then the result value must be an instance
+  of that class (or an instance of a subclass). If the clause sets an error
+  class, then the result error must be an instance of that class (or an
+  instance of a subclass).
+
+  Once the matcher defines one or more match clauses, call #call with a result
+  to match the result. The matcher will determine the best match with the same
+  status (value and error match the result, only value or error match, or just
+  status matches) and then call the match clause with the result. If no match
+  clauses match the result, the matcher will instead raise a
+  Cuprum::Matching::NoMatchError.
+extended_modules:
+- name: Cuprum::Matching::ClassMethods
+  slug: class-methods
+  path: cuprum/matching/class-methods
+included_modules:
+- name: Cuprum::Matching
+  slug: matching
+  path: cuprum/matching
+metadata:
+  examples:
+  - name: Matching A Status
+    text: |-
+      matcher = Cuprum::Matcher.new do
+        match(:failure) { 'Something went wrong' }
+
+        match(:success) { 'Ok' }
+      end
+
+      matcher.call(Cuprum::Result.new(status: :failure))
+      #=> 'Something went wrong'
+
+      matcher.call(Cuprum::Result.new(status: :success))
+      #=> 'Ok'
+  - name: Matching An Error
+    text: |-
+      matcher = Cuprum::Matcher.new do
+        match(:failure) { 'Something went wrong' }
+
+        match(:failure, error: CustomError) { |result| result.error.message }
+
+        match(:success) { 'Ok' }
+      end
+
+      matcher.call(Cuprum::Result.new(status: :failure))
+      #=> 'Something went wrong'
+
+      error = CustomError.new(message: 'The magic smoke is escaping.')
+      matcher.call(Cuprum::Result.new(error: error))
+      #=> 'The magic smoke is escaping.'
+  - name: Using A Match Context
+    text: |-
+      context = Struct.new(:name).new('programs')
+      matcher = Cuprum::Matcher.new(context) do
+        match(:failure) { 'Something went wrong' }
+
+        match(:success) { "Greetings, #{name}!" }
+      end
+
+      matcher.call(Cuprum::Result.new(status: :success)
+      #=> 'Greetings, programs!'
+constructor: true
+version: '1.1'

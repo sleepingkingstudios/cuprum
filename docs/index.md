@@ -12,7 +12,7 @@ Cuprum implements the Command pattern for Ruby.
 
 This is the documentation for the [current development build](https://github.com/sleepingkingstudios/cuprum) of Cuprum.
 
-- For the most recent release, see [Version 1.0]({{site.baseurl}}/versions/1.0).
+- For the most recent release, see [Version 1.1]({{site.baseurl}}/versions/1.1).
 - For previous releases, see the [Versions]({{site.baseurl}}/versions) page.
 
 ## Reference

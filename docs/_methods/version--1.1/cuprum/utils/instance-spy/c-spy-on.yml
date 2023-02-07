@@ -1,0 +1,57 @@
+---
+name: Cuprum::Utils::InstanceSpy.spy_on
+parent_path: cuprum/utils/instance-spy
+signature: spy_on(command_class)
+slug: spy-on
+constructor: false
+data_path: cuprum/utils/instance-spy/c-spy-on
+description: |-
+  Each time that the #call method is called for an object of the given
+  type, the spy's #call method will be invoked with the same arguments and
+  block.
+metadata:
+  notes:
+  - |-
+    Calling this method for the first time will prepend the
+    Cuprum::Utils::InstanceSpy module to Cuprum::Command.
+overloads:
+- name: Cuprum::Utils::InstanceSpy.spy_on
+  parent_path: cuprum/utils/instance-spy
+  signature: spy_on(command_class)
+  slug: spy-on
+  constructor: false
+  returns:
+  - description: The instance spy.
+    type:
+    - name: Cuprum::Utils::InstanceSpy::Spy
+      path: cuprum/utils/instance-spy/spy
+- name: Cuprum::Utils::InstanceSpy.spy_on
+  parent_path: cuprum/utils/instance-spy
+  signature: spy_on(command_class, &block)
+  slug: spy-on
+  constructor: false
+  returns:
+  - description: nil.
+    type:
+    - name: nil
+  short_description: Yields the instance spy to the block, and returns nil.
+  yields:
+  - description: The instance spy.
+    parameters:
+    - Cuprum::Utils::InstanceSpy::Spy
+params:
+- description: |-
+    The type of command to spy on.
+    Must be either a Module, or a Class that extends Cuprum::Command.
+  name: command_class
+  type:
+  - name: Class
+  - name: Module
+raises:
+- description: |-
+    If the argument is neither a Module nor a Class
+    that extends Cuprum::Command.
+  type:
+  - name: ArgumentError
+short_description: Finds or creates a spy object for the given module or class.
+version: '1.1'

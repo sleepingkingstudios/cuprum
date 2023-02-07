@@ -1,0 +1,139 @@
+---
+name: Cuprum::Command
+slug: command
+type: class
+files:
+- lib/cuprum/command.rb
+parent_path: cuprum
+short_description: Functional object that encapsulates a business logic operation
+  or step.
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/command/i-call
+  slug: call
+  inherited: false
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: initialize
+  path: cuprum/command/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: process
+  path: cuprum/processing/i-process
+  slug: process
+  inherited: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: false
+data_path: cuprum/command
+description: |-
+  Using commands allows the developer to maintain a state or context, such as
+  by passing context into the constructor. It provides a consistent interface
+  by always returning a Cuprum::Result object, which tracks the status of the
+  command call, the returned value, and the error object (if any). Finally, as
+  a full-fledged Ruby object a Command can be passed around like any other
+  object, including returned from a method (or another Command) or passed in
+  as a parameter.
+
+  A Command can be defined either by passing a block to the constructor, or
+  by defining a subclass of Command and implementing the #process method.
+included_modules:
+- name: Cuprum::Currying
+  slug: currying
+  path: cuprum/currying
+- name: Cuprum::Processing
+  slug: processing
+  path: cuprum/processing
+- name: Cuprum::Steps
+  slug: steps
+  path: cuprum/steps
+metadata:
+  examples:
+  - name: A Command with a block
+    text: |-
+      double_command = Cuprum::Command.new { |int| 2 * int }
+      result         = double_command.call(5)
+
+      result.value #=> 10
+  - name: A Command subclass
+    text: |-
+      class MultiplyCommand < Cuprum::Command
+        def initialize(multiplier)
+          @multiplier = multiplier
+        end
+
+        private def process(int)
+          int * @multiplier
+        end
+      end
+
+      triple_command = MultiplyCommand.new(3)
+      result         = command_command.call(5)
+
+      result.value #=> 15
+  - name: A Command with an error state
+    text: |-
+      class DivideCommand < Cuprum::Command
+        def initialize(divisor)
+          @divisor = divisor
+        end
+
+        private def process(int)
+          if @divisor.zero?
+            return Cuprum::Result.new(error: 'errors.messages.divide_by_zero')
+          end
+
+          int / @divisor
+        end
+      end
+
+      halve_command = DivideCommand.new(2)
+      result        = halve_command.call(10)
+
+      result.error #=> nil
+      result.value #=> 5
+
+      divide_command = DivideCommand.new(0)
+      result         = divide_command.call(10)
+
+      result.error #=> 'errors.messages.divide_by_zero'
+      result.value #=> nil
+  see:
+  - label: Cuprum::Processing
+    path: cuprum/processing
+    text:
+    type: reference
+constructor: true
+direct_subclasses:
+- name: Cuprum::BuiltIn::IdentityCommand
+  slug: identity-command
+  path: cuprum/built-in/identity-command
+- name: Cuprum::BuiltIn::NullCommand
+  slug: null-command
+  path: cuprum/built-in/null-command
+- name: Cuprum::Currying::CurriedCommand
+  slug: curried-command
+  path: cuprum/currying/curried-command
+- name: Cuprum::MapCommand
+  slug: map-command
+  path: cuprum/map-command
+- name: Cuprum::Operation
+  slug: operation
+  path: cuprum/operation
+version: '1.1'

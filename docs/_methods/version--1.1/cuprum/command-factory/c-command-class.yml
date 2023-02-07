@@ -1,0 +1,71 @@
+---
+name: Cuprum::CommandFactory.command_class
+parent_path: cuprum/command-factory
+signature: command_class(name, **metadata, &defn)
+slug: command-class
+constructor: false
+data_path: cuprum/command-factory/c-command-class
+description: |-
+  A factory instance will define the constant ::RockClimb, and accessing
+  factory::RockClimb will call the block and return the resulting command
+  class. This value is memoized, so subsequent factory::RockClimb accesses
+  on the same factory instance will return the same command class.
+
+  A factory instance will define the method #rock_climb, and calling
+  factory#rock_climb will access the constant at ::RockClimb and return an
+  instance of that subclass of RockClimbCommand. Any arguments passed to
+  the #whirlpool method will be forwarded to the constructor when building
+  the command.
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      class MoveFactory < Cuprum::CommandFactory
+        command_class :flash do
+          Class.new(FlashCommand) do
+            def brightness
+              :intense
+            end
+          end
+        end
+      end
+
+      factory = MoveFactory.new
+      factory::Flash #=> a subclass of FlashCommand
+      factory.flash  #=> an instance of factory::Flash
+
+      command = factory.flash
+      command.brightness #=> :intense
+params:
+- description: The name of the command.
+  name: name
+  type:
+  - name: String
+  - name: Symbol
+raises:
+- description: ''
+  type:
+  - name: ArgumentError
+short_description: |-
+  Defines a command using the given block, which must return a subclass of
+  Cuprum::Command. For example, when a command is defined with the name
+  "rock_climb" and a block returning a subclass of RockClimbCommand:
+yield_params:
+- description: |-
+    Any arguments given to the method
+    factory.name() will be passed on the block.
+  name: "*args"
+  type:
+  - name: Array
+yield_returns:
+- description: |-
+    The block return an instance of a
+    Cuprum::Command subclass, or else raise an error.
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+yields:
+- description: |-
+    The block will be executed in the context of the factory
+    instance.
+version: '1.1'

@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching::MatchClause#error
+parent_path: cuprum/matching/match-clause
+signature: error
+slug: error
+constructor: false
+data_path: cuprum/matching/match-clause/i-error
+returns:
+- description: the current value of error
+  type:
+  - name: Object
+short_description: Returns the value of attribute error
+version: '1.1'

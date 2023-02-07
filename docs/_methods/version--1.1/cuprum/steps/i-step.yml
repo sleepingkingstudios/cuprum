@@ -1,0 +1,58 @@
+---
+name: Cuprum::Steps#step
+parent_path: cuprum/steps
+signature: step
+slug: step
+constructor: false
+data_path: cuprum/steps/i-step
+description: |-
+  The #step method is used to evaluate a sequence of processes, and to
+  fail fast and halt processing if any of the steps returns a failing
+  result. Each invocation of #step should be wrapped in a #steps block,
+  or used inside the #process method of a Command.
+
+  If the object returned by the block is a Cuprum result or compatible
+  object (such as a called operation), the value is converted to a Cuprum
+  result via the #to_cuprum_result method. Otherwise, the object is
+  returned directly from #step.
+
+  If the returned object is a passing result, the #value of the result is
+  returned by #step.
+
+  If the returned object is a failing result, then #step will throw
+  :cuprum_failed_result and the failing result. This is caught by the
+  #steps block, and halts execution of any subsequent steps.
+metadata:
+  examples:
+  - name: Calling a Step
+    text: |-
+      # The #do_something method returns the string 'some value'.
+      step { do_something() } #=> 'some value'
+
+      value = step { do_something() }
+      value #=> 'some value'
+  - name: Calling a Step with a Passing Result
+    text: |-
+      # The #do_something_else method returns a Cuprum result with a value
+      # of 'another value'.
+      step { do_something_else() } #=> 'another value'
+
+      # The result is passing, so the value is extracted and returned.
+      value = step { do_something_else() }
+      value #=> 'another value'
+  - name: Calling a Step with a Failing Result
+    text: |-
+      # The #do_something_wrong method returns a failing Cuprum result.
+      step { do_something_wrong() } # Throws the :cuprum_failed_step symbol.
+raises:
+- description: ''
+  type:
+  - name: ArgumentError
+returns:
+- description: 'the #value of the result, or the returned object.'
+  type:
+  - name: Object
+short_description: Executes the block and returns the value, or halts on a failure.
+yields:
+- description: Called with no parameters.
+version: '1.1'
