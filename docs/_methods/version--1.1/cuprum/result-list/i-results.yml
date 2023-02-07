@@ -1,0 +1,17 @@
+---
+name: Cuprum::ResultList#results
+parent_path: cuprum/result-list
+signature: results
+slug: results
+aliases:
+- to_a
+constructor: false
+data_path: cuprum/result-list/i-results
+returns:
+- description: the wrapped results.
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Result
+      path: cuprum/result
+version: '1.1'

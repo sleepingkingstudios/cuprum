@@ -1,0 +1,43 @@
+---
+name: Cuprum::Version
+slug: version
+type: module
+files:
+- lib/cuprum/version.rb
+parent_path: cuprum
+short_description: The current version of the gem.
+class_methods:
+- name: to_gem_version
+  path: cuprum/version/c-to-gem-version
+  slug: to-gem-version
+  inherited: false
+constants:
+- name: BUILD
+  path: cuprum/version/build
+  slug: build
+  inherited: false
+- name: MAJOR
+  path: cuprum/version/major
+  slug: major
+  inherited: false
+- name: MINOR
+  path: cuprum/version/minor
+  slug: minor
+  inherited: false
+- name: PATCH
+  path: cuprum/version/patch
+  slug: patch
+  inherited: false
+- name: PRERELEASE
+  path: cuprum/version/prerelease
+  slug: prerelease
+  inherited: false
+data_path: cuprum/version
+metadata:
+  api: private
+  see:
+  - label: http://semver.org/
+    path: http://semver.org/
+    text:
+    type: link
+version: '1.1'

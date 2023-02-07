@@ -1,0 +1,24 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#with_error
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: with_error(error)
+slug: with-error
+aliases:
+- and_error
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-with-error
+params:
+- description: The expected error.
+  name: error
+  type:
+  - name: Cuprum::Error
+    path: cuprum/error
+  - name: Object
+returns:
+- description: the updated matcher.
+  type:
+  - name: BeAResultMatcher
+short_description: |-
+  Sets an error expectation on the matcher. Calls to #matches? will fail
+  unless the actual object has the specified error.
+version: '1.1'

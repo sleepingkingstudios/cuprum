@@ -1,0 +1,27 @@
+---
+name: Cuprum::Errors::MultipleErrors#initialize
+parent_path: cuprum/errors/multiple-errors
+signature: 'initialize(errors:, message: nil)'
+slug: initialize
+constructor: true
+data_path: cuprum/errors/multiple-errors/i-initialize
+params:
+- description: The wrapped errors.
+  name: errors
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Error
+      path: cuprum/error
+- description: |-
+    Optional message describing the nature of the
+    error.
+  name: message
+  type:
+  - name: String
+  default: nil
+returns:
+- description: a new instance of MultipleErrors
+  type:
+  - name: MultipleErrors
+version: '1.1'

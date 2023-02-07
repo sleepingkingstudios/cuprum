@@ -1,0 +1,104 @@
+---
+name: Cuprum::CommandFactory.command
+parent_path: cuprum/command-factory
+signature: command(name, klass = nil, **metadata, &defn)
+slug: command
+constructor: false
+data_path: cuprum/command-factory/c-command
+overloads:
+- name: Cuprum::CommandFactory.command
+  parent_path: cuprum/command-factory
+  signature: command(name, command_class)
+  slug: command
+  constructor: false
+  description: |-
+    A factory instance will define the constant ::Whirlpool, and accessing
+    factory::Whirlpool will return the WhirlpoolCommand class.
+
+    A factory instance will define the method #whirlpool, and calling
+    factory#whirlpool will return an instance of WhirlpoolCommand. Any
+    arguments passed to the #whirlpool method will be forwarded to the
+    constructor when building the command.
+  metadata:
+    examples:
+    - name: ''
+      text: |-
+        class MoveFactory < Cuprum::CommandFactory
+          command :cut, CutCommand
+        end
+
+        factory = MoveFactory.new
+        factory::Cut #=> CutCommand
+        factory.cut  #=> an instance of CutCommand
+  params:
+  - description: The name of the command.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: |-
+      The command class. Must be a subclass of
+      Cuprum::Command.
+    name: command_class
+    type:
+    - name: Class
+  short_description: |-
+    Defines a command using the given factory class. For example, when a
+    command is defined with the name "whirlpool" and the WhirlpoolCommand
+    class:
+- name: Cuprum::CommandFactory.command
+  parent_path: cuprum/command-factory
+  signature: command(name) { |*args| }
+  slug: command
+  constructor: false
+  description: |-
+    A factory instance will define the method #dive, and calling
+    factory#dive will call the block and return the resulting command
+    instance. Any arguments passed to the #dive method will be forwarded
+    to the block when building the command.
+
+    The block will be evaluated in the context of the factory instance, so
+    it has access to any methods or instance variables defined for the
+    factory instance.
+  metadata:
+    examples:
+    - name: ''
+      text: |-
+        class MoveFactory < Cuprum::CommandFactory
+          command :fly { |destination| FlyCommand.new(destination) }
+        end
+
+        factory = MoveFactory.new
+        factory.fly_command('Indigo Plateau')
+        #=> an instance of FlyCommand with a destination of 'Indigo Plateau'
+  params:
+  - description: The name of the command.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  short_description: |-
+    Defines a command using the given block, which must return an instance
+    of a Cuprum::Command subclass. For example, when a command is defined
+    with the name "dive" and a block that returns an instance of the
+    DiveCommand class:
+  yield_params:
+  - description: |-
+      Any arguments given to the method
+      factory.name() will be passed on the block.
+    name: args
+    type:
+    - name: Array
+  yield_returns:
+  - description: |-
+      The block return an instance of a
+      Cuprum::Command subclass, or else raise an error.
+    type:
+    - name: Cuprum::Command
+      path: cuprum/command
+  yields:
+  - description: |-
+      The block will be executed in the context of the factory
+      instance.
+short_description: Defines a command for the factory.
+version: '1.1'

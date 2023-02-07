@@ -1,0 +1,40 @@
+---
+name: Cuprum::Matching::ClassMethods#match
+parent_path: cuprum/matching/class-methods
+signature: 'match(status, error: nil, value: nil, &block)'
+slug: match
+constructor: false
+data_path: cuprum/matching/class-methods/i-match
+params:
+- description: |-
+    The status to match. The clause will match a
+    result only if the result has the same status as the match clause.
+  name: status
+  type:
+  - name: Symbol
+- description: |-
+    The type of error to match. If given, the clause
+    will match a result only if the result error is an instance of the
+    given class, or an instance of a subclass.
+  name: error
+  type:
+  - name: Class
+  default: nil
+- description: |-
+    The type of value to match. If given, the clause
+    will match a result only if the result value is an instance of the
+    given class, or an instance of a subclass.
+  name: value
+  type:
+  - name: Class
+  default: nil
+short_description: Defines a match clause for the matcher.
+yield_params:
+- description: The matched result.
+  name: result
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+yields:
+- description: The code to execute on a successful match.
+version: '1.1'

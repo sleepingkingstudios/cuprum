@@ -1,0 +1,26 @@
+---
+name: Cuprum::ResultList#error
+parent_path: cuprum/result-list
+signature: error
+slug: error
+constructor: false
+data_path: cuprum/result-list/i-error
+description: |-
+  If the result list was initialized with an error, returns that error.
+
+  If any of the results have errors, aggregates the result errors into a
+  Cuprum::MultipleErrors object.
+
+  If none of the results have errors, returns nil.
+returns:
+- description: |-
+    the error for
+    the result list.
+  type:
+  - name: Cuprum::Errors::MultipleErrors
+    path: cuprum/errors/multiple-errors
+  - name: Cuprum::Error
+    path: cuprum/error
+  - name: nil
+short_description: Returns the error for the result list.
+version: '1.1'

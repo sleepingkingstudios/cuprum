@@ -1,0 +1,22 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#with_value
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: with_value(value)
+slug: with-value
+aliases:
+- and_value
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-with-value
+params:
+- description: The expected value.
+  name: value
+  type:
+  - name: Object
+returns:
+- description: the updated matcher.
+  type:
+  - name: BeAResultMatcher
+short_description: |-
+  Sets a value expectation on the matcher. Calls to #matches? will fail
+  unless the actual object has the specified value.
+version: '1.1'

@@ -1,0 +1,26 @@
+---
+name: Cuprum::ResultList#status
+parent_path: cuprum/result-list
+signature: status
+slug: status
+constructor: false
+data_path: cuprum/result-list/i-status
+description: |-
+  If the result list was initialize with a status, returns that status.
+
+  If there are no failing results, i.e. the results array is empty or all of
+  the results are passing, returns :success.
+
+  If there is at least one failing result, it instead returns :failure.
+
+  If the :allow_partial flag is set to true, returns :success if the results
+  array is empty or there is at least one passing result. If there is at
+  least one failing result and no passing results, it instead returns
+  :failure.
+returns:
+- description: the status of the combined results.
+  type:
+  - name: ":success"
+  - name: ":failure"
+short_description: Determines the status of the combined results.
+version: '1.1'

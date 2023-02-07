@@ -1,0 +1,14 @@
+---
+name: Cuprum::Matching#match_context?
+parent_path: cuprum/matching
+signature: match_context?
+slug: match-context?
+constructor: false
+data_path: cuprum/matching/i-match-context?
+returns:
+- description: |-
+    true if an execution context is defined for a matching
+    clause; otherwise false.
+  type:
+  - name: Boolean
+version: '1.1'

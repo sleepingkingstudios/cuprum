@@ -1,0 +1,24 @@
+---
+name: Cuprum::Result#==
+parent_path: cuprum/result
+signature: "==(other)"
+slug: "=="
+constructor: false
+data_path: cuprum/result/i-==
+params:
+- description: |-
+    An object responding to, at minimum,
+    #value and #success?. If present, the #failure? and #error values
+    will also be compared.
+  name: other
+  type:
+  - name: "#value"
+  - name: "#success?"
+returns:
+- description: |-
+    True if all present values match the result, otherwise
+    false.
+  type:
+  - name: Boolean
+short_description: Compares the other object to the result.
+version: '1.1'

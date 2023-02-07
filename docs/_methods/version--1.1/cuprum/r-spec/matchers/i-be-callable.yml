@@ -1,0 +1,13 @@
+---
+name: Cuprum::RSpec::Matchers#be_callable
+parent_path: cuprum/r-spec/matchers
+signature: be_callable
+slug: be-callable
+constructor: false
+data_path: cuprum/r-spec/matchers/i-be-callable
+returns:
+- description: the generated matcher.
+  type:
+  - name: RSpec::Matchers::BuiltIn::RespondTo
+short_description: Asserts that the command defines a :process method.
+version: '1.1'

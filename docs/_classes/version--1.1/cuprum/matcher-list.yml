@@ -1,0 +1,73 @@
+---
+name: Cuprum::MatcherList
+slug: matcher-list
+type: class
+files:
+- lib/cuprum/matcher_list.rb
+parent_path: cuprum
+short_description: Handles matching a result against an ordered list of matchers.
+instance_attributes:
+- name: matchers
+  read: true
+  write: false
+  path: cuprum/matcher-list/i-matchers
+  slug: matchers
+  inherited: false
+instance_methods:
+- name: call
+  path: cuprum/matcher-list/i-call
+  slug: call
+  inherited: false
+- name: initialize
+  path: cuprum/matcher-list/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/matcher-list
+description: |-
+  A MatcherList should be used when you have a series of matchers with a
+  defined priority ordering. Within that ordering, the list will check for the
+  most specific matching clause in each of the matchers. A clause matching
+  both the value and error will match first, followed by a clause matching
+  only the result value or error, and finally a clause matching only the
+  result status will match. If none of the matchers have a clause that matches
+  the result, a Cuprum::Matching::NoMatchError will be raised.
+metadata:
+  examples:
+  - name: Using A MatcherList
+    text: |-
+      generic_matcher = Cuprum::Matcher.new do
+        match(:failure) { 'generic failure' }
+
+        match(:failure, error: CustomError) { 'custom failure' }
+      end
+      specific_matcher = Cuprum::Matcher.new do
+        match(:failure, error: Cuprum::Error) { 'specific failure' }
+      end
+      matcher_list = Cuprum::MatcherList.new(
+        [
+          specific_matcher,
+          generic_matcher
+        ]
+      )
+
+      # A failure without an error does not match the first matcher, so the
+      # matcher list continues on to the next matcher in the list.
+      result = Cuprum::Result.new(status: :failure)
+      matcher_list.call(result)
+      #=> 'generic failure'
+
+      # A failure with an error matches the first matcher.
+      error  = Cuprum::Error.new(message: 'Something went wrong.')
+      result = Cuprum::Result.new(error: error)
+      matcher_list.call(result)
+      #=> 'specific failure'
+
+      # A failure with an error subclass still matches the first matcher, even
+      # though the second matcher has a more exact match.
+      error  = CustomError.new(message: 'The magic smoke is escaping.')
+      result = Cuprum::Result.new(error: error)
+      matcher_list.call(result)
+      #=> 'specific failure'
+constructor: true
+version: '1.1'

@@ -1,0 +1,12 @@
+---
+name: Cuprum::BuiltIn::NullCommand#initialize
+parent_path: cuprum/built-in/null-command
+signature: initialize
+slug: initialize
+constructor: true
+data_path: cuprum/built-in/null-command/i-initialize
+returns:
+- description: a new instance of NullCommand
+  type:
+  - name: NullCommand
+version: '1.1'
