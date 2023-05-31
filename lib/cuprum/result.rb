@@ -31,25 +31,35 @@ module Cuprum
 
     # Compares the other object to the result.
     #
-    # In order to match the result, the object must respond to the #value,
-    # #status, and #error methods, and the values of each of those methods must
-    # be equal to the equivalent value on the result.
+    # In order to match the result, the object must respond to the #to_h method,
+    # and the value of object.to_h must be equal to the value of
+    # result.properties.
     #
-    # @param other [#error, #status, #value] the result or object to compare.
+    # @param other [#to_h] the result or object to compare.
     #
     # @return [Boolean] true if all values match the result, otherwise false.
     def ==(other)
-      return false unless other.respond_to?(:value)  && other.value  == value
-      return false unless other.respond_to?(:status) && other.status == status
-      return false unless other.respond_to?(:error)  && other.error  == error
+      other = other.to_cuprum_result if other.respond_to?(:to_cuprum_result)
 
-      true
+      return properties == other.to_h if other.respond_to?(:to_h)
+
+      deprecated_compare(other)
     end
 
     # @return [Boolean] true if the result status is :failure, otherwise false.
     def failure?
       @status == :failure
     end
+
+    # @return [Hash{Symbol => Object}] a Hash representation of the result.
+    def properties
+      {
+        error:  error,
+        status: status,
+        value:  value
+      }
+    end
+    alias_method :to_h, :properties
 
     # @return [Boolean] true if the result status is :success, otherwise false.
     def success?
@@ -65,6 +75,19 @@ module Cuprum
 
     def defined_statuses
       self.class::STATUSES
+    end
+
+    def deprecated_compare(other)
+      unless %i[value status error].all? { |sym| other.respond_to?(sym) }
+        return false
+      end
+
+      tools.core_tools.deprecate 'Cuprum::Result#==',
+        message: 'The compared object must respond to #to_h.'
+
+      other.value == value &&
+        other.status == status &&
+        other.error  == error
     end
 
     def normalize_status(status)

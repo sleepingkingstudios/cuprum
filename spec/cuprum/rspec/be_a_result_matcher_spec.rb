@@ -4,11 +4,11 @@ require 'cuprum/operation'
 require 'cuprum/result'
 require 'cuprum/rspec/be_a_result_matcher'
 
-require 'support/halting_result'
+require 'support/results/halting_result'
 
 RSpec.describe Cuprum::RSpec::BeAResultMatcher do
   shared_context 'with a class expectation' do
-    let(:expected_class) { Spec::HaltingResult }
+    let(:expected_class) { Spec::Results::HaltingResult }
     let(:arguments)      { [expected_class] }
   end
 
@@ -174,7 +174,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
 
     describe 'with a result subclass' do
-      let(:actual) { Spec::HaltingResult.new }
+      let(:actual) { Spec::Results::HaltingResult.new }
 
       it { expect(matcher.does_not_match? actual).to be false }
 
@@ -234,7 +234,9 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       describe 'with a called Cuprum::Operation using the result class' do
-        let(:actual) { Cuprum::Operation.new { Spec::HaltingResult.new }.call }
+        let(:actual) do
+          Cuprum::Operation.new { Spec::Results::HaltingResult.new }.call
+        end
 
         it { expect(matcher.does_not_match? actual).to be false }
 
@@ -394,7 +396,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
 
     describe 'with a result subclass' do
-      let(:actual) { Spec::HaltingResult.new }
+      let(:actual) { Spec::Results::HaltingResult.new }
 
       it { expect(matcher.matches? actual).to be true }
     end
@@ -465,7 +467,9 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       describe 'with a called Cuprum::Operation using the result class' do
-        let(:actual) { Cuprum::Operation.new { Spec::HaltingResult.new }.call }
+        let(:actual) do
+          Cuprum::Operation.new { Spec::Results::HaltingResult.new }.call
+        end
 
         it { expect(matcher.matches? actual).to be true }
       end
@@ -569,7 +573,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a custom result object' do
         let(:params) { {} }
-        let(:actual) { Spec::HaltingResult.new(**params) }
+        let(:actual) { Spec::Results::HaltingResult.new(**params) }
         let(:failure_message) do
           super() +
             ', but the status does not match:' \

@@ -6,7 +6,7 @@ require 'cuprum/error'
 require 'cuprum/result'
 
 require 'support/examples/result_examples'
-require 'support/halting_result'
+require 'support/results/halting_result'
 
 RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
   include Spec::Examples::ResultExamples
@@ -18,7 +18,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath
 
     subject(:result) { described_class.new(**params) }
 
-    let(:described_class) { Spec::HaltingResult }
+    let(:described_class) { Spec::Results::HaltingResult }
     let(:params) { {} }
 
     describe '::new' do

@@ -2,7 +2,7 @@
 
 require 'cuprum/rspec/be_a_result'
 
-require 'support/halting_result'
+require 'support/results/halting_result'
 
 RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
   include Cuprum::RSpec::Matchers # rubocop:disable RSpec/DescribedClass
@@ -28,7 +28,7 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
     end
 
     describe 'with a result subclass' do
-      let(:expected_class) { Spec::HaltingResult }
+      let(:expected_class) { Spec::Results::HaltingResult }
       let(:matcher)        { example_group.be_a_failing_result(expected_class) }
 
       it 'should set the description' do
@@ -59,7 +59,7 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
     end
 
     describe 'with a result subclass' do
-      let(:expected_class) { Spec::HaltingResult }
+      let(:expected_class) { Spec::Results::HaltingResult }
       let(:matcher)        { example_group.be_a_passing_result(expected_class) }
 
       it 'should set the description' do
@@ -85,7 +85,7 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
     it { expect(matcher.expected_class).to be nil }
 
     describe 'with a result subclass' do
-      let(:expected_class) { Spec::HaltingResult }
+      let(:expected_class) { Spec::Results::HaltingResult }
       let(:matcher)        { example_group.be_a_result(expected_class) }
 
       it 'should set the description' do
