@@ -8,10 +8,10 @@ module Cuprum
     # Enumerates the default permitted values for a Result#status.
     STATUSES = %i[success failure].freeze
 
-    # @param value [Object] The value returned by calling the command.
-    # @param error [Object] The error (if any) generated when the command was
+    # @param value [Object] the value returned by calling the command.
+    # @param error [Object] the error (if any) generated when the command was
     #   called. Can be a Cuprum::Error, a model errors object, etc.
-    # @param status [String, Symbol] The status of the result. Must be :success,
+    # @param status [String, Symbol] the status of the result. Must be :success,
     #   :failure, or nil.
     def initialize(value: nil, error: nil, status: nil)
       @value  = value
@@ -31,12 +31,13 @@ module Cuprum
 
     # Compares the other object to the result.
     #
-    # @param other [#value, #success?] An object responding to, at minimum,
-    #   #value and #success?. If present, the #failure? and #error values
-    #   will also be compared.
+    # In order to match the result, the object must respond to the #value,
+    # #status, and #error methods, and the values of each of those methods must
+    # be equal to the equivalent value on the result.
     #
-    # @return [Boolean] True if all present values match the result, otherwise
-    #   false.
+    # @param other [#error, #status, #value] the result or object to compare.
+    #
+    # @return [Boolean] true if all values match the result, otherwise false.
     def ==(other)
       return false unless other.respond_to?(:value)  && other.value  == value
       return false unless other.respond_to?(:status) && other.status == status

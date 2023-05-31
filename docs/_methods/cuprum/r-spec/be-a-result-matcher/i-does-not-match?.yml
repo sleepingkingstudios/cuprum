@@ -6,7 +6,7 @@ slug: does-not-match?
 constructor: false
 data_path: cuprum/r-spec/be-a-result-matcher/i-does-not-match?
 params:
-- description: The actual object to match.
+- description: the actual object to match.
   name: actual
   type:
   - name: Object

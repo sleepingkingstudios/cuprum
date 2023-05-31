@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+The "Straight On Till Morning" Update
+
+### RSpec
+
+Updated the `Cuprum::RSpec::BeAResultMatcher` to accept an optional result class.
+
 ## 1.1.0
 
 The "Second Star To The Right" Update
