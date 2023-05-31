@@ -378,7 +378,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
           item.post_id == post.id
         end
 
-        expect(taggings.map(&:tag_id)).to contain_exactly(*tags.map(&:id))
+        expect(taggings.map(&:tag_id)).to match_array(tags.map(&:id))
       end
     end
   end
