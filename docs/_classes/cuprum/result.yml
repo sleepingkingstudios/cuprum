@@ -44,6 +44,10 @@ instance_methods:
   slug: initialize
   inherited: false
   constructor: true
+- name: properties
+  path: cuprum/result/i-properties
+  slug: properties
+  inherited: false
 - name: success?
   path: cuprum/result/i-success?
   slug: success?

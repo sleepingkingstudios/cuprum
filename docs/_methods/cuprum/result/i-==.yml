@@ -6,16 +6,14 @@ slug: "=="
 constructor: false
 data_path: cuprum/result/i-==
 description: |-
-  In order to match the result, the object must respond to the #value,
-  #status, and #error methods, and the values of each of those methods must
-  be equal to the equivalent value on the result.
+  In order to match the result, the object must respond to the #to_h method,
+  and the value of object.to_h must be equal to the value of
+  result.properties.
 params:
 - description: the result or object to compare.
   name: other
   type:
-  - name: "#error"
-  - name: "#status"
-  - name: "#value"
+  - name: "#to_h"
 returns:
 - description: true if all values match the result, otherwise false.
   type:
