@@ -2,7 +2,7 @@
 
 require 'cuprum/result'
 
-module Spec
+module Spec::Results
   class HaltingResult < Cuprum::Result
     STATUSES = [*Cuprum::Result::STATUSES, :halted].freeze
 

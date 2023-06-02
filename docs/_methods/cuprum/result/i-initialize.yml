@@ -6,20 +6,20 @@ slug: initialize
 constructor: true
 data_path: cuprum/result/i-initialize
 params:
-- description: The value returned by calling the command.
+- description: the value returned by calling the command.
   name: value
   type:
   - name: Object
   default: nil
 - description: |-
-    The error (if any) generated when the command was
+    the error (if any) generated when the command was
     called. Can be a Cuprum::Error, a model errors object, etc.
   name: error
   type:
   - name: Object
   default: nil
 - description: |-
-    The status of the result. Must be :success,
+    the status of the result. Must be :success,
     :failure, or nil.
   name: status
   type:

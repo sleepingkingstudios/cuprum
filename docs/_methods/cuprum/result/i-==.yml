@@ -5,19 +5,17 @@ signature: "==(other)"
 slug: "=="
 constructor: false
 data_path: cuprum/result/i-==
+description: |-
+  In order to match the result, the object must respond to the #to_h method,
+  and the value of object.to_h must be equal to the value of
+  result.properties.
 params:
-- description: |-
-    An object responding to, at minimum,
-    #value and #success?. If present, the #failure? and #error values
-    will also be compared.
+- description: the result or object to compare.
   name: other
   type:
-  - name: "#value"
-  - name: "#success?"
+  - name: "#to_h"
 returns:
-- description: |-
-    True if all present values match the result, otherwise
-    false.
+- description: true if all values match the result, otherwise false.
   type:
   - name: Boolean
 short_description: Compares the other object to the result.

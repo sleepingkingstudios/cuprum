@@ -65,7 +65,7 @@ RSpec.describe Spec::CommandFactories::BooksFactory do
       :commands,
       -> { an_instance_of Array }
 
-    it { expect(instance.commands).to contain_exactly(*expected) }
+    it { expect(instance.commands).to match_array(expected) }
   end
 
   describe '#publish' do

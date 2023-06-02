@@ -16,6 +16,10 @@ A `Cuprum::Result` is a data object that encapsulates the result of calling a Cu
     - [Partial Success](#result-list-partial-success)
   - [Values](#result-list-values)
   - [Errors](#result-list-errors)
+- [Extending Results](#extending-results)
+  - [Extending Result Statuses](#extending-result-statuses)
+  - [Extending Result Properties](#extending-result-properties)
+  - [Using Custom Results](#using-custom-results)
 
 ## Value, Error, and Status
 
@@ -272,5 +276,135 @@ result_list.error.message
 result_list.errors
 #=> [nil, #<Cuprum::Error>, nil]
 ```
+
+## Extending Results
+
+Some applications may wish to extend the result interface. Rather than changing `Cuprum::Result` directly, create a new subclass to represent results within the custom domain.
+
+### Extending Result Statuses
+
+One use case for extended results is adding additional status types. Consider a CLI application. In addition to the existing `:success` and `:failure` statuses, the application may require a `:pending` status to indicate a task is not fully defined, as well as an `:errored` status to represent a failure in the tool itself (as opposed to the delegated command).
+
+The result statuses are determined by the `#defined_statuses` method, so to create a result with additional status values, override that method.
+
+```ruby
+class Cli::Result < Cuprum::Result
+  STATUSES = [*Cuprum::Result::STATUSES, :errored, :pending].freeze
+
+  def errored?
+    @status == :errored
+  end
+
+  def pending?
+    @status == :pending
+  end
+
+  private
+
+  def defined_statuses
+    self.class::STATUSES
+  end
+end
+
+result = Cli::Result.new(status: :pending)
+result.status   #=> :pending
+result.success? #=> false
+result.failure? #=> false
+result.pending? #=> true
+```
+
+Notice that we are also defining predicate methods `#errored?` and `#pending?` for our custom result class. This matches the interface defined for the existing status types.
+
+### Extending Result Properties
+
+Another use case for extended results is adding additional result properties. Consider a web application, where you may wish to set or access certain metadata during the request cycle, but not return it as part of the response. Examples of metadata may include the current authentication session, or details used for page rendering such as a navigation context or breadcrumbs.
+
+```ruby
+class Web::Result < Cuprum::Result
+  def initialize(error: nil, metadata: {}, status: nil, value: nil)
+    super(error: error, status: status, value: value)
+
+    @metadata = metadata
+  end
+
+  attr_reader :metadata
+
+  def properties
+    super().merge(metadata: metadata)
+  end
+  alias to_h properties
+end
+
+result = Web::Result.new(
+  value:    { 'ok' => true },
+  metadata: { username: 'Kevin Flynn' }
+)
+result.metadata
+#=> { username: 'Kevin Flynn' }
+result.to_h
+#=> {
+#     metadata:  { username: 'Kevin Flynn' },
+#     value:     { 'ok' => true }
+#   }
+result == Cuprum::Result.new(value: result.value)
+#=> false
+result == Web::Result.new(value: result.value)
+#=> false
+result == Web::Result.new(value: result.value, metadata: result.metadata)
+#=> true
+```
+
+To add a custom property, add the relevant keyword to the constructor and update the `#properties` method to return the value of the custom property.
+
+### Using Custom Results
+
+Once you have defined an extended result class, you can then use it in your commands.
+
+```ruby
+class Cli::Command < Cuprum::Command
+  private
+
+  def build_result(error: nil, status: nil, value: nil)
+    Cli::Result.new(error: error, status: status, value: value)
+  end
+
+  def errored(error)
+    build_result(error: error, status: :errored)
+  end
+
+  def pending
+    build_result(status: :pending)
+  end
+end
+```
+
+Here, we are overriding the built-in `#build_request` method to return an instance of our `Cli::Result` class. This ensures that when the user calls the `#success` or `#failure` helpers, or when `#process` returns a bare value, the `Cli::Command` will always return an instance of our custom result class.
+
+We are also defining new helpers to generate `:errored` and `:pending` results.
+
+```ruby
+class Web::Command < Cuprum::Command
+  private
+
+  def build_result(error: nil, metadata: nil, status: nil, value: nil)
+    Web::Result.new(
+      error:    error,
+      metadata: message,
+      status:   status,
+      value:    value
+    )
+  end
+
+  def failure(error, metadata: nil)
+    build_result(error: error, metadata: metadata)
+  end
+
+  def success(value, metadata: nil)
+    build_result(value: value, metadata: metadata)
+  end
+end
+```
+
+Again, we override the `#build_request` method to return an instance of `Web::Result`, and we add a new `:metadata` keyword to the `#success` and `#failure` helpers.
 
 {% include breadcrumbs.md %}

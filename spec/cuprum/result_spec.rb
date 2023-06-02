@@ -225,6 +225,38 @@ RSpec.describe Cuprum::Result do
     end
   end
 
+  describe '#properties' do
+    let(:expected) do
+      {
+        error:  result.error,
+        status: result.status,
+        value:  result.value
+      }
+    end
+
+    include_examples 'should define reader', :properties, -> { be == expected }
+
+    it { expect(result).to have_aliased_method(:properties).as(:to_h) }
+
+    # rubocop:disable RSpec/RepeatedExampleGroupBody
+    wrap_context 'when the result has an error' do
+      it { expect(result.properties).to be == expected }
+    end
+
+    wrap_context 'when the result has a value' do
+      it { expect(result.properties).to be == expected }
+    end
+
+    wrap_context 'when the result has status: :failure' do
+      it { expect(result.properties).to be == expected }
+    end
+
+    wrap_context 'when the result has status: :success' do
+      it { expect(result.properties).to be == expected }
+    end
+    # rubocop:enable RSpec/RepeatedExampleGroupBody
+  end
+
   describe '#status' do
     include_examples 'should have reader', :status, :success
 

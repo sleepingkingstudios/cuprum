@@ -4,74 +4,73 @@ require 'cuprum/operation'
 require 'cuprum/result'
 require 'cuprum/rspec/be_a_result_matcher'
 
-require 'support/halting_result'
+require 'support/results/halting_result'
 
 RSpec.describe Cuprum::RSpec::BeAResultMatcher do
+  shared_context 'with a class expectation' do
+    let(:expected_class) { Spec::Results::HaltingResult }
+    let(:arguments)      { [expected_class] }
+  end
+
   shared_context 'with an error expectation' do
     let(:expected_error) do
       return super() if defined?(super())
 
       Cuprum::Error.new(message: 'Something went wrong.')
     end
-    let(:matcher) { super().with_error(expected_error) }
+
+    before(:example) { fluent_options[:with_error] = expected_error }
   end
 
   shared_context 'with a status expectation' do
     let(:expected_status) { defined?(super()) ? super() : :success }
-    let(:matcher)         { super().with_status(expected_status) }
+
+    before(:example) { fluent_options[:with_status] = expected_status }
   end
 
   shared_context 'with a value expectation' do
     let(:expected_value) { defined?(super()) ? super() : 'returned value' }
-    let(:matcher)        { super().with_value(expected_value) }
+
+    before(:example) { fluent_options[:with_value] = expected_value }
   end
 
   shared_context 'with an error and a status expectation' do
-    let(:expected_error) do
-      Cuprum::Error.new(message: 'Something went wrong.')
-    end
+    include_context 'with an error expectation'
+    include_context 'with a status expectation'
+
     let(:expected_status) { :failure }
-    let(:matcher) do
-      super().with_error(expected_error).and_status(expected_status)
-    end
   end
 
   shared_context 'with an error and a value expectation' do
-    let(:expected_error) do
-      Cuprum::Error.new(message: 'Something went wrong.')
-    end
-    let(:expected_value) { 'returned value' }
-    let(:matcher) do
-      super().with_error(expected_error).and_value(expected_value)
-    end
+    include_context 'with an error expectation'
+    include_context 'with a value expectation'
   end
 
   shared_context 'with an error, a status and a value expectation' do
-    let(:expected_error) do
-      Cuprum::Error.new(message: 'Something went wrong.')
-    end
-    let(:expected_status) { :success }
-    let(:expected_value)  { 'returned value' }
-    let(:matcher) do
-      super()
-        .with_error(expected_error)
-        .and_status(expected_status)
-        .and_value(expected_value)
-    end
+    include_context 'with an error expectation'
+    include_context 'with a status expectation'
+    include_context 'with a value expectation'
   end
 
   shared_context 'with a status and a value expectation' do
-    let(:expected_status) { :success }
-    let(:expected_value)  { 'returned value' }
-    let(:matcher) do
-      super().with_value(expected_value).and_status(expected_status)
+    include_context 'with a status expectation'
+    include_context 'with a value expectation'
+  end
+
+  subject(:matcher) do
+    matcher = described_class.new(*arguments)
+
+    fluent_options.reduce(matcher) do |with_options, (method_name, value)|
+      with_options.send(method_name, value)
     end
   end
 
-  subject(:matcher) { described_class.new }
+  let(:expected_class) { Cuprum::Result }
+  let(:arguments)      { [] }
+  let(:fluent_options) { {} }
 
   describe '::new' do
-    it { expect(described_class).to be_constructible.with(0).arguments }
+    it { expect(described_class).to be_constructible.with(0..1).arguments }
   end
 
   describe '#description' do
@@ -80,6 +79,12 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     it { expect(matcher).to respond_to(:description).with(0).arguments }
 
     it { expect(matcher.description).to be == expected }
+
+    wrap_context 'with a class expectation' do
+      let(:expected) { "be an instance of #{expected_class}" }
+
+      it { expect(matcher.description).to be == expected }
+    end
 
     wrap_context 'with an error expectation' do
       let(:expected) { "#{super()} with the expected error" }
@@ -168,6 +173,14 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       include_examples 'should set the failure message'
     end
 
+    describe 'with a result subclass' do
+      let(:actual) { Spec::Results::HaltingResult.new }
+
+      it { expect(matcher.does_not_match? actual).to be false }
+
+      include_examples 'should set the failure message'
+    end
+
     describe 'with an uncalled Cuprum::Operation' do
       let(:actual) { Cuprum::Operation.new }
 
@@ -196,6 +209,50 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       it { expect(matcher.does_not_match? actual).to be false }
 
       include_examples 'should set the failure message'
+    end
+
+    wrap_context 'with a class expectation' do
+      let(:description) { "be an instance of #{expected_class}" }
+
+      describe 'with a Cuprum result' do
+        let(:actual) { Cuprum::Result.new }
+
+        it { expect(matcher.does_not_match? actual).to be true }
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+
+        it { expect(matcher.does_not_match? actual).to be true }
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:result) { Cuprum::Result.new }
+        let(:actual) { Cuprum::Operation.new { result }.call }
+
+        it { expect(matcher.does_not_match? actual).to be true }
+      end
+
+      describe 'with a called Cuprum::Operation using the result class' do
+        let(:actual) do
+          Cuprum::Operation.new { Spec::Results::HaltingResult.new }.call
+        end
+
+        it { expect(matcher.does_not_match? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a result-like object' do
+        let(:result) { Cuprum::Result.new }
+        let(:actual) { Spec::ResultWrapper.new(result) }
+
+        example_class 'Spec::ResultWrapper', Struct.new(:result) do |klass|
+          klass.send :alias_method, :to_cuprum_result, :result
+        end
+
+        it { expect(matcher.does_not_match? actual).to be true }
+      end
     end
 
     wrap_context 'with a status expectation' do
@@ -272,6 +329,16 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     end
   end
 
+  describe '#expected_class' do
+    it { expect(matcher).to respond_to(:expected_class).with(0).arguments }
+
+    it { expect(matcher.expected_class).to be nil }
+
+    wrap_context 'with a class expectation' do
+      it { expect(matcher.expected_class).to be expected_class }
+    end
+  end
+
   describe '#failure_message' do
     it 'should define the method' do
       expect(matcher).to respond_to(:failure_message).with(0).arguments
@@ -328,6 +395,12 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       it { expect(matcher.matches? actual).to be true }
     end
 
+    describe 'with a result subclass' do
+      let(:actual) { Spec::Results::HaltingResult.new }
+
+      it { expect(matcher.matches? actual).to be true }
+    end
+
     describe 'with an uncalled Cuprum::Operation' do
       let(:actual) { Cuprum::Operation.new }
       let(:failure_message) do
@@ -354,6 +427,68 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       it { expect(matcher.matches? actual).to be true }
+    end
+
+    wrap_context 'with a class expectation' do
+      let(:description) { "be an instance of #{expected_class}" }
+
+      describe 'with a Cuprum result' do
+        let(:actual) { Cuprum::Result.new }
+        let(:failure_message) do
+          "#{super()}, but the object is not an instance of #{expected_class}"
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with an uncalled Cuprum::Operation' do
+        let(:actual) { Cuprum::Operation.new }
+        let(:failure_message) do
+          "#{super()}, but the object is not an instance of #{expected_class}"
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation' do
+        let(:result) { Cuprum::Result.new }
+        let(:actual) { Cuprum::Operation.new { result }.call }
+        let(:failure_message) do
+          "#{super()}, but the object is not an instance of #{expected_class}"
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
+
+      describe 'with a called Cuprum::Operation using the result class' do
+        let(:actual) do
+          Cuprum::Operation.new { Spec::Results::HaltingResult.new }.call
+        end
+
+        it { expect(matcher.matches? actual).to be true }
+      end
+
+      describe 'with a result-like object' do
+        let(:result) { Cuprum::Result.new }
+        let(:actual) { Spec::ResultWrapper.new(result) }
+        let(:failure_message) do
+          "#{super()}, but the object is not an instance of #{expected_class}"
+        end
+
+        example_class 'Spec::ResultWrapper', Struct.new(:result) do |klass|
+          klass.send :alias_method, :to_cuprum_result, :result
+        end
+
+        it { expect(matcher.matches? actual).to be false }
+
+        include_examples 'should set the failure message'
+      end
     end
 
     wrap_context 'with a status expectation' do
@@ -438,7 +573,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       describe 'with a custom result object' do
         let(:params) { {} }
-        let(:actual) { Spec::HaltingResult.new(**params) }
+        let(:actual) { Spec::Results::HaltingResult.new(**params) }
         let(:failure_message) do
           super() +
             ', but the status does not match:' \

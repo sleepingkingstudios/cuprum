@@ -4,8 +4,68 @@ require 'cuprum/errors/operation_not_called'
 require 'cuprum/rspec'
 
 module Cuprum::RSpec
-  # Custom matcher that asserts the actual object is a Cuprum result object with
-  # the specified properties.
+  # Asserts the actual object is a result object with the specified properties.
+  #
+  # If initialized with a class, the matcher will assert that the actual object
+  # is an instance of that class. This can be useful for asserting that the
+  # result is an instance of a result subclass. If no class is given, the
+  # matcher asserts that the result is an object responding to
+  # #to_cuprum_result.
+  #
+  # The matcher also defines fluent methods for asserting on the result's
+  # properties:
+  #
+  # - The #with_value method asserts that the result has the specified value.
+  #   Also aliased as #and_value.
+  # - The #with_error method asserts that the result has the specified error.
+  #   Also aliased as #and_error.
+  # - The #with_status method asserts that the result has the specified status.
+  #   Also aliased as #and_status.
+  #
+  # Generally speaking, you should use the #be_a_result, #be_a_passing_result,
+  # and #be_a_failing_result macros, rather than instantiating a
+  # BeAResultMatcher directly.
+  #
+  # @example Matching Any Result
+  #   # Or use expect().to be_a_result
+  #   matcher = Cuprum::RSpec::BeAResultMatcher.new
+  #
+  #   matcher.matches?(nil)                #=> false
+  #   matcher.matches?(Cuprum::Result.new) #=> true
+  #
+  # @example Matching A Result Status
+  #   # Or use expect().to be_a_passing_result
+  #   matcher = Cuprum::RSpec::BeAResultMatcher.new.with_status(:success)
+  #
+  #   matcher.matches?(Cuprum::Result.new(status: :failure)) #=> false
+  #   matcher.matches?(Cuprum::Result.new(status: :success)) #=> false
+  #
+  # @example Matching A Result Value
+  #   matcher = Cuprum::RSpec::BeAResultMatcher.new.with_value({ ok: true })
+  #
+  #   matcher.matches?(Cuprum::Result.new(value: { ok: false })) #=> false
+  #   matcher.matches?(Cuprum::Result.new(value: { ok: true }))  #=> true
+  #
+  # @example Matching A Result Error
+  #   error   = Cuprum::Error.new(message: 'Something went wrong')
+  #   matcher = Cuprum::RSpec::BeAResultMatcher.new.with_error(error)
+  #
+  #   other_error = Cuprum::Error.new(message: 'Oh no')
+  #   matcher.matches?(Cuprum::Result.new(error: other_error) #=> false
+  #   matcher.matches?(Cuprum::Result.new(error: error)       #=> true
+  #
+  # @example Matching A Result Class
+  #   matcher = Cuprum::RSpec::BeAResultMatcher.new(CustomResult)
+  #
+  #   matcher.matches?(Cuprum::Result.new) #=> false
+  #   matcher.matches?(CustomResult.new)   #=> true
+  #
+  # @example Matching Multiple Properties
+  #   matcher =
+  #     Cuprum::RSpec::BeAResultMatcher
+  #     .with_status(:failure)
+  #     .and_value({ ok: false })
+  #     .and_error(Cuprum::Error.new(message: 'Something went wrong'))
   class BeAResultMatcher # rubocop:disable Metrics/ClassLength
     DEFAULT_VALUE = Object.new.freeze
     private_constant :DEFAULT_VALUE
@@ -13,15 +73,26 @@ module Cuprum::RSpec
     RSPEC_MATCHER_METHODS = %i[description failure_message matches?].freeze
     private_constant :RSPEC_MATCHER_METHODS
 
-    def initialize
+    # @param expected_class [Class] the expected class of result. Defaults to
+    #   Cuprum::Result.
+    def initialize(expected_class = nil)
+      @expected_class = expected_class
       @expected_error = DEFAULT_VALUE
       @expected_value = DEFAULT_VALUE
     end
 
+    # @return [Class] the expected class of result.
+    attr_reader :expected_class
+
     # @return [String] a short description of the matcher and expected
     #   properties.
     def description
-      message = 'be a Cuprum result'
+      message =
+        if expected_class
+          "be an instance of #{expected_class}"
+        else
+          'be a Cuprum result'
+        end
 
       return message unless expected_properties?
 
@@ -30,7 +101,7 @@ module Cuprum::RSpec
 
     # Checks that the given actual object is not a Cuprum result.
     #
-    # @param actual [Object] The actual object to match.
+    # @param actual [Object] the actual object to match.
     #
     # @return [Boolean] false if the actual object is a result; otherwise true.
     def does_not_match?(actual)
@@ -42,10 +113,12 @@ module Cuprum::RSpec
     end
 
     # @return [String] a summary message describing a failed expectation.
-    def failure_message
+    def failure_message # rubocop:disable Metrics/MethodLength
       message = "expected #{actual.inspect} to #{description}"
 
-      if !actual_is_result?
+      if !actual_is_result? && expected_class
+        "#{message}, but the object is not an instance of #{expected_class}"
+      elsif !actual_is_result?
         "#{message}, but the object is not a result"
       elsif actual_is_uncalled_operation?
         "#{message}, but the object is an uncalled operation"
@@ -125,7 +198,11 @@ module Cuprum::RSpec
       :expected_value
 
     def actual_is_result?
-      actual.respond_to?(:to_cuprum_result)
+      return false unless actual.respond_to?(:to_cuprum_result)
+
+      return true unless expected_class
+
+      actual.to_cuprum_result.is_a?(expected_class)
     end
 
     def actual_is_uncalled_operation?

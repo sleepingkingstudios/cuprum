@@ -3,7 +3,7 @@ name: Cuprum::Version::MINOR
 parent_path: cuprum/version
 slug: minor
 short_description: Minor version.
-value: '0'
+value: '1'
 data_path: cuprum/version/minor
 metadata:
   api: private

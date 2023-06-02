@@ -1,7 +1,7 @@
 ---
 name: Cuprum::RSpec::Matchers#be_a_result
 parent_path: cuprum/r-spec/matchers
-signature: be_a_result
+signature: be_a_result(expected_class = nil)
 slug: be-a-result
 constructor: false
 data_path: cuprum/r-spec/matchers/i-be-a-result

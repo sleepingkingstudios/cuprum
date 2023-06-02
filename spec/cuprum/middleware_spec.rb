@@ -123,8 +123,8 @@ RSpec.describe Cuprum::Middleware do
     shared_context 'when the middleware is partially applied' do
       let(:curried) { middleware.curry(next_command) }
 
-      def call_command(*args, &block)
-        curried.call(*args, &block)
+      def call_command(...)
+        curried.call(...)
       end
     end
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.2.0
+
+The "Straight On Till Morning" Update
+
+### Results
+
+Added the `#properties` method (aliased as `#to_h`) that wraps the result's `#value`, `#status`, and `#error`. Collecting the properties in one method supports defining results with additional or custom properties, such as a checksum or metadata.
+
+The `Cuprum::Result#==` method was updated to compare the result's properties.
+
+- A result can now be matched against a hash with `:value`, `:status`, and `:error` keys.
+- Matching a result against a non-result object with its own `#value`, `#status`, and `#error` methods is now deprecated. Define a `#to_h` method on that object to wrap its properties for comparison with a result.
+
+### RSpec
+
+Updated the `Cuprum::RSpec::BeAResultMatcher` to accept an optional result class.
+
 ## 1.1.0
 
 The "Second Star To The Right" Update

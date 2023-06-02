@@ -1,10 +1,18 @@
 ---
 name: Cuprum::RSpec::Matchers#be_a_passing_result
 parent_path: cuprum/r-spec/matchers
-signature: be_a_passing_result
+signature: be_a_passing_result(expected_class = nil)
 slug: be-a-passing-result
 constructor: false
 data_path: cuprum/r-spec/matchers/i-be-a-passing-result
+params:
+- description: |-
+    the expected class of result. Defaults to
+    Cuprum::Result.
+  name: expected_class
+  type:
+  - name: Class
+  default: nil
 returns:
 - description: the generated matcher.
   type:

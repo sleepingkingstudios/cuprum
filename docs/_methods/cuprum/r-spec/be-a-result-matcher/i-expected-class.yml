@@ -1,0 +1,12 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#expected_class
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: expected_class
+slug: expected-class
+constructor: false
+data_path: cuprum/r-spec/be-a-result-matcher/i-expected-class
+returns:
+- description: the expected class of result.
+  type:
+  - name: Class
+version: "*"
