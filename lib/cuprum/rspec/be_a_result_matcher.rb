@@ -145,7 +145,8 @@ module Cuprum::RSpec
     # @return [Boolean] true if the actual object is a result with the expected
     #   properties; otherwise false.
     def matches?(actual)
-      @actual = actual
+      @actual                  = actual
+      @non_matching_properties = nil
 
       actual_is_result? && !actual_is_uncalled_operation? && properties_match?
     end
@@ -218,8 +219,8 @@ module Cuprum::RSpec
     def error_failure_message
       return '' if error_matches?
 
-      "\n   expected error: #{inspect_expected(expected_error)}" \
-        "\n     actual error: #{result.error.inspect}"
+      "#{pad_key('expected error')}#{inspect_expected(expected_error)}" \
+        "#{pad_key('actual error')}#{result.error.inspect}"
     end
 
     def error_matches?
@@ -230,10 +231,18 @@ module Cuprum::RSpec
       @error_matches = compare_items(expected_error, result.error)
     end
 
+    def expected_properties
+      expected = {}
+
+      expected['error']  = expected_error  if expected_error?
+      expected['status'] = expected_status if expected_status?
+      expected['value']  = expected_value  if expected_value?
+
+      expected
+    end
+
     def expected_properties?
-      (expected_error? && !expected_error.nil?) ||
-        expected_status? ||
-        expected_value?
+      expected_properties.any?
     end
 
     def expected_error?
@@ -259,12 +268,23 @@ module Cuprum::RSpec
         ' positives, since any other result will match.'
     end
 
-    # rubocop:disable Metrics/AbcSize
+    def non_matching_properties
+      @non_matching_properties ||=
+        expected_properties
+        .each_key
+        .reject { |key| send(:"#{key}_matches?") }
+    end
+
+    def pad_key(str)
+      # Value 11 from "  expected " prefix.
+      len = 11 + non_matching_properties.map(&:length).max
+
+      "\n#{format("%#{len}s", str)}: "
+    end
+
     def properties_description
       msg = ''
-      ary = []
-      ary << 'value' if expected_value?
-      ary << 'error' if expected_error? && !expected_error.nil?
+      ary = expected_properties.except('status').keys
 
       unless ary.empty?
         msg = "with the expected #{tools.array_tools.humanize_list(ary)}"
@@ -276,34 +296,28 @@ module Cuprum::RSpec
 
       msg + " and status: #{expected_status.inspect}"
     end
-    # rubocop:enable Metrics/AbcSize
 
     def properties_failure_message
-      properties_short_message +
-        status_failure_message +
-        value_failure_message +
-        error_failure_message
+      expected_properties
+        .each_key
+        .map { |key| send(:"#{key}_failure_message") }
+        .unshift(properties_short_message)
+        .join
     end
 
     def properties_match?
-      error_matches? && status_matches? && value_matches?
+      non_matching_properties.empty?
     end
 
     def properties_short_message
-      ary = []
-      ary << 'status' unless status_matches?
-      ary << 'value'  unless value_matches?
-      ary << 'error'  unless error_matches?
+      ary = non_matching_properties
 
       ", but the #{tools.array_tools.humanize_list(ary)}" \
         " #{tools.integer_tools.pluralize(ary.size, 'does', 'do')} not match:"
     end
 
     def properties_warning
-      ary = []
-      ary << 'value'  if expected_value?
-      ary << 'status' if expected_status?
-      ary << 'error'  if expected_error?
+      ary = expected_properties.keys
 
       return '' if ary.empty?
 
@@ -327,8 +341,8 @@ module Cuprum::RSpec
     def status_failure_message
       return '' if status_matches?
 
-      "\n  expected status: #{expected_status.inspect}" \
-        "\n    actual status: #{result.status.inspect}"
+      "#{pad_key('expected status')}#{expected_status.inspect}" \
+        "#{pad_key('actual status')}#{result.status.inspect}"
     end
 
     def status_matches?
@@ -346,8 +360,8 @@ module Cuprum::RSpec
     def value_failure_message
       return '' if value_matches?
 
-      "\n   expected value: #{inspect_expected(expected_value)}" \
-        "\n     actual value: #{result.value.inspect}"
+      "#{pad_key('expected value')}#{inspect_expected(expected_value)}" \
+        "#{pad_key('actual value')}#{result.value.inspect}"
     end
 
     def value_matches?

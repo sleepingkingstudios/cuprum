@@ -115,7 +115,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with an error and a value expectation' do
       let(:expected) do
-        "#{super()} with the expected value and error"
+        "#{super()} with the expected error and value"
       end
 
       it { expect(matcher.description).to be == expected }
@@ -133,7 +133,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     wrap_context 'with an error, a status and a value expectation' do
       let(:expected) do
         super() +
-          ' with the expected value and error and' \
+          ' with the expected error and value and' \
           " status: #{expected_status.inspect}"
       end
 
@@ -153,7 +153,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
     let(:description)     { 'be a Cuprum result' }
     let(:failure_message) { "expected #{actual.inspect} not to #{description}" }
 
-    it { expect(matcher).to respond_to(:matches?).with(1).argument }
+    it { expect(matcher).to respond_to(:does_not_match?).with(1).argument }
 
     describe 'with nil' do
       it { expect(matcher.does_not_match? nil).to be true }
@@ -255,6 +255,18 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
     end
 
+    wrap_context 'with an error expectation' do
+      let(:error_message) do
+        'Using `expect().not_to be_a_result.with_error()` risks false' \
+          ' positives, since any other result will match.'
+      end
+
+      it 'should raise an error' do
+        expect { matcher.does_not_match? nil }
+          .to raise_error ArgumentError, error_message
+      end
+    end
+
     wrap_context 'with a status expectation' do
       let(:error_message) do
         'Using `expect().not_to be_a_result.with_status()` risks false' \
@@ -281,7 +293,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with an error and a status expectation' do
       let(:error_message) do
-        'Using `expect().not_to be_a_result.with_status().and_error()` risks' \
+        'Using `expect().not_to be_a_result.with_error().and_status()` risks' \
           ' false positives, since any other result will match.'
       end
 
@@ -293,7 +305,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with an error and a value expectation' do
       let(:error_message) do
-        'Using `expect().not_to be_a_result.with_value().and_error()` risks' \
+        'Using `expect().not_to be_a_result.with_error().and_value()` risks' \
           ' false positives, since any other result will match.'
       end
 
@@ -305,7 +317,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with a status and a value expectation' do
       let(:error_message) do
-        'Using `expect().not_to be_a_result.with_value().and_status()` risks' \
+        'Using `expect().not_to be_a_result.with_status().and_value()` risks' \
           ' false positives, since any other result will match.'
       end
 
@@ -317,8 +329,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
     wrap_context 'with an error, a status and a value expectation' do
       let(:error_message) do
-        'Using `expect().not_to be_a_result.with_value().and_status()' \
-          '.and_error()` risks false positives, since any other result will' \
+        'Using `expect().not_to be_a_result.with_error().and_status()' \
+          '.and_value()` risks false positives, since any other result will' \
           ' match.'
       end
 
@@ -441,6 +453,12 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
         it { expect(matcher.matches? actual).to be false }
 
         include_examples 'should set the failure message'
+      end
+
+      describe 'with an instance of the class' do
+        let(:actual) { Spec::Results::HaltingResult.new }
+
+        it { expect(matcher.matches? actual).to be true }
       end
 
       describe 'with an uncalled Cuprum::Operation' do
@@ -644,8 +662,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -661,6 +679,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:expected_error) { nil }
+      let(:description)    { "#{super()} with the expected error" }
 
       describe 'with nil' do
         let(:actual) { nil }
@@ -726,8 +745,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -742,9 +761,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
         end
       end
 
-      let(:description) do
-        "#{super()} with the expected error"
-      end
+      let(:description) { "#{super()} with the expected error" }
 
       describe 'with nil' do
         let(:actual) { nil }
@@ -810,8 +827,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.description}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.description}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -897,8 +914,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -906,7 +923,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           include_examples 'should set the failure message'
         end
 
-        describe 'with a matching status' do
+        describe 'with a matching value' do
           let(:params) { { value: nil } }
 
           it { expect(matcher.matches? actual).to be true }
@@ -980,8 +997,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -989,7 +1006,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           include_examples 'should set the failure message'
         end
 
-        describe 'with a matching status' do
+        describe 'with a matching value' do
           let(:params) { { value: 'returned value' } }
 
           it { expect(matcher.matches? actual).to be true }
@@ -1062,8 +1079,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.description}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.description}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1071,7 +1088,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           include_examples 'should set the failure message'
         end
 
-        describe 'with a matching status' do
+        describe 'with a matching value' do
           let(:params) { { value: 'a string' } }
 
           it { expect(matcher.matches? actual).to be true }
@@ -1147,11 +1164,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           end
           let(:failure_message) do
             super() +
-              ', but the status and error do not match:' \
-              "\n  expected status: #{expected_status.inspect}" \
-              "\n    actual status: #{params[:status].inspect}" \
+              ', but the error and status do not match:' \
               "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n     actual error: #{params[:error].inspect}" \
+              "\n  expected status: #{expected_status.inspect}" \
+              "\n    actual status: #{params[:status].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1183,8 +1200,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1267,11 +1284,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           end
           let(:failure_message) do
             super() +
-              ', but the value and error do not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}" \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              ', but the error and value do not match:' \
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}" \
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1284,8 +1301,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1303,8 +1320,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1312,7 +1329,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           include_examples 'should set the failure message'
         end
 
-        describe 'with a matching value and error' do
+        describe 'with a matching error and value' do
           let(:params) { { error: expected_error, value: expected_value } }
 
           it { expect(matcher.matches? actual).to be true }
@@ -1320,7 +1337,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
       end
 
       let(:description) do
-        "#{super()} with the expected value and error"
+        "#{super()} with the expected error and value"
       end
 
       describe 'with nil' do
@@ -1413,8 +1430,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1498,13 +1515,13 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           end
           let(:failure_message) do
             super() +
-              ', but the status, value, and error do not match:' \
+              ', but the error, status, and value do not match:' \
+              "\n   expected error: #{expected_error.inspect}" \
+              "\n     actual error: #{params[:error].inspect}" \
               "\n  expected status: #{expected_status.inspect}" \
               "\n    actual status: #{params[:status].inspect}" \
               "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}" \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n     actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1522,11 +1539,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           end
           let(:failure_message) do
             super() +
-              ', but the status and error do not match:' \
-              "\n  expected status: #{expected_status.inspect}" \
-              "\n    actual status: #{params[:status].inspect}" \
+              ', but the error and status do not match:' \
               "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n     actual error: #{params[:error].inspect}" \
+              "\n  expected status: #{expected_status.inspect}" \
+              "\n    actual status: #{params[:status].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1548,7 +1565,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
               "\n  expected status: #{expected_status.inspect}" \
               "\n    actual status: #{params[:status].inspect}" \
               "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n     actual value: #{params[:value].inspect}" \
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1586,11 +1603,11 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           end
           let(:failure_message) do
             super() +
-              ', but the value and error do not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}" \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              ', but the error and value do not match:' \
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}" \
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1609,8 +1626,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the error does not match:' \
-              "\n   expected error: #{expected_error.inspect}" \
-              "\n     actual error: #{params[:error].inspect}"
+              "\n  expected error: #{expected_error.inspect}" \
+              "\n    actual error: #{params[:error].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1629,8 +1646,8 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
           let(:failure_message) do
             super() +
               ', but the value does not match:' \
-              "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}"
+              "\n  expected value: #{expected_value.inspect}" \
+              "\n    actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }
@@ -1653,7 +1670,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
 
       let(:description) do
         super() +
-          ' with the expected value and error and' \
+          ' with the expected error and value and' \
           " status: #{expected_status.inspect}"
       end
 
