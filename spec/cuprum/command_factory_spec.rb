@@ -287,7 +287,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -325,7 +325,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should set the metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
@@ -356,7 +356,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -388,7 +388,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should set the metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
@@ -446,7 +446,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -484,7 +484,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should set the metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
@@ -515,7 +515,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -547,7 +547,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should set the metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
@@ -635,7 +635,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -669,7 +669,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
@@ -713,7 +713,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ }).to be == {}
+          expect(definition.except(:__const_defn__)).to be == {}
         end
 
         wrap_examples 'should call the #build_command method'
@@ -747,7 +747,7 @@ RSpec.describe Cuprum::CommandFactory do
         it 'should not set metadata' do
           define_command
 
-          expect(definition.reject { |k, _| k == :__const_defn__ })
+          expect(definition.except(:__const_defn__))
             .to be == metadata
         end
 
