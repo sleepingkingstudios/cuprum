@@ -42,6 +42,9 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
 
   describe '#be_a_passing_result' do
     let(:matcher) { example_group.be_a_passing_result }
+    let(:expectations) do
+      'with the expected error and status: :success'
+    end
 
     it 'should define the method' do
       expect(example_group)
@@ -55,7 +58,7 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
 
     it 'should set the description' do
       expect(matcher.description)
-        .to be == 'be a Cuprum result with status: :success'
+        .to be == "be a Cuprum result #{expectations}"
     end
 
     describe 'with a result subclass' do
@@ -64,7 +67,7 @@ RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
 
       it 'should set the description' do
         expect(matcher.description)
-          .to be == "be an instance of #{expected_class} with status: :success"
+          .to be == "be an instance of #{expected_class} #{expectations}"
       end
 
       it { expect(matcher.expected_class).to be expected_class }

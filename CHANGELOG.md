@@ -4,6 +4,8 @@
 
 The "Straight On Till Morning" Update
 
+As of version 1.2.0, Cuprum will no longer support Ruby 2.7.
+
 ### Results
 
 Added the `#properties` method (aliased as `#to_h`) that wraps the result's `#value`, `#status`, and `#error`. Collecting the properties in one method supports defining results with additional or custom properties, such as a checksum or metadata.
