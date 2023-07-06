@@ -1,0 +1,34 @@
+---
+name: Cuprum::Currying#curry
+parent_path: cuprum/currying
+signature: curry(*arguments, **keywords, &block)
+slug: curry
+constructor: false
+data_path: cuprum/currying/i-curry
+description: |-
+  When the curried command is called, the predefined arguments and/or
+  keywords will be combined with the arguments passed to #call.
+
+  The original command is unchanged.
+metadata:
+  see:
+  - label: Cuprum::Currying::CurriedCommand#call
+    path: cuprum/currying/curried-command#instance-method-call
+    text:
+    type: reference
+params:
+- description: The arguments to pass to the curried command.
+  name: arguments
+  type:
+  - name: Array
+- description: The keywords to pass to the curried command.
+  name: keywords
+  type:
+  - name: Hash
+returns:
+- description: the curried command.
+  type:
+  - name: Cuprum::Currying::CurriedCommand
+    path: cuprum/currying/curried-command
+short_description: Returns a CurriedCommand that wraps this command with pre-set arguments.
+version: '1.2'

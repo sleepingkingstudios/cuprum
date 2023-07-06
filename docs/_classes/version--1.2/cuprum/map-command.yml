@@ -1,0 +1,221 @@
+---
+name: Cuprum::MapCommand
+slug: map-command
+type: class
+files:
+- lib/cuprum/map_command.rb
+parent_path: cuprum
+short_description: Calls the command implementation with each item in the given enumerable.
+instance_methods:
+- name: allow_partial?
+  path: cuprum/map-command/i-allow-partial?
+  slug: allow-partial?
+  inherited: false
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/map-command/i-call
+  slug: call
+  inherited: false
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: initialize
+  path: cuprum/map-command/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: process
+  path: cuprum/processing/i-process
+  slug: process
+  inherited: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+data_path: cuprum/map-command
+description: |-
+  A regular Command is called with a set of parameters, calls the command
+  implementation once with those parameters, and returns the Result. In
+  contrast, a MapCommand is called with an Enumerable object, such as an
+  Array, a Hash, or an Enumerator (e.g. by calling #each without a block). The
+  MapCommand implementation is then called with each item in the
+  Enumerable - for example, if called with an Array with three items, the
+  MapCommand implementation would be called three times, once with each item.
+  Finally, the Results returned by calling the implementation with each item
+  are aggregated together into a Cuprum::ResultList. A ResultList behaves like
+  a Result, and provides the standard methods (such as #status, #error, and
+  #value), but also includes a reference to the #results used to create the
+  ResultList, and their respective #errors and #values as Arrays.
+
+  Like a standard Command, a MapCommand can be defined either by passing a
+  block to the constructor, or by defining a subclass of MapCommand and
+  implementing the #process method. If the given block or the #process method
+  accepts more than one argument, the enumerable item is destructured using
+  the splat operator (*); this enables using a MapCommand to map over the keys
+  and values of a Hash. This is the same behavior seen when passing a block
+  with multiple arguments to a native #each method.
+
+  If a MapCommand is initialized with the :allow_partial keyword, the
+  ResultList will be passing as long as there is at least one passing Result
+  (or if the MapCommand is called with an empty Enumerable). See
+  ResultList#allow_partial? for details.
+metadata:
+  examples:
+  - name: A MapCommand with a block
+    text: |-
+      titleize_command = Cuprum::MapCommand.new do |str|
+        if str.nil? || str.empty?
+          next failure(Cuprum::Error.new(message: "can't be blank"))
+        end
+
+        str.split(' ').map(&:capitalize).join(' ')
+      end
+  - name: A MapCommand Subclass
+    text: |-
+      class TitleizeCommand < Cuprum::MapCommand
+        private
+
+        def process(str)
+          if str.nil? || str.empty?
+            return failure(Cuprum::Error.new(message: "can't be blank"))
+          end
+
+          str.split(' ').map(&:capitalize).join(' ')
+        end
+      end
+
+      titleize_command = TitleizeCommand.new
+  - name: With an Array with passing Results
+    text: |-
+      results = titleize_command.call(['hello world', 'greetings programs'])
+      results.class
+      #=> Cuprum::ResultsList
+      results.status
+      #=> :success
+      results.value
+      #=> ['Hello World', 'Greetings Programs']
+      results.values
+      #=> ['Hello World', 'Greetings Programs']
+      results.error
+      #=> nil
+      results.errors
+      #=> [nil, nil]
+  - name: With an Array with failing Results
+    text: |-
+      results = titleize_command.call([nil, ''])
+      results.status
+      #=> :failure
+      results.value
+      #=> [nil, nil]
+      results.values
+      #=> [nil, nil]
+      results.error.class
+      #=> Cuprum::Errors::MultipleErrors
+      results.errors.map(&:class)
+      #=> [Cuprum::Error, Cuprum::Error]
+      results.errors.first.message
+      #=> "can't be blank"
+  - name: With an Array with mixed passing and failing Results
+    text: |-
+      results = titleize_command.call([nil, 'greetings programs'])
+      results.status
+      #=> :failure
+      results.value
+      #=> [nil, "Greetings Programs"]
+      results.values
+      #=> [nil, "Greetings Programs"]
+      results.error.class
+      #=> Cuprum::Errors::MultipleErrors
+      results.errors.map(&:class)
+      #=> [Cuprum::Error, nil]
+      results.errors.first.message
+      #=> "can't be blank"
+  - name: With an Empty Array
+    text: |-
+      results = titleize_command.call([])
+      results.status
+      #=> :success
+      results.value
+      #=> []
+      results.values
+      #=> []
+      results.error
+      #=> nil
+      results.errors
+      #=> []
+  - name: With a Hash
+    text: |-
+      inspect_command = Cuprum::MapCommand.new do |key, value|
+        "#{key.inspect} => #{value.inspect}"
+      end
+
+      results = inspect_command.call({ ichi: 1, "ni" => 2 })
+      results.status
+      #=> :success
+      results.value
+      #=> [':ichi => 1', '"ni" => 2']
+      results.values
+      #=> [':ichi => 1', '"ni" => 2']
+      results.error
+      #=> nil
+      results.errors
+      #=> [nil, nil]
+  - name: With an Enumerable
+    text: |-
+      square_command = Cuprum::MapCommand.new { |i| i ** 2 }
+
+      results = square_command.call(0...4)
+      results.status
+      #=> :success
+      results.value
+      #=> [0, 1, 4, 9]
+      results.values
+      #=> [0, 1, 4, 9]
+  - name: 'With allow_partial: true'
+    text: |-
+      maybe_upcase_command = Cuprum::MapCommand.new do |str|
+        next str.upcase if str.is_a?(String)
+
+        failure(Cuprum::Error.new(message: 'not a String'))
+      end
+
+      results = maybe_upcase_command.call([nil, 'greetings', 'programs'])
+      results.status
+      #=> :success
+      results.value
+      #=> [nil, 'GREETINGS', 'PROGRAMS']
+      results.values
+      #=> [nil, 'GREETINGS', 'PROGRAMS']
+      results.error.class
+      #=> Cuprum::Errors::MultipleErrors
+      results.errors.map(&:class)
+      #=> [Cuprum::Error, nil, nil]
+      results.errors.first.message
+      #=> 'not a String'
+  see:
+  - label: Cuprum::Command
+    path: cuprum/command
+    text:
+    type: reference
+  - label: Cuprum::ResultList
+    path: cuprum/result-list
+    text:
+    type: reference
+constructor: true
+inherited_classes:
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: '1.2'

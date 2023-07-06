@@ -1,0 +1,16 @@
+---
+name: Cuprum::Command#to_proc
+parent_path: cuprum/command
+signature: to_proc
+slug: to-proc
+constructor: false
+data_path: cuprum/command/i-to-proc
+description: |-
+  Calling the proc will call the command with the given arguments, keywords,
+  and block.
+returns:
+- description: the wrapping proc.
+  type:
+  - name: Proc
+short_description: Wraps the command in a proc.
+version: '1.2'
