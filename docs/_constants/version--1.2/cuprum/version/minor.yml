@@ -7,4 +7,4 @@ value: '2'
 data_path: cuprum/version/minor
 metadata:
   api: private
-version: "*"
+version: '1.2'

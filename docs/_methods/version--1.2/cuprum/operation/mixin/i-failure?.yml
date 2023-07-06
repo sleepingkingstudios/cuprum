@@ -1,0 +1,15 @@
+---
+name: Cuprum::Operation::Mixin#failure?
+parent_path: cuprum/operation/mixin
+signature: failure?
+slug: failure?
+constructor: false
+data_path: cuprum/operation/mixin/i-failure?
+returns:
+- description: |-
+    true if the most recent result had an error, or false
+    if the most recent result had no error or if the operation has not
+    been called.
+  type:
+  - name: Boolean
+version: '1.2'

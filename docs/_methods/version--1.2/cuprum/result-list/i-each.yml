@@ -1,0 +1,31 @@
+---
+name: Cuprum::ResultList#each
+parent_path: cuprum/result-list
+signature: each
+slug: each
+constructor: false
+data_path: cuprum/result-list/i-each
+overloads:
+- name: Cuprum::ResultList#each
+  parent_path: cuprum/result-list
+  signature: each()
+  slug: each
+  constructor: false
+  returns:
+  - description: an enumerator over the results.
+    type:
+    - name: Enumerator
+- name: Cuprum::ResultList#each
+  parent_path: cuprum/result-list
+  signature: each(&block)
+  slug: each
+  constructor: false
+  short_description: Yields each result to the block.
+  yield_params:
+  - description: the yielded result.
+    name: result
+    type:
+    - name: Cuprum::Result
+      path: cuprum/result
+short_description: Iterates over the results.
+version: '1.2'

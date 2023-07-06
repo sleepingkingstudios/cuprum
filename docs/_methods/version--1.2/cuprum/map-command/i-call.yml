@@ -1,0 +1,23 @@
+---
+name: Cuprum::MapCommand#call
+parent_path: cuprum/map-command
+signature: call(enumerable)
+slug: call
+constructor: false
+data_path: cuprum/map-command/i-call
+params:
+- description: |-
+    The collection or enumerable
+    object to map.
+  name: enumerable
+  type:
+  - name: Array
+  - name: Hash
+  - name: Enumerable
+returns:
+- description: the aggregated results.
+  type:
+  - name: Cuprum::ResultList
+    path: cuprum/result-list
+short_description: Calls the command implementation for each item in the given Enumerable.
+version: '1.2'

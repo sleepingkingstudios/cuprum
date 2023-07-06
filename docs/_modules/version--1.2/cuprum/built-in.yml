@@ -1,0 +1,23 @@
+---
+name: Cuprum::BuiltIn
+slug: built-in
+type: module
+files:
+- lib/cuprum/built_in.rb
+- lib/cuprum/built_in/null_command.rb
+- lib/cuprum/built_in/null_operation.rb
+- lib/cuprum/built_in/identity_command.rb
+- lib/cuprum/built_in/identity_operation.rb
+parent_path: cuprum
+short_description: Namespace for predefined command and operation classes.
+defined_classes:
+- name: IdentityCommand
+  slug: identity-command
+- name: IdentityOperation
+  slug: identity-operation
+- name: NullCommand
+  slug: null-command
+- name: NullOperation
+  slug: null-operation
+data_path: cuprum/built-in
+version: '1.2'

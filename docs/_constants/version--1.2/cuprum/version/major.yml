@@ -1,0 +1,10 @@
+---
+name: Cuprum::Version::MAJOR
+parent_path: cuprum/version
+slug: major
+short_description: Major version.
+value: '1'
+data_path: cuprum/version/major
+metadata:
+  api: private
+version: '1.2'

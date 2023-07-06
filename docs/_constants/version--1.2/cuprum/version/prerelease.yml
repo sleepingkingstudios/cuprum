@@ -1,0 +1,10 @@
+---
+name: Cuprum::Version::PRERELEASE
+parent_path: cuprum/version
+slug: prerelease
+short_description: Prerelease version.
+value: nil
+data_path: cuprum/version/prerelease
+metadata:
+  api: private
+version: '1.2'

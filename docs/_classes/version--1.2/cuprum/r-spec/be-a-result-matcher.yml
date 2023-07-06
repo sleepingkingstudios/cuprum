@@ -1,0 +1,120 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher
+slug: be-a-result-matcher
+type: class
+files:
+- lib/cuprum/rspec/be_a_result_matcher.rb
+parent_path: cuprum/r-spec
+short_description: Asserts the actual object is a result object with the specified
+  properties.
+instance_attributes:
+- name: expected_class
+  read: true
+  write: false
+  path: cuprum/r-spec/be-a-result-matcher/i-expected-class
+  slug: expected-class
+  inherited: false
+instance_methods:
+- name: description
+  path: cuprum/r-spec/be-a-result-matcher/i-description
+  slug: description
+  inherited: false
+- name: does_not_match?
+  path: cuprum/r-spec/be-a-result-matcher/i-does-not-match?
+  slug: does-not-match?
+  inherited: false
+- name: failure_message
+  path: cuprum/r-spec/be-a-result-matcher/i-failure-message
+  slug: failure-message
+  inherited: false
+- name: failure_message_when_negated
+  path: cuprum/r-spec/be-a-result-matcher/i-failure-message-when-negated
+  slug: failure-message-when-negated
+  inherited: false
+- name: initialize
+  path: cuprum/r-spec/be-a-result-matcher/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: matches?
+  path: cuprum/r-spec/be-a-result-matcher/i-matches?
+  slug: matches?
+  inherited: false
+- name: with_error
+  path: cuprum/r-spec/be-a-result-matcher/i-with-error
+  slug: with-error
+  inherited: false
+- name: with_status
+  path: cuprum/r-spec/be-a-result-matcher/i-with-status
+  slug: with-status
+  inherited: false
+- name: with_value
+  path: cuprum/r-spec/be-a-result-matcher/i-with-value
+  slug: with-value
+  inherited: false
+data_path: cuprum/r-spec/be-a-result-matcher
+description: |-
+  If initialized with a class, the matcher will assert that the actual object
+  is an instance of that class. This can be useful for asserting that the
+  result is an instance of a result subclass. If no class is given, the
+  matcher asserts that the result is an object responding to
+  #to_cuprum_result.
+
+  The matcher also defines fluent methods for asserting on the result's
+  properties:
+
+  - The #with_value method asserts that the result has the specified value.
+    Also aliased as #and_value.
+  - The #with_error method asserts that the result has the specified error.
+    Also aliased as #and_error.
+  - The #with_status method asserts that the result has the specified status.
+    Also aliased as #and_status.
+
+  Generally speaking, you should use the #be_a_result, #be_a_passing_result,
+  and #be_a_failing_result macros, rather than instantiating a
+  BeAResultMatcher directly.
+metadata:
+  examples:
+  - name: Matching Any Result
+    text: |-
+      # Or use expect().to be_a_result
+      matcher = Cuprum::RSpec::BeAResultMatcher.new
+
+      matcher.matches?(nil)                #=> false
+      matcher.matches?(Cuprum::Result.new) #=> true
+  - name: Matching A Result Status
+    text: |-
+      # Or use expect().to be_a_passing_result
+      matcher = Cuprum::RSpec::BeAResultMatcher.new.with_status(:success)
+
+      matcher.matches?(Cuprum::Result.new(status: :failure)) #=> false
+      matcher.matches?(Cuprum::Result.new(status: :success)) #=> false
+  - name: Matching A Result Value
+    text: |-
+      matcher = Cuprum::RSpec::BeAResultMatcher.new.with_value({ ok: true })
+
+      matcher.matches?(Cuprum::Result.new(value: { ok: false })) #=> false
+      matcher.matches?(Cuprum::Result.new(value: { ok: true }))  #=> true
+  - name: Matching A Result Error
+    text: |-
+      error   = Cuprum::Error.new(message: 'Something went wrong')
+      matcher = Cuprum::RSpec::BeAResultMatcher.new.with_error(error)
+
+      other_error = Cuprum::Error.new(message: 'Oh no')
+      matcher.matches?(Cuprum::Result.new(error: other_error) #=> false
+      matcher.matches?(Cuprum::Result.new(error: error)       #=> true
+  - name: Matching A Result Class
+    text: |-
+      matcher = Cuprum::RSpec::BeAResultMatcher.new(CustomResult)
+
+      matcher.matches?(Cuprum::Result.new) #=> false
+      matcher.matches?(CustomResult.new)   #=> true
+  - name: Matching Multiple Properties
+    text: |-
+      matcher =
+        Cuprum::RSpec::BeAResultMatcher
+        .with_status(:failure)
+        .and_value({ ok: false })
+        .and_error(Cuprum::Error.new(message: 'Something went wrong'))
+constructor: true
+version: '1.2'
