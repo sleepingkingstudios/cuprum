@@ -1,0 +1,12 @@
+---
+name: Cuprum::Utils::InstanceSpy.clear_spies
+parent_path: cuprum/utils/instance-spy
+signature: clear_spies
+slug: clear-spies
+constructor: false
+data_path: cuprum/utils/instance-spy/c-clear-spies
+description: |-
+  Subsequent calls to the #call method on command instances will not be
+  mirrored to existing spy objects.
+short_description: Retires all spies.
+version: '1.2'

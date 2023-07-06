@@ -1,0 +1,100 @@
+---
+name: Cuprum::BuiltIn::NullOperation
+slug: null-operation
+type: class
+files:
+- lib/cuprum/built_in/null_operation.rb
+parent_path: cuprum/built-in
+short_description: A predefined operation that does nothing when called.
+instance_attributes:
+- name: result
+  read: true
+  write: false
+  path: cuprum/operation/mixin/i-result
+  slug: result
+  inherited: true
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/operation/mixin/i-call
+  slug: call
+  inherited: true
+- name: called?
+  path: cuprum/operation/mixin/i-called?
+  slug: called?
+  inherited: true
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: error
+  path: cuprum/operation/mixin/i-error
+  slug: error
+  inherited: true
+- name: failure?
+  path: cuprum/operation/mixin/i-failure?
+  slug: failure?
+  inherited: true
+- name: initialize
+  path: cuprum/built-in/null-command/i-initialize
+  slug: initialize
+  inherited: true
+  constructor: true
+- name: reset!
+  path: cuprum/operation/mixin/i-reset!
+  slug: reset!
+  inherited: true
+- name: status
+  path: cuprum/operation/mixin/i-status
+  slug: status
+  inherited: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: success?
+  path: cuprum/operation/mixin/i-success?
+  slug: success?
+  inherited: true
+- name: to_cuprum_result
+  path: cuprum/operation/mixin/i-to-cuprum-result
+  slug: to-cuprum-result
+  inherited: true
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+- name: value
+  path: cuprum/operation/mixin/i-value
+  slug: value
+  inherited: true
+data_path: cuprum/built-in/null-operation
+included_modules:
+- name: Cuprum::Operation::Mixin
+  slug: mixin
+  path: cuprum/operation/mixin
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      operation = NullOperation.new.call
+      operation.value
+      #=> nil
+      operation.success?
+      #=> true
+constructor: true
+inherited_classes:
+- name: Cuprum::BuiltIn::NullCommand
+  slug: null-command
+  path: cuprum/built-in/null-command
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: '1.2'

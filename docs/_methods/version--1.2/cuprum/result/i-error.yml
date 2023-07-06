@@ -1,0 +1,14 @@
+---
+name: Cuprum::Result#error
+parent_path: cuprum/result
+signature: error
+slug: error
+constructor: false
+data_path: cuprum/result/i-error
+returns:
+- description: |-
+    the error (if any) generated when the command was
+    called.
+  type:
+  - name: Object
+version: '1.2'

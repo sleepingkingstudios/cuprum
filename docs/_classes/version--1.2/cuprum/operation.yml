@@ -1,0 +1,135 @@
+---
+name: Cuprum::Operation
+slug: operation
+type: class
+files:
+- lib/cuprum/operation.rb
+parent_path: cuprum
+short_description: Functional object with syntactic sugar for tracking the last result.
+defined_modules:
+- name: Mixin
+  slug: mixin
+instance_attributes:
+- name: result
+  read: true
+  write: false
+  path: cuprum/operation/mixin/i-result
+  slug: result
+  inherited: true
+instance_methods:
+- name: arity
+  path: cuprum/processing/i-arity
+  slug: arity
+  inherited: true
+- name: call
+  path: cuprum/operation/i-call
+  slug: call
+  inherited: false
+- name: called?
+  path: cuprum/operation/i-called?
+  slug: called?
+  inherited: false
+- name: curry
+  path: cuprum/currying/i-curry
+  slug: curry
+  inherited: true
+- name: error
+  path: cuprum/operation/i-error
+  slug: error
+  inherited: false
+- name: failure?
+  path: cuprum/operation/i-failure?
+  slug: failure?
+  inherited: false
+- name: initialize
+  path: cuprum/command/i-initialize
+  slug: initialize
+  inherited: true
+  constructor: true
+- name: process
+  path: cuprum/processing/i-process
+  slug: process
+  inherited: true
+- name: reset!
+  path: cuprum/operation/i-reset!
+  slug: reset!
+  inherited: false
+- name: result
+  path: cuprum/operation/i-result
+  slug: result
+  inherited: false
+- name: status
+  path: cuprum/operation/mixin/i-status
+  slug: status
+  inherited: true
+- name: step
+  path: cuprum/steps/i-step
+  slug: step
+  inherited: true
+- name: steps
+  path: cuprum/steps/i-steps
+  slug: steps
+  inherited: true
+- name: success?
+  path: cuprum/operation/i-success?
+  slug: success?
+  inherited: false
+- name: to_cuprum_result
+  path: cuprum/operation/i-to-cuprum-result
+  slug: to-cuprum-result
+  inherited: false
+- name: to_proc
+  path: cuprum/command/i-to-proc
+  slug: to-proc
+  inherited: true
+- name: value
+  path: cuprum/operation/i-value
+  slug: value
+  inherited: false
+data_path: cuprum/operation
+description: |-
+  An Operation is like a Command, but with two key differences. First, an
+  Operation retains a reference to the result object from the most recent time
+  the operation was called and delegates the methods defined by Cuprum::Result
+  to the most recent result. This allows a called Operation to replace a
+  Cuprum::Result in any code that expects or returns a result. Second, the
+  #call method returns the operation instance, rather than the result itself.
+
+  These two features allow developers to simplify logic around calling and
+  using the results of operations, and reduce the need for boilerplate code
+  (particularly when using an operation as part of an existing framework,
+  such as inside of an asynchronous worker or a Rails controller action).
+
+  Like a Command, an Operation can be defined directly by passing an
+  implementation block to the constructor or by creating a subclass that
+  overwrites the #process method.
+included_modules:
+- name: Cuprum::Operation::Mixin
+  slug: mixin
+  path: cuprum/operation/mixin
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      def create
+        operation = CreateBookOperation.new.call(book_params)
+
+        if operation.success?
+          redirect_to(operation.value)
+        else
+          @book = operation.value
+
+          render :new
+        end
+      end
+  see:
+  - label: Cuprum::Command
+    path: cuprum/command
+    text:
+    type: reference
+constructor: true
+inherited_classes:
+- name: Cuprum::Command
+  slug: command
+  path: cuprum/command
+version: '1.2'

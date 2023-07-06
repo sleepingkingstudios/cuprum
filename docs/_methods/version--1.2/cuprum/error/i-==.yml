@@ -1,0 +1,20 @@
+---
+name: Cuprum::Error#==
+parent_path: cuprum/error
+signature: "==(other)"
+slug: "=="
+constructor: false
+data_path: cuprum/error/i-==
+params:
+- description: The other object to compare.
+  name: other
+  type:
+  - name: Cuprum::Error
+    path: cuprum/error
+returns:
+- description: |-
+    true if the other object has the same class and
+    properties; otherwise false.
+  type:
+  - name: Boolean
+version: '1.2'

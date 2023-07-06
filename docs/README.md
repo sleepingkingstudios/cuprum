@@ -15,4 +15,13 @@ SleepingKingStudios::Yard::Commands::Generate
   .call(file_path: 'lib')
 ```
 
-To generate the docs for a specific version, specify `version: ""` in `.new`.
+## Generating Version Documentation
+
+To generate the docs for a specific version, specify `version: "X.Y"` in `.new`.
+
+In addition to the reference documentation, the following files must be copied into the new `versions/X.Y` directory:
+
+- All top-level `.md` files except for `README.md`.
+- All scoped (non-`assets`, non-`reference`, non-`_`-prefixed) `.md` files, such as those in `/commands`.
+
+Finally, the breadcrumbs for the copied files must be updated to reference the version directory.

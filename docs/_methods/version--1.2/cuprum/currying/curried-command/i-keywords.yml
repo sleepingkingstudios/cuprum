@@ -1,0 +1,12 @@
+---
+name: Cuprum::Currying::CurriedCommand#keywords
+parent_path: cuprum/currying/curried-command
+signature: keywords
+slug: keywords
+constructor: false
+data_path: cuprum/currying/curried-command/i-keywords
+returns:
+- description: the keywords to pass to the curried command.
+  type:
+  - name: Hash
+version: '1.2'

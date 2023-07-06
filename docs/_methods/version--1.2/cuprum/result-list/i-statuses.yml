@@ -1,0 +1,14 @@
+---
+name: Cuprum::ResultList#statuses
+parent_path: cuprum/result-list
+signature: statuses
+slug: statuses
+constructor: false
+data_path: cuprum/result-list/i-statuses
+returns:
+- description: the status for each result.
+  type:
+  - name: Array
+    items:
+    - name: Symbol
+version: '1.2'

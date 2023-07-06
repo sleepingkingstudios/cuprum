@@ -1,0 +1,104 @@
+---
+name: Cuprum::Error
+slug: error
+type: class
+files:
+- lib/cuprum/error.rb
+parent_path: cuprum
+short_description: Wrapper class for encapsulating an error state for a failed Cuprum
+  result.
+constants:
+- name: TYPE
+  path: cuprum/error/type
+  slug: type
+  inherited: false
+instance_attributes:
+- name: message
+  read: true
+  write: false
+  path: cuprum/error/i-message
+  slug: message
+  inherited: false
+- name: type
+  read: true
+  write: false
+  path: cuprum/error/i-type
+  slug: type
+  inherited: false
+instance_methods:
+- name: "=="
+  path: cuprum/error/i-==
+  slug: "=="
+  inherited: false
+- name: as_json
+  path: cuprum/error/i-as-json
+  slug: as-json
+  inherited: false
+- name: initialize
+  path: cuprum/error/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/error
+description: |-
+  Additional details can be passed by setting the #message or by using a
+  subclass of Cuprum::Error.
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      error = Cuprum::Error.new(message: 'Something went wrong')
+      error.type
+      #=> 'cuprum.error'
+      error.message
+      #=> 'Something went wrong'
+  - name: An Error With Custom Type
+    text: |-
+      error = Cuprum::Error.new(
+        message: 'Something went wrong',
+        type:    'custom.errors.generic',
+      )
+      error.type
+      #=> 'custom.errors.generic'
+  - name: An Error Subclass
+    text: |-
+      class LightsError < Cuprum::Error
+        TYPE = 'custom.errors.wrong_number_of_lights'
+
+        def initialize(count)
+          super(message: "There are #{count} lights!")
+
+          @count = count
+        end
+
+        private def as_json_data
+          { 'count' => count }
+        end
+      end
+
+      error = LightsError.new(4)
+      error.type
+      #=> 'custom.errors.wrong_number_of_lights'
+      error.message
+      #=> 'There are 4 lights!'
+      error.as_json
+      #=> {
+      #     'data'    => { 'count' => 4 },
+      #     'message' => 'There are 4 lights!',
+      #     'type'    => 'custom.errors.wrong_number_of_lights'
+      #   }
+constructor: true
+direct_subclasses:
+- name: Cuprum::Errors::CommandNotImplemented
+  slug: command-not-implemented
+  path: cuprum/errors/command-not-implemented
+- name: Cuprum::Errors::MultipleErrors
+  slug: multiple-errors
+  path: cuprum/errors/multiple-errors
+- name: Cuprum::Errors::OperationNotCalled
+  slug: operation-not-called
+  path: cuprum/errors/operation-not-called
+- name: Cuprum::Errors::UncaughtException
+  slug: uncaught-exception
+  path: cuprum/errors/uncaught-exception
+version: '1.2'

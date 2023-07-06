@@ -1,0 +1,12 @@
+---
+name: Cuprum::Result#value
+parent_path: cuprum/result
+signature: value
+slug: value
+constructor: false
+data_path: cuprum/result/i-value
+returns:
+- description: the value returned by calling the command.
+  type:
+  - name: Object
+version: '1.2'

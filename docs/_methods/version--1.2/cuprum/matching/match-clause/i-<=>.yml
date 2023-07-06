@@ -1,0 +1,18 @@
+---
+name: Cuprum::Matching::MatchClause#<=>
+parent_path: cuprum/matching/match-clause
+signature: "<=>(other)"
+slug: "<=>"
+constructor: false
+data_path: cuprum/matching/match-clause/i-<=>
+params:
+- description: The other result to compare.
+  name: other
+  type:
+  - name: Cuprum::Matching::MatchClause
+    path: cuprum/matching/match-clause
+returns:
+- description: the comparison result.
+  type:
+  - name: Integer
+version: '1.2'

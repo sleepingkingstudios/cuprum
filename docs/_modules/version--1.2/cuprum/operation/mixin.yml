@@ -1,0 +1,62 @@
+---
+name: Cuprum::Operation::Mixin
+slug: mixin
+type: module
+files:
+- lib/cuprum/operation.rb
+parent_path: cuprum/operation
+short_description: Module-based implementation of the Operation methods.
+instance_attributes:
+- name: result
+  read: true
+  write: false
+  path: cuprum/operation/mixin/i-result
+  slug: result
+  inherited: false
+instance_methods:
+- name: call
+  path: cuprum/operation/mixin/i-call
+  slug: call
+  inherited: false
+- name: called?
+  path: cuprum/operation/mixin/i-called?
+  slug: called?
+  inherited: false
+- name: error
+  path: cuprum/operation/mixin/i-error
+  slug: error
+  inherited: false
+- name: failure?
+  path: cuprum/operation/mixin/i-failure?
+  slug: failure?
+  inherited: false
+- name: reset!
+  path: cuprum/operation/mixin/i-reset!
+  slug: reset!
+  inherited: false
+- name: status
+  path: cuprum/operation/mixin/i-status
+  slug: status
+  inherited: false
+- name: success?
+  path: cuprum/operation/mixin/i-success?
+  slug: success?
+  inherited: false
+- name: to_cuprum_result
+  path: cuprum/operation/mixin/i-to-cuprum-result
+  slug: to-cuprum-result
+  inherited: false
+- name: value
+  path: cuprum/operation/mixin/i-value
+  slug: value
+  inherited: false
+data_path: cuprum/operation/mixin
+description: Use this to convert an already-defined command into an operation.
+metadata:
+  examples:
+  - name: ''
+    text: |-
+      class CustomOperation < CustomCommand
+        include Cuprum::Operation::Mixin
+      end
+version: '1.2'

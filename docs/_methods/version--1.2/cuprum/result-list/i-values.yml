@@ -1,0 +1,15 @@
+---
+name: Cuprum::ResultList#values
+parent_path: cuprum/result-list
+signature: values
+slug: values
+constructor: false
+data_path: cuprum/result-list/i-values
+returns:
+- description: the value, if any, for each result.
+  type:
+  - name: Array
+    items:
+    - name: Object
+    - name: nil
+version: '1.2'

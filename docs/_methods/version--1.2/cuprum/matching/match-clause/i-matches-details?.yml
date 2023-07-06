@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching::MatchClause#matches_details?
+parent_path: cuprum/matching/match-clause
+signature: matches_details?(error:, value:)
+slug: matches-details?
+constructor: false
+data_path: cuprum/matching/match-clause/i-matches-details?
+returns:
+- description: true if the error and value match, otherwise false.
+  type:
+  - name: Boolean
+short_description: Checks if the match clause matches the specified error and value.
+version: '1.2'

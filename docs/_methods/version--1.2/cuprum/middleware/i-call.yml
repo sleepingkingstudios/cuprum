@@ -1,0 +1,35 @@
+---
+name: Cuprum::Middleware#call
+parent_path: cuprum/middleware
+signature: call(next_command, *arguments, **keywords, &block)
+slug: call
+constructor: false
+data_path: cuprum/middleware/i-call
+description: |-
+  Subclasses can call super to easily call the next command with the given
+  parameters, or pass explicit parameters into super to call the next
+  command with those parameters.
+params:
+- description: The command to call.
+  name: next_command
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+- description: The arguments to pass to the command.
+  name: arguments
+  type:
+  - name: Array
+- description: The keywords to pass to the command.
+  name: keywords
+  type:
+  - name: Hash
+returns:
+- description: the result of calling the command.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Calls the next command with the given arguments, keywords, and
+  block.
+yields:
+- description: A block to pass to the command.
+version: '1.2'
