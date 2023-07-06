@@ -1,0 +1,40 @@
+---
+name: Cuprum::Command#initialize
+parent_path: cuprum/command
+signature: initialize(&implementation)
+slug: initialize
+constructor: true
+data_path: cuprum/command/i-initialize
+returns:
+- description: a new instance of Command
+  type:
+  - name: Command
+short_description: Returns a new instance of Cuprum::Command.
+yield_params:
+- description: 'the arguments passed to #call.'
+  name: arguments
+  type:
+  - name: Array
+- description: 'the keywords passed to #call.'
+  name: keywords
+  type:
+  - name: Hash
+- description: 'the block passed to call, #if any.'
+  name: block
+  type:
+  - name: Proc
+  - name: nil
+yield_returns:
+- description: |-
+    the returned result or object is
+    converted to a Cuprum::Result and returned by #call.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+  - name: Object
+yields:
+- description: |-
+    If a block is given, the block is used to define a private #process
+    method. This overwrites any existing #process method. When the command
+    is called, #process will be called internally and passed the parameters.
+version: '1.2'

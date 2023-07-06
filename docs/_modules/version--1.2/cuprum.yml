@@ -1,0 +1,85 @@
+---
+name: Cuprum
+slug: cuprum
+type: module
+files:
+- lib/cuprum.rb
+- lib/cuprum/error.rb
+- lib/cuprum/rspec.rb
+- lib/cuprum/steps.rb
+- lib/cuprum/utils.rb
+- lib/cuprum/errors.rb
+- lib/cuprum/result.rb
+- lib/cuprum/command.rb
+- lib/cuprum/matcher.rb
+- lib/cuprum/version.rb
+- lib/cuprum/built_in.rb
+- lib/cuprum/currying.rb
+- lib/cuprum/matching.rb
+- lib/cuprum/operation.rb
+- lib/cuprum/middleware.rb
+- lib/cuprum/processing.rb
+- lib/cuprum/map_command.rb
+- lib/cuprum/result_list.rb
+- lib/cuprum/matcher_list.rb
+- lib/cuprum/result_helpers.rb
+- lib/cuprum/command_factory.rb
+- lib/cuprum/exception_handling.rb
+parent_path: ''
+short_description: Toolkit for implementing business logic as function objects.
+class_methods:
+- name: version
+  path: cuprum/c-version
+  slug: version
+  inherited: false
+constants:
+- name: VERSION
+  path: cuprum/version
+  slug: version
+  inherited: false
+defined_classes:
+- name: Command
+  slug: command
+- name: CommandFactory
+  slug: command-factory
+- name: Error
+  slug: error
+- name: MapCommand
+  slug: map-command
+- name: Matcher
+  slug: matcher
+- name: MatcherList
+  slug: matcher-list
+- name: Operation
+  slug: operation
+- name: Result
+  slug: result
+- name: ResultList
+  slug: result-list
+defined_modules:
+- name: BuiltIn
+  slug: built-in
+- name: Currying
+  slug: currying
+- name: Errors
+  slug: errors
+- name: ExceptionHandling
+  slug: exception-handling
+- name: Matching
+  slug: matching
+- name: Middleware
+  slug: middleware
+- name: Processing
+  slug: processing
+- name: RSpec
+  slug: r-spec
+- name: ResultHelpers
+  slug: result-helpers
+- name: Steps
+  slug: steps
+- name: Utils
+  slug: utils
+- name: Version
+  slug: version
+data_path: cuprum
+version: '1.2'

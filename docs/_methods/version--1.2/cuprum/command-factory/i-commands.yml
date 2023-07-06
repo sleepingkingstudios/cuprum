@@ -1,0 +1,14 @@
+---
+name: Cuprum::CommandFactory#commands
+parent_path: cuprum/command-factory
+signature: commands
+slug: commands
+constructor: false
+data_path: cuprum/command-factory/i-commands
+returns:
+- description: a list of the commands defined by the factory.
+  type:
+  - name: Array
+    items:
+    - name: Symbol
+version: '1.2'

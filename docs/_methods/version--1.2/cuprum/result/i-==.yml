@@ -1,0 +1,22 @@
+---
+name: Cuprum::Result#==
+parent_path: cuprum/result
+signature: "==(other)"
+slug: "=="
+constructor: false
+data_path: cuprum/result/i-==
+description: |-
+  In order to match the result, the object must respond to the #to_h method,
+  and the value of object.to_h must be equal to the value of
+  result.properties.
+params:
+- description: the result or object to compare.
+  name: other
+  type:
+  - name: "#to_h"
+returns:
+- description: true if all values match the result, otherwise false.
+  type:
+  - name: Boolean
+short_description: Compares the other object to the result.
+version: '1.2'

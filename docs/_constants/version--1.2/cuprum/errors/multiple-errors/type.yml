@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::MultipleErrors::TYPE
+parent_path: cuprum/errors/multiple-errors
+slug: type
+short_description: Short string used to identify the type of error.
+value: "'cuprum.errors.multiple_errors'"
+data_path: cuprum/errors/multiple-errors/type
+version: '1.2'

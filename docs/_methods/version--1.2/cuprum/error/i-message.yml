@@ -1,0 +1,12 @@
+---
+name: Cuprum::Error#message
+parent_path: cuprum/error
+signature: message
+slug: message
+constructor: false
+data_path: cuprum/error/i-message
+returns:
+- description: optional message describing the nature of the error.
+  type:
+  - name: String
+version: '1.2'
