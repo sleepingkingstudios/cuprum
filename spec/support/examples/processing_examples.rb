@@ -96,6 +96,7 @@ module Spec::Examples
           end
         end
 
+        # rubocop:disable Style/RedundantLineContinuation
         it 'should forward all arguments to the implementation',
           :aggregate_failures \
         do
@@ -106,6 +107,7 @@ module Spec::Examples
           expect(called_arguments).to be == [*arguments, keywords]
           expect(yielded).to be true
         end
+        # rubocop:enable Style/RedundantLineContinuation
       end
 
       wrap_context 'when the implementation is defined' do
@@ -302,10 +304,10 @@ module Spec::Examples
           let(:custom_result) { Spec::CustomResult.new(value, error) }
 
           before(:example) do
-            allow(command).to receive(:process).and_return(value)
-            allow(command)
-              .to receive(:build_result)
-              .and_return(custom_result)
+            allow(command).to receive_messages(
+              build_result: custom_result,
+              process:      value
+            )
           end
 
           it { expect(command.call.to_cuprum_result).to be custom_result }

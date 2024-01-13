@@ -30,7 +30,7 @@ On the opposite end of the scale, frameworks such as [Dry::Monads](https://dry-r
 
 ## Compatibility
 
-Cuprum is tested against Ruby (MRI) 3.0 through 3.2.
+Cuprum is tested against Ruby (MRI) 3.0 through 3.3.
 
 ## Documentation
 

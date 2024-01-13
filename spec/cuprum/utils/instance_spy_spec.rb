@@ -367,6 +367,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
           expect(spy).not_to be instance_spy
         end
 
+        # rubocop:disable Style/RedundantLineContinuation
         it 'should instrument calls to #call on the subclass',
           :aggregate_failures \
         do
@@ -380,6 +381,7 @@ RSpec.describe Cuprum::Utils::InstanceSpy do
           expect(instance_spy).to have_received(:call).with(*command_arguments)
           expect(spy).to have_received(:call).with(*command_arguments)
         end
+        # rubocop:enable Style/RedundantLineContinuation
 
         it 'should not instrument calls in other threads' do
           allow(instance_spy).to receive(:call)

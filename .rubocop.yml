@@ -74,6 +74,9 @@ Naming/RescuedExceptionsVariableName:
 RSpec/BeNil:
   Enabled: false
 
+RSpec/Eq:
+  Enabled: false
+
 RSpec/ExampleLength:
   Max: 10
 
@@ -103,6 +106,10 @@ RSpec/RepeatedDescription:
 RSpec/RepeatedExample:
   # Does not recognize :wrap_context nodes.
   Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - 'spec/integration/**/*.rb'
 
 Style/AccessorGrouping:
   Enabled: false
