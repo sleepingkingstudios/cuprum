@@ -96,8 +96,8 @@ module Cuprum::Utils
         Cuprum::Utils::InstanceSpy::Spy.new
       end
 
-      def call_spies_for(command, *args, &block)
-        spies_for(command).each { |spy| spy.call(*args, &block) }
+      def call_spies_for(command, ...)
+        spies_for(command).each { |spy| spy.call(...) }
       end
 
       def guard_spy_class!(command_class)

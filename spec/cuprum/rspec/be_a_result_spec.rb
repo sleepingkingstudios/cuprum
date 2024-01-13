@@ -4,7 +4,7 @@ require 'cuprum/rspec/be_a_result'
 
 require 'support/results/halting_result'
 
-RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath
+RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath, RSpec/SpecFilePathFormat
   include Cuprum::RSpec::Matchers # rubocop:disable RSpec/DescribedClass
 
   let(:example_group) { self }

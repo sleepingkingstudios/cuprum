@@ -2,7 +2,7 @@
 
 require 'support/matrix'
 
-RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath
+RSpec.describe Spec::Matrix do # rubocop:disable RSpec/FilePath, RSpec/SpecFilePathFormat
   subject(:matrix) { described_class.new(example_group) }
 
   let(:example_context) do
