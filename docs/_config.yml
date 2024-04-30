@@ -10,11 +10,24 @@ collections:
     output: false
   namespaces:
     output: false
-debug: true
+defaults:
+- scope:
+    path: ''
+    type: 'pages'
+  values:
+    encoding: 'utf-8'
+    layout: 'default'
+    title: 'Cuprum'
 exclude:
+  - .git
+  - Gemfile
+  - Gemfile.lock
+  - README.md
   - Rakefile
+  - /vendor
+description: |
+    An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a consistent, object-oriented interface and features status and error management, composability and control flow management.
 markdown: kramdown
-plugins:
-  - jekyll-remote-theme
-safe: true
-remote_theme: pages-themes/dinky@v0.2.0
+repository: sleepingkingstudios/cuprum
+theme: jekyll-theme-dinky
+title: Cuprum
