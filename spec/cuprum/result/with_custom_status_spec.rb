@@ -8,7 +8,7 @@ require 'cuprum/result'
 require 'support/examples/result_examples'
 require 'support/results/halting_result'
 
-RSpec.describe Cuprum::Result do # rubocop:disable RSpec/FilePath, RSpec/SpecFilePathFormat
+RSpec.describe Cuprum::Result do # rubocop:disable RSpec/SpecFilePathFormat
   include Spec::Examples::ResultExamples
 
   context 'with a subclass with custom statuses' do

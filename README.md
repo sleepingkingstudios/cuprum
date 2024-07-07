@@ -30,7 +30,7 @@ On the opposite end of the scale, frameworks such as [Dry::Monads](https://dry-r
 
 ## Compatibility
 
-Cuprum is tested against Ruby (MRI) 3.0 through 3.3.
+Cuprum is tested against Ruby (MRI) 3.1 through 3.3.
 
 ## Documentation
 
@@ -40,7 +40,7 @@ The full documentation is available via [GitHub Pages](http://sleepingkingstudio
 
 ## License
 
-Copyright (c) 2017-2022 Rob Smith
+Copyright (c) 2017-2024 Rob Smith
 
 Cuprum is released under the [MIT License](https://opensource.org/licenses/MIT).
 

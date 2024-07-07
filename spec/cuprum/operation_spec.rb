@@ -160,7 +160,7 @@ RSpec.describe Cuprum::Operation do
           klass.send(:define_method, :process, &process)
         end
       end
-      let(:implementation) { ->(str) { str.upcase } }
+      let(:implementation) { lambda(&:upcase) }
       let(:value)          { 'Greetings, programs!' }
       let(:result)         { proc.call(value) }
       let(:expected_value) { value.upcase }
