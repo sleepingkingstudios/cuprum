@@ -37,4 +37,6 @@ result.error.message
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
 
+Exception handling can be temporarily disabled by setting the `ENV['CUPRUM_RERAISE_EXCEPTIONS']` flag; this can be used to debug issues when testing commands.
+
 {% include breadcrumbs.md %}

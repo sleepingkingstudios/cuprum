@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.0
+
+The "A Dream Given Form" Update
+
+As of version 1.3.0, Cuprum will no longer support Ruby 3.0.
+
+### Commands
+
+Updated `Cuprum::ExceptionHandling` to re-raise the exception if the `ENV['CUPRUM_RERAISE_EXCEPTIONS']` flag is set.
+
 ## 1.2.0
 
 The "Straight On Till Morning" Update

@@ -15,6 +15,11 @@ metadata:
     path: cuprum/processing#instance-method-call
     text:
     type: reference
+raises:
+- description: |-
+    StandardError if an exception is raised and the
+    ENV['CUPRUM_RERAISE_EXCEPTIONS'] flag is set.
+  type: []
 returns:
 - description: |-
     the result of calling the superclass method, or

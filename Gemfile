@@ -5,6 +5,9 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
+gem 'sleeping_king_studios-yard',
+  git:    'https://github.com/sleepingkingstudios/sleeping_king_studios-yard.git',
+  branch: 'main'
 
 group :development, :test do
   gem 'byebug', '~> 11.1'

@@ -58,6 +58,14 @@ RSpec.describe Cuprum::ExceptionHandling do
       it 'should return a failing result' do
         expect(command.call).to be_a_failing_result.with_error(expected_error)
       end
+
+      context 'when the ENV["CUPRUM_RERAISE_EXCEPTIONS"] flag is set' do
+        wrap_env 'CUPRUM_RERAISE_EXCEPTIONS', 'true'
+
+        it 'should raise the exception' do
+          expect { command.call }.to raise_error StandardError, error_message
+        end
+      end
     end
 
     context 'when the command raises an exception' do
