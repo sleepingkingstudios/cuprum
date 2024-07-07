@@ -2,7 +2,7 @@
 
 require 'cuprum/rspec/be_callable'
 
-RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/FilePath, RSpec/SpecFilePathFormat
+RSpec.describe Cuprum::RSpec::Matchers do # rubocop:disable RSpec/SpecFilePathFormat
   include Cuprum::RSpec::Matchers # rubocop:disable RSpec/DescribedClass
 
   let(:example_group) { self }

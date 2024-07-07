@@ -83,10 +83,6 @@ RSpec/ExampleLength:
 RSpec/ExampleWording:
   Enabled: false
 
-RSpec/FilePath:
-  Exclude:
-    - 'spec/integration/**/*.rb'
-
 RSpec/HookArgument:
   EnforcedStyle: example
 

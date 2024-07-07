@@ -13,7 +13,7 @@ module Spec::Results
     attr_reader :checksum
 
     def properties
-      super().merge(checksum: checksum)
+      super.merge(checksum: checksum)
     end
     alias_method :to_h, :properties
   end
