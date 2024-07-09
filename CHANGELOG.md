@@ -10,6 +10,10 @@ As of version 1.3.0, Cuprum will no longer support Ruby 3.0.
 
 Updated `Cuprum::ExceptionHandling` to re-raise the exception if the `ENV['CUPRUM_RERAISE_EXCEPTIONS']` flag is set.
 
+### Errors
+
+**Breaking Change:** Corrected the namespace for `Cuprum::Errors::UncaughtException::TYPE` to remove a reference to `cuprum-collections`. If this causes an issue, update your application to reference the constant, rather than a hard-coded value.
+
 ## 1.2.0
 
 The "Straight On Till Morning" Update
