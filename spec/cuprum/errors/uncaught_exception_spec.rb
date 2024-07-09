@@ -15,7 +15,7 @@ RSpec.describe Cuprum::Errors::UncaughtException do
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
-      'cuprum.collections.errors.uncaught_exception'
+      'cuprum.errors.uncaught_exception'
   end
 
   describe '.new' do

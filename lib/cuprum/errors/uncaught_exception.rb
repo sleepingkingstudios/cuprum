@@ -7,7 +7,7 @@ module Cuprum::Errors
   # Error returned when a command encounters an unhandled exception.
   class UncaughtException < Cuprum::Error
     # Short string used to identify the type of error.
-    TYPE = 'cuprum.collections.errors.uncaught_exception'
+    TYPE = 'cuprum.errors.uncaught_exception'
 
     # @param exception [StandardError] The exception that was raised.
     # @param message [String] A message to display. Will be annotated with
