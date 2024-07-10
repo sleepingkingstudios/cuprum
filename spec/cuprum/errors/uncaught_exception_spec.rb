@@ -3,7 +3,7 @@
 require 'cuprum/errors/uncaught_exception'
 
 RSpec.describe Cuprum::Errors::UncaughtException do
-  subject(:error) { described_class.new(exception: exception, **options) }
+  subject(:error) { described_class.new(exception:, **options) }
 
   let(:exception) do
     raise 'Something went wrong.'
@@ -84,7 +84,7 @@ RSpec.describe Cuprum::Errors::UncaughtException do
 
     context 'when initialized with message: value' do
       let(:message) { 'a fatal error occurred' }
-      let(:options) { { message: message } }
+      let(:options) { { message: } }
       let(:expected) do
         "#{message} #{exception.class}: #{exception.message}"
       end

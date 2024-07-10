@@ -14,7 +14,7 @@ RSpec.describe Cuprum::ResultList do
 
   shared_context 'when initialized with value: an Object' do
     let(:value)               { { 'values' => results.map(&:value) } }
-    let(:constructor_options) { super().merge(value: value) }
+    let(:constructor_options) { super().merge(value:) }
   end
 
   shared_context 'when initialized with failing results' do
@@ -259,7 +259,7 @@ RSpec.describe Cuprum::ResultList do
     context 'when initialized with error: value' do
       let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
       let(:constructor_options) do
-        super().merge(error: error)
+        super().merge(error:)
       end
 
       it { expect(result_list.error).to be error }
@@ -277,7 +277,7 @@ RSpec.describe Cuprum::ResultList do
       context 'when initialized with error: value' do
         let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
         let(:constructor_options) do
-          super().merge(error: error)
+          super().merge(error:)
         end
 
         it { expect(result_list.error).to be error }
@@ -295,7 +295,7 @@ RSpec.describe Cuprum::ResultList do
       context 'when initialized with error: value' do
         let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
         let(:constructor_options) do
-          super().merge(error: error)
+          super().merge(error:)
         end
 
         it { expect(result_list.error).to be error }
@@ -312,7 +312,7 @@ RSpec.describe Cuprum::ResultList do
       context 'when initialized with error: value' do
         let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
         let(:constructor_options) do
-          super().merge(error: error)
+          super().merge(error:)
         end
 
         it { expect(result_list.error).to be error }
@@ -329,7 +329,7 @@ RSpec.describe Cuprum::ResultList do
       context 'when initialized with error: value' do
         let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
         let(:constructor_options) do
-          super().merge(error: error)
+          super().merge(error:)
         end
 
         it { expect(result_list.error).to be error }

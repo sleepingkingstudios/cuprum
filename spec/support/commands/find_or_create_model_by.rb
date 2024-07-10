@@ -17,7 +17,7 @@ module Spec::Commands
     private
 
     def create_model(attributes:)
-      Spec::Commands::CreateModel.new(model_class).call(attributes: attributes)
+      Spec::Commands::CreateModel.new(model_class).call(attributes:)
     end
 
     def find_model(attributes:)
@@ -25,11 +25,11 @@ module Spec::Commands
     end
 
     def process(attributes:)
-      model = find_model(attributes: attributes)
+      model = find_model(attributes:)
 
       return success(model) if model
 
-      create_model(attributes: attributes)
+      create_model(attributes:)
     end
   end
 end

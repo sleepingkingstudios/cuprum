@@ -70,7 +70,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/SpecFilePathFormat
         let(:error_message) { "invalid status #{status.inspect}" }
 
         it 'should raise an error' do
-          expect { described_class.new(status: status) }
+          expect { described_class.new(status:) }
             .to raise_error ArgumentError, error_message
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe Cuprum::Result do # rubocop:disable RSpec/SpecFilePathFormat
         let(:error_message) { "invalid status #{status.inspect}" }
 
         it 'should raise an error' do
-          expect { described_class.new(status: status) }
+          expect { described_class.new(status:) }
             .to raise_error ArgumentError, error_message
         end
       end

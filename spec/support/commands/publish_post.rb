@@ -16,7 +16,7 @@ module Spec::Commands
     end
 
     def process(post:)
-      step { ensure_post_has_content(post: post) }
+      step { ensure_post_has_content(post:) }
 
       post.published = true
 

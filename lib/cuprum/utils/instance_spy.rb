@@ -30,7 +30,7 @@ module Cuprum::Utils
     # Minimal class double implementing the #call method.
     class Spy
       # Empty method that accepts any parameters and an optional block.
-      def call(*_args, **_kwargs, &block); end
+      def call(*_args, **_kwargs, &); end
     end
 
     class << self
@@ -127,13 +127,13 @@ module Cuprum::Utils
     end
 
     # (see Cuprum::Processing#call)
-    def call(*args, **kwargs, &block)
+    def call(*args, **kwargs, &)
       if kwargs.empty?
-        Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &block)
+        Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &)
       else
         # :nocov:
         Cuprum::Utils::InstanceSpy
-          .send(:call_spies_for, self, *args, **kwargs, &block)
+          .send(:call_spies_for, self, *args, **kwargs, &)
         # :nocov:
       end
 

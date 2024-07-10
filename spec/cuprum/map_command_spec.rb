@@ -575,7 +575,7 @@ RSpec.describe Cuprum::MapCommand do
       let(:expected_error) do
         Cuprum::Errors::MultipleErrors.new(
           errors: Array.new(3) do
-            Cuprum::Errors::CommandNotImplemented.new(command: command)
+            Cuprum::Errors::CommandNotImplemented.new(command:)
           end
         )
       end

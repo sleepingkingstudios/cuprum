@@ -177,7 +177,7 @@ module Spec::Examples
 
         context 'when the implementation returns a result with a value' do
           let(:value)  { 'returned value' }
-          let(:result) { Cuprum::Result.new(value: value) }
+          let(:result) { Cuprum::Result.new(value:) }
           let(:implementation) do
             returned = result
 

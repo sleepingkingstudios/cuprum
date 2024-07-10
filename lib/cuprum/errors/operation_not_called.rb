@@ -19,7 +19,7 @@ module Cuprum::Errors
       class_name = operation&.class&.name || 'operation'
       message    = MESSAGE_FORMAT % class_name
 
-      super(message: message, operation: operation)
+      super(message:, operation:)
     end
 
     # @return [Cuprum::Operation] The uncalled operation.

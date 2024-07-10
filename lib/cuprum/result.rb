@@ -54,9 +54,9 @@ module Cuprum
     # @return [Hash{Symbol => Object}] a Hash representation of the result.
     def properties
       {
-        error:  error,
-        status: status,
-        value:  value
+        error:,
+        status:,
+        value:
       }
     end
     alias_method :to_h, :properties

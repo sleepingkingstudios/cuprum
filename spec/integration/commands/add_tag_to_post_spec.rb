@@ -34,10 +34,10 @@ RSpec.describe Spec::Commands::AddTagToPost do
       describe 'with invalid attributes' do
         let(:attributes) { { name: '' } }
         let(:result) do
-          command.call(post: post, tag_attributes: attributes)
+          command.call(post:, tag_attributes: attributes)
         end
         let(:validation_errors) do
-          Spec::Models::Tag.new(attributes: attributes).tap(&:valid?).errors
+          Spec::Models::Tag.new(attributes:).tap(&:valid?).errors
         end
         let(:expected_error) do
           Spec::Errors::NotValid.new(
@@ -49,12 +49,12 @@ RSpec.describe Spec::Commands::AddTagToPost do
         it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
         it 'should not create a tag' do
-          expect { command.call(post: post, tag_attributes: attributes) }
+          expect { command.call(post:, tag_attributes: attributes) }
             .not_to change(Spec::Models::Tag, :count)
         end
 
         it 'should not create a tagging' do
-          expect { command.call(post: post, tag_attributes: attributes) }
+          expect { command.call(post:, tag_attributes: attributes) }
             .not_to change(Spec::Models::Tagging, :count)
         end
       end
@@ -62,19 +62,19 @@ RSpec.describe Spec::Commands::AddTagToPost do
       describe 'with valid attributes' do
         let(:attributes) { { name: 'wip' } }
         let(:result) do
-          command.call(post: post, tag_attributes: attributes)
+          command.call(post:, tag_attributes: attributes)
         end
 
         it { expect(result).to be_a_passing_result }
 
         it 'should create a tag' do
-          expect { command.call(post: post, tag_attributes: attributes) }
+          expect { command.call(post:, tag_attributes: attributes) }
             .to change(Spec::Models::Tag, :count)
             .by(1)
         end
 
         it 'should set the tag attributes' do
-          command.call(post: post, tag_attributes: attributes)
+          command.call(post:, tag_attributes: attributes)
 
           tag =
             Spec::Models::Tag.each.find { |item| item.attributes >= attributes }
@@ -82,13 +82,13 @@ RSpec.describe Spec::Commands::AddTagToPost do
         end
 
         it 'should create a tagging' do
-          expect { command.call(post: post, tag_attributes: attributes) }
+          expect { command.call(post:, tag_attributes: attributes) }
             .to change(Spec::Models::Tagging, :count)
             .by(1)
         end
 
         it 'should return the tagging' do
-          result = command.call(post: post, tag_attributes: attributes)
+          result = command.call(post:, tag_attributes: attributes)
           tag    =
             Spec::Models::Tag.each.find { |item| item.attributes >= attributes }
 
@@ -98,7 +98,7 @@ RSpec.describe Spec::Commands::AddTagToPost do
         end
 
         it 'should set the tagging attributes' do
-          command.call(post: post, tag_attributes: attributes)
+          command.call(post:, tag_attributes: attributes)
 
           tag     =
             Spec::Models::Tag.each.find { |item| item.attributes >= attributes }
@@ -113,9 +113,9 @@ RSpec.describe Spec::Commands::AddTagToPost do
 
     context 'when the tag exists' do
       let(:attributes) { { name: 'wip' } }
-      let(:tag)        { Spec::Models::Tag.new(attributes: attributes) }
+      let(:tag)        { Spec::Models::Tag.new(attributes:) }
       let(:result) do
-        command.call(post: post, tag_attributes: attributes)
+        command.call(post:, tag_attributes: attributes)
       end
 
       before(:example) { tag.save }
@@ -123,18 +123,18 @@ RSpec.describe Spec::Commands::AddTagToPost do
       it { expect(result).to be_a_passing_result }
 
       it 'should not create a tag' do
-        expect { command.call(post: post, tag_attributes: attributes) }
+        expect { command.call(post:, tag_attributes: attributes) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should create a tagging' do
-        expect { command.call(post: post, tag_attributes: attributes) }
+        expect { command.call(post:, tag_attributes: attributes) }
           .to change(Spec::Models::Tagging, :count)
           .by(1)
       end
 
       it 'should return the tagging' do
-        result = command.call(post: post, tag_attributes: attributes)
+        result = command.call(post:, tag_attributes: attributes)
         tag    =
           Spec::Models::Tag.each.find { |item| item.attributes >= attributes }
 
@@ -144,7 +144,7 @@ RSpec.describe Spec::Commands::AddTagToPost do
       end
 
       it 'should set the tagging attributes' do
-        command.call(post: post, tag_attributes: attributes)
+        command.call(post:, tag_attributes: attributes)
 
         tag     =
           Spec::Models::Tag.each.find { |item| item.attributes >= attributes }

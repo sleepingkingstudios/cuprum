@@ -46,7 +46,7 @@ RSpec.describe Spec::Commands::UpdateModel do
 
     describe 'with empty attributes' do
       let(:attributes) { {} }
-      let(:result)     { command.call(attributes: attributes, model: model) }
+      let(:result)     { command.call(attributes:, model:) }
 
       it { expect(result).to be_a_passing_result }
 
@@ -59,7 +59,7 @@ RSpec.describe Spec::Commands::UpdateModel do
 
     describe 'with invalid attributes' do
       let(:attributes) { { title: '' } }
-      let(:result)     { command.call(attributes: attributes, model: model) }
+      let(:result)     { command.call(attributes:, model:) }
       let(:validation_errors) do
         model_class
           .new(attributes: model_attributes.merge(attributes))
@@ -69,14 +69,14 @@ RSpec.describe Spec::Commands::UpdateModel do
       let(:expected_error) do
         Spec::Errors::NotValid.new(
           errors:      validation_errors,
-          model_class: model_class
+          model_class:
         )
       end
 
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not update the post' do
-        command.call(attributes: attributes, model: model)
+        command.call(attributes:, model:)
 
         post = model_class.find(model.id)
 
@@ -86,7 +86,7 @@ RSpec.describe Spec::Commands::UpdateModel do
 
     describe 'with valid attributes' do
       let(:attributes) { { title: 'Self-Sealing Stem Bolt' } }
-      let(:result)     { command.call(attributes: attributes, model: model) }
+      let(:result)     { command.call(attributes:, model:) }
 
       it { expect(result).to be_a_passing_result }
 
@@ -97,7 +97,7 @@ RSpec.describe Spec::Commands::UpdateModel do
       end
 
       it 'should update the post' do
-        command.call(attributes: attributes, model: model)
+        command.call(attributes:, model:)
 
         post = model_class.find(model.id)
 

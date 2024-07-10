@@ -29,7 +29,7 @@ module Spec
 
       scenarios.each do |keyword, values|
         matrix =
-          expand_scenarios(matrix: matrix, keyword: keyword, values: values)
+          expand_scenarios(matrix:, keyword:, values:)
       end
 
       matrix

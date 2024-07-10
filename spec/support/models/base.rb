@@ -49,7 +49,7 @@ module Spec::Models
     end
 
     def initialize(attributes: {})
-      update_attributes(attributes: attributes)
+      update_attributes(attributes:)
 
       self.id = SecureRandom.uuid if id.nil?
     end

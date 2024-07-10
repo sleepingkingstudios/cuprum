@@ -43,7 +43,7 @@ RSpec.describe Cuprum::BuiltIn::IdentityCommand do
     describe 'with a result' do
       let(:value)    { 'expected value' }
       let(:error)    { Cuprum::Error.new(message: 'Something went wrong.') }
-      let(:expected) { Cuprum::Result.new(value: value, error: error) }
+      let(:expected) { Cuprum::Result.new(value:, error:) }
 
       it 'should return the result', :aggregate_failures do
         result = command.call(expected)

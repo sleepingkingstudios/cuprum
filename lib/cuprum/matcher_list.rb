@@ -113,20 +113,20 @@ module Cuprum
 
     def find_exact_match(result)
       matchers.find do |matcher|
-        exact_match?(matcher: matcher, result: result)
+        exact_match?(matcher:, result:)
       end
     end
 
     def find_generic_match(result)
       matchers.find do |matcher|
-        generic_match?(matcher: matcher, result: result)
+        generic_match?(matcher:, result:)
       end
     end
 
     def find_partial_match(result)
       matchers.find do |matcher|
-        error_match?(matcher: matcher, result: result) ||
-          value_match?(matcher: matcher, result: result)
+        error_match?(matcher:, result:) ||
+          value_match?(matcher:, result:)
       end
     end
 

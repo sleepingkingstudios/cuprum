@@ -22,7 +22,7 @@ module Cuprum::Errors
       class_name = command&.class&.name || 'command'
       message    = MESSAGE_FORMAT % class_name
 
-      super(command: command, message: message)
+      super(command:, message:)
     end
 
     # @return [Cuprum::Command] The command called without a definition.

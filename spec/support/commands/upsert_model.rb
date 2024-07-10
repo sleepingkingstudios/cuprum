@@ -19,27 +19,25 @@ module Spec::Commands
     private
 
     def create_model(attributes:)
-      Spec::Commands::CreateModel.new(model_class).call(attributes: attributes)
+      Spec::Commands::CreateModel.new(model_class).call(attributes:)
     end
 
     def find_model(id:)
-      Spec::Commands::FindModel.new(model_class).call(id: id)
+      Spec::Commands::FindModel.new(model_class).call(id:)
     end
 
     def process(attributes:)
       result = find_model(id: attributes[:id])
 
-      if result.success?
-        return update_model(attributes: attributes, model: result.value)
-      end
+      return update_model(attributes:, model: result.value) if result.success?
 
-      create_model(attributes: attributes)
+      create_model(attributes:)
     end
 
     def update_model(attributes:, model:)
       Spec::Commands::UpdateModel
         .new(model_class)
-        .call(attributes: attributes, model: model)
+        .call(attributes:, model:)
     end
   end
 end

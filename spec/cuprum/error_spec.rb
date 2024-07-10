@@ -4,7 +4,7 @@ require 'cuprum/error'
 
 RSpec.describe Cuprum::Error do
   subject(:error) do
-    described_class.new(message: message, type: type, **properties)
+    described_class.new(message:, type:, **properties)
   end
 
   let(:message)    { nil }
@@ -124,7 +124,7 @@ RSpec.describe Cuprum::Error do
       end
 
       describe 'with an Error with matching message' do
-        let(:other) { described_class.new(message: message) }
+        let(:other) { described_class.new(message:) }
 
         it { expect(error == other).to be true }
       end
@@ -148,7 +148,7 @@ RSpec.describe Cuprum::Error do
       describe 'with an Error subclass with matching message' do
         include_context 'when there is an error subclass'
 
-        let(:other) { Spec::Error.new(message: message) }
+        let(:other) { Spec::Error.new(message:) }
 
         it { expect(error == other).to be false }
       end
@@ -180,7 +180,7 @@ RSpec.describe Cuprum::Error do
       end
 
       describe 'with an Error with matching type' do
-        let(:other) { described_class.new(type: type) }
+        let(:other) { described_class.new(type:) }
 
         it { expect(error == other).to be true }
       end
@@ -204,7 +204,7 @@ RSpec.describe Cuprum::Error do
       describe 'with an Error subclass with matching type' do
         include_context 'when there is an error subclass'
 
-        let(:other) { Spec::Error.new(type: type) }
+        let(:other) { Spec::Error.new(type:) }
 
         it { expect(error == other).to be false }
       end
@@ -282,7 +282,7 @@ RSpec.describe Cuprum::Error do
       end
 
       describe 'with an Error with matching message' do
-        let(:other) { described_class.new(message: message) }
+        let(:other) { described_class.new(message:) }
 
         it { expect(error == other).to be false }
       end
@@ -294,7 +294,7 @@ RSpec.describe Cuprum::Error do
       end
 
       describe 'with an Error with matching type' do
-        let(:other) { described_class.new(type: type) }
+        let(:other) { described_class.new(type:) }
 
         it { expect(error == other).to be false }
       end
@@ -320,8 +320,8 @@ RSpec.describe Cuprum::Error do
       describe 'with an Error with matching values' do
         let(:other) do
           described_class.new(
-            message: message,
-            type:    type,
+            message:,
+            type:,
             color:   'red',
             shape:   'möbius strip'
           )
@@ -334,7 +334,7 @@ RSpec.describe Cuprum::Error do
     describe 'when the Error subclass defines custom comparable properties' do
       include_context 'when there is an error subclass'
 
-      subject(:error) { Spec::Error.new(message: message, **properties) }
+      subject(:error) { Spec::Error.new(message:, **properties) }
 
       before(:example) do
         Spec::Error.define_method(:color) do
@@ -342,7 +342,7 @@ RSpec.describe Cuprum::Error do
         end
 
         Spec::Error.define_method(:comparable_properties) do
-          { color: color }
+          { color: }
         end
       end
 

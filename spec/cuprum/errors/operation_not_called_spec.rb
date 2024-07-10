@@ -3,7 +3,7 @@
 require 'cuprum/errors/operation_not_called'
 
 RSpec.describe Cuprum::Errors::OperationNotCalled do
-  subject(:error) { described_class.new(operation: operation) }
+  subject(:error) { described_class.new(operation:) }
 
   let(:operation) { Spec::ExampleOperation.new }
 
@@ -83,7 +83,7 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
     end
 
     describe 'with a matching Error with matching operation' do
-      let(:other) { described_class.new(operation: operation) }
+      let(:other) { described_class.new(operation:) }
 
       it { expect(error == other).to be true }
     end

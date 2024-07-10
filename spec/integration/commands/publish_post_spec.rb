@@ -42,7 +42,7 @@ RSpec.describe Spec::Commands::PublishPost do
     end
 
     context 'when the post does not have a content' do
-      let(:result) { command.call(post: post) }
+      let(:result) { command.call(post:) }
       let(:expected_error) do
         Spec::Errors::NotFound.new(model_class: Spec::Models::Content)
       end
@@ -50,7 +50,7 @@ RSpec.describe Spec::Commands::PublishPost do
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not publish the post' do
-        command.call(post: post)
+        command.call(post:)
 
         reloaded = Spec::Models::Post.find(post.id)
 
@@ -67,14 +67,14 @@ RSpec.describe Spec::Commands::PublishPost do
           }
         )
       end
-      let(:result) { command.call(post: post) }
+      let(:result) { command.call(post:) }
 
       before(:example) { content.save }
 
       it { expect(result).to be_a_passing_result.with_value(post) }
 
       it 'should publish the post' do
-        command.call(post: post)
+        command.call(post:)
 
         reloaded = Spec::Models::Post.find(post.id)
 

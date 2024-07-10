@@ -65,7 +65,7 @@ module Cuprum
     def initialize(message: nil, type: nil, **properties)
       @message               = message
       @type                  = type || self.class::TYPE
-      @comparable_properties = properties.merge(message: message, type: type)
+      @comparable_properties = properties.merge(message:, type:)
     end
 
     # @return [String] optional message describing the nature of the error.

@@ -9,7 +9,7 @@ require 'support/models/book'
 RSpec.describe Spec::Commands::PublishBook do
   include Cuprum::RSpec::Matchers
 
-  subject(:command) { described_class.new(publisher: publisher) }
+  subject(:command) { described_class.new(publisher:) }
 
   let(:publisher) { 'Baen' }
 
@@ -22,7 +22,7 @@ RSpec.describe Spec::Commands::PublishBook do
         }
       )
     end
-    let(:result) { command.call(book: book) }
+    let(:result) { command.call(book:) }
 
     it 'should define the method' do
       expect(command)

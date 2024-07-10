@@ -17,7 +17,7 @@ module Spec::Commands
     private
 
     def process(attributes:)
-      model_class.new(attributes: attributes)
+      model_class.new(attributes:)
     end
   end
 end

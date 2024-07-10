@@ -14,13 +14,13 @@ module Spec::Commands
     def create_tagging(attributes:)
       Spec::Commands::CreateModel
         .new(Spec::Models::Tagging)
-        .call(attributes: attributes)
+        .call(attributes:)
     end
 
     def find_or_create_tag(attributes:)
       Spec::Commands::FindOrCreateModelBy
         .new(Spec::Models::Tag)
-        .call(attributes: attributes)
+        .call(attributes:)
     end
 
     def process(post:, tag_attributes:)

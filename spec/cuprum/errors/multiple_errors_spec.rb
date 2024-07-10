@@ -16,7 +16,7 @@ RSpec.describe Cuprum::Errors::MultipleErrors do
   end
 
   let(:errors)              { [] }
-  let(:constructor_options) { { errors: errors } }
+  let(:constructor_options) { { errors: } }
 
   describe '::TYPE' do
     include_examples 'should define immutable constant',
@@ -80,7 +80,7 @@ RSpec.describe Cuprum::Errors::MultipleErrors do
 
     context 'when initialized with message: value' do
       let(:message)             { 'Something went wrong' }
-      let(:constructor_options) { super().merge(message: message) }
+      let(:constructor_options) { super().merge(message:) }
 
       it { expect(error.message).to be == message }
     end
