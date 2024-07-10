@@ -40,21 +40,21 @@ module Cuprum
       # @private
       def match_result(result:)
         status_clauses(result.status).find do |clause|
-          clause.matches_result?(result: result)
+          clause.matches_result?(result:)
         end
       end
 
       # @private
       def matches_result?(result:)
         status_clauses(result.status).reverse_each.any? do |clause|
-          clause.matches_result?(result: result)
+          clause.matches_result?(result:)
         end
       end
 
       # @private
       def matches_status?(error:, status:, value:)
         status_clauses(status).reverse_each.any? do |clause|
-          clause.matches_details?(error: error, value: value)
+          clause.matches_details?(error:, value:)
         end
       end
 
@@ -174,11 +174,11 @@ module Cuprum
       end
 
       result = result.to_cuprum_result
-      clause = singleton_class.match_result(result: result)
+      clause = singleton_class.match_result(result:)
 
       raise NoMatchError, "no match found for #{result.inspect}" if clause.nil?
 
-      call_match(block: clause.block, result: result)
+      call_match(block: clause.block, result:)
     end
 
     # @return [Boolean] true if an execution context is defined for a matching
@@ -214,9 +214,9 @@ module Cuprum
         )
       elsif result_or_status.is_a?(Symbol)
         return singleton_class.matches_status?(
-          error:  error,
+          error:,
           status: result_or_status,
-          value:  value
+          value:
         )
       end
 

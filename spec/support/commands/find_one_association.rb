@@ -20,7 +20,7 @@ module Spec::Commands
     private
 
     def not_found
-      Spec::Errors::NotFound.new(model_class: model_class)
+      Spec::Errors::NotFound.new(model_class:)
     end
 
     def process(id:)

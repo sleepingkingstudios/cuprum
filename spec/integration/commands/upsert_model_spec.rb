@@ -29,14 +29,14 @@ RSpec.describe Spec::Commands::UpsertModel do
     context 'when the model does not exist' do
       describe 'with empty attributes' do
         let(:attributes) { {} }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
         let(:validation_errors) do
-          model_class.new(attributes: attributes).tap(&:valid?).errors
+          model_class.new(attributes:).tap(&:valid?).errors
         end
         let(:expected_error) do
           Spec::Errors::NotValid.new(
             errors:      validation_errors,
-            model_class: model_class
+            model_class:
           )
         end
 
@@ -48,14 +48,14 @@ RSpec.describe Spec::Commands::UpsertModel do
           Spec::Models::Directory.new(attributes: { name: 'widgets' })
         end
         let(:attributes) { { directory_id: directory.id } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
         let(:validation_errors) do
-          model_class.new(attributes: attributes).tap(&:valid?).errors
+          model_class.new(attributes:).tap(&:valid?).errors
         end
         let(:expected_error) do
           Spec::Errors::NotValid.new(
             errors:      validation_errors,
-            model_class: model_class
+            model_class:
           )
         end
 
@@ -64,7 +64,7 @@ RSpec.describe Spec::Commands::UpsertModel do
         it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
         it 'should not create a post' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .not_to change(model_class, :count)
         end
       end
@@ -74,14 +74,14 @@ RSpec.describe Spec::Commands::UpsertModel do
           Spec::Models::Directory.new(attributes: { name: 'widgets' })
         end
         let(:attributes) { { directory_id: directory.id, title: 'Stem Bolt' } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
 
         before(:example) { directory.save }
 
         it { expect(result).to be_a_passing_result }
 
         it 'should create a post' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .to change(model_class, :count)
             .by(1)
         end
@@ -115,7 +115,7 @@ RSpec.describe Spec::Commands::UpsertModel do
 
       describe 'with empty attributes' do
         let(:attributes) { { id: model.id } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
 
         it { expect(result).to be_a_passing_result }
 
@@ -128,7 +128,7 @@ RSpec.describe Spec::Commands::UpsertModel do
 
       describe 'with invalid attributes' do
         let(:attributes) { { id: model.id, title: '' } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
         let(:validation_errors) do
           model_class
             .new(attributes: model_attributes.merge(attributes))
@@ -138,14 +138,14 @@ RSpec.describe Spec::Commands::UpsertModel do
         let(:expected_error) do
           Spec::Errors::NotValid.new(
             errors:      validation_errors,
-            model_class: model_class
+            model_class:
           )
         end
 
         it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
         it 'should not update the post' do
-          command.call(attributes: attributes)
+          command.call(attributes:)
 
           post = model_class.find(model.id)
 
@@ -155,7 +155,7 @@ RSpec.describe Spec::Commands::UpsertModel do
 
       describe 'with valid attributes' do
         let(:attributes) { { id: model.id, title: 'Self-Sealing Stem Bolt' } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
 
         it { expect(result).to be_a_passing_result }
 
@@ -166,7 +166,7 @@ RSpec.describe Spec::Commands::UpsertModel do
         end
 
         it 'should update the post' do
-          command.call(attributes: attributes)
+          command.call(attributes:)
 
           post = model_class.find(model.id)
 

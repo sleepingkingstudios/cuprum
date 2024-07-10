@@ -16,7 +16,7 @@ module Cuprum::Errors
       @errors = errors
 
       super(
-        errors:  errors,
+        errors:,
         message: message || default_message
       )
     end

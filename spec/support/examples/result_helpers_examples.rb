@@ -65,7 +65,7 @@ module Spec::Examples
         end
 
         describe 'with error: an error' do
-          let(:result) { subject.send(:build_result, error: error) }
+          let(:result) { subject.send(:build_result, error:) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -76,16 +76,16 @@ module Spec::Examples
           it { expect(result.value).to be nil }
 
           it 'should return a new object each time it is called' do
-            result = subject.send(:build_result, error: error)
+            result = subject.send(:build_result, error:)
 
-            expect(subject.send :build_result, error: error)
+            expect(subject.send :build_result, error:)
               .not_to be result
           end
         end
 
         describe 'with error: an error and status: :failure' do
           let(:result) do
-            subject.send(:build_result, error: error, status: :failure)
+            subject.send(:build_result, error:, status: :failure)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -98,16 +98,16 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, error: error, status: :failure)
+              subject.send(:build_result, error:, status: :failure)
 
-            expect(subject.send :build_result, error: error, status: :failure)
+            expect(subject.send :build_result, error:, status: :failure)
               .not_to be result
           end
         end
 
         describe 'with error: an error and status: :success' do
           let(:result) do
-            subject.send(:build_result, error: error, status: :success)
+            subject.send(:build_result, error:, status: :success)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -120,16 +120,16 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, error: error, status: :success)
+              subject.send(:build_result, error:, status: :success)
 
-            expect(subject.send :build_result, error: error, status: :success)
+            expect(subject.send :build_result, error:, status: :success)
               .not_to be result
           end
         end
 
         describe 'with error: an error and value: a value' do
           let(:result) do
-            subject.send(:build_result, error: error, value: value)
+            subject.send(:build_result, error:, value:)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -142,9 +142,9 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, error: error, value: value)
+              subject.send(:build_result, error:, value:)
 
-            expect(subject.send :build_result, error: error, value: value)
+            expect(subject.send :build_result, error:, value:)
               .not_to be result
           end
         end
@@ -170,7 +170,7 @@ module Spec::Examples
 
         describe 'with status: :failure and value: a value' do
           let(:result) do
-            subject.send(:build_result, status: :failure, value: value)
+            subject.send(:build_result, status: :failure, value:)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -183,9 +183,9 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, status: :failure, value: value)
+              subject.send(:build_result, status: :failure, value:)
 
-            expect(subject.send :build_result, status: :failure, value: value)
+            expect(subject.send :build_result, status: :failure, value:)
               .not_to be result
           end
         end
@@ -211,7 +211,7 @@ module Spec::Examples
 
         describe 'with status: :success and value: a value' do
           let(:result) do
-            subject.send(:build_result, status: :success, value: value)
+            subject.send(:build_result, status: :success, value:)
           end
 
           it { expect(result).to be_a Cuprum::Result }
@@ -224,15 +224,15 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, status: :success, value: value)
+              subject.send(:build_result, status: :success, value:)
 
-            expect(subject.send :build_result, status: :success, value: value)
+            expect(subject.send :build_result, status: :success, value:)
               .not_to be result
           end
         end
 
         describe 'with value: a value' do
-          let(:result) { subject.send(:build_result, value: value) }
+          let(:result) { subject.send(:build_result, value:) }
 
           it { expect(result).to be_a Cuprum::Result }
 
@@ -243,9 +243,9 @@ module Spec::Examples
           it { expect(result.value).to be value }
 
           it 'should return a new object each time it is called' do
-            result = subject.send(:build_result, value: value)
+            result = subject.send(:build_result, value:)
 
-            expect(subject.send :build_result, value: value)
+            expect(subject.send :build_result, value:)
               .not_to be result
           end
         end
@@ -254,9 +254,9 @@ module Spec::Examples
           let(:result) do
             subject.send(
               :build_result,
-              error:  error,
+              error:,
               status: :failure,
-              value:  value
+              value:
             )
           end
 
@@ -270,9 +270,9 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, status: :failure, value: value)
+              subject.send(:build_result, status: :failure, value:)
 
-            expect(subject.send :build_result, status: :failure, value: value)
+            expect(subject.send :build_result, status: :failure, value:)
               .not_to be result
           end
         end
@@ -281,9 +281,9 @@ module Spec::Examples
           let(:result) do
             subject.send(
               :build_result,
-              error:  error,
+              error:,
               status: :success,
-              value:  value
+              value:
             )
           end
 
@@ -297,9 +297,9 @@ module Spec::Examples
 
           it 'should return a new object each time it is called' do
             result =
-              subject.send(:build_result, status: :success, value: value)
+              subject.send(:build_result, status: :success, value:)
 
-            expect(subject.send :build_result, status: :success, value: value)
+            expect(subject.send :build_result, status: :success, value:)
               .not_to be result
           end
         end
@@ -319,7 +319,7 @@ module Spec::Examples
 
           subject.send(:failure, error)
 
-          expect(subject).to have_received(:build_result).with(error: error)
+          expect(subject).to have_received(:build_result).with(error:)
         end
 
         it 'should return a failing result', :aggregate_failures do
@@ -346,7 +346,7 @@ module Spec::Examples
 
           subject.send(:success, value)
 
-          expect(subject).to have_received(:build_result).with(value: value)
+          expect(subject).to have_received(:build_result).with(value:)
         end
 
         it 'should return a passing result', :aggregate_failures do

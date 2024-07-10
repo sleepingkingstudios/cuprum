@@ -8,7 +8,7 @@ module Spec::Errors
       @model_class = model_class
       message      = "#{model_class.name.split('::').last} not found"
 
-      super(message: message)
+      super(message:)
     end
 
     attr_reader :model_class

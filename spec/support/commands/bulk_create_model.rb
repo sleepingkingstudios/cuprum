@@ -21,7 +21,7 @@ module Spec::Commands
     end
 
     def process(attributes)
-      create_command.call(attributes: attributes)
+      create_command.call(attributes:)
     end
   end
 end

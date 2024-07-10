@@ -143,7 +143,7 @@ module Cuprum
     # @see #status
     # @see #value
     def to_cuprum_result
-      Cuprum::Result.new(error: error, status: status, value: value)
+      Cuprum::Result.new(error:, status:, value:)
     end
 
     # @return [Array<Object, nil>] the value, if any, for each result.
@@ -156,7 +156,7 @@ module Cuprum
     def build_error
       return if errors.compact.empty?
 
-      Cuprum::Errors::MultipleErrors.new(errors: errors)
+      Cuprum::Errors::MultipleErrors.new(errors:)
     end
 
     def build_status

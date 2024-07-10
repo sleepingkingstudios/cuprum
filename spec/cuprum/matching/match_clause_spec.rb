@@ -668,7 +668,7 @@ RSpec.describe Cuprum::Matching::MatchClause do
       Cuprum::Result.new(error: other_error, value: other_value)
     end
     let(:matches_result) do
-      match_clause.matches_result?(result: result)
+      match_clause.matches_result?(result:)
     end
 
     example_class 'Spec::Error', Cuprum::Error

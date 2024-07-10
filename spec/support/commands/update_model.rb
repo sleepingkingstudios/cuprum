@@ -19,12 +19,12 @@ module Spec::Commands
     def not_valid(model)
       Spec::Errors::NotValid.new(
         errors:      model.errors,
-        model_class: model_class
+        model_class:
       )
     end
 
     def process(attributes:, model:)
-      model.update_attributes(attributes: attributes)
+      model.update_attributes(attributes:)
 
       return failure(not_valid(model)) unless model.valid?
 

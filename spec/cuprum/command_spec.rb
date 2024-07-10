@@ -98,7 +98,7 @@ RSpec.describe Cuprum::Command do
     let(:proc)   { command.to_proc }
     let(:result) { proc.call }
     let(:expected_error) do
-      Cuprum::Errors::CommandNotImplemented.new(command: command)
+      Cuprum::Errors::CommandNotImplemented.new(command:)
     end
 
     it { expect(command).to respond_to(:to_proc).with(0).arguments }

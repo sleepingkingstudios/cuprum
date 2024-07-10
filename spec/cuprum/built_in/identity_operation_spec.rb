@@ -14,7 +14,7 @@ RSpec.describe Cuprum::BuiltIn::IdentityOperation do
   let(:command) { operation }
   let(:value)   { 'returned value' }
   let(:error)   { Cuprum::Error.new(message: 'Something went wrong.') }
-  let(:result)  { Cuprum::Result.new(value: value, error: error) }
+  let(:result)  { Cuprum::Result.new(value:, error:) }
 
   include_examples 'should implement the Operation methods'
 

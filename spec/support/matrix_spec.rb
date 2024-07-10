@@ -19,7 +19,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/SpecFilePathFormat
   describe '#evaluate' do
     before(:example) do
       allow(example_group).to receive(:context) do |name|
-        class_double(RSpec::Core::ExampleGroup, name: name)
+        class_double(RSpec::Core::ExampleGroup, name:)
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe Spec::Matrix do # rubocop:disable RSpec/SpecFilePathFormat
           'three' => 3
         }
       end
-      let(:scenarios) { { english: english } }
+      let(:scenarios) { { english: } }
       let(:expected) do
         {
           'with one'   => { english: 1 },

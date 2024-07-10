@@ -46,13 +46,13 @@ module Cuprum
     #
     # @raise StandardError if an exception is raised and the
     #   ENV['CUPRUM_RERAISE_EXCEPTIONS'] flag is set.
-    def call(*args, **kwargs, &block)
+    def call(*args, **kwargs, &)
       super
     rescue StandardError => exception
       raise exception if ENV['CUPRUM_RERAISE_EXCEPTIONS']
 
       error = Cuprum::Errors::UncaughtException.new(
-        exception: exception,
+        exception:,
         message:   "uncaught exception in #{self.class.name} - "
       )
       failure(error)

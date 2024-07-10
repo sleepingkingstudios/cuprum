@@ -34,7 +34,7 @@ module Spec::Examples
     shared_context 'when the result has an error' do
       let(:value)  { 'returned value' }
       let(:error)  { Cuprum::Error.new(message: 'Something went wrong.') }
-      let(:result) { Cuprum::Result.new(value: value, error: error) }
+      let(:result) { Cuprum::Result.new(value:, error:) }
 
       before(:example) do
         allow(operation).to receive(:result).and_return(result)
@@ -43,7 +43,7 @@ module Spec::Examples
 
     shared_context 'when the result has a value' do
       let(:value)  { 'returned value' }
-      let(:result) { Cuprum::Result.new(value: value) }
+      let(:result) { Cuprum::Result.new(value:) }
 
       before(:example) do
         allow(operation).to receive(:result).and_return(result)

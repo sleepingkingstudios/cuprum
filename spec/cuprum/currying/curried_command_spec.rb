@@ -39,10 +39,10 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
 
   subject(:instance) do
     described_class.new(
-      arguments: arguments,
-      block:     block,
-      command:   command,
-      keywords:  keywords
+      arguments:,
+      block:,
+      command:,
+      keywords:
     )
   end
 

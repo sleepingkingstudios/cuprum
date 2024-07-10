@@ -41,10 +41,10 @@ RSpec.describe Spec::TagsController do
           errors: attributes.map do |hsh|
             Spec::Errors::NotValid.new(
               errors:      model_class
-                          .new(attributes: hsh)
-                          .tap(&:valid?)
-                          .errors,
-              model_class: model_class
+                      .new(attributes: hsh)
+                      .tap(&:valid?)
+                      .errors,
+              model_class:
             )
           end
         )
@@ -76,17 +76,17 @@ RSpec.describe Spec::TagsController do
             nil,
             Spec::Errors::NotValid.new(
               errors:      model_class
-                          .new(attributes: attributes[1])
-                          .tap(&:valid?)
-                          .errors,
-              model_class: model_class
+                      .new(attributes: attributes[1])
+                      .tap(&:valid?)
+                      .errors,
+              model_class:
             ),
             Spec::Errors::NotValid.new(
               errors:      model_class
-                          .new(attributes: attributes[2])
-                          .tap(&:valid?)
-                          .errors,
-              model_class: model_class
+                      .new(attributes: attributes[2])
+                      .tap(&:valid?)
+                      .errors,
+              model_class:
             )
           ]
         )

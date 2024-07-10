@@ -69,10 +69,10 @@ module Cuprum
       return self if arguments.empty? && keywords.empty? && block.nil?
 
       Cuprum::Currying::CurriedCommand.new(
-        arguments: arguments,
-        block:     block,
+        arguments:,
+        block:,
         command:   self,
-        keywords:  keywords
+        keywords:
       )
     end
   end

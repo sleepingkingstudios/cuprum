@@ -94,7 +94,7 @@ module Cuprum
     end
 
     # (see Cuprum::Processing#call)
-    def call(*args, **kwargs, &block)
+    def call(*args, **kwargs, &)
       steps { super }
     end
 

@@ -68,9 +68,9 @@ module Spec::Examples
         Spec::Matrix.new(self).evaluate(**scenarios) \
         do |value:, error:, status:|
           include_examples 'should compare the results',
-            value:  value,
-            error:  error,
-            status: status
+            value:,
+            error:,
+            status:
         end
 
         context 'with a result hash' do
@@ -79,9 +79,9 @@ module Spec::Examples
           Spec::Matrix.new(self).evaluate(**scenarios) \
           do |value:, error:, status:|
             include_examples 'should compare the results',
-              value:  value,
-              error:  error,
-              status: status
+              value:,
+              error:,
+              status:
           end
         end
 
@@ -102,9 +102,9 @@ module Spec::Examples
           Spec::Matrix.new(self).evaluate(**scenarios) \
           do |value:, error:, status:|
             include_examples 'should compare the results',
-              value:  value,
-              error:  error,
-              status: status
+              value:,
+              error:,
+              status:
           end
         end
 
@@ -112,9 +112,9 @@ module Spec::Examples
           Spec::Matrix.new(self).evaluate(**scenarios) \
           do |value:, error:, status:|
             include_examples 'should compare the results',
-              value:  value,
-              error:  error,
-              status: status
+              value:,
+              error:,
+              status:
           end
         end
       end

@@ -35,7 +35,7 @@ RSpec.describe Spec::CommandFactories::BooksFactory do
 
     it 'should build a book', :aggregate_failures do
       command = instance.build
-      result  = command.call(attributes: attributes)
+      result  = command.call(attributes:)
       book    = result.value
 
       expect(book).to be_a Spec::Models::Book
@@ -90,7 +90,7 @@ RSpec.describe Spec::CommandFactories::BooksFactory do
     it 'should publish the book' do
       command = instance.publish(publisher)
 
-      command.call(book: book)
+      command.call(book:)
 
       expect(book.publisher).to be == publisher
     end
@@ -113,7 +113,7 @@ RSpec.describe Spec::CommandFactories::BooksFactory do
     it 'should save the book', :aggregate_failures do
       command = instance.save
 
-      expect { command.call(book: book) }
+      expect { command.call(book:) }
         .to change(books_collection, :count)
         .by(1)
 

@@ -54,8 +54,8 @@ RSpec.describe Cuprum::MatcherList do
       let(:result) do
         Cuprum::Result.new(
           status: :failure,
-          error:  error,
-          value:  value
+          error:,
+          value:
         )
       end
 
@@ -75,7 +75,7 @@ RSpec.describe Cuprum::MatcherList do
 
           [
             Cuprum::Matcher.new do
-              match(:failure, error: error, value: value) do
+              match(:failure, error:, value:) do
                 'failure with value and error'
               end
             end
@@ -92,7 +92,7 @@ RSpec.describe Cuprum::MatcherList do
 
           [
             Cuprum::Matcher.new do
-              match(:failure, error: error) do
+              match(:failure, error:) do
                 'failure with error'
               end
             end
@@ -109,7 +109,7 @@ RSpec.describe Cuprum::MatcherList do
 
           [
             Cuprum::Matcher.new do
-              match(:failure, value: value) do
+              match(:failure, value:) do
                 'failure with value'
               end
             end
@@ -143,11 +143,11 @@ RSpec.describe Cuprum::MatcherList do
 
         [
           Cuprum::Matcher.new do
-            match(:failure, error: error, value: value) do
+            match(:failure, error:, value:) do
               'failure with value and error'
             end
 
-            match(:failure, error: error) { 'failure with error' }
+            match(:failure, error:) { 'failure with error' }
 
             match(:failure) { 'failure' }
           end
@@ -170,8 +170,8 @@ RSpec.describe Cuprum::MatcherList do
         let(:result) do
           Cuprum::Result.new(
             status: :failure,
-            error:  error,
-            value:  value
+            error:,
+            value:
           )
         end
         let(:expected) { 'failure with value and error' }
@@ -184,7 +184,7 @@ RSpec.describe Cuprum::MatcherList do
         let(:result) do
           Cuprum::Result.new(
             status: :failure,
-            error:  error
+            error:
           )
         end
         let(:expected) { 'failure with error' }
@@ -211,16 +211,16 @@ RSpec.describe Cuprum::MatcherList do
             match(:failure) { 'first: failure' }
           end,
           Cuprum::Matcher.new do
-            match(:failure, error: error) { 'mid: failure with error' }
+            match(:failure, error:) { 'mid: failure with error' }
 
             match(:failure) { 'mid: failure' }
           end,
           Cuprum::Matcher.new do
-            match(:failure, error: error, value: value) do
+            match(:failure, error:, value:) do
               'last: failure with value and error'
             end
 
-            match(:failure, error: error) { 'last: failure with error' }
+            match(:failure, error:) { 'last: failure with error' }
 
             match(:failure) { 'last: failure' }
           end
@@ -243,8 +243,8 @@ RSpec.describe Cuprum::MatcherList do
         let(:result) do
           Cuprum::Result.new(
             status: :failure,
-            error:  error,
-            value:  value
+            error:,
+            value:
           )
         end
         let(:expected) { 'last: failure with value and error' }
@@ -257,7 +257,7 @@ RSpec.describe Cuprum::MatcherList do
         let(:result) do
           Cuprum::Result.new(
             status: :failure,
-            error:  error
+            error:
           )
         end
         let(:expected) { 'mid: failure with error' }

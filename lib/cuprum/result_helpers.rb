@@ -8,15 +8,15 @@ module Cuprum
     private
 
     def build_result(error: nil, status: nil, value: nil)
-      Cuprum::Result.new(error: error, status: status, value: value)
+      Cuprum::Result.new(error:, status:, value:)
     end
 
     def failure(error)
-      build_result(error: error)
+      build_result(error:)
     end
 
     def success(value)
-      build_result(value: value)
+      build_result(value:)
     end
   end
 end

@@ -9,7 +9,7 @@ require 'support/models/book'
 RSpec.describe Spec::Commands::SaveBookToCollection do
   include Cuprum::RSpec::Matchers
 
-  subject(:command) { described_class.new(collection: collection) }
+  subject(:command) { described_class.new(collection:) }
 
   let(:collection) { [] }
 
@@ -22,7 +22,7 @@ RSpec.describe Spec::Commands::SaveBookToCollection do
         }
       )
     end
-    let(:result) { command.call(book: book) }
+    let(:result) { command.call(book:) }
 
     it 'should define the method' do
       expect(command)
@@ -34,7 +34,7 @@ RSpec.describe Spec::Commands::SaveBookToCollection do
     it { expect(result).to be_a_passing_result }
 
     it 'should add the book to the collection' do
-      expect { command.call(book: book) }
+      expect { command.call(book:) }
         .to change(collection, :to_a)
         .to include(book)
     end

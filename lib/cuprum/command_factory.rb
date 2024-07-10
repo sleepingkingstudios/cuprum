@@ -98,9 +98,9 @@ module Cuprum
         guard_abstract_factory!
 
         if klass
-          define_command_from_class(klass, name: name, metadata: metadata)
+          define_command_from_class(klass, name:, metadata:)
         elsif block_given?
-          define_command_from_block(defn, name: name, metadata: metadata)
+          define_command_from_block(defn, name:, metadata:)
         else
           require_definition!
         end
@@ -287,11 +287,11 @@ module Cuprum
 
     private
 
-    def build_command(command_class, *args, **kwargs, &block)
+    def build_command(command_class, *args, **kwargs, &)
       if kwargs.empty?
-        command_class.new(*args, &block)
+        command_class.new(*args, &)
       else
-        command_class.new(*args, **kwargs, &block)
+        command_class.new(*args, **kwargs, &)
       end
     end
 

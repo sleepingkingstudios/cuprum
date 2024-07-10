@@ -9,7 +9,7 @@ module Spec::Errors
       @errors      = errors
       message      = build_message
 
-      super(message: message)
+      super(message:)
     end
 
     attr_reader :errors

@@ -29,7 +29,7 @@ RSpec.describe Spec::Commands::FindModel do
       let(:directory_id) { '00000000-0000-0000-0000-000000000000' }
       let(:result)       { command.call(id: directory_id) }
       let(:expected_error) do
-        Spec::Errors::NotFound.new(model_class: model_class)
+        Spec::Errors::NotFound.new(model_class:)
       end
 
       it { expect(result).to be_a_failing_result.with_error(expected_error) }

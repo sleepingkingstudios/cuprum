@@ -49,7 +49,7 @@ RSpec.describe Cuprum::Result do
       let(:error_message) { "invalid status #{status.inspect}" }
 
       it 'should raise an error' do
-        expect { described_class.new(status: status) }
+        expect { described_class.new(status:) }
           .to raise_error ArgumentError, error_message
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe Cuprum::Result do
       let(:error_message) { "invalid status #{status.inspect}" }
 
       it 'should raise an error' do
-        expect { described_class.new(status: status) }
+        expect { described_class.new(status:) }
           .to raise_error ArgumentError, error_message
       end
     end
@@ -316,14 +316,14 @@ RSpec.describe Cuprum::Result do
 
     context 'when initialized with a hash value' do
       let(:value)  { 'result value' }
-      let(:params) { super().merge(value: value) }
+      let(:params) { super().merge(value:) }
 
       it { expect(result.value).to be value }
     end
 
     context 'when initialized with a string value' do
       let(:value)  { { key: 'returned value' } }
-      let(:params) { super().merge(value: value) }
+      let(:params) { super().merge(value:) }
 
       it { expect(result.value).to be value }
     end

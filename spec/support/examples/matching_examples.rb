@@ -1469,11 +1469,11 @@ module Spec::Examples
         describe 'with status: :failure and error: a Class' do
           let(:error) { Spec::CustomError }
 
-          it { expect(matcher.matches?(:failure, error: error)).to be false }
+          it { expect(matcher.matches?(:failure, error:)).to be false }
 
           # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
-            it { expect(matcher.matches?(:failure, error: error)).to be false }
+            it { expect(matcher.matches?(:failure, error:)).to be false }
           end
 
           wrap_context 'when the matcher matches :failure and an error' do
@@ -1481,31 +1481,31 @@ module Spec::Examples
               let(:error) { Class.new(Cuprum::Error) }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, error: error)).to be false
+                expect(matcher.matches?(:failure, error:)).to be false
               end
             end
 
             describe 'with a matching error' do
               let(:error) { Spec::CustomError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
 
             describe 'with a subclass of the error' do
               let(:error) { Spec::SubclassError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
           end
 
           wrap_context 'when the matcher matches :failure and a value' do
-            it { expect(matcher.matches?(:failure, error: error)).to be false }
+            it { expect(matcher.matches?(:failure, error:)).to be false }
           end
 
           wrap_context 'when the matcher matches :failure, a value,' \
                        ' and an error' \
           do
-            it { expect(matcher.matches?(:failure, error: error)).to be false }
+            it { expect(matcher.matches?(:failure, error:)).to be false }
           end
 
           wrap_context 'when the matcher matches multiple statuses' do
@@ -1513,20 +1513,20 @@ module Spec::Examples
               let(:error) { Class.new(Cuprum::Error) }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, error: error)).to be false
+                expect(matcher.matches?(:failure, error:)).to be false
               end
             end
 
             describe 'with a matching error' do
               let(:error) { Spec::CustomError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
 
             describe 'with a subclass of the error' do
               let(:error) { Spec::SubclassError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
           end
 
@@ -1535,20 +1535,20 @@ module Spec::Examples
               let(:error) { Class.new(Cuprum::Error) }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, error: error)).to be false
+                expect(matcher.matches?(:failure, error:)).to be false
               end
             end
 
             describe 'with a matching error' do
               let(:error) { Spec::CustomError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
 
             describe 'with a subclass of the error' do
               let(:error) { Spec::SubclassError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
           end
 
@@ -1557,20 +1557,20 @@ module Spec::Examples
               let(:error) { Class.new(Cuprum::Error) }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, error: error)).to be false
+                expect(matcher.matches?(:failure, error:)).to be false
               end
             end
 
             describe 'with a matching error' do
               let(:error) { Spec::CustomError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
 
             describe 'with a subclass of the error' do
               let(:error) { Spec::SubclassError }
 
-              it { expect(matcher.matches?(:failure, error: error)).to be true }
+              it { expect(matcher.matches?(:failure, error:)).to be true }
             end
           end
           # rubocop:enable RSpec/RepeatedExampleGroupBody
@@ -1579,15 +1579,15 @@ module Spec::Examples
         describe 'with status: :failure and value: a Class' do
           let(:value) { Spec::RocketPart }
 
-          it { expect(matcher.matches?(:failure, value: value)).to be false }
+          it { expect(matcher.matches?(:failure, value:)).to be false }
 
           # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
-            it { expect(matcher.matches?(:failure, value: value)).to be false }
+            it { expect(matcher.matches?(:failure, value:)).to be false }
           end
 
           wrap_context 'when the matcher matches :failure and an error' do
-            it { expect(matcher.matches?(:failure, value: value)).to be false }
+            it { expect(matcher.matches?(:failure, value:)).to be false }
           end
 
           wrap_context 'when the matcher matches :failure and a value' do
@@ -1595,27 +1595,27 @@ module Spec::Examples
               let(:value) { String }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, value: value)).to be false
+                expect(matcher.matches?(:failure, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:failure, value: value)).to be true }
+              it { expect(matcher.matches?(:failure, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:failure, value: value)).to be true }
+              it { expect(matcher.matches?(:failure, value:)).to be true }
             end
           end
 
           wrap_context 'when the matcher matches :failure, a value,' \
                        ' and an error' \
           do
-            it { expect(matcher.matches?(:failure, value: value)).to be false }
+            it { expect(matcher.matches?(:failure, value:)).to be false }
           end
 
           wrap_context 'when the matcher matches multiple statuses' do
@@ -1623,29 +1623,29 @@ module Spec::Examples
               let(:value) { String }
 
               it 'should not match the status' do
-                expect(matcher.matches?(:failure, value: value)).to be false
+                expect(matcher.matches?(:failure, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:failure, value: value)).to be true }
+              it { expect(matcher.matches?(:failure, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:failure, value: value)).to be true }
+              it { expect(matcher.matches?(:failure, value:)).to be true }
             end
           end
 
           wrap_context 'when the matcher inherits from another matcher' do
-            it { expect(matcher.matches?(:failure, value: value)).to be false }
+            it { expect(matcher.matches?(:failure, value:)).to be false }
           end
 
           wrap_context 'when the matcher includes another matcher' do
-            it { expect(matcher.matches?(:failure, value: value)).to be false }
+            it { expect(matcher.matches?(:failure, value:)).to be false }
           end
           # rubocop:enable RSpec/RepeatedExampleGroupBody
         end
@@ -1655,28 +1655,28 @@ module Spec::Examples
           let(:value) { Spec::RocketPart }
 
           it 'should not match the parameters' do
-            expect(matcher.matches?(:failure, error: error, value: value))
+            expect(matcher.matches?(:failure, error:, value:))
               .to be false
           end
 
           # rubocop:disable RSpec/RepeatedExampleGroupBody
           wrap_context 'when the matcher matches :failure' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be false
             end
           end
 
           wrap_context 'when the matcher matches :failure and an error' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be false
             end
           end
 
           wrap_context 'when the matcher matches :failure and a value' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be false
             end
           end
@@ -1689,7 +1689,7 @@ module Spec::Examples
               let(:value) { Spec::RocketPart }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:failure, error: error, value: value))
+                expect(matcher.matches?(:failure, error:, value:))
                   .to be false
               end
             end
@@ -1699,7 +1699,7 @@ module Spec::Examples
               let(:value) { String }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:failure, error: error, value: value))
+                expect(matcher.matches?(:failure, error:, value:))
                   .to be false
               end
             end
@@ -1709,7 +1709,7 @@ module Spec::Examples
               let(:value) { Spec::RocketPart }
 
               it 'should match the parameters' do
-                expect(matcher.matches?(:failure, error: error, value: value))
+                expect(matcher.matches?(:failure, error:, value:))
                   .to be true
               end
             end
@@ -1717,21 +1717,21 @@ module Spec::Examples
 
           wrap_context 'when the matcher matches multiple statuses' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be true
             end
           end
 
           wrap_context 'when the matcher inherits from another matcher' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be false
             end
           end
 
           wrap_context 'when the matcher includes another matcher' do
             it 'should not match the parameters' do
-              expect(matcher.matches?(:failure, error: error, value: value))
+              expect(matcher.matches?(:failure, error:, value:))
                 .to be false
             end
           end
@@ -1767,10 +1767,10 @@ module Spec::Examples
         describe 'with status: :success and value: a Class' do
           let(:value) { String }
 
-          it { expect(matcher.matches?(:success, value: value)).to be false }
+          it { expect(matcher.matches?(:success, value:)).to be false }
 
           wrap_context 'when the matcher matches :success' do
-            it { expect(matcher.matches?(:success, value: value)).to be false }
+            it { expect(matcher.matches?(:success, value:)).to be false }
           end
 
           # rubocop:disable RSpec/RepeatedExampleGroupBody
@@ -1779,20 +1779,20 @@ module Spec::Examples
               let(:value) { Object }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:success, value: value)).to be false
+                expect(matcher.matches?(:success, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
           end
 
@@ -1801,20 +1801,20 @@ module Spec::Examples
               let(:value) { Object }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:success, value: value)).to be false
+                expect(matcher.matches?(:success, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
           end
 
@@ -1823,20 +1823,20 @@ module Spec::Examples
               let(:value) { Object }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:success, value: value)).to be false
+                expect(matcher.matches?(:success, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
           end
 
@@ -1845,20 +1845,20 @@ module Spec::Examples
               let(:value) { Object }
 
               it 'should not match the parameters' do
-                expect(matcher.matches?(:success, value: value)).to be false
+                expect(matcher.matches?(:success, value:)).to be false
               end
             end
 
             describe 'with a matching value' do
               let(:value) { Spec::RocketPart }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
 
             describe 'with a subclass of the value' do
               let(:value) { Spec::RocketEngine }
 
-              it { expect(matcher.matches?(:success, value: value)).to be true }
+              it { expect(matcher.matches?(:success, value:)).to be true }
             end
           end
           # rubocop:enable RSpec/RepeatedExampleGroupBody

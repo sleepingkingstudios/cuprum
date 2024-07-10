@@ -63,7 +63,7 @@ module Cuprum
       #     implementation.
       #
       #   @see Cuprum::Command#call
-      def call(*args, **kwargs, &block)
+      def call(*args, **kwargs, &)
         reset! if called? # Clear reference to most recent result.
 
         @result = super
@@ -123,7 +123,7 @@ module Cuprum
 
         error = Cuprum::Errors::OperationNotCalled.new(operation: self)
 
-        Cuprum::Result.new(error: error)
+        Cuprum::Result.new(error:)
       end
 
       # @return [Object] the value of the most recent result, or nil if the

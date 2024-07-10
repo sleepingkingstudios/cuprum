@@ -5,7 +5,7 @@ require 'cuprum/result'
 module Spec::Results
   class ResultWithChecksum < Cuprum::Result
     def initialize(checksum: nil, error: nil, status: nil, value: nil)
-      super(error: error, status: status, value: value)
+      super(error:, status:, value:)
 
       @checksum = checksum
     end
@@ -13,7 +13,7 @@ module Spec::Results
     attr_reader :checksum
 
     def properties
-      super.merge(checksum: checksum)
+      super.merge(checksum:)
     end
     alias_method :to_h, :properties
   end

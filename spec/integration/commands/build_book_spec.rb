@@ -21,7 +21,7 @@ RSpec.describe Spec::Commands::BuildBook do
 
     describe 'with an empty hash' do
       let(:attributes) { {} }
-      let(:result)     { command.call(attributes: attributes) }
+      let(:result)     { command.call(attributes:) }
 
       it { expect(result).to be_a_passing_result }
 
@@ -34,7 +34,7 @@ RSpec.describe Spec::Commands::BuildBook do
 
     describe 'with valid attributes' do
       let(:attributes) { { title: 'Gideon the Ninth', author: 'Tammsyn Muir' } }
-      let(:result)     { command.call(attributes: attributes) }
+      let(:result)     { command.call(attributes:) }
 
       it { expect(result).to be_a_passing_result }
 

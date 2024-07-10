@@ -28,28 +28,28 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
     context 'when a matching model does not exist' do
       describe 'with invalid attributes' do
         let(:attributes) { { name: '' } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
         let(:validation_errors) do
-          model_class.new(attributes: attributes).tap(&:valid?).errors
+          model_class.new(attributes:).tap(&:valid?).errors
         end
         let(:expected_error) do
           Spec::Errors::NotValid.new(
             errors:      validation_errors,
-            model_class: model_class
+            model_class:
           )
         end
 
         it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
         it 'should not create a tag' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .not_to change(model_class, :count)
         end
       end
 
       describe 'with valid attributes' do
         let(:attributes) { { name: 'wip' } }
-        let(:result)     { command.call(attributes: attributes) }
+        let(:result)     { command.call(attributes:) }
 
         it { expect(result).to be_a_passing_result }
 
@@ -60,7 +60,7 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
         end
 
         it 'should create a tag' do
-          expect { command.call(attributes: attributes) }
+          expect { command.call(attributes:) }
             .to change(model_class, :count)
             .by(1)
         end
@@ -70,7 +70,7 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
     context 'when a matching model exists' do
       let(:tag)        { Spec::Models::Tag.new(attributes: { name: 'wip' }) }
       let(:attributes) { { name: 'wip' } }
-      let(:result)     { command.call(attributes: attributes) }
+      let(:result)     { command.call(attributes:) }
 
       before(:example) { tag.save }
 
@@ -83,7 +83,7 @@ RSpec.describe Spec::Commands::FindOrCreateModelBy do
       end
 
       it 'should not create a tag' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(model_class, :count)
       end
     end

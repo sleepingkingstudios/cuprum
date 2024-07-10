@@ -13,7 +13,7 @@ module Spec::CommandFactories
     command :build, Spec::Commands::BuildBook
 
     command :publish do |publisher|
-      Spec::Commands::PublishBook.new(publisher: publisher)
+      Spec::Commands::PublishBook.new(publisher:)
     end
 
     command :validate do
@@ -26,11 +26,11 @@ module Spec::CommandFactories
         return book if errors.empty?
 
         error = Spec::Errors::NotValid.new(
-          errors:      errors,
+          errors:,
           model_class: book.class
         )
 
-        Cuprum::Result.new(value: book, error: error)
+        Cuprum::Result.new(value: book, error:)
       end
     end
 
@@ -39,7 +39,7 @@ module Spec::CommandFactories
 
       Class.new(Spec::Commands::SaveBookToCollection) do
         define_method(:initialize) do
-          super(collection: collection)
+          super(collection:)
         end
       end
     end

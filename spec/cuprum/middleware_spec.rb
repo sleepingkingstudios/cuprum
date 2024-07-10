@@ -14,7 +14,7 @@ RSpec.describe Cuprum::Middleware do
     end
     let(:middleware) { [] }
     let(:applied_middleware) do
-      described_class.apply(command: command, middleware: middleware)
+      described_class.apply(command:, middleware:)
     end
 
     example_class 'Spec::ExampleMiddleware', Cuprum::Command \

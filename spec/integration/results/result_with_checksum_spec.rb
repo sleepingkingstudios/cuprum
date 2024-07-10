@@ -52,7 +52,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
       let(:value)    { { ok: false } }
       let(:error)    { Cuprum::Error.new(message: 'Something went wrong') }
       let(:constructor_options) do
-        super().merge(value: value, error: error)
+        super().merge(value:, error:)
       end
 
       describe 'with a base result with non-matching properties' do
@@ -62,14 +62,14 @@ RSpec.describe Spec::Results::ResultWithChecksum do
       end
 
       describe 'with a base result with matching properties' do
-        let(:other) { Cuprum::Result.new(value: value, error: error) }
+        let(:other) { Cuprum::Result.new(value:, error:) }
 
         it { expect(result == other).to be false }
       end
 
       describe 'with a result with non-matching checksum' do
         let(:other) do
-          described_class.new(value: value, error: error, checksum: '67890')
+          described_class.new(value:, error:, checksum: '67890')
         end
 
         it { expect(result == other).to be false }
@@ -77,7 +77,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
 
       describe 'with a result with non-matching properties' do
         let(:other) do
-          described_class.new(value: { ok: true }, checksum: checksum)
+          described_class.new(value: { ok: true }, checksum:)
         end
 
         it { expect(result == other).to be false }
@@ -96,7 +96,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
 
     context 'when initialized with a checksum' do
       let(:checksum)            { '12345' }
-      let(:constructor_options) { super().merge(checksum: checksum) }
+      let(:constructor_options) { super().merge(checksum:) }
 
       it { expect(result.checksum).to be == checksum }
     end
@@ -116,7 +116,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
 
     context 'when initialized with a checksum' do
       let(:checksum)            { '12345' }
-      let(:constructor_options) { super().merge(checksum: checksum) }
+      let(:constructor_options) { super().merge(checksum:) }
 
       it { expect(result.properties).to be == expected }
     end
@@ -125,7 +125,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
       let(:value) { { ok: false } }
       let(:error) { Cuprum::Error.new(message: 'Something went wrong') }
       let(:constructor_options) do
-        super().merge(value: value, error: error)
+        super().merge(value:, error:)
       end
 
       it { expect(result.properties).to be == expected }
@@ -136,7 +136,7 @@ RSpec.describe Spec::Results::ResultWithChecksum do
       let(:value)    { { ok: false } }
       let(:error)    { Cuprum::Error.new(message: 'Something went wrong') }
       let(:constructor_options) do
-        super().merge(value: value, error: error)
+        super().merge(value:, error:)
       end
 
       it { expect(result.properties).to be == expected }

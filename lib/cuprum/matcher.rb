@@ -69,10 +69,10 @@ module Cuprum
     #
     # @yield Executes the block in the context of the singleton class. This is
     #   used to define match clauses when instantiating a Matcher instance.
-    def initialize(match_context = nil, &block)
+    def initialize(match_context = nil, &)
       @match_context = match_context
 
-      singleton_class.instance_exec(&block) if block_given?
+      singleton_class.instance_exec(&) if block_given?
     end
 
     # Returns a copy of the matcher with the given execution context.

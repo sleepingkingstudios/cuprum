@@ -3,7 +3,7 @@
 require 'cuprum/errors/command_not_implemented'
 
 RSpec.describe Cuprum::Errors::CommandNotImplemented do
-  subject(:error) { described_class.new(command: command) }
+  subject(:error) { described_class.new(command:) }
 
   let(:command) { Spec::ExampleCommand.new }
 
@@ -83,7 +83,7 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
     end
 
     describe 'with a matching Error with matching command' do
-      let(:other) { described_class.new(command: command) }
+      let(:other) { described_class.new(command:) }
 
       it { expect(error == other).to be true }
     end

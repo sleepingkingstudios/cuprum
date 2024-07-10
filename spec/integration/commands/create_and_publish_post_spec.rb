@@ -33,8 +33,8 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
 
     context 'when the directory does not exist' do
       let(:directory_id) { '00000000-0000-0000-0000-000000000000' }
-      let(:attributes)   { { directory_id: directory_id } }
-      let(:result)       { command.call(attributes: attributes) }
+      let(:attributes)   { { directory_id: } }
+      let(:result)       { command.call(attributes:) }
       let(:expected_error) do
         Spec::Errors::NotFound.new(model_class: Spec::Models::Directory)
       end
@@ -42,22 +42,22 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Post, :count)
       end
 
       it 'should not create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Post, :count)
       end
 
       it 'should not create any tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should not create any taggings' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tagging, :count)
       end
     end
@@ -67,9 +67,9 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
         Spec::Models::Directory.new(attributes: { name: 'widgets' })
       end
       let(:attributes) { { directory_id: directory.id } }
-      let(:result)     { command.call(attributes: attributes) }
+      let(:result)     { command.call(attributes:) }
       let(:validation_errors) do
-        Spec::Models::Post.new(attributes: attributes).tap(&:valid?).errors
+        Spec::Models::Post.new(attributes:).tap(&:valid?).errors
       end
       let(:expected_error) do
         Spec::Errors::NotValid.new(
@@ -83,22 +83,22 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Content, :count)
       end
 
       it 'should not create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Post, :count)
       end
 
       it 'should not create any tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should not create any taggings' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tagging, :count)
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
           title:        'Stem Bolt'
         }
       end
-      let(:result) { command.call(attributes: attributes) }
+      let(:result) { command.call(attributes:) }
       let(:validation_errors) do
         [['text', "can't be blank"]]
       end
@@ -129,18 +129,18 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Content, :count)
       end
 
       it 'should create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Post, :count)
           .by(1)
       end
 
       it 'should not publish the post' do
-        command.call(attributes: attributes)
+        command.call(attributes:)
 
         post = Spec::Models::Post.each.find { |item| item.title == 'Stem Bolt' }
 
@@ -148,12 +148,12 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should not create any tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should not create any taggings' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tagging, :count)
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
           title:        'Stem Bolt'
         }
       end
-      let(:result) { command.call(attributes: attributes) }
+      let(:result) { command.call(attributes:) }
       let(:validation_errors) do
         [['text', "can't be blank"]]
       end
@@ -185,18 +185,18 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_failing_result.with_error(expected_error) }
 
       it 'should not create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Content, :count)
       end
 
       it 'should create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Post, :count)
           .by(1)
       end
 
       it 'should not publish the post' do
-        command.call(attributes: attributes)
+        command.call(attributes:)
 
         post = Spec::Models::Post.each.find { |item| item.title == 'Stem Bolt' }
 
@@ -204,12 +204,12 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should not create any tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should not create any taggings' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tagging, :count)
       end
     end
@@ -225,7 +225,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
           title:        'Stem Bolt'
         }
       end
-      let(:result) { command.call(attributes: attributes) }
+      let(:result) { command.call(attributes:) }
       let(:expected_attributes) do
         {
           directory_id: directory.id,
@@ -239,13 +239,13 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_passing_result }
 
       it 'should create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Content, :count)
           .by(1)
       end
 
       it 'should set the content attributes' do
-        post    = command.call(attributes: attributes).value
+        post    = command.call(attributes:).value
         content = Spec::Models::Content.each.find do |item|
           item.post_id == post.id
         end
@@ -254,7 +254,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Post, :count)
           .by(1)
       end
@@ -266,7 +266,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should set the post attributes' do
-        post     = command.call(attributes: attributes).value
+        post     = command.call(attributes:).value
         reloaded = Spec::Models::Post.each.find do |item|
           item.id == post.id
         end
@@ -275,12 +275,12 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should not create any tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tag, :count)
       end
 
       it 'should not create any taggings' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .not_to change(Spec::Models::Tagging, :count)
       end
     end
@@ -297,7 +297,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
           title:        'Stem Bolt'
         }
       end
-      let(:result) { command.call(attributes: attributes) }
+      let(:result) { command.call(attributes:) }
       let(:expected_attributes) do
         {
           directory_id: directory.id,
@@ -311,13 +311,13 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       it { expect(result).to be_a_passing_result }
 
       it 'should create a content' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Content, :count)
           .by(1)
       end
 
       it 'should set the content attributes' do
-        post    = command.call(attributes: attributes).value
+        post    = command.call(attributes:).value
         content = Spec::Models::Content.each.find do |item|
           item.post_id == post.id
         end
@@ -326,7 +326,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should create a post' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Post, :count)
           .by(1)
       end
@@ -338,7 +338,7 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should set the post attributes' do
-        post     = command.call(attributes: attributes).value
+        post     = command.call(attributes:).value
         reloaded = Spec::Models::Post.each.find do |item|
           item.id == post.id
         end
@@ -347,13 +347,13 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should create the valid tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Tag, :count)
           .by(2)
       end
 
       it 'should set the tag attributes' do
-        command.call(attributes: attributes)
+        command.call(attributes:)
 
         tags = Spec::Models::Tag.each.select do |item|
           attributes[:tags].include?(item.name)
@@ -363,13 +363,13 @@ RSpec.describe Spec::Commands::CreateAndPublishPost do
       end
 
       it 'should taggings for the valid tags' do
-        expect { command.call(attributes: attributes) }
+        expect { command.call(attributes:) }
           .to change(Spec::Models::Tagging, :count)
           .by(2)
       end
 
       it 'should set the tagging attributes' do
-        post = command.call(attributes: attributes).value
+        post = command.call(attributes:).value
 
         tags = Spec::Models::Tag.each.select do |item|
           attributes[:tags].include?(item.name)
