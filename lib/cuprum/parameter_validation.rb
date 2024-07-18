@@ -6,5 +6,6 @@ module Cuprum
   # Mixin for declaring validations for command parameters.
   module ParameterValidation
     autoload :ValidationRule, 'cuprum/parameter_validation/validation_rule'
+    autoload :Validator,      'cuprum/parameter_validation/validator'
   end
 end

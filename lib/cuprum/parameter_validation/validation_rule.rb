@@ -26,5 +26,18 @@ module Cuprum::ParameterValidation
     def initialize(name:, type:, **options, &block)
       super(block:, name: name.to_sym, options:, type: type.to_sym)
     end
+
+    # @return [Symbol] the name for the validation method.
+    def method_name
+      @method_name ||=
+        case type
+        when BLOCK_VALIDATION_TYPE
+          :validate
+        when NAMED_VALIDATION_TYPE
+          :"validate_#{name}"
+        else
+          :"validate_#{type}"
+        end
+    end
   end
 end

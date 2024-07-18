@@ -43,6 +43,22 @@ RSpec.describe Cuprum::ParameterValidation::ValidationRule do
     end
   end
 
+  describe '#method_name' do
+    include_examples 'should define reader', :method_name, :validate_presence
+
+    context 'when initialized with type: block validation' do
+      let(:type) { described_class::BLOCK_VALIDATION_TYPE }
+
+      it { expect(rule.method_name).to be :validate }
+    end
+
+    context 'when initialized with type: named method validation' do
+      let(:type) { described_class::NAMED_VALIDATION_TYPE }
+
+      it { expect(rule.method_name).to be :validate_name }
+    end
+  end
+
   describe '#name' do
     include_examples 'should define reader', :name, -> { name }
 
