@@ -43,6 +43,11 @@ RSpec:
         - xinclude_deferred
         - xinclude_examples
         - xwrap_examples
+    SharedGroups:
+      Examples:
+        - deferred_examples
+      Context:
+        - deferred_context
 
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
@@ -55,6 +60,8 @@ Layout/LineContinuationLeadingSpace:
   Enabled: false
 
 Layout/LineLength:
+  AllowedPatterns:
+    - '\A\s*#'
   Max: 80
 
 Layout/ParameterAlignment:
