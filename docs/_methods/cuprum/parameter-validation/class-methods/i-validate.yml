@@ -1,0 +1,153 @@
+---
+name: Cuprum::ParameterValidation::ClassMethods#validate
+parent_path: cuprum/parameter-validation/class-methods
+signature: validate(name, type = nil, **options, &)
+slug: validate
+constructor: false
+data_path: cuprum/parameter-validation/class-methods/i-validate
+overloads:
+- name: Cuprum::ParameterValidation::ClassMethods#validate
+  parent_path: cuprum/parameter-validation/class-methods
+  signature: validate(name, **options)
+  slug: validate
+  constructor: false
+  description: |-
+    This validation will call the #validate_$name method on the command
+    with the value of the named parameter. If the method returns a failure
+    message, that message is added to the failed validations.
+  options:
+  - name: options
+    opts:
+    - description: |-
+        the name of the parameter as
+        displayed in the failure message, if any. Defaults to the value of
+        the name parameter.
+      name: as
+      type:
+      - name: String
+      - name: Symbol
+  params:
+  - description: the parameter to validate.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: |-
+      additional options to pass to the validation
+      method.
+    name: options
+    type:
+    - name: Hash
+  returns:
+  - description: void
+    type: []
+  short_description: Defines a validation for the specified parameter.
+- name: Cuprum::ParameterValidation::ClassMethods#validate
+  parent_path: cuprum/parameter-validation/class-methods
+  signature: validate(name, **options, &block)
+  slug: validate
+  constructor: false
+  description: |-
+    This validation will call the given block with the value of the named
+    parameter. If the block returns nil or false, a failure message is
+    added to the failed validations
+  options:
+  - name: options
+    opts:
+    - description: |-
+        the name of the parameter as
+        displayed in the failure message, if any. Defaults to the value of
+        the name parameter.
+      name: as
+      type:
+      - name: String
+      - name: Symbol
+    - description: |-
+        the failure message to display.
+        Defaults to "$name is invalid".
+      name: message
+      type:
+      - name: String
+  params:
+  - description: the parameter to validate.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: additional options for the validation.
+    name: options
+    type:
+    - name: Hash
+  returns:
+  - description: void
+    type: []
+  short_description: Defines a validation for the specified parameter.
+  yield_params:
+  - description: the value of the named parameter.
+    name: value
+    type:
+    - name: Object
+  yield_returns:
+  - description: |-
+      true if the given value is valid for the
+      parameter; otherwise false.
+    type:
+    - name: 'true'
+    - name: 'false'
+  yields:
+  - description: the block to validate the parameter.
+- name: Cuprum::ParameterValidation::ClassMethods#validate
+  parent_path: cuprum/parameter-validation/class-methods
+  signature: validate(name, type, **options)
+  slug: validate
+  constructor: false
+  description: |-
+    This validation will call the #validate_$type method on the command
+    with the value of the named parameter. If the method returns a failure
+    message, that message is added to the failed validations.
+
+    If the command does not define the method, it will call the
+    SleepingKingStudios::Tools::Assertions instance method with the same
+    name. If the validation fails, the failure message is added to the
+    failed validations.
+  options:
+  - name: options
+    opts:
+    - description: |-
+        the name of the parameter as
+        displayed in the failure message, if any. Defaults to the value of
+        the name parameter.
+      name: as
+      type:
+      - name: String
+      - name: Symbol
+    - description: |-
+        the message to display on a failed
+        validation.
+      name: message
+      type:
+      - name: String
+  params:
+  - description: the parameter to validate.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: the validation method to run.
+    name: type
+    type:
+    - name: String
+    - name: Symbol
+  - description: |-
+      additional options to pass to the validation
+      method.
+    name: options
+    type:
+    - name: Hash
+  raises:
+  - description: if neither the command nor the standard tools defines the method.
+    type:
+    - name: Cuprum::ParameterValidation::Validator::UnknownValidationError
+      path: cuprum/parameter-validation/validator/unknown-validation-error
+  short_description: Defines a validation for the specified parameter.
+version: "*"

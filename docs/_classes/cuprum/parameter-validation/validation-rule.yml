@@ -1,0 +1,60 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule
+slug: validation-rule
+type: class
+files:
+- lib/cuprum/parameter_validation/validation_rule.rb
+parent_path: cuprum/parameter-validation
+short_description: Value class representing a single validation for a parameter.
+constants:
+- name: BLOCK_VALIDATION_TYPE
+  path: cuprum/parameter-validation/validation-rule/block-validation-type
+  slug: block-validation-type
+  inherited: false
+- name: NAMED_VALIDATION_TYPE
+  path: cuprum/parameter-validation/validation-rule/named-validation-type
+  slug: named-validation-type
+  inherited: false
+instance_attributes:
+- name: block
+  read: true
+  write: true
+  path: cuprum/parameter-validation/validation-rule/i-block
+  slug: block
+  inherited: false
+- name: name
+  read: true
+  write: true
+  path: cuprum/parameter-validation/validation-rule/i-name
+  slug: name
+  inherited: false
+- name: options
+  read: true
+  write: true
+  path: cuprum/parameter-validation/validation-rule/i-options
+  slug: options
+  inherited: false
+- name: type
+  read: true
+  write: true
+  path: cuprum/parameter-validation/validation-rule/i-type
+  slug: type
+  inherited: false
+instance_methods:
+- name: initialize
+  path: cuprum/parameter-validation/validation-rule/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: method_name
+  path: cuprum/parameter-validation/validation-rule/i-method-name
+  slug: method-name
+  inherited: false
+data_path: cuprum/parameter-validation/validation-rule
+metadata:
+  api: private
+constructor: true
+inherited_classes:
+- name: Struct
+  slug: struct
+version: "*"

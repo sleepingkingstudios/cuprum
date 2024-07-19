@@ -1,0 +1,14 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#method_name
+parent_path: cuprum/parameter-validation/validation-rule
+signature: method_name
+slug: method-name
+constructor: false
+data_path: cuprum/parameter-validation/validation-rule/i-method-name
+metadata:
+  api: private
+returns:
+- description: the name for the validation method.
+  type:
+  - name: Symbol
+version: "*"

@@ -1,0 +1,28 @@
+---
+name: Cuprum::ParameterValidation
+slug: parameter-validation
+type: module
+files:
+- lib/cuprum/parameter_validation.rb
+- lib/cuprum/parameter_validation/validator.rb
+- lib/cuprum/parameter_validation/validation_rule.rb
+parent_path: cuprum
+short_description: Mixin for declaring validations for command parameters.
+defined_classes:
+- name: ValidationRule
+  slug: validation-rule
+- name: Validator
+  slug: validator
+defined_modules:
+- name: ClassMethods
+  slug: class-methods
+instance_methods:
+- name: call
+  path: cuprum/parameter-validation/i-call
+  slug: call
+  inherited: false
+data_path: cuprum/parameter-validation
+extended_modules:
+- name: SleepingKingStudios::Tools::Toolbox::Mixin
+  slug: mixin
+version: "*"

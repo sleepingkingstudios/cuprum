@@ -92,6 +92,9 @@ direct_subclasses:
 - name: Cuprum::Errors::CommandNotImplemented
   slug: command-not-implemented
   path: cuprum/errors/command-not-implemented
+- name: Cuprum::Errors::InvalidParameters
+  slug: invalid-parameters
+  path: cuprum/errors/invalid-parameters
 - name: Cuprum::Errors::MultipleErrors
   slug: multiple-errors
   path: cuprum/errors/multiple-errors

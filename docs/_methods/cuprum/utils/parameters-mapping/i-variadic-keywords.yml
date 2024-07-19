@@ -1,0 +1,12 @@
+---
+name: Cuprum::Utils::ParametersMapping#variadic_keywords
+parent_path: cuprum/utils/parameters-mapping
+signature: variadic_keywords
+slug: variadic-keywords
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-variadic-keywords
+returns:
+- description: the name of the variadic keywords parameter, if any.
+  type:
+  - name: Symbol
+version: "*"

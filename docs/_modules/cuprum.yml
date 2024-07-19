@@ -25,6 +25,7 @@ files:
 - lib/cuprum/result_helpers.rb
 - lib/cuprum/command_factory.rb
 - lib/cuprum/exception_handling.rb
+- lib/cuprum/parameter_validation.rb
 parent_path: ''
 short_description: Toolkit for implementing business logic as function objects.
 class_methods:
@@ -69,6 +70,8 @@ defined_modules:
   slug: matching
 - name: Middleware
   slug: middleware
+- name: ParameterValidation
+  slug: parameter-validation
 - name: Processing
   slug: processing
 - name: RSpec

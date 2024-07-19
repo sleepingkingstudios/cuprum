@@ -1,0 +1,24 @@
+---
+name: Cuprum::ParameterValidation::Validator
+slug: validator
+type: class
+files:
+- lib/cuprum/parameter_validation/validator.rb
+parent_path: cuprum/parameter-validation
+short_description: Utility class for validating mapped parameters.
+defined_classes:
+- name: UnknownValidationError
+  slug: unknown-validation-error
+instance_methods:
+- name: call
+  path: cuprum/parameter-validation/validator/i-call
+  slug: call
+  inherited: false
+- name: initialize
+  path: cuprum/parameter-validation/validator/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/parameter-validation/validator
+constructor: true
+version: "*"

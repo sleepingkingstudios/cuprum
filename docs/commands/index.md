@@ -23,6 +23,7 @@ Each Command implements a `#call` method that wraps your defined business logic 
 - [Command Factories](../factories)
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
+- [Parameter Validation](./parameter-validation)
 - [Map Commands](./map-commands)
 - [Middleware](./middleware)
 - [Operations](./operations)

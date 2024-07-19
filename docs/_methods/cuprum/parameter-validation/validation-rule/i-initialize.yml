@@ -1,0 +1,31 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#initialize
+parent_path: cuprum/parameter-validation/validation-rule
+signature: initialize(name:, type:, **options, &block)
+slug: initialize
+constructor: true
+data_path: cuprum/parameter-validation/validation-rule/i-initialize
+metadata:
+  api: private
+params:
+- description: the name of the parameter to validate.
+  name: name
+  type:
+  - name: Symbol
+- description: the type of validation to perform.
+  name: type
+  type:
+  - name: Symbol
+- description: additional options to pass to the validator.
+  name: options
+  type:
+  - name: Hash
+- description: a block to pass to the validator, if any.
+  name: block
+  type:
+  - name: Proc
+returns:
+- description: a new instance of ValidationRule
+  type:
+  - name: ValidationRule
+version: "*"

@@ -1,0 +1,18 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#type=
+parent_path: cuprum/parameter-validation/validation-rule
+signature: type=(value)
+slug: type=
+constructor: false
+data_path: cuprum/parameter-validation/validation-rule/i-type=
+params:
+- description: the value to set the attribute type to.
+  name: value
+  type:
+  - name: Object
+returns:
+- description: the newly set value
+  type:
+  - name: Object
+short_description: Sets the attribute type
+version: "*"

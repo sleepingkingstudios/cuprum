@@ -1,0 +1,15 @@
+---
+name: Cuprum::Utils::ParametersMapping#variadic_arguments?
+parent_path: cuprum/utils/parameters-mapping
+signature: variadic_arguments?
+slug: variadic-arguments?
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-variadic-arguments?
+returns:
+- description: |-
+    true if the method has a variadic arguments
+    parameter; otherwise false.
+  type:
+  - name: 'true'
+  - name: 'false'
+version: "*"

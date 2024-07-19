@@ -1,0 +1,30 @@
+---
+name: Cuprum::Utils::ParametersMapping#call
+parent_path: cuprum/utils/parameters-mapping
+signature: call(*arguments, **keywords, &block)
+slug: call
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-call
+params:
+- description: the positional parameters to map.
+  name: arguments
+  type:
+  - name: Array
+- description: the keyword parameters to map.
+  name: keywords
+  type:
+  - name: Hash
+- description: the block parameter to map, if any.
+  name: block
+  type:
+  - name: Proc
+returns:
+- description: the mapped parameters.
+  type:
+  - name: Hash
+    keys:
+    - name: Symbol
+    values:
+    - name: Object
+short_description: Maps the given parameters to a Hash of parameter names and values.
+version: "*"
