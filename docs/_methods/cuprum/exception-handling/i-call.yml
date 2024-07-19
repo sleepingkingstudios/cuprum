@@ -1,7 +1,7 @@
 ---
 name: Cuprum::ExceptionHandling#call
 parent_path: cuprum/exception-handling
-signature: call(*args, **kwargs, &block)
+signature: call(*args, **kwargs, &)
 slug: call
 constructor: false
 data_path: cuprum/exception-handling/i-call

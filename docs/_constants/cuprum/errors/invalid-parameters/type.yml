@@ -1,0 +1,8 @@
+---
+name: Cuprum::Errors::InvalidParameters::TYPE
+parent_path: cuprum/errors/invalid-parameters
+slug: type
+short_description: Short string used to identify the type of error.
+value: "'cuprum.errors.invalid_parameters'"
+data_path: cuprum/errors/invalid-parameters/type
+version: "*"

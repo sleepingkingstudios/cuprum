@@ -1,0 +1,18 @@
+---
+name: Cuprum::Utils::ParametersMapping#arguments
+parent_path: cuprum/utils/parameters-mapping
+signature: arguments
+slug: arguments
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-arguments
+returns:
+- description: |-
+    the named arguments to the method, both
+    required and optional, but excluding variadic args).
+  type:
+  - name: Hash
+    keys:
+    - name: Symbol
+    values:
+    - name: Integer
+version: "*"

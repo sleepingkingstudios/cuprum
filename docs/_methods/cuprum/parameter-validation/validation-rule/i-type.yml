@@ -1,0 +1,13 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#type
+parent_path: cuprum/parameter-validation/validation-rule
+signature: type
+slug: type
+constructor: false
+data_path: cuprum/parameter-validation/validation-rule/i-type
+returns:
+- description: the current value of type
+  type:
+  - name: Object
+short_description: Returns the value of attribute type
+version: "*"

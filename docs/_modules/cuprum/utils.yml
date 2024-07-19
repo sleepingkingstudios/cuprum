@@ -5,8 +5,12 @@ type: module
 files:
 - lib/cuprum/utils.rb
 - lib/cuprum/utils/instance_spy.rb
+- lib/cuprum/utils/parameters_mapping.rb
 parent_path: cuprum
 short_description: Namespace for utility modules.
+defined_classes:
+- name: ParametersMapping
+  slug: parameters-mapping
 defined_modules:
 - name: InstanceSpy
   slug: instance-spy

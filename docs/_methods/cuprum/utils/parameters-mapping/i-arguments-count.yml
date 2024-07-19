@@ -1,0 +1,12 @@
+---
+name: Cuprum::Utils::ParametersMapping#arguments_count
+parent_path: cuprum/utils/parameters-mapping
+signature: arguments_count
+slug: arguments-count
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-arguments-count
+returns:
+- description: the number of named arguments.
+  type:
+  - name: Integer
+version: "*"

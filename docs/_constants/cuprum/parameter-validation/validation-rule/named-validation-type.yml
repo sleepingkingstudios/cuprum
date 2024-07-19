@@ -1,0 +1,10 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule::NAMED_VALIDATION_TYPE
+parent_path: cuprum/parameter-validation/validation-rule
+slug: named-validation-type
+short_description: Custom validation type for a named method validation.
+value: ":_named_method_validation"
+data_path: cuprum/parameter-validation/validation-rule/named-validation-type
+metadata:
+  api: private
+version: "*"

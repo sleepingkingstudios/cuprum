@@ -1,0 +1,12 @@
+---
+name: Cuprum::Errors::InvalidParameters#command_class
+parent_path: cuprum/errors/invalid-parameters
+signature: command_class
+slug: command-class
+constructor: false
+data_path: cuprum/errors/invalid-parameters/i-command-class
+returns:
+- description: the class of the failed command.
+  type:
+  - name: Class
+version: "*"

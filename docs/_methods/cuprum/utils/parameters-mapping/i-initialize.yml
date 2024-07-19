@@ -1,0 +1,52 @@
+---
+name: Cuprum::Utils::ParametersMapping#initialize
+parent_path: cuprum/utils/parameters-mapping
+signature: 'initialize(arguments: [], keywords: [], block: nil, variadic_arguments:
+  nil, variadic_keywords: nil)'
+slug: initialize
+constructor: true
+data_path: cuprum/utils/parameters-mapping/i-initialize
+params:
+- description: |-
+    the named arguments to the method, both
+    required and optional, but excluding variadic args).
+  name: arguments
+  type:
+  - name: Array
+    items:
+    - name: Symbol
+  default: "[]"
+- description: the name of the block parameter, if any.
+  name: block
+  type:
+  - name: Symbol
+  - name: nil
+  default: nil
+- description: |-
+    the keywords for the method, both
+    required and optional, but excluding variadic keywords.
+  name: keywords
+  type:
+  - name: Array
+    items:
+    - name: Symbol
+  default: "[]"
+- description: |-
+    the name of the variadic arguments
+    parameter, if any.
+  name: variadic_arguments
+  type:
+  - name: Symbol
+  default: nil
+- description: |-
+    the name of the variadic keywords
+    parameter, if any.
+  name: variadic_keywords
+  type:
+  - name: Symbol
+  default: nil
+returns:
+- description: a new instance of ParametersMapping
+  type:
+  - name: ParametersMapping
+version: "*"

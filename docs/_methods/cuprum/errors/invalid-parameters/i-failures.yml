@@ -1,0 +1,14 @@
+---
+name: Cuprum::Errors::InvalidParameters#failures
+parent_path: cuprum/errors/invalid-parameters
+signature: failures
+slug: failures
+constructor: false
+data_path: cuprum/errors/invalid-parameters/i-failures
+returns:
+- description: the messages for the failed validations.
+  type:
+  - name: Array
+    items:
+    - name: String
+version: "*"

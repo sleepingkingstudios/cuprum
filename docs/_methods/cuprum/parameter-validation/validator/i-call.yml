@@ -1,0 +1,35 @@
+---
+name: Cuprum::ParameterValidation::Validator#call
+parent_path: cuprum/parameter-validation/validator
+signature: call(command:, parameters:, rules:)
+slug: call
+constructor: false
+data_path: cuprum/parameter-validation/validator/i-call
+params:
+- description: the command whose parameters are validated.
+  name: command
+  type:
+  - name: Object
+- description: the parameters to validate.
+  name: parameters
+  type:
+  - name: Hash
+    keys:
+    - name: Symbol
+    values:
+    - name: Object
+- description: |-
+    the rules used to validate the
+    parameters.
+  name: rules
+  type:
+  - name: Array
+    items:
+    - name: ValidationRule
+returns:
+- description: a result with the validation errors, if any.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Validates the given parameters.
+version: "*"

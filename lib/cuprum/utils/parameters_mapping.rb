@@ -95,13 +95,14 @@ module Cuprum::Utils
       !@block.nil?
     end
 
-    # Maps the given parameters to a Hash of parameter names and values.
+    # @overload call(*arguments, **keywords, &block)
+    #   Maps the given parameters to a Hash of parameter names and values.
     #
-    # @param arguments [Array] the positional parameters to map.
-    # @param keywords [Hash] the keyword parameters to map.
-    # @param block [Proc] the block parameter to map, if any.
+    #   @param arguments [Array] the positional parameters to map.
+    #   @param keywords [Hash] the keyword parameters to map.
+    #   @param block [Proc] the block parameter to map, if any.
     #
-    # @return [Hash{Symbol=>Object}] the mapped parameters.
+    #   @return [Hash{Symbol=>Object}] the mapped parameters.
     def call(*args, **kwargs, &block_arg) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
       params = {}
       extras = {}

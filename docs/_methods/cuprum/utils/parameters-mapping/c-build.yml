@@ -1,0 +1,20 @@
+---
+name: Cuprum::Utils::ParametersMapping.build
+parent_path: cuprum/utils/parameters-mapping
+signature: build(callable)
+slug: build
+constructor: false
+data_path: cuprum/utils/parameters-mapping/c-build
+params:
+- description: |-
+    the method or Proc for which to map
+    parameters.
+  name: callable
+  type:
+  - name: "#parameters"
+returns:
+- description: the mapping for the callable object.
+  type:
+  - name: ParametersMapping
+short_description: Generates a parameters mapping for the given method or Proc.
+version: "*"

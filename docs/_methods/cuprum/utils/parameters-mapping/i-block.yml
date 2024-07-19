@@ -1,0 +1,13 @@
+---
+name: Cuprum::Utils::ParametersMapping#block
+parent_path: cuprum/utils/parameters-mapping
+signature: block
+slug: block
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-block
+returns:
+- description: the name of the block parameter, if any.
+  type:
+  - name: Symbol
+  - name: nil
+version: "*"

@@ -1,0 +1,23 @@
+---
+name: Cuprum::Errors::InvalidParameters#initialize
+parent_path: cuprum/errors/invalid-parameters
+signature: initialize(command_class:, failures:)
+slug: initialize
+constructor: true
+data_path: cuprum/errors/invalid-parameters/i-initialize
+params:
+- description: the class of the failed command.
+  name: command_class
+  type:
+  - name: Class
+- description: the messages for the failed validations.
+  name: failures
+  type:
+  - name: Array
+    items:
+    - name: String
+returns:
+- description: a new instance of InvalidParameters
+  type:
+  - name: InvalidParameters
+version: "*"

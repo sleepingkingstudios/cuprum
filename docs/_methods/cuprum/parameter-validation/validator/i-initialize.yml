@@ -1,0 +1,12 @@
+---
+name: Cuprum::ParameterValidation::Validator#initialize
+parent_path: cuprum/parameter-validation/validator
+signature: initialize
+slug: initialize
+constructor: true
+data_path: cuprum/parameter-validation/validator/i-initialize
+returns:
+- description: a new instance of Validator
+  type:
+  - name: Validator
+version: "*"

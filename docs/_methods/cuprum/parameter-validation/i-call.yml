@@ -1,0 +1,36 @@
+---
+name: Cuprum::ParameterValidation#call
+parent_path: cuprum/parameter-validation
+signature: call(*arguments, **keywords, &block)
+slug: call
+constructor: false
+data_path: cuprum/parameter-validation/i-call
+metadata:
+  see:
+  - label: Cuprum::Processing#call
+    path: cuprum/processing#instance-method-call
+    text:
+    type: reference
+params:
+- description: the arguments to validate.
+  name: arguments
+  type:
+  - name: Array
+- description: the keywords to validate.
+  name: keywords
+  type:
+  - name: Hash
+- description: the block to validate, if any,
+  name: block
+  type:
+  - name: Proc
+returns:
+- description: |-
+    a failing result with a
+    Cuprum::Errors::InvalidParameters error if the validation fails;
+    otherwise the normal result of calling the command.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: Validates the parameters and passes them to super.
+version: "*"
