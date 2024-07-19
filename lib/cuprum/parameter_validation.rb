@@ -93,11 +93,14 @@ module Cuprum
       #     if neither the command nor the standard tools defines the method.
       def validate(name, type = nil, **options, &) # rubocop:disable Metrics/MethodLength
         tools.assertions.validate_name(name, as: 'name')
-        tools.assertions.validate_name(type, as: 'type') if type
+
+        if type && !type.is_a?(Module)
+          tools.assertions.validate_name(type, as: 'type')
+        end
 
         validation_rule =
           if type
-            ValidationRule.new(name:, type:, as: name.to_s, **options)
+            build_validation(name, type, **options)
           elsif block_given?
             build_block_validation(name, **options, &)
           else
@@ -139,6 +142,20 @@ module Cuprum
         type = ValidationRule::NAMED_VALIDATION_TYPE
 
         ValidationRule.new(name:, type:, as: name.to_s, **options)
+      end
+
+      def build_validation(name, type, **options)
+        unless type.is_a?(Module)
+          return ValidationRule.new(name:, type:, as: name.to_s, **options)
+        end
+
+        ValidationRule.new(
+          name:,
+          type:     :instance_of,
+          as:       name.to_s,
+          expected: type,
+          **options
+        )
       end
 
       def parameters_mapping

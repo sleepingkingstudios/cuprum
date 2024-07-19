@@ -130,9 +130,9 @@ RSpec.describe Cuprum::ParameterValidation do
 
   describe '.validate' do
     deferred_examples 'should add the validation' do
-      let(:validation)       { described_class.each_validation.to_a.last }
-      let?(:expected_type)   { type.to_sym }
-      let(:expected_options) { { as: name.to_s } }
+      let(:validation)        { described_class.each_validation.to_a.last }
+      let?(:expected_type)    { type.to_sym }
+      let?(:expected_options) { { as: name.to_s } }
 
       it 'should add the validation rule' do
         expect { define_validation }.to(
@@ -272,6 +272,14 @@ RSpec.describe Cuprum::ParameterValidation do
       let(:expected_type) do
         described_class::ValidationRule::BLOCK_VALIDATION_TYPE
       end
+
+      include_deferred 'should add the validation'
+    end
+
+    describe 'with name: value and type: a Class' do
+      let(:type)             { String }
+      let(:expected_type)    { :instance_of }
+      let(:expected_options) { { expected: String, as: 'author' } }
 
       include_deferred 'should add the validation'
     end

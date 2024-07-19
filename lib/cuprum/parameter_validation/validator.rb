@@ -31,7 +31,7 @@ module Cuprum::ParameterValidation
 
         if rule.type == ValidationRule::BLOCK_VALIDATION_TYPE
           evaluate_block_validation(rule:, value:)
-        elsif command.respond_to?(rule.method_name)
+        elsif command.respond_to?(rule.method_name, true)
           evaluate_command_validation(command:, rule:, value:)
         elsif validator.respond_to?(rule.method_name)
           evaluate_validation(rule:, value:)

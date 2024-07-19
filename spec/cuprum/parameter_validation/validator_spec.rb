@@ -131,10 +131,14 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
 
       context 'when the receiver defines the validation method' do
         before(:example) do
-          Spec::CustomCommand.define_method(:validate_name) do |value, as:, **|
-            return if value.include?('Doctor')
+          Spec::CustomCommand.class_eval do
+            private
 
-            "#{as} is not a real doctor"
+            def validate_name(value, as:, **)
+              return if value.include?('Doctor')
+
+              "#{as} is not a real doctor"
+            end
           end
         end
 
@@ -285,11 +289,14 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
 
       context 'when the receiver defines the validation method' do
         before(:example) do
-          Spec::CustomCommand.define_method(:validate_author) \
-          do |value, as:, **|
-            return if value.include?('Doctor')
+          Spec::CustomCommand.class_eval do
+            private
 
-            "#{as} is not a real doctor"
+            def validate_author(value, as:, **)
+              return if value.include?('Doctor')
+
+              "#{as} is not a real doctor"
+            end
           end
         end
 
