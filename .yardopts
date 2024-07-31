@@ -1,6 +1,6 @@
 --embed-mixins
 --markup markdown
---markup-provider commonmarker
+--markup-provider kramdown
 --no-private
 -
 CHANGELOG.md
