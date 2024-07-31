@@ -94,6 +94,8 @@ class LaunchRocket < Cuprum::Command
 
   private
 
+  def process(rocket); end
+
   def validate_rocket(rocket, **)
     return 'rocket must be a Rocket' unless rocket.is_a?(Rocket)
 
@@ -119,6 +121,10 @@ class LaunchRocket < Cuprum::Command
   validate :rocket do |rocket|
     rocket.is_a?(Rocket) && !rocket.launched?
   end
+
+  private
+
+  def process(rocket); end
 end
 ```
 
@@ -135,6 +141,10 @@ class LaunchRocket < Cuprum::Command
   include Cuprum::ParameterValidation
 
   validate :rocket, Rocket
+
+  private
+
+  def process(rocket); end
 end
 ```
 
@@ -149,6 +159,10 @@ class LaunchRocket < Cuprum::Command
   include Cuprum::ParameterValidation
 
   validate :launch_site, :name
+
+  private
+
+  def process(rocket); end
 end
 ```
 
@@ -168,6 +182,8 @@ class LaunchRocket < Cuprum::Command
 
   private
 
+  def process(rocket); end
+
   def validate_launchable?(vehicle, as: 'vehicle')
     unless vehicle.respond_to?(:launch)
       return "#{as} can't be launched"
@@ -182,5 +198,25 @@ end
 
 If the method returns a failure message, the validation will fail and the message will be added to the failure messages.
 
-{% include breadcrumbs.md %}
+### Testing Parameter Validation
 
+For projects using `RSpec`, there is a deferred example group for quickly verifying a command's parameter validation.
+
+```ruby
+RSpec.describe LaunchRocket do
+  include RSpec::SleepingKingStudios::Deferred::Consumer
+  include Cuprum::RSpec::Deferred::ParameterValidationExamples
+
+  subject(:command) { described_class.new }
+
+  describe '#call' do
+    describe 'with rocket: nil' do
+      include_deferred 'should validate the parameter',
+        :rocket,
+        message: 'rocket must be a Rocket'
+    end
+  end
+end
+```
+
+{% include breadcrumbs.md %}

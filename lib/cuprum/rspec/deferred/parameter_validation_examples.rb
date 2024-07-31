@@ -8,6 +8,49 @@ require 'cuprum/rspec/deferred'
 
 module Cuprum::RSpec::Deferred
   # Deferred examples for testing parameter validation.
+  #
+  # @example With A Validation Type
+  #   RSpec.describe LaunchRocket do
+  #     include Cuprum::RSpec::Deferred::ParameterValidationExamples
+  #
+  #     describe '#call' do
+  #       let(:launch_site) { 'KSC' }
+  #
+  #       def call_command
+  #         subject.call(launch_site:)
+  #       end
+  #
+  #       describe 'with invalid parameters' do
+  #         let(:launch_site) { nil }
+  #
+  #         include_deferred 'should validate the parameter',
+  #           :launch_site,
+  #           'sleeping_king_studios.tools.assertions.presence',
+  #           as: 'launch site'
+  #       end
+  #     end
+  #   end
+  #
+  # @example With A Message
+  #   RSpec.describe LaunchRocket do
+  #     include Cuprum::RSpec::Deferred::ParameterValidationExamples
+  #
+  #     describe '#call' do
+  #       let(:launch_site) { 'KSC' }
+  #
+  #       def call_command
+  #         subject.call(launch_site:)
+  #       end
+  #
+  #       describe 'with invalid parameters' do
+  #         let(:launch_site) { nil }
+  #
+  #         include_deferred 'should validate the parameter',
+  #           :launch_site,
+  #           message: "launch site can't be blank"
+  #       end
+  #     end
+  #   end
   module ParameterValidationExamples
     include Cuprum::RSpec::Matchers
     include RSpec::SleepingKingStudios::Deferred::Provider
