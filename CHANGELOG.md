@@ -18,6 +18,10 @@ Implemented `Cuprum::ParameterValidation`, which provides a DSL for validating a
 
 **Breaking Change:** Corrected the namespace for `Cuprum::Errors::UncaughtException::TYPE` to remove a reference to `cuprum-collections`. If this causes an issue, update your application to reference the constant, rather than a hard-coded value.
 
+### RSpec
+
+Implemented `Cuprum::RSpec::Deferred::ParameterValidationExamples`, which provide a shortcut for testing commands that use parameter validation.
+
 ## 1.2.0
 
 The "Straight On Till Morning" Update
