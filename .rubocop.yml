@@ -93,6 +93,11 @@ RSpec/SpecFilePathFormat:
   Exclude:
     - 'spec/integration/**/*.rb'
 
+RSpec/SpecFilePathSuffix:
+  Exclude:
+    - '**/*spec.fixture.rb'
+    - '**/*spec.fixtures.rb'
+
 Style/AccessorGrouping:
   Enabled: false
 
