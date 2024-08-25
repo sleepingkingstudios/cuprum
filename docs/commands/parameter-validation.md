@@ -210,7 +210,13 @@ RSpec.describe LaunchRocket do
   subject(:command) { described_class.new }
 
   describe '#call' do
+    def call_command
+      command.call(rocket:)
+    end
+
     describe 'with rocket: nil' do
+      let(:rocket) { nil }
+
       include_deferred 'should validate the parameter',
         :rocket,
         message: 'rocket must be a Rocket'
@@ -218,5 +224,7 @@ RSpec.describe LaunchRocket do
   end
 end
 ```
+
+The example group requires the presence of a defined `#call_command` method, as in the example above.
 
 {% include breadcrumbs.md %}
