@@ -64,7 +64,7 @@ module Cuprum::ParameterValidation
       validator << message
     end
 
-    def evaluate_command_validation(command:, rule:, value:)
+    def evaluate_command_validation(command:, rule:, value:) # rubocop:disable Metrics/MethodLength
       message = command.send(
         rule.method_name,
         value,
@@ -72,7 +72,11 @@ module Cuprum::ParameterValidation
         **rule.options
       )
 
-      validator << message if message
+      if message.is_a?(Array)
+        message.each { |item| validator << item }
+      elsif message
+        validator << message
+      end
     end
 
     def evaluate_validation(rule:, value:)

@@ -322,6 +322,53 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
           it { expect(call_validator).to be_a_passing_result }
         end
       end
+
+      context 'when the validation method returns multiple messages' do
+        before(:example) do
+          Spec::CustomCommand.class_eval do
+            private
+
+            def validate_author(value, as:, **)
+              messages = []
+
+              unless value.include?('Doctor')
+                messages << "#{as} is not a real doctor"
+              end
+
+              unless value.include?('Skelebone')
+                messages << "#{as} knows nothing about bones"
+              end
+
+              messages
+            end
+          end
+        end
+
+        describe 'with non-matching parameters' do
+          let(:parameters) { { author: 'Mister Phalanges' } }
+          let(:expected_error) do
+            Cuprum::Errors::InvalidParameters.new(
+              command_class: Spec::CustomCommand,
+              failures:      [
+                'author is not a real doctor',
+                'author knows nothing about bones'
+              ]
+            )
+          end
+
+          it 'should return a failing result with invalid parameters error' do
+            expect(call_validator)
+              .to be_a_failing_result
+              .with_error(expected_error)
+          end
+        end
+
+        describe 'with matching parameters' do
+          let(:parameters) { { author: 'Doctor Skelebone' } }
+
+          it { expect(call_validator).to be_a_passing_result }
+        end
+      end
     end
 
     describe 'with multiple validation rules' do
