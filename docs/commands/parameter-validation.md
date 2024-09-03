@@ -162,7 +162,7 @@ class LaunchRocket < Cuprum::Command
 
   private
 
-  def process(rocket); end
+  def process(launch_site); end
 end
 ```
 
@@ -196,7 +196,7 @@ class LaunchRocket < Cuprum::Command
 end
 ```
 
-If the method returns a failure message, the validation will fail and the message will be added to the failure messages.
+If the method returns a failure message or an array of messages, the validation will fail and the message(s) will be added to the failure messages.
 
 ### Testing Parameter Validation
 

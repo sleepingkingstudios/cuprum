@@ -19,7 +19,7 @@ module Spec::Errors
     private
 
     def build_message
-      message = +"#{model_class.name.split('::').last} not valid"
+      message = "#{model_class.name.split('::').last} not valid"
 
       return message if errors.empty?
 
