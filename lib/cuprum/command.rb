@@ -110,9 +110,11 @@ module Cuprum
     def initialize(&implementation)
       return unless implementation
 
-      define_singleton_method :process, &implementation
+      define_singleton_method :process_block, &implementation
 
-      singleton_class.send(:private, :process)
+      singleton_class.send(:private, :process_block)
+
+      @process_block = true
     end
 
     # (see Cuprum::Processing#call)
@@ -136,6 +138,19 @@ module Cuprum
           command.call(*args, **kwargs, &block)
         end
       end
+    end
+
+    private
+
+    # (see Cuprum::Processing#process)
+    #
+    # @!visibility public
+    def process(*args, **kwargs, &)
+      process_block? ? process_block(*args, **kwargs, &) : super
+    end
+
+    def process_block?
+      @process_block
     end
   end
 end
