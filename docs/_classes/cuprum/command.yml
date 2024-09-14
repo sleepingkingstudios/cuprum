@@ -31,9 +31,9 @@ instance_methods:
   inherited: false
   constructor: true
 - name: process
-  path: cuprum/processing/i-process
+  path: cuprum/command/i-process
   slug: process
-  inherited: true
+  inherited: false
 - name: step
   path: cuprum/steps/i-step
   slug: step

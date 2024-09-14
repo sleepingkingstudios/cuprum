@@ -52,7 +52,7 @@ instance_methods:
   inherited: true
   constructor: true
 - name: process
-  path: cuprum/processing/i-process
+  path: cuprum/command/i-process
   slug: process
   inherited: true
 - name: reset!
