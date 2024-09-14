@@ -7,6 +7,11 @@ files:
 parent_path: cuprum/built-in
 short_description: A predefined operation that returns the value or result it was
   called with.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 instance_attributes:
 - name: result
   read: true

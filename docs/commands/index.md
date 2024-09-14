@@ -24,6 +24,7 @@ Each Command implements a `#call` method that wraps your defined business logic 
 - [Command Steps](./steps)
 - [Handling Exceptions](./exceptions)
 - [Parameter Validation](./parameter-validation)
+- [Subclassing Commands](./subclassing-commands)
 - [Map Commands](./map-commands)
 - [Middleware](./middleware)
 - [Operations](./operations)

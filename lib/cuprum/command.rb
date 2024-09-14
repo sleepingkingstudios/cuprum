@@ -76,6 +76,25 @@ module Cuprum
     include Cuprum::Currying
     include Cuprum::Steps
 
+    # @!scope class
+
+    # @!method subclass(*class_arguments, **class_keywords, &block)
+    #   Creates a subclass with partially applied constructor parameters.
+    #
+    #   @param class_arguments [Array] the arguments, if any, to apply to the
+    #     constructor. These arguments will be added before any args passed
+    #     directly to the constructor.
+    #   @param class_keywords [Hash] the keywords, if any, to apply to the
+    #     constructor. These keywords will be added before any kwargs passed
+    #     directly to the constructor.
+    #
+    #   @yield the block, if any, to pass to the constructor. This will be
+    #     overriden by a block passed directly to the constructor.
+    #
+    #   @return [Class] the generated subclass.
+
+    # @!scope instance
+
     # Returns a new instance of Cuprum::Command.
     #
     # @yield If a block is given, the block is used to define a private #process

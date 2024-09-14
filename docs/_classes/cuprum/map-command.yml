@@ -6,6 +6,11 @@ files:
 - lib/cuprum/map_command.rb
 parent_path: cuprum
 short_description: Calls the command implementation with each item in the given enumerable.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 instance_methods:
 - name: allow_partial?
   path: cuprum/map-command/i-allow-partial?

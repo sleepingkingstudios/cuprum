@@ -7,6 +7,11 @@ files:
 parent_path: cuprum/currying
 short_description: 'A CurriedCommand wraps another command and passes preset params
   to #call.'
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 instance_attributes:
 - name: arguments
   read: true
