@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sleeping_king_studios/tools/toolbox/subclass'
+
 require 'cuprum/currying'
 require 'cuprum/processing'
 require 'cuprum/steps'
@@ -69,6 +71,7 @@ module Cuprum
   #
   # @see Cuprum::Processing
   class Command
+    extend  SleepingKingStudios::Tools::Toolbox::Subclass
     include Cuprum::Processing
     include Cuprum::Currying
     include Cuprum::Steps

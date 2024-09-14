@@ -38,6 +38,101 @@ RSpec.describe Cuprum::Command do
 
   include_examples 'should implement the Steps methods'
 
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
+  describe '.subclass' do
+    subject(:command) { subclass.new(*arguments, **keywords, &block) }
+
+    let(:described_class)    { Spec::ExampleCommand }
+    let(:subclass_arguments) { [] }
+    let(:subclass_keywords)  { {} }
+    let(:subclass_block)     { nil }
+    let(:subclass) do
+      described_class.subclass(
+        *subclass_arguments,
+        **subclass_keywords,
+        &subclass_block
+      )
+    end
+    let(:arguments)          { [] }
+    let(:keywords)           { {} }
+    let(:block)              { nil }
+    let(:expected_arguments) { subclass_arguments + arguments }
+    let(:expected_keywords)  { subclass_keywords.merge(keywords) }
+    let(:expected_block)     { block || subclass_block }
+
+    example_class 'Spec::ExampleCommand', Cuprum::Command do |klass| # rubocop:disable RSpec/DescribedClass
+      klass.define_method(:initialize) do |*arguments, **keywords, &block|
+        super()
+
+        @arguments = arguments
+        @block     = block
+        @keywords  = keywords
+      end
+
+      klass.attr_reader :arguments
+
+      klass.attr_reader :block
+
+      klass.attr_reader :keywords
+    end
+
+    it 'should define the class method' do
+      expect(described_class)
+        .to respond_to(:subclass)
+        .with(0).arguments
+        .and_unlimited_arguments
+        .and_any_keywords
+        .and_a_block
+    end
+
+    it { expect(subclass).to be_a Class }
+
+    it { expect(subclass).to be < described_class }
+
+    it { expect(command.arguments).to be == expected_arguments }
+
+    it { expect(command.block).to be == expected_block }
+
+    it { expect(command.keywords).to be == expected_keywords }
+
+    context 'when the command is initialized with parameters' do
+      let(:arguments) { %w[yon go roku] }
+      let(:keywords)  { { quantity: 10_000, purpose: '???' } }
+      let(:block)     { -> { { ok: true } } }
+
+      it { expect(command.arguments).to be == expected_arguments }
+
+      it { expect(command.block).to be == expected_block }
+
+      it { expect(command.keywords).to be == expected_keywords }
+    end
+
+    describe 'with parameters' do
+      let(:subclass_arguments) { %w[ichi ni san] }
+      let(:subclass_keywords)  { { name: 'Stem Bolt', quantity: 0 } }
+      let(:subclass_block)     { -> { { ok: false } } }
+
+      it { expect(command.arguments).to be == expected_arguments }
+
+      it { expect(command.block).to be == expected_block }
+
+      it { expect(command.keywords).to be == expected_keywords }
+
+      context 'when the command is initialized with parameters' do
+        let(:arguments) { %w[yon go roku] }
+        let(:keywords)  { { quantity: 10_000, purpose: '???' } }
+        let(:block)     { -> { { ok: true } } }
+
+        it { expect(command.arguments).to be == expected_arguments }
+
+        it { expect(command.block).to be == expected_block }
+
+        it { expect(command.keywords).to be == expected_keywords }
+      end
+    end
+  end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
+
   describe '#call' do
     let(:implementation) { -> {} }
 
