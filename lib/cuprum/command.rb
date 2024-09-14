@@ -145,8 +145,8 @@ module Cuprum
     # (see Cuprum::Processing#process)
     #
     # @!visibility public
-    def process(*args, **kwargs, &)
-      process_block? ? process_block(*args, **kwargs, &) : super
+    def process(...)
+      process_block? ? process_block(...) : super
     end
 
     def process_block?
