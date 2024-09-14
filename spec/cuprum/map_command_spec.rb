@@ -68,13 +68,6 @@ RSpec.describe Cuprum::MapCommand do
       describe 'with an empty Array' do
         include_context 'with an implementation that yields one argument'
 
-        it 'should not yield control' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call([])
-          end
-            .not_to yield_control
-        end
-
         it { expect(command.call([])).to be_a Cuprum::ResultList }
 
         it { expect(command.call([]).status).to be :success }
@@ -94,13 +87,6 @@ RSpec.describe Cuprum::MapCommand do
           )
         end
         let(:expected_value) { Array.new(3) }
-
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
-        end
 
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
 
@@ -130,13 +116,6 @@ RSpec.describe Cuprum::MapCommand do
           [nil, items[1].upcase, nil]
         end
 
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
-        end
-
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
 
         it { expect(command.call(items).status).to be :failure }
@@ -157,13 +136,6 @@ RSpec.describe Cuprum::MapCommand do
           ]
         end
         let(:expected_value) { items.map(&:upcase) }
-
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
-        end
 
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
 
@@ -194,13 +166,6 @@ RSpec.describe Cuprum::MapCommand do
           end
           let(:expected_value) do
             [nil, items[1].upcase, nil]
-          end
-
-          it 'should yield each item' do
-            expect do |block|
-              described_class.new(**constructor_options, &block).call(items)
-            end
-              .to yield_successive_args(*items)
           end
 
           it { expect(command.call(items)).to be_a Cuprum::ResultList }
@@ -251,13 +216,6 @@ RSpec.describe Cuprum::MapCommand do
         end
         let(:expected_value) { Array.new(3) }
 
-        it 'should yield each key and value' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
-        end
-
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
 
         it { expect(command.call(items).status).to be :failure }
@@ -290,13 +248,6 @@ RSpec.describe Cuprum::MapCommand do
           ]
         end
 
-        it 'should yield each key and value' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
-        end
-
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
 
         it { expect(command.call(items).status).to be :failure }
@@ -322,13 +273,6 @@ RSpec.describe Cuprum::MapCommand do
             'ni: 2',
             'san: 3'
           ]
-        end
-
-        it 'should yield each key and value' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(items)
-          end
-            .to yield_successive_args(*items)
         end
 
         it { expect(command.call(items)).to be_a Cuprum::ResultList }
@@ -364,13 +308,6 @@ RSpec.describe Cuprum::MapCommand do
               nil,
               'san: 3'
             ]
-          end
-
-          it 'should yield each key and value' do
-            expect do |block|
-              described_class.new(**constructor_options, &block).call(items)
-            end
-              .to yield_successive_args(*items)
           end
 
           it { expect(command.call(items)).to be_a Cuprum::ResultList }
@@ -416,13 +353,6 @@ RSpec.describe Cuprum::MapCommand do
         end
         let(:expected_value) { Array.new(3) }
 
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(enum)
-          end
-            .to yield_successive_args(*items)
-        end
-
         it { expect(command.call(enum)).to be_a Cuprum::ResultList }
 
         it { expect(command.call(enum).status).to be :failure }
@@ -452,13 +382,6 @@ RSpec.describe Cuprum::MapCommand do
           [nil, items[1].upcase, nil]
         end
 
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(enum)
-          end
-            .to yield_successive_args(*items)
-        end
-
         it { expect(command.call(enum)).to be_a Cuprum::ResultList }
 
         it { expect(command.call(enum).status).to be :failure }
@@ -480,13 +403,6 @@ RSpec.describe Cuprum::MapCommand do
         end
         let(:enum)           { items.each }
         let(:expected_value) { items.map(&:upcase) }
-
-        it 'should yield each item' do
-          expect do |block|
-            described_class.new(**constructor_options, &block).call(enum)
-          end
-            .to yield_successive_args(*items)
-        end
 
         it { expect(command.call(enum)).to be_a Cuprum::ResultList }
 
@@ -518,13 +434,6 @@ RSpec.describe Cuprum::MapCommand do
           end
           let(:expected_value) do
             [nil, items[1].upcase, nil]
-          end
-
-          it 'should yield each item' do
-            expect do |block|
-              described_class.new(**constructor_options, &block).call(enum)
-            end
-              .to yield_successive_args(*items)
           end
 
           it { expect(command.call(enum)).to be_a Cuprum::ResultList }

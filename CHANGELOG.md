@@ -12,6 +12,10 @@ Updated `Cuprum::ExceptionHandling` to re-raise the exception if the `ENV['CUPRU
 
 Implemented `Command.subclass`, allowing partial application of constructor parameters (including the implementation block).
 
+Refactored `Command.new(&block)`, which no longer overwrites the `#process` method directly. Commands can now use `super` in the `#process` method to wrap a block implementation (or the parent class implementation if the parent class overrides `#process`).
+
+**Breaking Change:** The private method `Command#process_block` is now reserved and used to handle commands with block implementations.
+
 #### Parameter Validation
 
 Implemented `Cuprum::ParameterValidation`, which provides a DSL for validating a command's parameters prior to evaluating `#process`.

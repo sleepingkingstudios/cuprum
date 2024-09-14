@@ -221,6 +221,10 @@ module Cuprum
     def splat_items?
       return @splat_items unless @splat_items.nil?
 
+      if respond_to?(:process_block, true)
+        return @splat_items = method(:process_block).arity > 1
+      end
+
       @splat_items = method(:process).arity > 1
     end
   end
