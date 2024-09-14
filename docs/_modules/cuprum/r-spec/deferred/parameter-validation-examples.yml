@@ -1,0 +1,78 @@
+---
+name: Cuprum::RSpec::Deferred::ParameterValidationExamples
+slug: parameter-validation-examples
+type: module
+files:
+- lib/cuprum/rspec/deferred/parameter_validation_examples.rb
+parent_path: cuprum/r-spec/deferred
+short_description: Deferred examples for testing parameter validation.
+instance_methods:
+- name: be_a_failing_result
+  path: cuprum/r-spec/matchers/i-be-a-failing-result
+  slug: be-a-failing-result
+  inherited: true
+- name: be_a_passing_result
+  path: cuprum/r-spec/matchers/i-be-a-passing-result
+  slug: be-a-passing-result
+  inherited: true
+- name: be_a_result
+  path: cuprum/r-spec/matchers/i-be-a-result
+  slug: be-a-result
+  inherited: true
+- name: be_callable
+  path: cuprum/r-spec/matchers/i-be-callable
+  slug: be-callable
+  inherited: true
+data_path: cuprum/r-spec/deferred/parameter-validation-examples
+included_modules:
+- name: Cuprum::RSpec::Matchers
+  slug: matchers
+  path: cuprum/r-spec/matchers
+- name: RSpec::SleepingKingStudios::Deferred::Provider
+  slug: provider
+metadata:
+  examples:
+  - name: With A Validation Type
+    text: |-
+      RSpec.describe LaunchRocket do
+        include Cuprum::RSpec::Deferred::ParameterValidationExamples
+
+        describe '#call' do
+          let(:launch_site) { 'KSC' }
+
+          def call_command
+            subject.call(launch_site:)
+          end
+
+          describe 'with invalid parameters' do
+            let(:launch_site) { nil }
+
+            include_deferred 'should validate the parameter',
+              :launch_site,
+              'sleeping_king_studios.tools.assertions.presence',
+              as: 'launch site'
+          end
+        end
+      end
+  - name: With A Message
+    text: |-
+      RSpec.describe LaunchRocket do
+        include Cuprum::RSpec::Deferred::ParameterValidationExamples
+
+        describe '#call' do
+          let(:launch_site) { 'KSC' }
+
+          def call_command
+            subject.call(launch_site:)
+          end
+
+          describe 'with invalid parameters' do
+            let(:launch_site) { nil }
+
+            include_deferred 'should validate the parameter',
+              :launch_site,
+              message: "launch site can't be blank"
+          end
+        end
+      end
+version: "*"

@@ -10,6 +10,8 @@ As of version 1.3.0, Cuprum will no longer support Ruby 3.0.
 
 Updated `Cuprum::ExceptionHandling` to re-raise the exception if the `ENV['CUPRUM_RERAISE_EXCEPTIONS']` flag is set.
 
+Implemented `Command.subclass`, allowing partial application of constructor parameters (including the implementation block).
+
 #### Parameter Validation
 
 Implemented `Cuprum::ParameterValidation`, which provides a DSL for validating a command's parameters prior to evaluating `#process`.

@@ -6,6 +6,11 @@ files:
 - lib/cuprum/built_in/null_command.rb
 parent_path: cuprum/built-in
 short_description: A predefined command that does nothing when called.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 instance_methods:
 - name: arity
   path: cuprum/processing/i-arity

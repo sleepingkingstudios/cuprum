@@ -6,6 +6,11 @@ files:
 - lib/cuprum/built_in/null_operation.rb
 parent_path: cuprum/built-in
 short_description: A predefined operation that does nothing when called.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 instance_attributes:
 - name: result
   read: true

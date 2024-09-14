@@ -1,0 +1,14 @@
+---
+name: Cuprum::RSpec::Deferred
+slug: deferred
+type: module
+files:
+- lib/cuprum/rspec/deferred.rb
+- lib/cuprum/rspec/deferred/parameter_validation_examples.rb
+parent_path: cuprum/r-spec
+short_description: Namespace for deferred example groups for validating Cuprum commands.
+defined_modules:
+- name: ParameterValidationExamples
+  slug: parameter-validation-examples
+data_path: cuprum/r-spec/deferred
+version: "*"

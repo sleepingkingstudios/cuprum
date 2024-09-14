@@ -7,6 +7,11 @@ files:
 parent_path: cuprum
 short_description: Functional object that encapsulates a business logic operation
   or step.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: false
 instance_methods:
 - name: arity
   path: cuprum/processing/i-arity
@@ -53,6 +58,9 @@ description: |-
 
   A Command can be defined either by passing a block to the constructor, or
   by defining a subclass of Command and implementing the #process method.
+extended_modules:
+- name: SleepingKingStudios::Tools::Toolbox::Subclass
+  slug: subclass
 included_modules:
 - name: Cuprum::Currying
   slug: currying

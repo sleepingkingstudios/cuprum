@@ -4,6 +4,7 @@ slug: r-spec
 type: module
 files:
 - lib/cuprum/rspec.rb
+- lib/cuprum/rspec/deferred.rb
 - lib/cuprum/rspec/be_a_result.rb
 - lib/cuprum/rspec/be_callable.rb
 - lib/cuprum/rspec/be_a_result_matcher.rb
@@ -13,6 +14,8 @@ defined_classes:
 - name: BeAResultMatcher
   slug: be-a-result-matcher
 defined_modules:
+- name: Deferred
+  slug: deferred
 - name: Matchers
   slug: matchers
 data_path: cuprum/r-spec

@@ -6,6 +6,11 @@ files:
 - lib/cuprum/operation.rb
 parent_path: cuprum
 short_description: Functional object with syntactic sugar for tracking the last result.
+class_methods:
+- name: subclass
+  path: cuprum/command/c-subclass
+  slug: subclass
+  inherited: true
 defined_modules:
 - name: Mixin
   slug: mixin
