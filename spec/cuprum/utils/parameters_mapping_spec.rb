@@ -180,6 +180,12 @@ RSpec.describe Cuprum::Utils::ParametersMapping do
         variadic_keywords:  :options,
         block:              :action
     end
+
+    describe 'with a callable with an unnamed argument' do
+      let(:callable) { :itself.to_proc }
+
+      include_deferred 'should define the mapping'
+    end
     # rubocop:enable Lint/UnusedBlockArgument
   end
 
