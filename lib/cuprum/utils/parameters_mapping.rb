@@ -13,7 +13,7 @@ module Cuprum::Utils
     #   parameters.
     #
     # @return [ParametersMapping] the mapping for the callable object.
-    def self.build(callable) # rubocop:disable Metrics/MethodLength
+    def self.build(callable) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
       arguments          = []
       block              = nil
       keywords           = []
@@ -21,6 +21,8 @@ module Cuprum::Utils
       variadic_keywords  = nil
 
       callable.parameters.each do |(type, name)|
+        next if name.nil?
+
         case type
         when :opt, :req
           arguments << name
