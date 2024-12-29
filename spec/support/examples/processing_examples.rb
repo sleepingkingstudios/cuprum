@@ -96,7 +96,6 @@ module Spec::Examples
           end
         end
 
-        # rubocop:disable Style/RedundantLineContinuation
         it 'should forward all arguments to the implementation',
           :aggregate_failures \
         do
@@ -107,7 +106,6 @@ module Spec::Examples
           expect(called_arguments).to be == [*arguments, keywords]
           expect(yielded).to be true
         end
-        # rubocop:enable Style/RedundantLineContinuation
       end
 
       wrap_context 'when the implementation is defined' do
