@@ -9,9 +9,6 @@ gem 'sleeping_king_studios-tools',
   '>= 1.2.0.alpha',
   git:    'https://github.com/sleepingkingstudios/sleeping_king_studios-tools.git',
   branch: 'main'
-gem 'sleeping_king_studios-yard',
-  git:    'https://github.com/sleepingkingstudios/sleeping_king_studios-yard.git',
-  branch: 'main'
 
 group :development, :test do
   gem 'byebug', '~> 11.1'
@@ -34,6 +31,10 @@ group :docs do
 
   # Use Kramdown to parse GFM-dialect Markdown.
   gem 'kramdown-parser-gfm', '~> 1.1'
+
+  gem 'sleeping_king_studios-docs',
+    git:    'https://github.com/sleepingkingstudios/sleeping_king_studios-docs.git',
+    branch: 'main'
 
   # Use Webrick as local content server.
   gem 'webrick', '~> 1.8'
