@@ -1,5 +1,6 @@
 {% if include.label %}
-  {% include reference/reference_link.md label=include.namespace.name path=include.namespace.data_path -%}
+  {% assign reference_label = include.namespace.name | split: "::" | last %}
+  {% include reference/reference_link.md label=reference_label path=include.namespace.data_path -%}
   {% if include.namespace.type == "class" %}
   {% assign parent_class = include.namespace.inherited_classes.first %}
   &lt; {% if parent_class %}{% include reference/reference_link.md label=parent_class.name path=parent_class.path %}{% else %}Object{% endif %}

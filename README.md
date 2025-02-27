@@ -38,11 +38,11 @@ Code documentation is generated using [YARD](https://yardoc.org/), and can be ge
 
 The full documentation is available via [GitHub Pages](http://sleepingkingstudios.github.io/cuprum), and includes the code documentation as well as a deeper explanation of Cuprum's features and design philosophy. It also includes documentation for prior versions of the gem.
 
-To generate documentation locally, see the [SleepingKingStudios::Yard](https://github.com/sleepingkingstudios/sleeping_king_studios-yard) gem.
+To generate documentation locally, see the [SleepingKingStudios::Docs](https://github.com/sleepingkingstudios/sleeping_king_studios-docs) gem.
 
 ## License
 
-Copyright (c) 2017-2024 Rob Smith
+Copyright (c) 2017-2025 Rob Smith
 
 Cuprum is released under the [MIT License](https://opensource.org/licenses/MIT).
 
