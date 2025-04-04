@@ -104,7 +104,7 @@ module Cuprum::RSpec
     # @param actual [Object] the actual object to match.
     #
     # @return [Boolean] false if the actual object is a result; otherwise true.
-    def does_not_match?(actual)
+    def does_not_match?(actual) # rubocop:disable Naming/PredicateName
       @actual = actual
 
       raise ArgumentError, negated_matcher_warning if expected_properties?
