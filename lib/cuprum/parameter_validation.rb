@@ -43,6 +43,25 @@ module Cuprum
       #
       #   @return void
       #
+      # @overload validate(name, using:, **options)
+      #   Defines a validation for the specified parameter.
+      #
+      #   This validation will call the named method on the command with the
+      #   value of the named parameter. If the method returns a failure message,
+      #   that message is added to the failed validations.
+      #
+      #   @param name [String, Symbol] the parameter to validate.
+      #   @param using [String, Symbol] the name of the method used to validate
+      #     the parameter.
+      #   @param options [Hash] additional options to pass to the validation
+      #     method.
+      #
+      #   @option options as [String, Symbol] the name of the parameter as
+      #     displayed in the failure message, if any. Defaults to the value of
+      #     the name parameter.
+      #
+      #   @return void
+      #
       # @overload validate(name, **options, &block)
       #   Defines a validation for the specified parameter.
       #
@@ -91,23 +110,17 @@ module Cuprum
       #
       #   @raise [Cuprum::ParameterValidation::Validator::UnknownValidationError]
       #     if neither the command nor the standard tools defines the method.
-      def validate(name, type = nil, **options, &) # rubocop:disable Metrics/MethodLength
+      def validate(name, type = nil, using: nil, **options, &)
         tools.assertions.validate_name(name, as: 'name')
 
         if type && !type.is_a?(Module)
           tools.assertions.validate_name(type, as: 'type')
         end
 
-        validation_rule =
-          if type
-            build_validation(name, type, **options)
-          elsif block_given?
-            build_block_validation(name, **options, &)
-          else
-            build_named_validation(name, **options)
-          end
+        tools.assertions.validate_name(using, as: 'using') if using
 
-        validation_rules << validation_rule
+        validation_rules <<
+          build_validation_rule(name:, options:, type:, using:, &)
       end
 
       # @private
@@ -138,13 +151,19 @@ module Cuprum
         ValidationRule.new(name:, type:, as: name.to_s, **options, &)
       end
 
+      def build_method_validation(name, method_name, **options)
+        type = ValidationRule::NAMED_VALIDATION_TYPE
+
+        ValidationRule.new(name:, type:, as: name.to_s, method_name:, **options)
+      end
+
       def build_named_validation(name, **options)
         type = ValidationRule::NAMED_VALIDATION_TYPE
 
         ValidationRule.new(name:, type:, as: name.to_s, **options)
       end
 
-      def build_validation(name, type, **options)
+      def build_type_validation(name, type, **options)
         unless type.is_a?(Module)
           return ValidationRule.new(name:, type:, as: name.to_s, **options)
         end
@@ -156,6 +175,16 @@ module Cuprum
           expected: type,
           **options
         )
+      end
+
+      def build_validation_rule(name:, options:, type:, using:, &)
+        return build_type_validation(name, type, **options) if type
+
+        return build_method_validation(name, using, **options) if using
+
+        return build_block_validation(name, **options, &) if block_given?
+
+        build_named_validation(name, **options)
       end
 
       def parameters_mapping

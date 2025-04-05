@@ -130,9 +130,23 @@ RSpec.describe Cuprum::ParameterValidation do
 
   describe '.validate' do
     deferred_examples 'should add the validation' do
-      let(:validation)        { described_class.each_validation.to_a.last }
-      let?(:expected_type)    { type.to_sym }
-      let?(:expected_options) { { as: name.to_s } }
+      let(:validation) { described_class.each_validation.to_a.last }
+      let?(:expected_type) do
+        type.to_sym
+      end
+      let?(:expected_options) do
+        { as: name.to_s }
+      end
+      let?(:expected_method_name) do
+        case expected_type
+        when described_class::ValidationRule::BLOCK_VALIDATION_TYPE
+          :validate
+        when described_class::ValidationRule::NAMED_VALIDATION_TYPE
+          :"validate_#{name}"
+        else
+          :"validate_#{expected_type}"
+        end
+      end
 
       it 'should add the validation rule' do
         expect { define_validation }.to(
@@ -145,13 +159,14 @@ RSpec.describe Cuprum::ParameterValidation do
 
         expect(validation.name).to be name.to_sym
         expect(validation.type).to be expected_type
+        expect(validation.method_name).to be expected_method_name
         expect(validation.options).to be == expected_options
         expect(validation.block).to be == block
       end
 
       describe 'with options' do
         let(:options)          { super().merge(as: 'author_name') }
-        let(:expected_options) { super().merge(options) }
+        let(:expected_options) { super().merge(options.except(:using)) }
 
         it 'should configure the validation rule', :aggregate_failures do
           define_validation
@@ -246,6 +261,24 @@ RSpec.describe Cuprum::ParameterValidation do
       end
     end
 
+    describe 'with using: an empty String' do
+      let(:error_message) { "using can't be blank" }
+
+      it 'should raise an exception' do
+        expect { described_class.validate(name, using: '') }
+          .to raise_error ArgumentError, error_message
+      end
+    end
+
+    describe 'with using: an empty Symbol' do
+      let(:error_message) { "using can't be blank" }
+
+      it 'should raise an exception' do
+        expect { described_class.validate(name, using: :'') }
+          .to raise_error ArgumentError, error_message
+      end
+    end
+
     describe 'with name: a String' do
       let(:name) { 'author' }
       let(:type) { nil }
@@ -292,6 +325,32 @@ RSpec.describe Cuprum::ParameterValidation do
 
     describe 'with name: value and type: a Symbol' do
       let(:type) { :name }
+
+      include_deferred 'should add the validation'
+    end
+
+    describe 'with name: value and using_method: a String' do
+      let(:type)    { nil }
+      let(:options) { super().merge(using: 'is_a_palindrome') }
+      let(:expected_type) do
+        described_class::ValidationRule::NAMED_VALIDATION_TYPE
+      end
+      let(:expected_method_name) do
+        :is_a_palindrome
+      end
+
+      include_deferred 'should add the validation'
+    end
+
+    describe 'with name: value and using_method: a Symbol' do
+      let(:type)    { nil }
+      let(:options) { super().merge(using: :is_a_palindrome) }
+      let(:expected_type) do
+        described_class::ValidationRule::NAMED_VALIDATION_TYPE
+      end
+      let(:expected_method_name) do
+        :is_a_palindrome
+      end
 
       include_deferred 'should add the validation'
     end

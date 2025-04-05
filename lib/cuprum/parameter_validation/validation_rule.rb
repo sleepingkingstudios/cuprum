@@ -9,6 +9,7 @@ module Cuprum::ParameterValidation
   class ValidationRule < Struct.new( # rubocop:disable Style/StructInheritance
     :name,
     :type,
+    :method_name,
     :options,
     :block,
     keyword_init: true
@@ -21,23 +22,30 @@ module Cuprum::ParameterValidation
 
     # @param name [Symbol] the name of the parameter to validate.
     # @param type [Symbol] the type of validation to perform.
+    # @param method_name [Symbol] the name for the validation method.
     # @param options [Hash] additional options to pass to the validator.
     # @param block [Proc] a block to pass to the validator, if any.
-    def initialize(name:, type:, **options, &block)
-      super(block:, name: name.to_sym, options:, type: type.to_sym)
+    def initialize(name:, type:, method_name: nil, **options, &block)
+      super(
+        block:,
+        method_name: method_name&.to_sym || method_name_for(name:, type:),
+        name:        name.to_sym,
+        options:,
+        type:        type.to_sym
+      )
     end
 
-    # @return [Symbol] the name for the validation method.
-    def method_name
-      @method_name ||=
-        case type
-        when BLOCK_VALIDATION_TYPE
-          :validate
-        when NAMED_VALIDATION_TYPE
-          :"validate_#{name}"
-        else
-          :"validate_#{type}"
-        end
+    private
+
+    def method_name_for(name:, type:)
+      case type
+      when BLOCK_VALIDATION_TYPE
+        :validate
+      when NAMED_VALIDATION_TYPE
+        :"validate_#{name}"
+      else
+        :"validate_#{type}"
+      end
     end
   end
 end
