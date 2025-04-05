@@ -198,6 +198,30 @@ end
 
 If the method returns a failure message or an array of messages, the validation will fail and the message(s) will be added to the failure messages.
 
+Method validations can also be defined with the `using:` keyword:
+
+```ruby
+class LaunchRocket < Cuprum::Command
+  include Cuprum::ParameterValidation
+
+  validate :rocket, using: :has_fuel?
+
+  private
+
+  def has_fuel?(rocket, as: 'rocket')
+    return unless rocket&.fuel
+
+    return if rocket.fuel > 0
+
+    "#{as} is out of fuel"
+  end
+
+  def process(rocket); end
+end
+```
+
+Defining a validation with the `using:` keyword specifies the method name directly, without applying automatic `validate_` prefix.
+
 ### Testing Parameter Validation
 
 For projects using `RSpec`, there is a deferred example group for quickly verifying a command's parameter validation.

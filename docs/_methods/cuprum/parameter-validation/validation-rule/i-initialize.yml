@@ -1,7 +1,7 @@
 ---
 name: Cuprum::ParameterValidation::ValidationRule#initialize
 parent_path: cuprum/parameter-validation/validation-rule
-signature: initialize(name:, type:, **options, &block)
+signature: 'initialize(name:, type:, method_name: nil, **options, &block)'
 slug: initialize
 constructor: true
 data_path: cuprum/parameter-validation/validation-rule/i-initialize
@@ -16,6 +16,11 @@ params:
   name: type
   type:
   - name: Symbol
+- description: the name for the validation method.
+  name: method_name
+  type:
+  - name: Symbol
+  default: nil
 - description: additional options to pass to the validator.
   name: options
   type:

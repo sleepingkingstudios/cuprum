@@ -5,10 +5,9 @@ signature: method_name
 slug: method-name
 constructor: false
 data_path: cuprum/parameter-validation/validation-rule/i-method-name
-metadata:
-  api: private
 returns:
-- description: the name for the validation method.
+- description: the current value of method_name
   type:
-  - name: Symbol
+  - name: Object
+short_description: Returns the value of attribute method_name
 version: "*"

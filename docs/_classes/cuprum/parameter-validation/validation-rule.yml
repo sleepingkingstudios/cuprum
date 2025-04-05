@@ -22,6 +22,12 @@ instance_attributes:
   path: cuprum/parameter-validation/validation-rule/i-block
   slug: block
   inherited: false
+- name: method_name
+  read: true
+  write: true
+  path: cuprum/parameter-validation/validation-rule/i-method-name
+  slug: method-name
+  inherited: false
 - name: name
   read: true
   write: true
@@ -46,10 +52,6 @@ instance_methods:
   slug: initialize
   inherited: false
   constructor: true
-- name: method_name
-  path: cuprum/parameter-validation/validation-rule/i-method-name
-  slug: method-name
-  inherited: false
 data_path: cuprum/parameter-validation/validation-rule
 metadata:
   api: private

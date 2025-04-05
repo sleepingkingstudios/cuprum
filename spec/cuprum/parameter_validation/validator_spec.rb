@@ -268,6 +268,114 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
       end
     end
 
+    describe 'with a method validation rule' do
+      # ValidationRule.new(name:, type:, as: name.to_s, method_name:, **options)
+      let(:rules) do
+        type =
+          Cuprum::ParameterValidation::ValidationRule::NAMED_VALIDATION_TYPE
+
+        [
+          Cuprum::ParameterValidation::ValidationRule.new(
+            name:        :author,
+            type:,
+            method_name: :is_a_real_doctor
+          )
+        ]
+      end
+      let(:error_message) do
+        "undefined method 'is_a_real_doctor' for an instance of " \
+          'Spec::CustomCommand'
+      end
+
+      it 'should raise an exception' do
+        expect { call_validator }
+          .to raise_error described_class::UnknownValidationError, error_message
+      end
+
+      context 'when the receiver defines the validation method' do
+        before(:example) do
+          Spec::CustomCommand.class_eval do
+            private
+
+            def is_a_real_doctor(value, as:, **)
+              return if value.include?('Doctor')
+
+              "#{as} is not a real doctor"
+            end
+          end
+        end
+
+        describe 'with non-matching parameters' do
+          let(:parameters) { { author: 'Mister Skelebone' } }
+          let(:expected_error) do
+            Cuprum::Errors::InvalidParameters.new(
+              command_class: Spec::CustomCommand,
+              failures:      ['author is not a real doctor']
+            )
+          end
+
+          it 'should return a failing result with invalid parameters error' do
+            expect(call_validator)
+              .to be_a_failing_result
+              .with_error(expected_error)
+          end
+        end
+
+        describe 'with matching parameters' do
+          let(:parameters) { { author: 'Doctor Skelebone' } }
+
+          it { expect(call_validator).to be_a_passing_result }
+        end
+      end
+
+      context 'when the validation method returns multiple messages' do
+        before(:example) do
+          Spec::CustomCommand.class_eval do
+            private
+
+            def is_a_real_doctor(value, as:, **)
+              messages = []
+
+              unless value.include?('Doctor')
+                messages << "#{as} is not a real doctor"
+              end
+
+              unless value.include?('Skelebone')
+                messages << "#{as} knows nothing about bones"
+              end
+
+              messages
+            end
+          end
+        end
+
+        describe 'with non-matching parameters' do
+          let(:parameters) { { author: 'Mister Phalanges' } }
+          let(:expected_error) do
+            Cuprum::Errors::InvalidParameters.new(
+              command_class: Spec::CustomCommand,
+              failures:      [
+                'author is not a real doctor',
+                'author knows nothing about bones'
+              ]
+            )
+          end
+
+          it 'should return a failing result with invalid parameters error' do
+            expect(call_validator)
+              .to be_a_failing_result
+              .with_error(expected_error)
+          end
+        end
+
+        describe 'with matching parameters' do
+          let(:parameters) { { author: 'Doctor Skelebone' } }
+
+          it { expect(call_validator).to be_a_passing_result }
+        end
+      end
+    end
+
     describe 'with a named validation rule' do
       let(:rules) do
         type =

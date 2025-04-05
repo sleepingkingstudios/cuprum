@@ -6,5 +6,6 @@ module Spec::Models
   class Rocket < Base
     attribute :launched
     attribute :name
+    attribute :fuel
   end
 end

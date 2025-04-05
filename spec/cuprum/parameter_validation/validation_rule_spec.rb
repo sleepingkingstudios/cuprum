@@ -27,7 +27,7 @@ RSpec.describe Cuprum::ParameterValidation::ValidationRule do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:name, :type)
+        .and_keywords(:method_name, :name, :type)
         .and_any_keywords
         .and_a_block
     end
@@ -45,6 +45,13 @@ RSpec.describe Cuprum::ParameterValidation::ValidationRule do
 
   describe '#method_name' do
     include_examples 'should define reader', :method_name, :validate_presence
+
+    context 'when initialized with method_name: value' do
+      let(:method_name) { :is_a_palindrome }
+      let(:options)     { super().merge(method_name:) }
+
+      it { expect(rule.method_name).to be method_name }
+    end
 
     context 'when initialized with type: block validation' do
       let(:type) { described_class::BLOCK_VALIDATION_TYPE }
@@ -76,6 +83,14 @@ RSpec.describe Cuprum::ParameterValidation::ValidationRule do
       let(:options) { super().merge(expected: String) }
 
       it { expect(rule.options).to be == options }
+    end
+
+    context 'when initialized with method_name: value' do
+      let(:method_name) { :is_a_palindrome }
+      let(:options)     { super().merge(method_name:) }
+      let(:expected)    { options.except(:method_name) }
+
+      it { expect(rule.options).to be == expected }
     end
   end
 

@@ -19,8 +19,17 @@ module Spec::Commands
       end
     validate :rocket
     validate :rocket, Spec::Models::Rocket
+    validate :rocket, using: :is_fueled
 
     private
+
+    def is_fueled(rocket, **)
+      return unless rocket.is_a?(Spec::Models::Rocket)
+
+      return if rocket.fuel && rocket.fuel > 0.0
+
+      'rocket is out of fuel'
+    end
 
     def process(rocket, launch_site:, payload: {}) # rubocop:disable Lint/UnusedMethodArgument
       rocket.launched = true

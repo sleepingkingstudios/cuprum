@@ -6,13 +6,17 @@ require 'cuprum/rspec/be_callable'
 require 'support/commands/launch_rocket'
 require 'support/models/rocket'
 
+# Integration test for ParameterValidation.
 RSpec.describe Spec::Commands::LaunchRocket do
   include Cuprum::RSpec::Matchers
 
   subject(:command) { described_class.new }
 
+  let(:rocket_attributes) do
+    { name: 'Imp IV', fuel: 100.0, launched: false }
+  end
   let(:rocket) do
-    Spec::Models::Rocket.new(attributes: { name: 'Imp IV', launched: false })
+    Spec::Models::Rocket.new(attributes: rocket_attributes)
   end
   let(:launch_site) { 'KSC' }
   let(:payload)     { { name: 'Satellite', mass: 500 } }
@@ -71,9 +75,24 @@ RSpec.describe Spec::Commands::LaunchRocket do
       end
     end
 
+    describe 'with rocket: an empty rocket' do
+      let(:rocket_attributes) do
+        super().merge(fuel: 0.0)
+      end
+      let(:failures) { ['rocket is out of fuel'] }
+
+      it 'should return a failing result with an InvalidParameters error' do
+        expect(call_command)
+          .to be_a_failing_result
+          .with_error(expected_error)
+      end
+
+      it { expect { call_command }.not_to change(rocket, :launched) }
+    end
+
     describe 'with rocket: a launched rocket' do
-      let(:rocket) do
-        Spec::Models::Rocket.new(attributes: { name: 'Imp IV', launched: true })
+      let(:rocket_attributes) do
+        super().merge(launched: true)
       end
       let(:failures) { ['rocket has already launched'] }
 
@@ -87,8 +106,8 @@ RSpec.describe Spec::Commands::LaunchRocket do
     end
 
     describe 'with multiple invalid parameters' do
-      let(:rocket) do
-        Spec::Models::Rocket.new(attributes: { name: 'Imp IV', launched: true })
+      let(:rocket_attributes) do
+        super().merge(launched: true, fuel: 0.0)
       end
       let(:launch_site) { '' }
       let(:payload)     { super().merge(mass: 10_000) }
@@ -96,7 +115,8 @@ RSpec.describe Spec::Commands::LaunchRocket do
         [
           "launch pad can't be blank",
           'payload is too heavy',
-          'rocket has already launched'
+          'rocket has already launched',
+          'rocket is out of fuel'
         ]
       end
 
