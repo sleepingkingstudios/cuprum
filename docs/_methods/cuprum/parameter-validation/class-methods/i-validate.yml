@@ -1,7 +1,7 @@
 ---
 name: Cuprum::ParameterValidation::ClassMethods#validate
 parent_path: cuprum/parameter-validation/class-methods
-signature: validate(name, type = nil, **options, &)
+signature: 'validate(name, type = nil, using: nil, **options, &)'
 slug: validate
 constructor: false
 data_path: cuprum/parameter-validation/class-methods/i-validate
@@ -29,6 +29,49 @@ overloads:
   params:
   - description: the parameter to validate.
     name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: |-
+      additional options to pass to the validation
+      method.
+    name: options
+    type:
+    - name: Hash
+  returns:
+  - description: void
+    type: []
+  short_description: Defines a validation for the specified parameter.
+- name: Cuprum::ParameterValidation::ClassMethods#validate
+  parent_path: cuprum/parameter-validation/class-methods
+  signature: validate(name, using:, **options)
+  slug: validate
+  constructor: false
+  description: |-
+    This validation will call the named method on the command with the
+    value of the named parameter. If the method returns a failure message,
+    that message is added to the failed validations.
+  options:
+  - name: options
+    opts:
+    - description: |-
+        the name of the parameter as
+        displayed in the failure message, if any. Defaults to the value of
+        the name parameter.
+      name: as
+      type:
+      - name: String
+      - name: Symbol
+  params:
+  - description: the parameter to validate.
+    name: name
+    type:
+    - name: String
+    - name: Symbol
+  - description: |-
+      the name of the method used to validate
+      the parameter.
+    name: using
     type:
     - name: String
     - name: Symbol
