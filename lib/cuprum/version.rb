@@ -14,7 +14,7 @@ module Cuprum
     # Patch version.
     PATCH = 0
     # Prerelease version.
-    PRERELEASE = :alpha
+    PRERELEASE = :rc
     # Build metadata.
     BUILD = 0
 
