@@ -10,7 +10,7 @@ breadcrumbs:
 
 A middleware command wraps the execution of another command, allowing the developer to compose functionality without an explicit wrapper command. Because the middleware is responsible for calling the wrapped command, it has control over when that command is called, with what parameters, and how the command result is handled.
 
-To use middleware, start by defining a middleware command. This can either be a class that includes Cuprum::Middleware, or a command instance that extends Cuprum::Middleware. Each middleware command's #process method takes as its first argument the wrapped command. By convention, any additional arguments and any keywords or a block are passed to the wrapped command, but some middleware will override ths behavior.
+To use middleware, start by defining a middleware command. This can either be a class that includes Cuprum::Middleware, or a command instance that extends Cuprum::Middleware. Each middleware command's #process method takes as its first argument the wrapped command. By convention, any additional arguments and any keywords or a block are passed to the wrapped command, but some middleware will override this behavior.
 
 ```ruby
 class ExampleCommand < Cuprum::Command

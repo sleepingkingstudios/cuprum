@@ -1,0 +1,69 @@
+---
+name: Cuprum::Steps#steps
+parent_path: cuprum/steps
+signature: steps(&block)
+slug: steps
+constructor: false
+data_path: cuprum/steps/i-steps
+description: |-
+  The #steps method is used to wrap a series of #step calls. Each step is
+  executed in sequence. If any of the steps returns a failing result, that
+  result is immediately returned from #steps. Otherwise, #steps wraps the
+  value returned by a block in a Cuprum result.
+metadata:
+  examples:
+  - name: With A Passing Step
+    text: |-
+      result = steps do
+        step { success('some value') }
+      end
+      result.class    #=> Cuprum::Result
+      result.success? #=> true
+      result.value    #=> 'some value'
+  - name: With A Failing Step
+    text: |-
+      result = steps do
+        step { failure('something went wrong') }
+      end
+      result.class    #=> Cuprum::Result
+      result.success? #=> false
+      result.error    #=> 'something went wrong'
+  - name: With Multiple Steps
+    text: |-
+      result = steps do
+        # This step is passing, so execution continues on to the next step.
+        step { success('first step') }
+
+        # This step is failing, so execution halts and returns this result.
+        step { failure('second step') }
+
+        # This step will never be called.
+        step { success('third step') }
+      end
+      result.class    #=> Cuprum::Result
+      result.success? #=> false
+      result.error    #=> 'second step'
+raises:
+- description: if a block is not given.
+  type:
+  - name: ArgumentError
+returns:
+- description: |-
+    the result or object returned by the block,
+    wrapped in a Cuprum result.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+short_description: 'Returns the first failing #step result, or the final result if
+  none fail.'
+yield_returns:
+- description: |-
+    a Cuprum result, or an object to be
+    wrapped in a result.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+  - name: Object
+yields:
+- description: Called with no parameters.
+version: '1.3'

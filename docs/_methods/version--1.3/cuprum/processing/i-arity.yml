@@ -1,0 +1,25 @@
+---
+name: Cuprum::Processing#arity
+parent_path: cuprum/processing
+signature: arity
+slug: arity
+constructor: false
+data_path: cuprum/processing/i-arity
+description: |-
+  If the method takes a fixed number N of arguments, returns N. If the
+  method takes a variable number of arguments, returns -N-1, where N is the
+  number of required arguments. Keyword arguments will be considered as a
+  single additional argument, that argument being mandatory if any keyword
+  argument is mandatory.
+metadata:
+  see:
+  - label: Method#arity
+    path:
+    text:
+    type: reference
+returns:
+- description: The number of arguments.
+  type:
+  - name: Integer
+short_description: 'Returns an indication of the number of arguments accepted by #call.'
+version: '1.3'

@@ -1,0 +1,61 @@
+---
+name: Cuprum::Result
+slug: result
+type: class
+files:
+- lib/cuprum/result.rb
+parent_path: cuprum
+short_description: Data object that encapsulates the result of calling a Cuprum command.
+constants:
+- name: STATUSES
+  path: cuprum/result/statuses
+  slug: statuses
+  inherited: false
+instance_attributes:
+- name: error
+  read: true
+  write: false
+  path: cuprum/result/i-error
+  slug: error
+  inherited: false
+- name: status
+  read: true
+  write: false
+  path: cuprum/result/i-status
+  slug: status
+  inherited: false
+- name: value
+  read: true
+  write: false
+  path: cuprum/result/i-value
+  slug: value
+  inherited: false
+instance_methods:
+- name: "=="
+  path: cuprum/result/i-==
+  slug: "=="
+  inherited: false
+- name: failure?
+  path: cuprum/result/i-failure?
+  slug: failure?
+  inherited: false
+- name: initialize
+  path: cuprum/result/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: properties
+  path: cuprum/result/i-properties
+  slug: properties
+  inherited: false
+- name: success?
+  path: cuprum/result/i-success?
+  slug: success?
+  inherited: false
+- name: to_cuprum_result
+  path: cuprum/result/i-to-cuprum-result
+  slug: to-cuprum-result
+  inherited: false
+data_path: cuprum/result
+constructor: true
+version: '1.3'

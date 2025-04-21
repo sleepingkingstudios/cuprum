@@ -1,0 +1,14 @@
+---
+name: Cuprum::ResultList#value
+parent_path: cuprum/result-list
+signature: value
+slug: value
+constructor: false
+data_path: cuprum/result-list/i-value
+returns:
+- description: |-
+    The value of the result. Defaults to the mapped values of
+    the results.
+  type:
+  - name: Object
+version: '1.3'

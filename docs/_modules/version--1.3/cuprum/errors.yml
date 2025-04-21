@@ -1,0 +1,26 @@
+---
+name: Cuprum::Errors
+slug: errors
+type: module
+files:
+- lib/cuprum/errors.rb
+- lib/cuprum/errors/multiple_errors.rb
+- lib/cuprum/errors/invalid_parameters.rb
+- lib/cuprum/errors/uncaught_exception.rb
+- lib/cuprum/errors/operation_not_called.rb
+- lib/cuprum/errors/command_not_implemented.rb
+parent_path: cuprum
+short_description: Namespace for custom Cuprum error classes.
+defined_classes:
+- name: CommandNotImplemented
+  slug: command-not-implemented
+- name: InvalidParameters
+  slug: invalid-parameters
+- name: MultipleErrors
+  slug: multiple-errors
+- name: OperationNotCalled
+  slug: operation-not-called
+- name: UncaughtException
+  slug: uncaught-exception
+data_path: cuprum/errors
+version: '1.3'

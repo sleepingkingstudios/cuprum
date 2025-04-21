@@ -1,6 +1,13 @@
 # Cuprum
 
-Toolkit for implementing business logic as function objects.
+Cuprum is a toolkit for defining business logic as a first-class member of your application. It bridges object-oriented and functional programming techniques to provide a structured approach to defining actions, state transitions, and other processes for your application.
+
+<blockquote>
+  Read The
+  <a href="https://www.sleepingkingstudios.com/cuprum" target="_blank">
+    Documentation
+  </a>
+</blockquote>
 
 Cuprum defines a Command object, which is a callable object that encapsulates some piece of business logic. Each call to a Command returns a Result with a status and optionally data or an error object. As objects, Commands can be passed as parameters, returned from methods (or other Commands). Commands also define a #step method, which can be used to gracefully handle failure states and define complex operations by combining simpler components.
 

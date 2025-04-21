@@ -1,0 +1,12 @@
+---
+name: Cuprum::ResultList#success?
+parent_path: cuprum/result-list
+signature: success?
+slug: success?
+constructor: false
+data_path: cuprum/result-list/i-success?
+returns:
+- description: true if the result status is :success, otherwise false.
+  type:
+  - name: Boolean
+version: '1.3'

@@ -26,8 +26,8 @@ class LaunchRocket < Cuprum::Command
 end
 
 result = LaunchRocket.new.call
-result.success?      #=> false
-result.error.class   #=> Cuprum::Errors::InvalidParameters
+result.success?    #=> false
+result.error.class #=> Cuprum::Errors::InvalidParameters
 result.error.message
 #=> 'invalid parameters for LaunchRocket - rocket is not an instance of Rocket'
 ```

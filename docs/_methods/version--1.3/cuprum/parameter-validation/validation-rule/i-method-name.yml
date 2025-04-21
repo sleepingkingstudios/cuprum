@@ -1,0 +1,13 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#method_name
+parent_path: cuprum/parameter-validation/validation-rule
+signature: method_name
+slug: method-name
+constructor: false
+data_path: cuprum/parameter-validation/validation-rule/i-method-name
+returns:
+- description: the current value of method_name
+  type:
+  - name: Object
+short_description: Returns the value of attribute method_name
+version: '1.3'

@@ -1,0 +1,62 @@
+---
+name: Cuprum::Matching#matches?
+parent_path: cuprum/matching
+signature: 'matches?(result_or_status, error: nil, value: nil)'
+slug: matches?
+constructor: false
+data_path: cuprum/matching/i-matches?
+overloads:
+- name: Cuprum::Matching#matches?
+  parent_path: cuprum/matching
+  signature: matches?(result)
+  slug: matches?
+  constructor: false
+  params:
+  - description: The result to match.
+    name: result
+    type:
+    - name: Cuprum::Result
+      path: cuprum/result
+  returns:
+  - description: |-
+      true if the matcher has at least one match clause that
+      matches the result; otherwise false.
+    type:
+    - name: Boolean
+  short_description: Checks if the matcher has any match clauses that match the given
+    result.
+- name: Cuprum::Matching#matches?
+  parent_path: cuprum/matching
+  signature: 'matches?(status, error: nil, value: nil)'
+  slug: matches?
+  constructor: false
+  params:
+  - description: The status to match.
+    name: status
+    type:
+    - name: Symbol
+  - description: The class of error to match, if any.
+    name: error
+    type:
+    - name: Class
+    - name: nil
+    default: nil
+  - description: The class of value to match, if any.
+    name: value
+    type:
+    - name: Class
+    - name: nil
+    default: nil
+  returns:
+  - description: |-
+      true if the matcher has at least one match clause that
+      matches the status and details; otherwise false.
+    type:
+    - name: Boolean
+  short_description: Checks if the matcher has any clauses matching the status and
+    details.
+raises:
+- description: ''
+  type:
+  - name: ArgumentError
+version: '1.3'

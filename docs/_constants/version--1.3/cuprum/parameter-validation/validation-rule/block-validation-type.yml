@@ -1,0 +1,10 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule::BLOCK_VALIDATION_TYPE
+parent_path: cuprum/parameter-validation/validation-rule
+slug: block-validation-type
+short_description: Custom validation type for a block validation.
+value: ":_block_validation"
+data_path: cuprum/parameter-validation/validation-rule/block-validation-type
+metadata:
+  api: private
+version: '1.3'

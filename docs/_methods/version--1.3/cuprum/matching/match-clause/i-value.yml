@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching::MatchClause#value
+parent_path: cuprum/matching/match-clause
+signature: value
+slug: value
+constructor: false
+data_path: cuprum/matching/match-clause/i-value
+returns:
+- description: the current value of value
+  type:
+  - name: Object
+short_description: Returns the value of attribute value
+version: '1.3'

@@ -1,0 +1,24 @@
+---
+name: Cuprum::Errors::UncaughtException#initialize
+parent_path: cuprum/errors/uncaught-exception
+signature: 'initialize(exception:, message: ''uncaught exception'')'
+slug: initialize
+constructor: true
+data_path: cuprum/errors/uncaught-exception/i-initialize
+params:
+- description: The exception that was raised.
+  name: exception
+  type:
+  - name: StandardError
+- description: |-
+    A message to display. Will be annotated with
+    details on the exception and the exception's cause (if any).
+  name: message
+  type:
+  - name: String
+  default: "'uncaught exception'"
+returns:
+- description: a new instance of UncaughtException
+  type:
+  - name: UncaughtException
+version: '1.3'

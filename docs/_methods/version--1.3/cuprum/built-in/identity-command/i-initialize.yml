@@ -1,0 +1,12 @@
+---
+name: Cuprum::BuiltIn::IdentityCommand#initialize
+parent_path: cuprum/built-in/identity-command
+signature: initialize
+slug: initialize
+constructor: true
+data_path: cuprum/built-in/identity-command/i-initialize
+returns:
+- description: a new instance of IdentityCommand
+  type:
+  - name: IdentityCommand
+version: '1.3'

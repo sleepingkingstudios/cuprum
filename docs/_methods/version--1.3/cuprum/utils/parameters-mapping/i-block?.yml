@@ -1,0 +1,15 @@
+---
+name: Cuprum::Utils::ParametersMapping#block?
+parent_path: cuprum/utils/parameters-mapping
+signature: block?
+slug: block?
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-block?
+returns:
+- description: |-
+    true if the method has a block parameter; otherwise
+    false.
+  type:
+  - name: 'true'
+  - name: 'false'
+version: '1.3'

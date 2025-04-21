@@ -1,0 +1,22 @@
+---
+name: Cuprum::RSpec::Matchers#be_a_failing_result
+parent_path: cuprum/r-spec/matchers
+signature: be_a_failing_result(expected_class = nil)
+slug: be-a-failing-result
+constructor: false
+data_path: cuprum/r-spec/matchers/i-be-a-failing-result
+params:
+- description: |-
+    the expected class of result. Defaults to
+    Cuprum::Result.
+  name: expected_class
+  type:
+  - name: Class
+  default: nil
+returns:
+- description: the generated matcher.
+  type:
+  - name: Cuprum::RSpec::BeAResultMatcher
+    path: cuprum/r-spec/be-a-result-matcher
+short_description: 'Asserts that the object is a result with status: :failure.'
+version: '1.3'

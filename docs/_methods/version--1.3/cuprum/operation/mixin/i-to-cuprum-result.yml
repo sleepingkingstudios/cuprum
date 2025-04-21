@@ -1,0 +1,16 @@
+---
+name: Cuprum::Operation::Mixin#to_cuprum_result
+parent_path: cuprum/operation/mixin
+signature: to_cuprum_result
+slug: to-cuprum-result
+constructor: false
+data_path: cuprum/operation/mixin/i-to-cuprum-result
+returns:
+- description: |-
+    the most recent result if the operation was
+    previously called; otherwise, returns a failing result with a
+    Cuprum::Errors::OperationNotCalled error.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+version: '1.3'

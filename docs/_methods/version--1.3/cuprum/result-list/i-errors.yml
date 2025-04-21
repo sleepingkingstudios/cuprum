@@ -1,0 +1,16 @@
+---
+name: Cuprum::ResultList#errors
+parent_path: cuprum/result-list
+signature: errors
+slug: errors
+constructor: false
+data_path: cuprum/result-list/i-errors
+returns:
+- description: the error, if any, for each result.
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Error
+      path: cuprum/error
+    - name: nil
+version: '1.3'
