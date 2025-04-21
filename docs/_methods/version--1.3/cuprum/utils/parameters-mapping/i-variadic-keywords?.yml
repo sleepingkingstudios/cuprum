@@ -1,0 +1,15 @@
+---
+name: Cuprum::Utils::ParametersMapping#variadic_keywords?
+parent_path: cuprum/utils/parameters-mapping
+signature: variadic_keywords?
+slug: variadic-keywords?
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-variadic-keywords?
+returns:
+- description: |-
+    true if the method has a variadic keywords
+    parameter; otherwise false.
+  type:
+  - name: 'true'
+  - name: 'false'
+version: '1.3'

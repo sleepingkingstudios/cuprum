@@ -1,0 +1,14 @@
+---
+name: Cuprum::Operation::Mixin#called?
+parent_path: cuprum/operation/mixin
+signature: called?
+slug: called?
+constructor: false
+data_path: cuprum/operation/mixin/i-called?
+returns:
+- description: |-
+    true if the operation has been called and has a
+    reference to the most recent result; otherwise false.
+  type:
+  - name: Boolean
+version: '1.3'

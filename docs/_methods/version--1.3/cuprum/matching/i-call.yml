@@ -1,0 +1,73 @@
+---
+name: Cuprum::Matching#call
+parent_path: cuprum/matching
+signature: call(result)
+slug: call
+constructor: false
+data_path: cuprum/matching/i-call
+description: |-
+  Match clauses are defined using the .match DSL. When a result is matched,
+  the defined clauses matching the result status are checked in descending
+  order of specificity:
+
+  - Clauses that expect both a value and an error.
+  - Clauses that expect a value.
+  - Clauses that expect an error.
+  - Clauses that do not expect a value or an error.
+
+  If there are multiple clauses that expect a value or an error, they are
+  sorted by inheritance - a clause with a subclass value or error is checked
+  before the clause with the parent class.
+
+  Using that ordering, each potential clause is checked for a match with the
+  result. If the clause defines a value, then the result will match the
+  clause only if the result value is an instance of the expected value (or
+  an instance of a subclass). Likewise, if the clause defines an error, then
+  the result will match the clause only if the result error is an instance
+  of the expected error class (or an instance of a subclass). Clauses that
+  do not define either a value nor an error will match with any result with
+  the same status, but as the least specific are always matched last.
+
+  Matchers can also inherit clauses from a parent class or from an included
+  module. Inherited or included clauses are checked after clauses defined on
+  the matcher itself, so the matcher can override generic matches with more
+  specific functionality.
+
+  Finally, once the most specific matching clause is found, #call will
+  call the block used to define the clause. If the block takes at least one
+  argument, the result will be passed to the block; otherwise, it will be
+  called with no parameters. If there is no clause matching the result,
+  #call will instead raise a Cuprum::Matching::NoMatchError.
+
+  The match clause is executed in the context of the matcher object. This
+  allows instance methods defined for the matcher to be called as part of
+  the match clause block. If the matcher defines a non-nil
+  #matching_context, the block is instead executed in the context of the
+  matching_context using #instance_exec.
+metadata:
+  see:
+  - label: ClassMethods#match
+    path: cuprum/matching/class-methods#instance-method-match
+    text:
+    type: reference
+  - label: "#match_context"
+    path: cuprum/matching#instance-attribute-match-context
+    text:
+    type: reference
+params:
+- description: The result to match.
+  name: result
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+raises:
+- description: if there is no clause matching the result.
+  type:
+  - name: NoMatchError
+returns:
+- description: the value returned by the stored block.
+  type:
+  - name: Object
+short_description: Finds the match clause matching the result and calls the stored
+  block.
+version: '1.3'

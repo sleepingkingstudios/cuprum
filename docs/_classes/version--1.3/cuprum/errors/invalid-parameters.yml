@@ -1,0 +1,59 @@
+---
+name: Cuprum::Errors::InvalidParameters
+slug: invalid-parameters
+type: class
+files:
+- lib/cuprum/errors/invalid_parameters.rb
+parent_path: cuprum/errors
+short_description: Error returned when a command's parameters fail validation.
+constants:
+- name: TYPE
+  path: cuprum/errors/invalid-parameters/type
+  slug: type
+  inherited: false
+instance_attributes:
+- name: command_class
+  read: true
+  write: false
+  path: cuprum/errors/invalid-parameters/i-command-class
+  slug: command-class
+  inherited: false
+- name: failures
+  read: true
+  write: false
+  path: cuprum/errors/invalid-parameters/i-failures
+  slug: failures
+  inherited: false
+- name: message
+  read: true
+  write: false
+  path: cuprum/error/i-message
+  slug: message
+  inherited: true
+- name: type
+  read: true
+  write: false
+  path: cuprum/error/i-type
+  slug: type
+  inherited: true
+instance_methods:
+- name: "=="
+  path: cuprum/error/i-==
+  slug: "=="
+  inherited: true
+- name: as_json
+  path: cuprum/error/i-as-json
+  slug: as-json
+  inherited: true
+- name: initialize
+  path: cuprum/errors/invalid-parameters/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+data_path: cuprum/errors/invalid-parameters
+constructor: true
+inherited_classes:
+- name: Cuprum::Error
+  slug: error
+  path: cuprum/error
+version: '1.3'

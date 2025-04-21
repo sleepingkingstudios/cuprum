@@ -1,0 +1,18 @@
+---
+name: Cuprum::Errors::CommandNotImplemented#initialize
+parent_path: cuprum/errors/command-not-implemented
+signature: initialize(command:)
+slug: initialize
+constructor: true
+data_path: cuprum/errors/command-not-implemented/i-initialize
+params:
+- description: The command called without a definition.
+  name: command
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+returns:
+- description: a new instance of CommandNotImplemented
+  type:
+  - name: CommandNotImplemented
+version: '1.3'

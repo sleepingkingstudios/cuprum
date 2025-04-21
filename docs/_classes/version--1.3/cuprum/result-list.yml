@@ -1,0 +1,97 @@
+---
+name: Cuprum::ResultList
+slug: result-list
+type: class
+files:
+- lib/cuprum/result_list.rb
+parent_path: cuprum
+short_description: Collection object that encapsulates a set of Cuprum results.
+instance_attributes:
+- name: error
+  read: true
+  write: false
+  path: cuprum/result-list/i-error
+  slug: error
+  inherited: false
+- name: results
+  read: true
+  write: false
+  path: cuprum/result-list/i-results
+  slug: results
+  inherited: false
+- name: status
+  read: true
+  write: false
+  path: cuprum/result-list/i-status
+  slug: status
+  inherited: false
+- name: value
+  read: true
+  write: false
+  path: cuprum/result-list/i-value
+  slug: value
+  inherited: false
+instance_methods:
+- name: "=="
+  path: cuprum/result-list/i-==
+  slug: "=="
+  inherited: false
+- name: allow_partial?
+  path: cuprum/result-list/i-allow-partial?
+  slug: allow-partial?
+  inherited: false
+- name: each
+  path: cuprum/result-list/i-each
+  slug: each
+  inherited: false
+- name: errors
+  path: cuprum/result-list/i-errors
+  slug: errors
+  inherited: false
+- name: failure?
+  path: cuprum/result-list/i-failure?
+  slug: failure?
+  inherited: false
+- name: initialize
+  path: cuprum/result-list/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: statuses
+  path: cuprum/result-list/i-statuses
+  slug: statuses
+  inherited: false
+- name: success?
+  path: cuprum/result-list/i-success?
+  slug: success?
+  inherited: false
+- name: to_cuprum_result
+  path: cuprum/result-list/i-to-cuprum-result
+  slug: to-cuprum-result
+  inherited: false
+- name: values
+  path: cuprum/result-list/i-values
+  slug: values
+  inherited: false
+data_path: cuprum/result-list
+description: |-
+  Each Cuprum::ResultList wraps an Array of Cuprum::Result objects, and itself
+  implements the same methods as a Result: #status, #value, #error, and the
+  #success? and #failure? predicates. As such, a Command's #process method can
+  return a ResultList instead of a Result. This is useful for commands that
+  operate on a collection of items, such as a MapCommand or a controller
+  endpoint that performs a bulk operation.
+extended_modules:
+- name: Forwardable
+  slug: forwardable
+included_modules:
+- name: Enumerable
+  slug: enumerable
+metadata:
+  see:
+  - label: Cuprum::Result
+    path: cuprum/result
+    text:
+    type: reference
+constructor: true
+version: '1.3'

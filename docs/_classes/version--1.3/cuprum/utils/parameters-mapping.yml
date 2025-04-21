@@ -1,0 +1,73 @@
+---
+name: Cuprum::Utils::ParametersMapping
+slug: parameters-mapping
+type: class
+files:
+- lib/cuprum/utils/parameters_mapping.rb
+parent_path: cuprum/utils
+short_description: Utility class mapping a method's parameters by parameter name.
+class_methods:
+- name: build
+  path: cuprum/utils/parameters-mapping/c-build
+  slug: build
+  inherited: false
+instance_attributes:
+- name: arguments
+  read: true
+  write: false
+  path: cuprum/utils/parameters-mapping/i-arguments
+  slug: arguments
+  inherited: false
+- name: block
+  read: true
+  write: false
+  path: cuprum/utils/parameters-mapping/i-block
+  slug: block
+  inherited: false
+- name: keywords
+  read: true
+  write: false
+  path: cuprum/utils/parameters-mapping/i-keywords
+  slug: keywords
+  inherited: false
+- name: variadic_arguments
+  read: true
+  write: false
+  path: cuprum/utils/parameters-mapping/i-variadic-arguments
+  slug: variadic-arguments
+  inherited: false
+- name: variadic_keywords
+  read: true
+  write: false
+  path: cuprum/utils/parameters-mapping/i-variadic-keywords
+  slug: variadic-keywords
+  inherited: false
+instance_methods:
+- name: arguments_count
+  path: cuprum/utils/parameters-mapping/i-arguments-count
+  slug: arguments-count
+  inherited: false
+- name: block?
+  path: cuprum/utils/parameters-mapping/i-block?
+  slug: block?
+  inherited: false
+- name: call
+  path: cuprum/utils/parameters-mapping/i-call
+  slug: call
+  inherited: false
+- name: initialize
+  path: cuprum/utils/parameters-mapping/i-initialize
+  slug: initialize
+  inherited: false
+  constructor: true
+- name: variadic_arguments?
+  path: cuprum/utils/parameters-mapping/i-variadic-arguments?
+  slug: variadic-arguments?
+  inherited: false
+- name: variadic_keywords?
+  path: cuprum/utils/parameters-mapping/i-variadic-keywords?
+  slug: variadic-keywords?
+  inherited: false
+data_path: cuprum/utils/parameters-mapping
+constructor: true
+version: '1.3'

@@ -1,0 +1,16 @@
+---
+name: Cuprum::Utils::ParametersMapping#keywords
+parent_path: cuprum/utils/parameters-mapping
+signature: keywords
+slug: keywords
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-keywords
+returns:
+- description: |-
+    the keywords for the method, both required and
+    optional, but excluding variadic keywords.
+  type:
+  - name: Set
+    items:
+    - name: Symbol
+version: '1.3'

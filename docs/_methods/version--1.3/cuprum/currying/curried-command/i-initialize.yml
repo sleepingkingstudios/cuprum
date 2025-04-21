@@ -1,0 +1,30 @@
+---
+name: Cuprum::Currying::CurriedCommand#initialize
+parent_path: cuprum/currying/curried-command
+signature: 'initialize(command:, arguments: [], block: nil, keywords: {})'
+slug: initialize
+constructor: true
+data_path: cuprum/currying/curried-command/i-initialize
+params:
+- description: The arguments to pass to the curried command.
+  name: arguments
+  type:
+  - name: Array
+  default: "[]"
+- description: The original command to curry.
+  name: command
+  type:
+  - name: Cuprum::Command
+    path: cuprum/command
+- description: The keywords to pass to the curried command.
+  name: keywords
+  type:
+  - name: Hash
+  default: "{}"
+returns:
+- description: a new instance of CurriedCommand
+  type:
+  - name: CurriedCommand
+yields:
+- description: A block to pass to the curried command.
+version: '1.3'

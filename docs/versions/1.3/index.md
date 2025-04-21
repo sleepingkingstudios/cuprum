@@ -1,6 +1,8 @@
 ---
 breadcrumbs:
   - name: Documentation
+    path: '../'
+  - name: Versions
     path: './'
 ---
 
@@ -10,9 +12,9 @@ Cuprum implements the Command pattern for Ruby.
 
 ## Documentation
 
-This is the documentation for the [current development build](https://github.com/sleepingkingstudios/cuprum) of Cuprum.
+This is the documentation for Version 1.3 of Cuprum.
 
-- For the most recent release, see [Version 1.3]({{site.baseurl}}/versions/1.3).
+- For the current development build, see [Documentation]({{site.baseurl}}/).
 - For previous releases, see the [Versions]({{site.baseurl}}/versions) page.
 
 ## Reference

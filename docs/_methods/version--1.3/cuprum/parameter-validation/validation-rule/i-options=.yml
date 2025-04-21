@@ -1,0 +1,18 @@
+---
+name: Cuprum::ParameterValidation::ValidationRule#options=
+parent_path: cuprum/parameter-validation/validation-rule
+signature: options=(value)
+slug: options=
+constructor: false
+data_path: cuprum/parameter-validation/validation-rule/i-options=
+params:
+- description: the value to set the attribute options to.
+  name: value
+  type:
+  - name: Object
+returns:
+- description: the newly set value
+  type:
+  - name: Object
+short_description: Sets the attribute options
+version: '1.3'

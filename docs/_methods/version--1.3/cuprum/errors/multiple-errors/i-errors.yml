@@ -1,0 +1,15 @@
+---
+name: Cuprum::Errors::MultipleErrors#errors
+parent_path: cuprum/errors/multiple-errors
+signature: errors
+slug: errors
+constructor: false
+data_path: cuprum/errors/multiple-errors/i-errors
+returns:
+- description: the wrapped errors.
+  type:
+  - name: Array
+    items:
+    - name: Cuprum::Error
+      path: cuprum/error
+version: '1.3'

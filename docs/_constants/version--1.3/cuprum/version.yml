@@ -1,0 +1,8 @@
+---
+name: Cuprum::VERSION
+parent_path: cuprum
+slug: version
+short_description: The current version of the gem.
+value: Version.to_gem_version
+data_path: cuprum/version
+version: '1.3'

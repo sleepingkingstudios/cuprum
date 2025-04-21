@@ -1,0 +1,20 @@
+---
+name: Cuprum::RSpec::BeAResultMatcher#initialize
+parent_path: cuprum/r-spec/be-a-result-matcher
+signature: initialize(expected_class = nil)
+slug: initialize
+constructor: true
+data_path: cuprum/r-spec/be-a-result-matcher/i-initialize
+params:
+- description: |-
+    the expected class of result. Defaults to
+    Cuprum::Result.
+  name: expected_class
+  type:
+  - name: Class
+  default: nil
+returns:
+- description: a new instance of BeAResultMatcher
+  type:
+  - name: BeAResultMatcher
+version: '1.3'

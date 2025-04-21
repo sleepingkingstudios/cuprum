@@ -1,0 +1,14 @@
+---
+name: Cuprum::ParameterValidation::Validator::UnknownValidationError
+slug: unknown-validation-error
+type: class
+files:
+- lib/cuprum/parameter_validation/validator.rb
+parent_path: cuprum/parameter-validation/validator
+short_description: Exception raised when performing an unknown validation type.
+data_path: cuprum/parameter-validation/validator/unknown-validation-error
+constructor: false
+inherited_classes:
+- name: StandardError
+  slug: standard-error
+version: '1.3'

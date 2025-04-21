@@ -1,0 +1,15 @@
+---
+name: Cuprum::ParameterValidation::ClassMethods
+slug: class-methods
+type: module
+files:
+- lib/cuprum/parameter_validation.rb
+parent_path: cuprum/parameter-validation
+short_description: Class methods for parameter validation.
+instance_methods:
+- name: validate
+  path: cuprum/parameter-validation/class-methods/i-validate
+  slug: validate
+  inherited: false
+data_path: cuprum/parameter-validation/class-methods
+version: '1.3'

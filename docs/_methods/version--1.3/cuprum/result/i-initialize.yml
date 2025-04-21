@@ -1,0 +1,33 @@
+---
+name: Cuprum::Result#initialize
+parent_path: cuprum/result
+signature: 'initialize(value: nil, error: nil, status: nil)'
+slug: initialize
+constructor: true
+data_path: cuprum/result/i-initialize
+params:
+- description: the value returned by calling the command.
+  name: value
+  type:
+  - name: Object
+  default: nil
+- description: |-
+    the error (if any) generated when the command was
+    called. Can be a Cuprum::Error, a model errors object, etc.
+  name: error
+  type:
+  - name: Object
+  default: nil
+- description: |-
+    the status of the result. Must be :success,
+    :failure, or nil.
+  name: status
+  type:
+  - name: String
+  - name: Symbol
+  default: nil
+returns:
+- description: a new instance of Result
+  type:
+  - name: Result
+version: '1.3'

@@ -1,0 +1,13 @@
+---
+name: Cuprum::Matching#match_context
+parent_path: cuprum/matching
+signature: match_context
+slug: match-context
+constructor: false
+data_path: cuprum/matching/i-match-context
+returns:
+- description: the execution context for a matching clause.
+  type:
+  - name: Object
+  - name: nil
+version: '1.3'

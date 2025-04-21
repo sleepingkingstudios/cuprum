@@ -1,0 +1,32 @@
+---
+name: Cuprum::Command.subclass
+parent_path: cuprum/command
+signature: subclass(*class_arguments, **class_keywords, &block)
+slug: subclass
+constructor: false
+data_path: cuprum/command/c-subclass
+params:
+- description: |-
+    the arguments, if any, to apply to the
+    constructor. These arguments will be added before any args passed
+    directly to the constructor.
+  name: class_arguments
+  type:
+  - name: Array
+- description: |-
+    the keywords, if any, to apply to the
+    constructor. These keywords will be added before any kwargs passed
+    directly to the constructor.
+  name: class_keywords
+  type:
+  - name: Hash
+returns:
+- description: the generated subclass.
+  type:
+  - name: Class
+short_description: Creates a subclass with partially applied constructor parameters.
+yields:
+- description: |-
+    the block, if any, to pass to the constructor. This will be
+    overriden by a block passed directly to the constructor.
+version: '1.3'

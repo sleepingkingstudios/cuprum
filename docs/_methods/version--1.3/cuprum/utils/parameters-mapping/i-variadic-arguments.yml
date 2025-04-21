@@ -1,0 +1,12 @@
+---
+name: Cuprum::Utils::ParametersMapping#variadic_arguments
+parent_path: cuprum/utils/parameters-mapping
+signature: variadic_arguments
+slug: variadic-arguments
+constructor: false
+data_path: cuprum/utils/parameters-mapping/i-variadic-arguments
+returns:
+- description: the name of the variadic arguments parameter, if any.
+  type:
+  - name: Symbol
+version: '1.3'

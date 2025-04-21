@@ -1,0 +1,9 @@
+---
+name: Cuprum::Utils::InstanceSpy::Spy#call
+parent_path: cuprum/utils/instance-spy/spy
+signature: call(*_args, **_kwargs, &)
+slug: call
+constructor: false
+data_path: cuprum/utils/instance-spy/spy/i-call
+short_description: Empty method that accepts any parameters and an optional block.
+version: '1.3'

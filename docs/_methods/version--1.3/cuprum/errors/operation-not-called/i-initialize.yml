@@ -1,0 +1,18 @@
+---
+name: Cuprum::Errors::OperationNotCalled#initialize
+parent_path: cuprum/errors/operation-not-called
+signature: initialize(operation:)
+slug: initialize
+constructor: true
+data_path: cuprum/errors/operation-not-called/i-initialize
+params:
+- description: The uncalled operation.
+  name: operation
+  type:
+  - name: Cuprum::Operation
+    path: cuprum/operation
+returns:
+- description: a new instance of OperationNotCalled
+  type:
+  - name: OperationNotCalled
+version: '1.3'
