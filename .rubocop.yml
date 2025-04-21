@@ -72,6 +72,9 @@ RSpec/ExampleWording:
 RSpec/HookArgument:
   EnforcedStyle: example
 
+RSpec/IncludeExamples:
+  Enabled: false
+
 RSpec/LeadingSubject:
   Enabled: false # Expects subject to precede shared examples.
 
