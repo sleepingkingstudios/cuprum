@@ -83,7 +83,7 @@ RSpec.describe Cuprum::Result do
       'status: :failure' => :failure,
       'status: :success' => :success
     }
-    default_scenarios = {
+    default_scenarios = { # rubocop:disable RSpec/LeakyLocalVariable
       value:  value_scenarios,
       error:  error_scenarios,
       status: status_scenarios
@@ -99,7 +99,7 @@ RSpec.describe Cuprum::Result do
       default_scenarios
 
     wrap_context 'when the result has a value' do
-      all_scenarios = {
+      all_scenarios = { # rubocop:disable RSpec/LeakyLocalVariable
         value:  value_scenarios.merge('a matching value' => 'returned value'),
         error:  error_scenarios,
         status: status_scenarios
@@ -122,7 +122,7 @@ RSpec.describe Cuprum::Result do
     end
 
     wrap_context 'when the result has an error' do
-      all_scenarios = {
+      all_scenarios = { # rubocop:disable RSpec/LeakyLocalVariable
         value:  value_scenarios,
         error:  error_scenarios.merge(
           'a matching error' => Cuprum::Error.new(
@@ -152,7 +152,7 @@ RSpec.describe Cuprum::Result do
       include_context 'when the result has a value'
       include_context 'when the result has an error'
 
-      all_scenarios = {
+      all_scenarios = { # rubocop:disable RSpec/LeakyLocalVariable
         value:  value_scenarios.merge('a matching value' => 'returned value'),
         error:  error_scenarios.merge(
           'a matching error' => Cuprum::Error.new(
