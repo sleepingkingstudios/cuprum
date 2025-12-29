@@ -12,7 +12,7 @@ module Cuprum
     # Minor version.
     MINOR = 3
     # Patch version.
-    PATCH = 0
+    PATCH = 1
     # Prerelease version.
     PRERELEASE = nil
     # Build metadata.
