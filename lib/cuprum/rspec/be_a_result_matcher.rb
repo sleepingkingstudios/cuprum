@@ -104,7 +104,7 @@ module Cuprum::RSpec
     # @param actual [Object] the actual object to match.
     #
     # @return [Boolean] false if the actual object is a result; otherwise true.
-    def does_not_match?(actual) # rubocop:disable Naming/PredicateName
+    def does_not_match?(actual) # rubocop:disable Naming/PredicatePrefix
       @actual = actual
 
       raise ArgumentError, negated_matcher_warning if expected_properties?
@@ -210,7 +210,7 @@ module Cuprum::RSpec
       result.error.is_a?(Cuprum::Errors::OperationNotCalled)
     end
 
-    def compare_items(expected, actual)
+    def compare_items(expected, actual) # rubocop:disable Naming/PredicateMethod
       return expected.matches?(actual) if expected.respond_to?(:matches?)
 
       expected == actual

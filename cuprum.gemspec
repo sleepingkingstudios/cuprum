@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH << './lib'
-
-require 'cuprum/version'
+require_relative 'lib/cuprum/version'
 
 Gem::Specification.new do |gem|
   gem.name        = 'cuprum'
@@ -27,9 +25,9 @@ Gem::Specification.new do |gem|
     'rubygems_mfa_required' => 'true'
   }
 
-  gem.required_ruby_version = '~> 3.1'
+  gem.required_ruby_version = ['>= 3.1', '< 5']
   gem.require_path = 'lib'
   gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
 
-  gem.add_runtime_dependency 'sleeping_king_studios-tools', '~> 1.2'
+  gem.add_runtime_dependency 'sleeping_king_studios-tools', '~> 1.2', '>= 1.2.1'
 end

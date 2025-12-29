@@ -77,7 +77,7 @@ module Cuprum
       self.class::STATUSES
     end
 
-    def deprecated_compare(other)
+    def deprecated_compare(other) # rubocop:disable Naming/PredicateMethod
       unless %i[value status error].all? { |sym| other.respond_to?(sym) }
         return false
       end
