@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1
+
+Added support for Ruby 4.0.
+
 ## 1.3.0
 
 The "A Dream Given Form" Update
