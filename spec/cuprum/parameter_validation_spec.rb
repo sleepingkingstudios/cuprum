@@ -54,6 +54,10 @@ RSpec.describe Cuprum::ParameterValidation do
 
   let(:described_class) { Spec::ValidatedCommand }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   example_class 'Spec::ParentCommand', Cuprum::Command do |klass|
     klass.include Cuprum::ParameterValidation # rubocop:disable RSpec/DescribedClass
   end
@@ -197,7 +201,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with name: nil' do
-      let(:error_message) { "name can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'name')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(nil) }
@@ -206,8 +212,10 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with name: an Object' do
-      let(:name)          { Object.new.freeze }
-      let(:error_message) { 'name is not a String or a Symbol' }
+      let(:name) { Object.new.freeze }
+      let(:error_message) do
+        tools.assertions.error_message_for(:name, as: 'name')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name) }
@@ -216,7 +224,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with name: an empty String' do
-      let(:error_message) { "name can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'name')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate('') }
@@ -225,7 +235,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with name: an empty Symbol' do
-      let(:error_message) { "name can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'name')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(:'') }
@@ -234,8 +246,10 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with type: an Object' do
-      let(:type)          { Object.new.freeze }
-      let(:error_message) { 'type is not a String or a Symbol' }
+      let(:type) { Object.new.freeze }
+      let(:error_message) do
+        tools.assertions.error_message_for(:name, as: 'type')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name, type) }
@@ -244,7 +258,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with type: an empty String' do
-      let(:error_message) { "type can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'type')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name, '') }
@@ -253,7 +269,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with type: an empty Symbol' do
-      let(:error_message) { "type can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'type')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name, :'') }
@@ -262,7 +280,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with using: an empty String' do
-      let(:error_message) { "using can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'using')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name, using: '') }
@@ -271,7 +291,9 @@ RSpec.describe Cuprum::ParameterValidation do
     end
 
     describe 'with using: an empty Symbol' do
-      let(:error_message) { "using can't be blank" }
+      let(:error_message) do
+        tools.assertions.error_message_for(:presence, as: 'using')
+      end
 
       it 'should raise an exception' do
         expect { described_class.validate(name, using: :'') }
@@ -403,8 +425,12 @@ RSpec.describe Cuprum::ParameterValidation do
       describe 'with non-matching parameters' do
         let(:expected_error) do
           failures = [
-            "author can't be blank",
-            'amount is not an instance of Integer'
+            tools.assertions.error_message_for(:presence, as: 'author'),
+            tools.assertions.error_message_for(
+              :instance_of,
+              as:       'amount',
+              expected: Integer
+            )
           ]
 
           Cuprum::Errors::InvalidParameters
@@ -421,7 +447,13 @@ RSpec.describe Cuprum::ParameterValidation do
       describe 'with partially-matching parameters' do
         let(:arguments) { ['Doctor Skelebone'] }
         let(:expected_error) do
-          failures = ['amount is not an instance of Integer']
+          failures = [
+            tools.assertions.error_message_for(
+              :instance_of,
+              as:       'amount',
+              expected: Integer
+            )
+          ]
 
           Cuprum::Errors::InvalidParameters
             .new(command_class: described_class, failures:)
@@ -450,8 +482,12 @@ RSpec.describe Cuprum::ParameterValidation do
         let(:expected_error) do
           failures = [
             'author is not a real doctor',
-            "author can't be blank",
-            'amount is not an instance of Integer'
+            tools.assertions.error_message_for(:presence, as: 'author'),
+            tools.assertions.error_message_for(
+              :instance_of,
+              as:       'amount',
+              expected: Integer
+            )
           ]
 
           Cuprum::Errors::InvalidParameters
@@ -470,7 +506,11 @@ RSpec.describe Cuprum::ParameterValidation do
         let(:expected_error) do
           failures = [
             'author is not a real doctor',
-            'amount is not an instance of Integer'
+            tools.assertions.error_message_for(
+              :instance_of,
+              as:       'amount',
+              expected: Integer
+            )
           ]
 
           Cuprum::Errors::InvalidParameters

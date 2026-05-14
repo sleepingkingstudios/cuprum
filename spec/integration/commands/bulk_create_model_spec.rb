@@ -38,11 +38,14 @@ RSpec.describe Spec::Commands::BulkCreateModel do
       let(:expected_error) do
         Cuprum::Errors::MultipleErrors.new(
           errors: attributes.map do |hsh|
+            errors =
+              model_class
+              .new(attributes: hsh)
+              .tap(&:valid?)
+              .errors
+
             Spec::Errors::NotValid.new(
-              errors:      model_class
-                      .new(attributes: hsh)
-                      .tap(&:valid?)
-                      .errors,
+              errors:,
               model_class:
             )
           end
@@ -67,21 +70,26 @@ RSpec.describe Spec::Commands::BulkCreateModel do
         ]
       end
       let(:expected_error) do
+        first_errors =
+          model_class
+          .new(attributes: attributes[1])
+          .tap(&:valid?)
+          .errors
+        second_errors =
+          model_class
+          .new(attributes: attributes[2])
+          .tap(&:valid?)
+          .errors
+
         Cuprum::Errors::MultipleErrors.new(
           errors: [
             nil,
             Spec::Errors::NotValid.new(
-              errors:      model_class
-                      .new(attributes: attributes[1])
-                      .tap(&:valid?)
-                      .errors,
+              errors:      first_errors,
               model_class:
             ),
             Spec::Errors::NotValid.new(
-              errors:      model_class
-                      .new(attributes: attributes[2])
-                      .tap(&:valid?)
-                      .errors,
+              errors:      second_errors,
               model_class:
             )
           ]

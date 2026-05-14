@@ -21,6 +21,10 @@ RSpec.describe Spec::Commands::LaunchRocket do
   let(:launch_site) { 'KSC' }
   let(:payload)     { { name: 'Satellite', mass: 500 } }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   describe '#call' do
     let(:expected_error) do
       Cuprum::Errors::InvalidParameters
@@ -44,7 +48,11 @@ RSpec.describe Spec::Commands::LaunchRocket do
 
     describe 'with launch_site: an empty String' do
       let(:launch_site) { '' }
-      let(:failures)    { ["launch pad can't be blank"] }
+      let(:failures) do
+        [
+          tools.assertions.error_message_for(:presence, as: 'launch pad')
+        ]
+      end
 
       it 'should return a failing result with an InvalidParameters error' do
         expect(call_command)
@@ -65,8 +73,16 @@ RSpec.describe Spec::Commands::LaunchRocket do
     end
 
     describe 'with rocket: nil' do
-      let(:rocket)   { nil }
-      let(:failures) { ['rocket is not an instance of Spec::Models::Rocket'] }
+      let(:rocket) { nil }
+      let(:failures) do
+        [
+          tools.assertions.error_message_for(
+            :instance_of,
+            as:       'rocket',
+            expected: Spec::Models::Rocket
+          )
+        ]
+      end
 
       it 'should return a failing result with an InvalidParameters error' do
         expect(call_command)
@@ -113,7 +129,7 @@ RSpec.describe Spec::Commands::LaunchRocket do
       let(:payload)     { super().merge(mass: 10_000) }
       let(:failures) do
         [
-          "launch pad can't be blank",
+          tools.assertions.error_message_for(:presence, as: 'launch pad'),
           'payload is too heavy',
           'rocket has already launched',
           'rocket is out of fuel'
