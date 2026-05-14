@@ -52,7 +52,9 @@ RSpec.describe Cuprum::RSpec::Deferred::ParameterValidationExamples do
 
         include_deferred 'should validate the parameter',
           :quantity,
-          message: 'quantity is not an instance of Integer'
+          :instance_of,
+          as:       'quantity',
+          expected: Integer
       end
     end
 

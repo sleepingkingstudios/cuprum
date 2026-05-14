@@ -8,6 +8,10 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
 
   subject(:validator) { described_class.new }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   describe '::UnknownValidationError' do
     include_examples 'should define constant',
       :UnknownValidationError,
@@ -46,7 +50,9 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
         let(:expected_error) do
           Cuprum::Errors::InvalidParameters.new(
             command_class: Spec::CustomCommand,
-            failures:      ["author can't be blank"]
+            failures:      [
+              tools.assertions.error_message_for(:presence, as: 'author')
+            ]
           )
         end
 
@@ -62,7 +68,9 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
         let(:expected_error) do
           Cuprum::Errors::InvalidParameters.new(
             command_class: Spec::CustomCommand,
-            failures:      ['author is not a String or a Symbol']
+            failures:      [
+              tools.assertions.error_message_for(:name, as: 'author')
+            ]
           )
         end
 
@@ -92,7 +100,9 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
           let(:expected_error) do
             Cuprum::Errors::InvalidParameters.new(
               command_class: Spec::CustomCommand,
-              failures:      ['author name is not a String or a Symbol']
+              failures:      [
+                tools.assertions.error_message_for(:name, as: 'author name')
+              ]
             )
           end
 
@@ -117,7 +127,13 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
           let(:expected_error) do
             Cuprum::Errors::InvalidParameters.new(
               command_class: Spec::CustomCommand,
-              failures:      ['author is not an instance of String']
+              failures:      [
+                tools.assertions.error_message_for(
+                  :instance_of,
+                  as:       'author',
+                  expected: String
+                )
+              ]
             )
           end
 
@@ -496,9 +512,17 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
           Cuprum::Errors::InvalidParameters.new(
             command_class: Spec::CustomCommand,
             failures:      [
-              "author can't be blank",
-              'author is not an instance of String',
-              'quantity is not an instance of Integer'
+              tools.assertions.error_message_for(:presence, as: 'author'),
+              tools.assertions.error_message_for(
+                :instance_of,
+                as:       'author',
+                expected: String
+              ),
+              tools.assertions.error_message_for(
+                :instance_of,
+                as:       'quantity',
+                expected: Integer
+              )
             ]
           )
         end
@@ -521,9 +545,17 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
           Cuprum::Errors::InvalidParameters.new(
             command_class: Spec::CustomCommand,
             failures:      [
-              "author can't be blank",
-              'author is not an instance of String',
-              'quantity is not an instance of Integer'
+              tools.assertions.error_message_for(:presence, as: 'author'),
+              tools.assertions.error_message_for(
+                :instance_of,
+                as:       'author',
+                expected: String
+              ),
+              tools.assertions.error_message_for(
+                :instance_of,
+                as:       'quantity',
+                expected: Integer
+              )
             ]
           )
         end
@@ -545,7 +577,13 @@ RSpec.describe Cuprum::ParameterValidation::Validator do
         let(:expected_error) do
           Cuprum::Errors::InvalidParameters.new(
             command_class: Spec::CustomCommand,
-            failures:      ['quantity is not an instance of Integer']
+            failures:      [
+              tools.assertions.error_message_for(
+                :instance_of,
+                as:       'quantity',
+                expected: Integer
+              )
+            ]
           )
         end
 
