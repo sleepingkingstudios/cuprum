@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0
+
+The "Signs And Portents" Update
+
+### Results
+
+Added `Result.success` and `Result.failure`, which provide singleton results with respective `:success` and `:failure` statuses.
+
+### RSpec
+
+Updated `ParameterValidationExamples` to support lazy evaluation of the `message:` parameter, as well as any additional parameters passed along with `type:`. Parameters passed as a `Proc` will be evaluated in the context of the current example group.
+
 ## 1.3.1
 
 Added support for Ruby 4.0.
