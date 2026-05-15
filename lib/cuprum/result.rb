@@ -5,6 +5,14 @@ require 'cuprum'
 module Cuprum
   # Data object that encapsulates the result of calling a Cuprum command.
   class Result
+    class << self
+      # @return [Cuprum::Result] a result with a status of :failure.
+      def failure = @failure ||= new(status: :failure)
+
+      # @return [Cuprum::Result] a result with a status of :success.
+      def success = @success ||= new(status: :success)
+    end
+
     # Enumerates the default permitted values for a Result#status.
     STATUSES = %i[success failure].freeze
 

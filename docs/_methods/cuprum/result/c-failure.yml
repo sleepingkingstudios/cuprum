@@ -1,0 +1,13 @@
+---
+name: Cuprum::Result.failure
+parent_path: cuprum/result
+signature: failure
+slug: failure
+constructor: false
+data_path: cuprum/result/c-failure
+returns:
+- description: a result with a status of :failure.
+  type:
+  - name: Cuprum::Result
+    path: cuprum/result
+version: "*"
