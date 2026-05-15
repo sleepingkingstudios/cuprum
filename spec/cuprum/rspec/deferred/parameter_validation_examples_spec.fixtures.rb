@@ -27,11 +27,45 @@ RSpec.describe Cuprum::RSpec::Deferred::ParameterValidationExamples do
     klass.validate :quantity, Integer
   end
 
-  def call_command
+  define_method :call_command do
     command.call(name, quantity)
   end
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   describe '"should validate the parameter" examples' do
+    describe 'with message: a Proc' do
+      context 'when the parameters are valid' do
+        include_deferred 'should validate the parameter',
+          :quantity,
+          message: -> { 'quantity is invalid' }
+      end
+
+      context 'when the parameters are invalid with non-matching errors' do
+        let(:quantity) { nil }
+
+        include_deferred 'should validate the parameter',
+          :quantity,
+          message: -> { 'quantity is invalid' }
+      end
+
+      context 'when the parameters are invalid with matching error' do
+        let(:quantity) { nil }
+
+        include_deferred 'should validate the parameter',
+          :quantity,
+          message: lambda {
+            tools.assertions.error_message_for(
+              :instance_of,
+              as:       'quantity',
+              expected: Integer
+            )
+          }
+      end
+    end
+
     describe 'with message: value' do
       context 'when the parameters are valid' do
         include_deferred 'should validate the parameter',
@@ -73,6 +107,13 @@ RSpec.describe Cuprum::RSpec::Deferred::ParameterValidationExamples do
           :name,
           'sleeping_king_studios.tools.assertions.presence',
           as: 'item name'
+
+        describe 'with as: a Proc' do
+          include_deferred 'should validate the parameter',
+            :name,
+            'sleeping_king_studios.tools.assertions.presence',
+            as: -> { 'item name' }
+        end
       end
 
       context 'when the parameters are invalid with matching error' do
@@ -82,6 +123,13 @@ RSpec.describe Cuprum::RSpec::Deferred::ParameterValidationExamples do
           :name,
           'sleeping_king_studios.tools.assertions.presence',
           as: 'item name'
+
+        describe 'with as: a Proc' do
+          include_deferred 'should validate the parameter',
+            :name,
+            'sleeping_king_studios.tools.assertions.presence',
+            as: -> { 'item name' }
+        end
       end
     end
   end

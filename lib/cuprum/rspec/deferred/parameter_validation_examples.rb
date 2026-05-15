@@ -57,10 +57,19 @@ module Cuprum::RSpec::Deferred
 
     deferred_examples 'should validate the parameter' \
     do |name, type = nil, message: nil, **options|
+      let(:expected_message) do
+        message.is_a?(Proc) ? instance_exec(&message) : message
+      end
+      let(:expected_options) do
+        options.transform_values do |value|
+          value.is_a?(Proc) ? instance_exec(&value) : value
+        end
+      end
+
       it 'should return a failing result with InvalidParameters error' do
         expected_failure =
-          message ||
-          tools.assertions.error_message_for(type, as: name, **options)
+          expected_message ||
+          tools.assertions.error_message_for(type, as: name, **expected_options)
         expected_error   = Cuprum::Errors::InvalidParameters.new(
           command_class: subject.class,
           failures:      [expected_failure]
@@ -70,12 +79,6 @@ module Cuprum::RSpec::Deferred
           .to be_a_failing_result
           .with_error(expected_error)
       end
-    end
-
-    private
-
-    def tools
-      SleepingKingStudios::Tools::Toolbelt.instance
     end
   end
 end
