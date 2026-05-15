@@ -7,7 +7,9 @@ gemspec
 gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
 
 group :development, :test do
-  gem 'byebug', '~> 11.1'
+  gem 'byebug', '~> 12.0'
+  gem 'irb', '~> 1.16'
+  gem 'readline'
 
   gem 'rspec', '~> 3.13'
   gem 'rspec-sleeping_king_studios', '~> 2.8', '>= 2.8.4'

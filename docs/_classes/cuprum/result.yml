@@ -6,6 +6,15 @@ files:
 - lib/cuprum/result.rb
 parent_path: cuprum
 short_description: Data object that encapsulates the result of calling a Cuprum command.
+class_methods:
+- name: failure
+  path: cuprum/result/c-failure
+  slug: failure
+  inherited: false
+- name: success
+  path: cuprum/result/c-success
+  slug: success
+  inherited: false
 constants:
 - name: STATUSES
   path: cuprum/result/statuses

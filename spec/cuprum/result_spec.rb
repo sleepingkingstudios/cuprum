@@ -12,6 +12,24 @@ RSpec.describe Cuprum::Result do
 
   let(:params) { {} }
 
+  describe '.failure' do
+    let(:expected)      { described_class.new(status: :failure) }
+    let(:cached_result) { described_class.failure }
+
+    include_examples 'should define class reader', :failure, -> { expected }
+
+    it { expect(described_class.failure).to be(cached_result) }
+  end
+
+  describe '.success' do
+    let(:expected)      { described_class.new(status: :success) }
+    let(:cached_result) { described_class.success }
+
+    include_examples 'should define class reader', :success, -> { expected }
+
+    it { expect(described_class.success).to be(cached_result) }
+  end
+
   describe '::new' do
     it 'should define the constructor' do
       expect(described_class)
