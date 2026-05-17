@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'sleeping_king_studios/tools/toolbox/initializer'
+
 # Toolkit for implementing business logic as function objects.
 module Cuprum
   autoload :Command,             'cuprum/command'
@@ -16,7 +18,15 @@ module Cuprum
   autoload :ResultList,          'cuprum/result_list'
   autoload :Steps,               'cuprum/steps'
 
+  @initializer = SleepingKingStudios::Tools::Toolbox::Initializer.new do
+    SleepingKingStudios::Tools.initializer.call
+  end
+
   class << self
+    # @return [SleepingKingStudios::Tools::Toolbox::Initializer] the initializer
+    #   for the module.
+    attr_reader :initializer
+
     # @return [String] the current version of the gem.
     def version
       VERSION

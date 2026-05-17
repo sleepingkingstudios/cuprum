@@ -4,6 +4,8 @@
 
 The "Signs And Portents" Update
 
+Added `Cuprum.initializer` to initialize dependencies and error messages. Call `Cuprum.initializer.call` in the entry point or initializers of your application to avoid missing error messages.
+
 ### Results
 
 Added `Result.success` and `Result.failure`, which provide singleton results with respective `:success` and `:failure` statuses.

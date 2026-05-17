@@ -28,6 +28,13 @@ files:
 - lib/cuprum/parameter_validation.rb
 parent_path: ''
 short_description: Toolkit for implementing business logic as function objects.
+class_attributes:
+- name: initializer
+  read: true
+  write: false
+  path: cuprum/c-initializer
+  slug: initializer
+  inherited: false
 class_methods:
 - name: version
   path: cuprum/c-version

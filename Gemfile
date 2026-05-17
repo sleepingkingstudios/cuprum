@@ -23,6 +23,7 @@ end
 group :docs do
   gem 'jekyll', '~> 4.3'
   gem 'jekyll-theme-dinky', '~> 0.2'
+  gem 'logger', '~> 1.7'
 
   # Use Kramdown to parse GFM-dialect Markdown.
   gem 'kramdown-parser-gfm', '~> 1.1'

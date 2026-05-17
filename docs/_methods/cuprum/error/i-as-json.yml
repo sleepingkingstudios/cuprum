@@ -7,9 +7,9 @@ constructor: false
 data_path: cuprum/error/i-as-json
 description: |-
   By default, contains the #type and #message properties and an empty :data
-  Hash. This can be overriden in subclasses by overriding the private method
-  #as_json_data; this should always return a Hash with String keys and whose
-  values are basic objects or data structures of the same.
+  Hash. This can be overridden in subclasses by overriding the private
+  method #as_json_data; this should always return a Hash with String keys
+  and whose values are basic objects or data structures of the same.
 returns:
 - description: |-
     a serializable hash representation of the
