@@ -52,7 +52,7 @@ module Cuprum
   class Error
     # Short string used to identify the type of error.
     #
-    # Primarily used for serialization. This value can be overriden by passing
+    # Primarily used for serialization. This value can be overridden by passing
     # in the :type parameter to the constructor.
     #
     # Subclasses of Cuprum::Error should define their own default TYPE constant.
@@ -86,9 +86,9 @@ module Cuprum
     # Generates a serializable representation of the error object.
     #
     # By default, contains the #type and #message properties and an empty :data
-    # Hash. This can be overriden in subclasses by overriding the private method
-    # #as_json_data; this should always return a Hash with String keys and whose
-    # values are basic objects or data structures of the same.
+    # Hash. This can be overridden in subclasses by overriding the private
+    # method #as_json_data; this should always return a Hash with String keys
+    # and whose values are basic objects or data structures of the same.
     #
     # @return [Hash<String, Object>] a serializable hash representation of the
     #   error.

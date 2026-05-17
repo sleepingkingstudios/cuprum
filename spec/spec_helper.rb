@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
+require 'rspec/sleeping_king_studios/all'
+require 'byebug'
+
 unless ENV['COVERAGE'] == 'false'
   require 'simplecov'
 
   SimpleCov.start
 end
 
-require 'rspec/sleeping_king_studios/all'
-require 'byebug'
+require 'cuprum'
 
 # Isolated namespace for defining spec-only or transient objects.
 module Spec; end
 
-SleepingKingStudios::Tools.initializer.call
+Cuprum.initializer.call
 
 require 'support/matrix'
 
