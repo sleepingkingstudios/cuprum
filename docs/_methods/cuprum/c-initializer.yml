@@ -1,0 +1,14 @@
+---
+name: Cuprum.initializer
+parent_path: cuprum
+signature: initializer
+slug: initializer
+constructor: false
+data_path: cuprum/c-initializer
+returns:
+- description: |-
+    the initializer
+    for the module.
+  type:
+  - name: SleepingKingStudios::Tools::Toolbox::Initializer
+version: "*"

@@ -15,6 +15,34 @@ This is the documentation for the [current development build](https://github.com
 - For the most recent release, see [Version 1.3]({{site.baseurl}}/versions/1.3).
 - For previous releases, see the [Versions]({{site.baseurl}}/versions) page.
 
+## Getting Started
+
+Add the gem to your `Gemfile` or `gemspec`:
+
+```ruby
+gem 'cuprum'
+```
+
+Require `Cuprum` in your code:
+
+```ruby
+require 'cuprum'
+```
+
+To ensure that error message definitions are loaded, call the `Cuprum` initializer:
+
+- In the [initializer](./initializer) for your project:
+
+  ```ruby
+  module Space
+    @initializer = SleepingKingStudios::Tools::Toolbox::Initializer.new do
+      Cuprum.initializer.call
+    end
+  end
+  ```
+
+- Or, in the entry points of your application (such as a `bin` script or `spec_helper.rb`).
+
 ## Reference
 
 Cuprum defines the following core components:

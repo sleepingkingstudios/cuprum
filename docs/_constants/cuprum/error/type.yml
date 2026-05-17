@@ -6,7 +6,7 @@ short_description: Short string used to identify the type of error.
 value: "'cuprum.error'"
 data_path: cuprum/error/type
 description: |-
-  Primarily used for serialization. This value can be overriden by passing
+  Primarily used for serialization. This value can be overridden by passing
   in the :type parameter to the constructor.
 
   Subclasses of Cuprum::Error should define their own default TYPE constant.
