@@ -15,10 +15,7 @@ module Cuprum::Errors
     def initialize(errors:, message: nil)
       @errors = errors
 
-      super(
-        errors:,
-        message: message || default_message
-      )
+      super
     end
 
     # @return [Array<Cuprum::Error>] the wrapped errors.
@@ -30,10 +27,6 @@ module Cuprum::Errors
       {
         'errors' => errors.map { |error| error&.as_json }
       }
-    end
-
-    def default_message
-      'the command encountered one or more errors'
     end
   end
 end

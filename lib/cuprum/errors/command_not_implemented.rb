@@ -9,9 +9,6 @@ module Cuprum::Errors
     COMPARABLE_PROPERTIES = %i[command].freeze
     private_constant :COMPARABLE_PROPERTIES
 
-    MESSAGE_FORMAT = 'no implementation defined for %s'
-    private_constant :MESSAGE_FORMAT
-
     # Short string used to identify the type of error.
     TYPE = 'cuprum.errors.command_not_implemented'
 
@@ -20,9 +17,8 @@ module Cuprum::Errors
       @command = command
 
       class_name = command&.class&.name || 'command'
-      message    = MESSAGE_FORMAT % class_name
 
-      super(command:, message:)
+      super(class_name:, command:)
     end
 
     # @return [Cuprum::Command] The command called without a definition.

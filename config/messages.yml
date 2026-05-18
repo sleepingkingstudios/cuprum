@@ -1,0 +1,7 @@
+---
+cuprum:
+  errors:
+    command_not_implemented: 'no implementation defined for %<class_name>s'
+    invalid_parameters: 'invalid parameters for %<class_name>s - %<failure_messages>s'
+    multiple_errors: 'the command encountered one or more errors'
+    operation_not_called: '%<class_name>s was not called and does not have a result'

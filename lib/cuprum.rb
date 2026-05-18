@@ -8,6 +8,7 @@ module Cuprum
   autoload :CommandFactory,      'cuprum/command_factory'
   autoload :Currying,            'cuprum/currying'
   autoload :Error,               'cuprum/error'
+  autoload :Errors,              'cuprum/errors'
   autoload :ExceptionHandling,   'cuprum/exception_handling'
   autoload :MapCommand,          'cuprum/map_command'
   autoload :Matcher,             'cuprum/matcher'
@@ -20,6 +21,13 @@ module Cuprum
 
   @initializer = SleepingKingStudios::Tools::Toolbox::Initializer.new do
     SleepingKingStudios::Tools.initializer.call
+
+    SleepingKingStudios::Tools::Messages::Registry
+      .global
+      .register(
+        file:  File.join(Cuprum.gem_path, 'config', 'messages.yml'),
+        scope: 'cuprum.errors'
+      )
   end
 
   class << self

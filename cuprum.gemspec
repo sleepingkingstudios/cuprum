@@ -27,7 +27,12 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = ['>= 3.1', '< 5']
   gem.require_path = 'lib'
-  gem.files        = Dir['lib/**/*.rb', 'LICENSE', '*.md']
+  gem.files        = Dir[
+    'config/**/*.yml',
+    'lib/**/*.rb',
+    'LICENSE',
+    '*.md'
+  ]
 
   gem.add_runtime_dependency 'sleeping_king_studios-tools', '~> 1.3'
 end
