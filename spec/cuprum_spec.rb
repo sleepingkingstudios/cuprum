@@ -17,6 +17,18 @@ RSpec.describe Cuprum do
       -> { be_a(SleepingKingStudios::Tools::Toolbox::Initializer) }
   end
 
+  describe '.gem_path' do
+    let(:expected) do
+      sep = File::SEPARATOR
+
+      __dir__.sub(/#{sep}spec#{sep}?\z/, '')
+    end
+
+    include_examples 'should define class reader',
+      :gem_path,
+      -> { be == expected }
+  end
+
   describe '.version' do
     it 'should define the reader' do
       expect(described_class)

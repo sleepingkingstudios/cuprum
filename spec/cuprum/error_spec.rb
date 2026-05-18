@@ -11,6 +11,10 @@ RSpec.describe Cuprum::Error do
   let(:properties) { {} }
   let(:type)       { nil }
 
+  define_method :tools do
+    SleepingKingStudios::Tools::Toolbelt.instance
+  end
+
   describe '::TYPE' do
     include_examples 'should define immutable constant',
       :TYPE,
@@ -421,6 +425,27 @@ RSpec.describe Cuprum::Error do
   end
 
   describe '#message' do
+    deferred_context 'when there are custom error messages defined' do
+      let(:messages) do
+        {
+          spec: {
+            custom_error:  'This is a custom error message',
+            example_error: 'This is an example error message',
+            locale_error:  'Locale not found with key %<locale>s'
+          }
+        }
+      end
+      let(:registry) do
+        SleepingKingStudios::Tools::Messages::Registry
+          .new
+          .register(hash: messages, scope: 'spec')
+      end
+
+      before(:example) do
+        allow(tools.messages).to receive(:registry).and_return(registry)
+      end
+    end
+
     include_examples 'should have reader', :message, nil
 
     context 'when initialized with no arguments' do
@@ -434,6 +459,135 @@ RSpec.describe Cuprum::Error do
 
       it { expect(error.message).to be == message }
     end
+
+    context 'when initialized with a type' do
+      let(:type) { 'spec.custom_error' }
+
+      it { expect(error.message).to be nil }
+
+      wrap_deferred 'when there are custom error messages defined' do
+        let(:expected) { 'This is a custom error message' }
+
+        it { expect(error.message).to be == expected }
+
+        context 'when initialized with a message' do
+          let(:message) { 'Something went wrong.' }
+
+          it { expect(error.message).to be == message }
+        end
+
+        context 'when the defined message requires parameters' do
+          let(:type) { 'spec.locale_error' }
+          let(:expected) do
+            'Message missing parameters: spec.locale_error key<locale> not ' \
+              'found'
+          end
+
+          it { expect(error.message).to be == expected }
+
+          describe 'with the required parameters' do # rubocop:disable RSpec/NestedGroups
+            let(:properties) { super().merge(locale: 'en') }
+            let(:expected)   { 'Locale not found with key en' }
+
+            it { expect(error.message).to be == expected }
+          end
+        end
+      end
+    end
+
+    context 'when there is an error subclass' do
+      let(:described_class) { Spec::ExampleError }
+
+      example_class 'Spec::ExampleError', described_class do |klass|
+        klass.const_set :TYPE, 'spec.example_error'
+      end
+
+      it { expect(error.message).to be nil }
+
+      context 'when the subclass defines :MESSAGE' do
+        let(:message_template) do
+          'This is a static error message'
+        end
+        let(:expected) { message_template }
+
+        before(:example) do
+          Spec::ExampleError.const_set(:MESSAGE, message_template)
+        end
+
+        it { expect(error.message).to be == expected }
+
+        context 'when initialized with a message' do
+          let(:message) { 'Something went wrong.' }
+
+          it { expect(error.message).to be == message }
+        end
+
+        wrap_deferred 'when there are custom error messages defined' do
+          let(:expected) { 'This is an example error message' }
+
+          it { expect(error.message).to be == expected }
+        end
+
+        context 'when the message template takes parameters' do
+          let(:message_template) do
+            'Locale not found with key %<locale>s'
+          end
+          let(:expected) do
+            'Message missing parameters: spec.example_error key<locale> not ' \
+              'found'
+          end
+
+          it { expect(error.message).to be == expected }
+
+          describe 'with the required parameters' do # rubocop:disable RSpec/NestedGroups
+            let(:properties) { super().merge(locale: 'en') }
+            let(:expected)   { 'Locale not found with key en' }
+
+            it { expect(error.message).to be == expected }
+          end
+        end
+      end
+
+      wrap_deferred 'when there are custom error messages defined' do
+        let(:expected) { 'This is an example error message' }
+
+        it { expect(error.message).to be == expected }
+
+        context 'when initialized with a message' do
+          let(:message) { 'Something went wrong.' }
+
+          it { expect(error.message).to be == message }
+        end
+
+        context 'when initialized with a type' do
+          let(:type)     { 'spec.custom_error' }
+          let(:expected) { 'This is a custom error message' }
+
+          it { expect(error.message).to be == expected }
+        end
+
+        context 'when the defined message requires parameters' do
+          let(:described_class) { Spec::LocaleError }
+          let(:expected) do
+            'Message missing parameters: spec.locale_error key<locale> not ' \
+              'found'
+          end
+
+          example_class 'Spec::LocaleError', described_class do |klass|
+            klass.const_set :TYPE, 'spec.locale_error'
+          end
+
+          it { expect(error.message).to be == expected }
+
+          describe 'with the required parameters' do # rubocop:disable RSpec/NestedGroups
+            let(:properties) { super().merge(locale: 'en') }
+            let(:expected)   { 'Locale not found with key en' }
+
+            it { expect(error.message).to be == expected }
+          end
+        end
+      end
+    end
   end
 
   describe '#type' do
@@ -446,7 +600,9 @@ RSpec.describe Cuprum::Error do
     end
 
     context 'when there is an error subclass' do
-      example_class 'Spec::Error', described_class do |klass|
+      let(:described_class) { Spec::ExampleError }
+
+      example_class 'Spec::ExampleError', described_class do |klass|
         klass.const_set :TYPE, 'spec.example_error'
       end
 

@@ -63,8 +63,8 @@ module Cuprum
     # @param properties [Hash] Additional properties used to compare errors.
     # @param type [String] Short string used to identify the type of error.
     def initialize(message: nil, type: nil, **properties)
-      @message               = message
-      @type                  = type || self.class::TYPE
+      @type                  = type    || self.class::TYPE
+      @message               = message || default_message_for(**properties)
       @comparable_properties = properties.merge(message:, type:)
     end
 
@@ -109,5 +109,25 @@ module Cuprum
     def as_json_data
       {}
     end
+
+    def default_message_for(**parameters)
+      if type && !(type.respond_to?(:empty?) && type.empty?)
+        message = tools.messages.message(type, default: nil, parameters:)
+
+        return message if message
+      end
+
+      format_default_message(parameters)
+    end
+
+    def format_default_message(parameters)
+      return unless self.class.const_defined?(:MESSAGE)
+
+      format(self.class::MESSAGE, parameters)
+    rescue KeyError => exception
+      "Message missing parameters: #{type} #{exception.message}"
+    end
+
+    def tools = SleepingKingStudios::Tools::Toolbelt.instance
   end
 end

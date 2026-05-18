@@ -36,6 +36,10 @@ class_attributes:
   slug: initializer
   inherited: false
 class_methods:
+- name: gem_path
+  path: cuprum/c-gem-path
+  slug: gem-path
+  inherited: false
 - name: version
   path: cuprum/c-version
   slug: version

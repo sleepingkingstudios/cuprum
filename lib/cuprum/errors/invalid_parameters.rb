@@ -12,13 +12,16 @@ module Cuprum::Errors
     # @param command_class [Class] the class of the failed command.
     # @param failures [Array<String>] the messages for the failed validations.
     def initialize(command_class:, failures:)
-      @command_class = command_class
-      @failures      = failures
+      @command_class   = command_class
+      @failures        = failures
+      class_name       = command_class.name
+      failure_messages = failures.join(', ')
 
       super(
+        class_name:,
         command_class:,
         failures:,
-        message:       generate_message
+        failure_messages:
       )
     end
 
@@ -35,10 +38,6 @@ module Cuprum::Errors
         'command_class' => command_class.name,
         'failures'      => failures.map(&:to_s)
       }
-    end
-
-    def generate_message
-      "invalid parameters for #{command_class.name} - #{failures.join(', ')}"
     end
   end
 end

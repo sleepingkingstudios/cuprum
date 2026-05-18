@@ -6,6 +6,9 @@ gemspec
 
 gem 'sleeping_king_studios-tasks', '~> 0.4', '>= 0.4.1'
 
+gem 'sleeping_king_studios-tools',
+  git: 'https://github.com/sleepingkingstudios/sleeping_king_studios-tools'
+
 group :development, :test do
   gem 'byebug', '~> 12.0'
   gem 'irb', '~> 1.16'
