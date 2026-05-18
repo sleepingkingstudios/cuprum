@@ -27,6 +27,14 @@ module Cuprum
     #   for the module.
     attr_reader :initializer
 
+    # @return [String] the absolute path to the gem directory.
+    def gem_path
+      sep     = File::SEPARATOR
+      pattern = /#{sep}lib#{sep}?\z/
+
+      __dir__.sub(pattern, '')
+    end
+
     # @return [String] the current version of the gem.
     def version
       VERSION
