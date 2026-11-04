@@ -1,12 +1,12 @@
 ---
 name: Cuprum::Errors::MultipleErrors#initialize
 parent_path: cuprum/errors/multiple-errors
-signature: 'initialize(errors:, message: nil)'
+signature: 'initialize(errors:, backtrace: nil, message: nil)'
 slug: initialize
 constructor: true
 data_path: cuprum/errors/multiple-errors/i-initialize
 params:
-- description: The wrapped errors.
+- description: the wrapped errors.
   name: errors
   type:
   - name: Array
@@ -14,7 +14,15 @@ params:
     - name: Cuprum::Error
       path: cuprum/error
 - description: |-
-    Optional message describing the nature of the
+    if true, captures a backtrace from
+    Kernel.caller.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: nil
+- description: |-
+    optional message describing the nature of the
     error.
   name: message
   type:
@@ -25,4 +33,4 @@ returns:
   type:
   - name: MultipleErrors
 version: "*"
-checksum: UN2o4Tfj/dTa+UZfRMJbSA==
+checksum: 4TSIHtBGK8uLamNloIDnVg==

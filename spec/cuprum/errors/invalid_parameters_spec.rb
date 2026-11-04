@@ -24,7 +24,7 @@ RSpec.describe Cuprum::Errors::InvalidParameters do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:command_class, :failures)
+        .and_keywords(:backtrace, :command_class, :failures)
     end
   end
 

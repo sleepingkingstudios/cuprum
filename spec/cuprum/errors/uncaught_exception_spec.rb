@@ -23,7 +23,7 @@ RSpec.describe Cuprum::Errors::UncaughtException do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:exception, :message)
+        .and_keywords(:backtrace, :exception, :message)
     end
   end
 

@@ -58,15 +58,25 @@ module Cuprum
     # Subclasses of Cuprum::Error should define their own default TYPE constant.
     TYPE = 'cuprum.error'
 
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller. Defaults to false unless the
+    #   ENV['CUPRUM_ERROR_BACKTRACE'] flag is set to true.
     # @param message [String] Optional message describing the nature of the
     #   error.
     # @param properties [Hash] Additional properties used to compare errors.
     # @param type [String] Short string used to identify the type of error.
-    def initialize(message: nil, type: nil, **properties)
+    def initialize(backtrace: false, message: nil, type: nil, **properties)
       @type                  = type    || self.class::TYPE
       @message               = message || default_message_for(**properties)
+      @backtrace             = caller if backtrace || capture_backtrace?
       @comparable_properties = properties.merge(message:, type:)
     end
+
+    # @return [Array<String>, nil] the captured backtrace when the error was
+    #   created, if any.
+    #
+    # @see Kernel#caller
+    attr_reader :backtrace
 
     # @return [String] optional message describing the nature of the error.
     attr_reader :message
@@ -108,6 +118,10 @@ module Cuprum
 
     def as_json_data
       {}
+    end
+
+    def capture_backtrace?
+      ENV.fetch('CUPRUM_ERROR_BACKTRACE', 'false') == 'true'
     end
 
     def default_message_for(**parameters)

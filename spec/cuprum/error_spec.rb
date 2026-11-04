@@ -26,7 +26,7 @@ RSpec.describe Cuprum::Error do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:message)
+        .and_keywords(:backtrace, :message, :type)
         .and_any_keywords
     end
   end
@@ -416,6 +416,59 @@ RSpec.describe Cuprum::Error do
       let(:type) { 'spec.custom_error' }
 
       it { expect(error.as_json).to be == expected }
+    end
+  end
+
+  describe '#backtrace' do
+    before(:example) do
+      allow(ENV)
+        .to receive(:fetch)
+        .with('CUPRUM_ERROR_BACKTRACE', an_instance_of(String))
+        .and_return(nil)
+    end
+
+    include_examples 'should define reader', :backtrace, nil
+
+    context 'when initialized with backtrace: false' do
+      let(:properties) { super().merge(backtrace: false) }
+
+      it { expect(error.backtrace).to be nil }
+    end
+
+    context 'when initialized with backtrace: true' do
+      let(:properties) { super().merge(backtrace: true) }
+
+      it 'should capture the backtrace', :aggregate_failures do
+        expect(error.backtrace).to be_a(Array)
+        expect(error.backtrace).to all be_a(String)
+        expect(error.backtrace.first).to start_with(__FILE__)
+      end
+    end
+
+    context "when ENV['CUPRUM_ERROR_BACKTRACE'] is false" do
+      before(:example) do
+        allow(ENV)
+          .to receive(:fetch)
+          .with('CUPRUM_ERROR_BACKTRACE', an_instance_of(String))
+          .and_return('false')
+      end
+
+      it { expect(error.backtrace).to be nil }
+    end
+
+    context "when ENV['CUPRUM_ERROR_BACKTRACE'] is true" do
+      before(:example) do
+        allow(ENV)
+          .to receive(:fetch)
+          .with('CUPRUM_ERROR_BACKTRACE', an_instance_of(String))
+          .and_return('true')
+      end
+
+      it 'should capture the backtrace', :aggregate_failures do
+        expect(error.backtrace).to be_a(Array)
+        expect(error.backtrace).to all be_a(String)
+        expect(error.backtrace.first).to start_with(__FILE__)
+      end
     end
   end
 

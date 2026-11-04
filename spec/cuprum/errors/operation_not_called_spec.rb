@@ -20,7 +20,7 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:operation)
+        .and_keywords(:backtrace, :operation)
     end
 
     describe 'with no arguments' do

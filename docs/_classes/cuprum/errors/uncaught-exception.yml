@@ -12,6 +12,12 @@ constants:
   slug: type
   inherited: false
 instance_attributes:
+- name: backtrace
+  read: true
+  write: false
+  path: cuprum/error/i-backtrace
+  slug: backtrace
+  inherited: true
 - name: exception
   read: true
   write: false
@@ -51,4 +57,4 @@ inherited_classes:
   slug: error
   path: cuprum/error
 version: "*"
-checksum: FoD6OmsmiZsZtmTcqT0KBA==
+checksum: XeGVscec6mpKNgCIJ5cAsQ==

@@ -1,7 +1,7 @@
 ---
 name: Cuprum::Errors::InvalidParameters#initialize
 parent_path: cuprum/errors/invalid-parameters
-signature: initialize(command_class:, failures:)
+signature: 'initialize(command_class:, failures:, backtrace: nil)'
 slug: initialize
 constructor: true
 data_path: cuprum/errors/invalid-parameters/i-initialize
@@ -16,9 +16,17 @@ params:
   - name: Array
     items:
     - name: String
+- description: |-
+    if true, captures a backtrace from
+    Kernel.caller.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: nil
 returns:
 - description: a new instance of InvalidParameters
   type:
   - name: InvalidParameters
 version: "*"
-checksum: PNMVIqDEbU+9LvB234NfIg==
+checksum: Fo5zQ/d5PBlBb3/eJqRaUg==

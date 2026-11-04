@@ -29,7 +29,7 @@ RSpec.describe Cuprum::Errors::MultipleErrors do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:errors, :message)
+        .and_keywords(:backtrace, :errors, :message)
     end
   end
 

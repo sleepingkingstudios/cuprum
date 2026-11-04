@@ -9,10 +9,12 @@ module Cuprum::Errors
     # Short string used to identify the type of error.
     TYPE = 'cuprum.errors.multiple_errors'
 
-    # @param errors [Array<Cuprum::Error>] The wrapped errors.
-    # @param message [String] Optional message describing the nature of the
+    # @param errors [Array<Cuprum::Error>] the wrapped errors.
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller.
+    # @param message [String] optional message describing the nature of the
     #   error.
-    def initialize(errors:, message: nil)
+    def initialize(errors:, backtrace: nil, message: nil)
       @errors = errors
 
       super

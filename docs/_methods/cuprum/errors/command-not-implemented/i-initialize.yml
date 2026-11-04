@@ -1,19 +1,27 @@
 ---
 name: Cuprum::Errors::CommandNotImplemented#initialize
 parent_path: cuprum/errors/command-not-implemented
-signature: initialize(command:)
+signature: 'initialize(command:, backtrace: nil)'
 slug: initialize
 constructor: true
 data_path: cuprum/errors/command-not-implemented/i-initialize
 params:
-- description: The command called without a definition.
+- description: the command called without a definition.
   name: command
   type:
   - name: Cuprum::Command
     path: cuprum/command
+- description: |-
+    if true, captures a backtrace from
+    Kernel.caller.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: nil
 returns:
 - description: a new instance of CommandNotImplemented
   type:
   - name: CommandNotImplemented
 version: "*"
-checksum: lP/XaztypBzTyJH80dtiCA==
+checksum: 8T7/D8UnGfRLos2nbtWETg==
