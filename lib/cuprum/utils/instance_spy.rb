@@ -131,10 +131,10 @@ module Cuprum::Utils
       if kwargs.empty?
         Cuprum::Utils::InstanceSpy.send(:call_spies_for, self, *args, &)
       else
-        # :nocov:
+        # simplecov:disable
         Cuprum::Utils::InstanceSpy
           .send(:call_spies_for, self, *args, **kwargs, &)
-        # :nocov:
+        # simplecov:enable
       end
 
       super

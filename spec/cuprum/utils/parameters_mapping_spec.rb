@@ -166,9 +166,9 @@ RSpec.describe Cuprum::Utils::ParametersMapping do
           **options,
           &action
         |
-          # :nocov:
+          # simplecov:disable
           nil
-          # :nocov:
+          # simplecov:enable
         end
       end
 
