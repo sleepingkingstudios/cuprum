@@ -22,3 +22,4 @@ short_description: |-
   Sets an error expectation on the matcher. Calls to #matches? will fail
   unless the actual object has the specified error.
 version: "*"
+checksum: "+m5GQZyTdy1Tri+gofK0BA=="

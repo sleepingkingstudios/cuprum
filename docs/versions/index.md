@@ -6,11 +6,9 @@ breadcrumbs:
 
 # Versions
 
-For more information on release versions, see the [Changelog](https://github.com/sleepingkingstudios/cuprum/blob/main/CHANGELOG.md).
+For more information on release versions, see the [Changelog]({{site.project_metadata.repository_url}}/blob/main/CHANGELOG.md).
 
-- [Version 1.0]({{site.baseurl}}/versions/1.0)
-- [Version 1.1]({{site.baseurl}}/versions/1.1)
-- [Version 1.2]({{site.baseurl}}/versions/1.2)
-- [Version 1.3]({{site.baseurl}}/versions/1.3)
-
-{% include breadcrumbs.md %}
+{% assign versions = site.versions | sort: "sortable" | map: "version" | reverse %}
+{% for version in versions %}
+- [Version {{ version }}]({{site.baseurl}}/versions/{{version}})
+{%- endfor %}

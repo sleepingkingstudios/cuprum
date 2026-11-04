@@ -1,4 +1,6 @@
 ---
+plugins:
+  - sleeping_king_studios/docs/jekyll/plugins/required
 collections:
   classes:
     output: false
@@ -10,26 +12,37 @@ collections:
     output: false
   namespaces:
     output: false
+  versions:
+    output: false
 defaults:
 - scope:
     path: ''
     type: 'pages'
   values:
     encoding: 'utf-8'
-    layout: 'default'
-    title: 'Cuprum'
+    layout: 'page'
+    title: 'SleepingKingStudios::Docs'
 exclude:
-  - .git
-  - Gemfile
-  - Gemfile.lock
-  - README.md
-  - Rakefile
   - /vendor
+markdown: kramdown
+
+# Project Configuration
+project_metadata:
+  description: |
+    An opinionated implementation of the Command pattern for Ruby applications.
+    Cuprum wraps your business logic in a consistent, object-oriented interface
+    and features status and error management, composability and control flow
+    management.
+  name:           Cuprum
+  repository_url: https://github.com/sleepingkingstudios/cuprum
+
+# Theme Configuration
+theme: jekyll-theme-dinky
 description: |
-    An opinionated implementation of the Command pattern for Ruby applications. Cuprum wraps your business logic in a consistent, object-oriented interface and features status and error management, composability and control flow management.
+  An opinionated implementation of the Command pattern for Ruby applications.
+  Cuprum wraps your business logic in a consistent, object-oriented interface
+  and features status and error management, composability and control flow
+  management.
 github:
   repository_url: https://github.com/sleepingkingstudios/cuprum
-markdown: kramdown
-repository: sleepingkingstudios/cuprum
-theme: jekyll-theme-dinky
-title: Cuprum
+title: 'Cuprum'

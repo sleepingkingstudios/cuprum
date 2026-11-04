@@ -28,3 +28,4 @@ returns:
     - name: Object
 short_description: Maps the given parameters to a Hash of parameter names and values.
 version: "*"
+checksum: 02EL/7OnPC66As2rAWECMQ==

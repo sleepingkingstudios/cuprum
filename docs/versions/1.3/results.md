@@ -410,5 +410,3 @@ end
 ```
 
 Again, we override the `#build_request` method to return an instance of `Web::Result`, and we add a new `:metadata` keyword to the `#success` and `#failure` helpers.
-
-{% include breadcrumbs.md %}

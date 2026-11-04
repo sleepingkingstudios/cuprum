@@ -20,3 +20,4 @@ returns:
     path: cuprum/r-spec/be-a-result-matcher
 short_description: 'Asserts that the object is a Cuprum::Result with status: :success.'
 version: "*"
+checksum: 7ArQnpBfC1dUTFRIGz47ww==

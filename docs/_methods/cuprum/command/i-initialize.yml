@@ -38,3 +38,4 @@ yields:
     method. This overwrites any existing #process method. When the command
     is called, #process will be called internally and passed the parameters.
 version: "*"
+checksum: f4Yl03AXwngpolFp2HLonA==

@@ -33,3 +33,4 @@ short_description: Calls the next command with the given arguments, keywords, an
 yields:
 - description: A block to pass to the command.
 version: "*"
+checksum: RKAjwSeRVtkCEh/Yib0R/g==

@@ -1,0 +1,13 @@
+---
+layout: default
+---
+
+{{ content }}
+
+{% if page.breadcrumbs %}<hr>
+
+Back to
+{% for breadcrumb in page.breadcrumbs -%}
+<a href="{{site.baseurl}}{{breadcrumb.path}}">{{ breadcrumb.name }}</a>{% unless forloop.last %} | {% endunless %}
+{% endfor %}
+{% endif %}

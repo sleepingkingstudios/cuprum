@@ -32,3 +32,4 @@ returns:
     path: cuprum/currying/curried-command
 short_description: Returns a CurriedCommand that wraps this command with pre-set arguments.
 version: "*"
+checksum: JwLUMYrjEaM1vLAa8J0cBA==

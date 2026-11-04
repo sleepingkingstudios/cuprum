@@ -30,3 +30,4 @@ yields:
     the block, if any, to pass to the constructor. This will be
     overriden by a block passed directly to the constructor.
 version: "*"
+checksum: sc0tXMPU/1v+8RAToREmMA==

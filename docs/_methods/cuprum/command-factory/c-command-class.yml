@@ -69,3 +69,4 @@ yields:
     The block will be executed in the context of the factory
     instance.
 version: "*"
+checksum: "+45hWGOF92mQXzY/0bPjMw=="

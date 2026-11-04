@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Command Steps
@@ -184,5 +184,3 @@ end
 A few things to note about this example. First, we have a couple of examples of wrapping existing code in a result, both by rescuing exceptions (in `#build_book`) or by checking a returned status (in `#persist_book`). Second, note that each of our helper methods can be reused in other controller actions. For even more encapsulation and reusability, the next step might be to convert those methods to commands of their own.
 
 You can define even more complex logic by defining multiple `#steps` blocks. Each block represents a series of tasks that will terminate on the first failure. Steps blocks can even be nested in one another, or inside a `#process` method.
-
-{% include breadcrumbs.md %}

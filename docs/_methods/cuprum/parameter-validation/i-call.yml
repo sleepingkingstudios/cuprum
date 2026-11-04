@@ -34,3 +34,4 @@ returns:
     path: cuprum/result
 short_description: Validates the parameters and passes them to super.
 version: "*"
+checksum: pjO0gNJJzXGAFEdGiEyNJA==

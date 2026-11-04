@@ -20,3 +20,4 @@ short_description: |-
   Checks that the given actual object is a Cuprum result or compatible
   object and has the specified properties.
 version: "*"
+checksum: 8u7PqaprbzfFBz7GU+AvKg==

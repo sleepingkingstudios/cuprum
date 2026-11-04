@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Parameter Validation
@@ -250,5 +250,3 @@ end
 ```
 
 The example group requires the presence of a defined `#call_command` method, as in the example above.
-
-{% include breadcrumbs.md %}

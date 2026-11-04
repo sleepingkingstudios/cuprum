@@ -20,3 +20,4 @@ returns:
   - name: Boolean
 short_description: Checks that the given actual object is not a Cuprum result.
 version: "*"
+checksum: x6U7mXmFHJ/wpSQMdMARjg==

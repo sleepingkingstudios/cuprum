@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Map Commands
@@ -181,5 +181,3 @@ results.success?
 results.statuses
 #=> [:success, :failure, :success]
 ```
-
-{% include breadcrumbs.md %}

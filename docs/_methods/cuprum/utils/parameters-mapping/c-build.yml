@@ -18,3 +18,4 @@ returns:
   - name: ParametersMapping
 short_description: Generates a parameters mapping for the given method or Proc.
 version: "*"
+checksum: eBbvW5vVcHzNiAWVWp7h0Q==

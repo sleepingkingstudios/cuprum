@@ -60,3 +60,4 @@ metadata:
         include Cuprum::Operation::Mixin
       end
 version: "*"
+checksum: I+RS7LSyTLBLHJdo98xdfA==

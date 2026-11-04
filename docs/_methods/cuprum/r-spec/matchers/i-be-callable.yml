@@ -11,3 +11,4 @@ returns:
   - name: RSpec::Matchers::BuiltIn::RespondTo
 short_description: Asserts that the command defines a :process method.
 version: "*"
+checksum: YhHayzxZwKbcr95x2bBOlw==

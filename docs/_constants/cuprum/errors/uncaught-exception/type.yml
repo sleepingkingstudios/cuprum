@@ -6,3 +6,4 @@ short_description: Short string used to identify the type of error.
 value: "'cuprum.errors.uncaught_exception'"
 data_path: cuprum/errors/uncaught-exception/type
 version: "*"
+checksum: b9qhQPmWTFyPcJlz+vrE4Q==

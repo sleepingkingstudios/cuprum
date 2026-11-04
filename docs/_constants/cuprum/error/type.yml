@@ -11,3 +11,4 @@ description: |-
 
   Subclasses of Cuprum::Error should define their own default TYPE constant.
 version: "*"
+checksum: fGmZw9bua5l9UXvMr7A6IA==

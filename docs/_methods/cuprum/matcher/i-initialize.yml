@@ -20,3 +20,4 @@ yields:
     Executes the block in the context of the singleton class. This is
     used to define match clauses when instantiating a Matcher instance.
 version: "*"
+checksum: IyZ2ubn/MoopPuN9JKW35Q==

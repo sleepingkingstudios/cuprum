@@ -8,3 +8,4 @@ parent_path: cuprum
 short_description: Helper methods for generating Cuprum result objects.
 data_path: cuprum/result-helpers
 version: "*"
+checksum: qehv58xA2lrEh7/xs9xaWQ==

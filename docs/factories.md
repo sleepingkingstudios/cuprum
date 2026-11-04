@@ -1,7 +1,7 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: './'
+    path: '/'
 ---
 
 # Command Factories
@@ -310,5 +310,3 @@ result = command.call(book) #=> an instance of Cuprum::Result
 books.count          #=> 4
 books.include?(book) #=> true
 ```
-
-{% include breadcrumbs.md %}

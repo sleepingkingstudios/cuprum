@@ -28,3 +28,4 @@ returns:
 yields:
 - description: A block to pass to the curried command.
 version: "*"
+checksum: M/KAkUSTrIRW5KPAtLQJHQ==

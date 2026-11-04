@@ -177,5 +177,3 @@ error.as_json #=>
 ```
 
 **Important Note:** Be careful when serializing error data - this may expose sensitive information or internal details about your system that you don't want to display to users. Recommended practice is to have a whitelist of serializable errors; all other errors will display a generic error message instead.
-
-{% include breadcrumbs.md %}

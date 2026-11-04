@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Middleware
@@ -69,5 +69,3 @@ end
 ```
 
 Middleware is loosely coupled, meaning that one middleware command can wrap any number of other commands. One example would be logging middleware, which could record when a command is called and with what parameters. For a more involved example, consider authorization in a web application. If individual actions are defined as commands, then a single authorization middleware class could wrap each individual action, reducing both the testing burden and the amount of code that must be maintained.
-
-{% include breadcrumbs.md %}

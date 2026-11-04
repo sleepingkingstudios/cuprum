@@ -1,0 +1,17 @@
+---
+name: Cuprum::Result#to_h
+parent_path: cuprum/result
+signature: properties
+slug: to-h
+constructor: false
+data_path: cuprum/result/i-to-h
+returns:
+- description: a Hash representation of the result.
+  type:
+  - name: Hash
+    keys:
+    - name: Symbol
+    values:
+    - name: Object
+version: "*"
+checksum: "/CiBo8JBv5T5+rHKD7RbKA=="

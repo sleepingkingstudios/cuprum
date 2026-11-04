@@ -10,5 +10,3 @@ version: '*'
 # Cuprum Reference
 
 {% include reference/namespace.md label=false namespace=root_namespace %}
-
-{% include breadcrumbs.md %}

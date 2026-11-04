@@ -6,3 +6,4 @@ short_description: Short string used to identify the type of error.
 value: "'cuprum.errors.operation_not_called'"
 data_path: cuprum/errors/operation-not-called/type
 version: "*"
+checksum: eS9oKPetd6/EkEGwOL2j+A==

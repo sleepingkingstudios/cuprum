@@ -276,5 +276,3 @@ result_list.error.message
 result_list.errors
 #=> [nil, #<Cuprum::Error>, nil]
 ```
-
-{% include breadcrumbs.md %}

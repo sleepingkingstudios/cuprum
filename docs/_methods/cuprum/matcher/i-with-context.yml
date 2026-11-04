@@ -19,3 +19,4 @@ returns:
     path: cuprum/matcher
 short_description: Returns a copy of the matcher with the given execution context.
 version: "*"
+checksum: DbYVDBQg7LupRKupEdH61Q==

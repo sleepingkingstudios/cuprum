@@ -6,3 +6,4 @@ short_description: Enumerates the default permitted values for a Result#status.
 value: "%i[success failure].freeze"
 data_path: cuprum/result/statuses
 version: "*"
+checksum: Ux74Yy7gddfTH0xTqRHubw==

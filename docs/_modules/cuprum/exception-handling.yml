@@ -43,3 +43,4 @@ metadata:
       #=> 'uncaught exception in SafeCommand -' \
       #   ' StandardError: Something went wrong.'
 version: "*"
+checksum: kpJtJwOztJgJPCojsSclfQ==

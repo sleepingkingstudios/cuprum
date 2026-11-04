@@ -118,3 +118,4 @@ metadata:
         .and_error(Cuprum::Error.new(message: 'Something went wrong'))
 constructor: true
 version: "*"
+checksum: MaWf7QbDo3+xxdv65VbuUA==

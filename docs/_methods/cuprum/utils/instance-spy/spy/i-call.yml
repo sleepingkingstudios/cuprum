@@ -7,3 +7,4 @@ constructor: false
 data_path: cuprum/utils/instance-spy/spy/i-call
 short_description: Empty method that accepts any parameters and an optional block.
 version: "*"
+checksum: pk+73+7AWxC5dGdbbUTokw==

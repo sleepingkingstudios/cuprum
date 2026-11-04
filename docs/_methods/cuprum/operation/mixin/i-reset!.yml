@@ -15,3 +15,4 @@ short_description: |-
   operation (an operation should never have external state apart from the
   last result).
 version: "*"
+checksum: TDAqCbkTfpgUtoGT1j8A9w==
