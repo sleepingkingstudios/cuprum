@@ -20,7 +20,7 @@ group :development, :test do
   gem 'rubocop',       '~> 1.92'
   gem 'rubocop-rspec', '~> 3.10'
 
-  gem 'simplecov', '~> 0.22'
+  gem 'simplecov', '~> 1.3'
 end
 
 group :docs do

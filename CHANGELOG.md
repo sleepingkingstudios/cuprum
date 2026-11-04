@@ -4,6 +4,8 @@
 
 The "Signs And Portents" Update
 
+As of version 1.3.0, Cuprum will no longer support Ruby 3.1 or 3.2.
+
 Added `Cuprum.initializer` to initialize dependencies and error messages. Call `Cuprum.initializer.call` in the entry point or initializers of your application to avoid missing error messages.
 
 ### Errors

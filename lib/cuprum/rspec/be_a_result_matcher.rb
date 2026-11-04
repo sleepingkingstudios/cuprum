@@ -125,9 +125,9 @@ module Cuprum::RSpec
       elsif !properties_match?
         message + properties_failure_message
       else
-        # :nocov:
+        # simplecov:disable
         message
-        # :nocov:
+        # simplecov:enable
       end
     end
 
