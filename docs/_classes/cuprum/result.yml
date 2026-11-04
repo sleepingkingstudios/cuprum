@@ -67,5 +67,9 @@ instance_methods:
   inherited: false
 data_path: cuprum/result
 constructor: true
+direct_subclasses:
+- name: Cuprum::ResultList
+  slug: result-list
+  path: cuprum/result-list
 version: "*"
-checksum: w6lCJpwtzh/CeIrNdMgubg==
+checksum: oFUDPtHMgvKBzkybAUqZVw==

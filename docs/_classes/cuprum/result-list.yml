@@ -6,13 +6,27 @@ files:
 - lib/cuprum/result_list.rb
 parent_path: cuprum
 short_description: Collection object that encapsulates a set of Cuprum results.
+class_methods:
+- name: failure
+  path: cuprum/result/c-failure
+  slug: failure
+  inherited: true
+- name: success
+  path: cuprum/result/c-success
+  slug: success
+  inherited: true
+constants:
+- name: STATUSES
+  path: cuprum/result/statuses
+  slug: statuses
+  inherited: true
 instance_attributes:
 - name: error
   read: true
   write: false
-  path: cuprum/result-list/i-error
+  path: cuprum/result/i-error
   slug: error
-  inherited: false
+  inherited: true
 - name: results
   read: true
   write: false
@@ -22,15 +36,15 @@ instance_attributes:
 - name: status
   read: true
   write: false
-  path: cuprum/result-list/i-status
+  path: cuprum/result/i-status
   slug: status
-  inherited: false
+  inherited: true
 - name: value
   read: true
   write: false
-  path: cuprum/result-list/i-value
+  path: cuprum/result/i-value
   slug: value
-  inherited: false
+  inherited: true
 instance_methods:
 - name: "=="
   path: cuprum/result-list/i-==
@@ -49,26 +63,30 @@ instance_methods:
   slug: errors
   inherited: false
 - name: failure?
-  path: cuprum/result-list/i-failure?
+  path: cuprum/result/i-failure?
   slug: failure?
-  inherited: false
+  inherited: true
 - name: initialize
   path: cuprum/result-list/i-initialize
   slug: initialize
   inherited: false
   constructor: true
+- name: properties
+  path: cuprum/result/i-properties
+  slug: properties
+  inherited: true
 - name: statuses
   path: cuprum/result-list/i-statuses
   slug: statuses
   inherited: false
 - name: success?
-  path: cuprum/result-list/i-success?
+  path: cuprum/result/i-success?
   slug: success?
-  inherited: false
+  inherited: true
 - name: to_cuprum_result
-  path: cuprum/result-list/i-to-cuprum-result
+  path: cuprum/result/i-to-cuprum-result
   slug: to-cuprum-result
-  inherited: false
+  inherited: true
 - name: values
   path: cuprum/result-list/i-values
   slug: values
@@ -94,5 +112,9 @@ metadata:
     text:
     type: reference
 constructor: true
+inherited_classes:
+- name: Cuprum::Result
+  slug: result
+  path: cuprum/result
 version: "*"
-checksum: 0CKooQ8sC2tYVL9oj6xD7g==
+checksum: QJgaMKtp06QUF3k6CBephw==
