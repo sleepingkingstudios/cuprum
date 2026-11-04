@@ -210,5 +210,3 @@ book.published? #=> false
 - [Handling Exceptions](./exceptions)
 - [Middleware](./middleware)
 - [Operations](./operations)
-
-{% include breadcrumbs.md %}

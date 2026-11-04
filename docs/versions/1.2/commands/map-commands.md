@@ -185,5 +185,3 @@ results.success?
 results.statuses
 #=> [:success, :failure, :success]
 ```
-
-{% include breadcrumbs.md %}

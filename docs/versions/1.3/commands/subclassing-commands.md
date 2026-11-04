@@ -54,5 +54,3 @@ result.value #=> #<Book>
 ```
 
 Using `.subclass`, we are able to quickly define command classes with specific parameters.
-
-{% include breadcrumbs.md %}

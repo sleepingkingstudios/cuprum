@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Composing Commands
@@ -148,5 +148,3 @@ end
 Notice that our factory includes error handling - if the user does not have a valid address, that is handled immediately rather than when trying to ship the item.
 
 The [Command Factory](../command-factories) defined by Cuprum is another example of using the Abstract Factory pattern to return command instances. One use case for a command factory would be defining CRUD operations for data records. Depending on the class or the type of record passed in, the factory could return a generic command or a specific command tied to that specific record type.
-
-{% include breadcrumbs.md %}

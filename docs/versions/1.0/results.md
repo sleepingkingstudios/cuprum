@@ -74,5 +74,3 @@ result.status   #=> :success
 result.success? #=> true
 result.failure? #=> false
 ```
-
-{% include breadcrumbs.md %}

@@ -1,7 +1,7 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
 ---
 
 # Commands
@@ -185,5 +185,3 @@ book.published? #=> false
 - [Handling Exceptions](./exceptions)
 - [Middleware](./middleware)
 - [Operations](./operations)
-
-{% include breadcrumbs.md %}

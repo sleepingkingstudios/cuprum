@@ -63,5 +63,3 @@ multiply_command = math_command.curry(operation: :*)
 multiply_command.call(operands: [3, 3])
 #=> returns a result with value 9
 ```
-
-{% include breadcrumbs.md %}

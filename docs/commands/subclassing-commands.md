@@ -1,9 +1,9 @@
 ---
 breadcrumbs:
   - name: Documentation
-    path: '../'
+    path: '/'
   - name: Commands
-    path: '../commands'
+    path: '/commands'
 ---
 
 # Subclassing Commands
@@ -50,5 +50,3 @@ result.value #=> #<Book>
 ```
 
 Using `.subclass`, we are able to quickly define command classes with specific parameters.
-
-{% include breadcrumbs.md %}

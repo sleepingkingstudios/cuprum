@@ -40,5 +40,3 @@ result.error.message
 ```
 
 Exception handling is *not* included by default - add `include Cuprum::ExceptionHandling` to your command classes to use this feature.
-
-{% include breadcrumbs.md %}
