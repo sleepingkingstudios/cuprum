@@ -11,13 +11,16 @@ module Cuprum::Errors
 
     # @param command_class [Class] the class of the failed command.
     # @param failures [Array<String>] the messages for the failed validations.
-    def initialize(command_class:, failures:)
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller.
+    def initialize(command_class:, failures:, backtrace: nil) # rubocop:disable Metrics/MethodLength
       @command_class   = command_class
       @failures        = failures
       class_name       = command_class.name
       failure_messages = failures.join(', ')
 
       super(
+        backtrace:,
         class_name:,
         command_class:,
         failures:,

@@ -10,13 +10,15 @@ module Cuprum::Errors
     TYPE = 'cuprum.errors.uncaught_exception'
 
     # @param exception [StandardError] The exception that was raised.
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller.
     # @param message [String] A message to display. Will be annotated with
     #   details on the exception and the exception's cause (if any).
-    def initialize(exception:, message: 'uncaught exception')
+    def initialize(exception:, backtrace: nil, message: 'uncaught exception')
       @exception = exception
       @cause     = exception.cause
 
-      super(message: generate_message(message))
+      super(backtrace:, message: generate_message(message))
     end
 
     # @return [StandardError] the exception that was raised.

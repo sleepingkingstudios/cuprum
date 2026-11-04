@@ -10,11 +10,13 @@ module Cuprum::Errors
     TYPE = 'cuprum.errors.operation_not_called'
 
     # @param operation [Cuprum::Operation] The uncalled operation.
-    def initialize(operation:)
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller.
+    def initialize(operation:, backtrace: nil)
       @operation = operation
       class_name = operation&.class&.name || 'operation'
 
-      super(class_name:, message:, operation:)
+      super(backtrace:, class_name:, message:, operation:)
     end
 
     # @return [Cuprum::Operation] The uncalled operation.

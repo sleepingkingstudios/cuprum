@@ -20,7 +20,7 @@ RSpec.describe Cuprum::Errors::CommandNotImplemented do
       expect(described_class)
         .to be_constructible
         .with(0).arguments
-        .and_keywords(:command)
+        .and_keywords(:backtrace, :command)
     end
 
     describe 'with no arguments' do

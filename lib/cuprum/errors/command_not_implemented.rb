@@ -12,13 +12,15 @@ module Cuprum::Errors
     # Short string used to identify the type of error.
     TYPE = 'cuprum.errors.command_not_implemented'
 
-    # @param command [Cuprum::Command] The command called without a definition.
-    def initialize(command:)
+    # @param command [Cuprum::Command] the command called without a definition.
+    # @param backtrace [true, false] if true, captures a backtrace from
+    #   Kernel.caller.
+    def initialize(command:, backtrace: nil)
       @command = command
 
       class_name = command&.class&.name || 'command'
 
-      super(class_name:, command:)
+      super(backtrace:, class_name:, command:)
     end
 
     # @return [Cuprum::Command] The command called without a definition.
