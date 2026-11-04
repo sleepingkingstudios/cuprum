@@ -16,6 +16,8 @@ Errors now support defining messages using `SleepingKingStudios::Tools::Messages
 
 Added `Result.success` and `Result.failure`, which provide singleton results with respective `:success` and `:failure` statuses.
 
+Updated `Cuprum::ResultList` to inherit from `Cuprum::Result`.
+
 ### RSpec
 
 Updated `ParameterValidationExamples` to support lazy evaluation of the `message:` parameter, as well as any additional parameters passed along with `type:`. Parameters passed as a `Proc` will be evaluated in the context of the current example group.
