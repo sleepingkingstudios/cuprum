@@ -1,0 +1,24 @@
+---
+name: Cuprum::Error#backtrace
+parent_path: cuprum/error
+signature: backtrace
+slug: backtrace
+constructor: false
+data_path: cuprum/error/i-backtrace
+metadata:
+  see:
+  - label: Kernel#caller
+    path:
+    text:
+    type: reference
+returns:
+- description: |-
+    the captured backtrace when the error was
+    created, if any.
+  type:
+  - name: Array
+    items:
+    - name: String
+  - name: nil
+version: "*"
+checksum: Ctoy9Ta2tNu0MHkTOU1TdA==

@@ -1,7 +1,7 @@
 ---
 name: Cuprum::Errors::OperationNotCalled#initialize
 parent_path: cuprum/errors/operation-not-called
-signature: initialize(operation:)
+signature: 'initialize(operation:, backtrace: nil)'
 slug: initialize
 constructor: true
 data_path: cuprum/errors/operation-not-called/i-initialize
@@ -11,9 +11,17 @@ params:
   type:
   - name: Cuprum::Operation
     path: cuprum/operation
+- description: |-
+    if true, captures a backtrace from
+    Kernel.caller.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: nil
 returns:
 - description: a new instance of OperationNotCalled
   type:
   - name: OperationNotCalled
 version: "*"
-checksum: is3QxUqR+onr/oGmSSJcXQ==
+checksum: tfaySCoCBymruvARLH4mBw==

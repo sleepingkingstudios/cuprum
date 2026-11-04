@@ -1,7 +1,7 @@
 ---
 name: Cuprum::Errors::UncaughtException#initialize
 parent_path: cuprum/errors/uncaught-exception
-signature: 'initialize(exception:, message: ''uncaught exception'')'
+signature: 'initialize(exception:, backtrace: nil, message: ''uncaught exception'')'
 slug: initialize
 constructor: true
 data_path: cuprum/errors/uncaught-exception/i-initialize
@@ -10,6 +10,14 @@ params:
   name: exception
   type:
   - name: StandardError
+- description: |-
+    if true, captures a backtrace from
+    Kernel.caller.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: nil
 - description: |-
     A message to display. Will be annotated with
     details on the exception and the exception's cause (if any).
@@ -22,4 +30,4 @@ returns:
   type:
   - name: UncaughtException
 version: "*"
-checksum: YIUJ6TjnCPCGXpjGJoTF2Q==
+checksum: 2K6/n0uT7eqFnlEQvsjDiA==

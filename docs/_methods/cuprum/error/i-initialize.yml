@@ -1,11 +1,20 @@
 ---
 name: Cuprum::Error#initialize
 parent_path: cuprum/error
-signature: 'initialize(message: nil, type: nil, **properties)'
+signature: 'initialize(backtrace: false, message: nil, type: nil, **properties)'
 slug: initialize
 constructor: true
 data_path: cuprum/error/i-initialize
 params:
+- description: |-
+    if true, captures a backtrace from
+    Kernel.caller. Defaults to false unless the
+    ENV['CUPRUM_ERROR_BACKTRACE'] flag is set to true.
+  name: backtrace
+  type:
+  - name: 'true'
+  - name: 'false'
+  default: 'false'
 - description: |-
     Optional message describing the nature of the
     error.
@@ -27,4 +36,4 @@ returns:
   type:
   - name: Error
 version: "*"
-checksum: iIMPTu1Wys0b1sg4hGx14w==
+checksum: carkDrCSbzKEUD3b3dPRow==
