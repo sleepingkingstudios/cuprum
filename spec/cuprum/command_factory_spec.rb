@@ -7,9 +7,8 @@ RSpec.describe Cuprum::CommandFactory do
   shared_context 'when a factory subclass is defined' do
     let(:described_class) { Spec::ExampleCommandFactory }
 
-    # rubocop:disable RSpec/DescribedClass
+    # rubocop:disable-next RSpec/DescribedClass
     options = { base_class: Cuprum::CommandFactory }
-    # rubocop:enable RSpec/DescribedClass
     example_class 'Spec::ExampleCommandFactory', options
   end
 

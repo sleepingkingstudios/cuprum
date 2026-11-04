@@ -97,7 +97,7 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
   end
 
   describe '#call' do
-    # rubocop:disable RSpec/MultipleMemoizedHelpers
+    # rubocop:disable-next RSpec/MultipleMemoizedHelpers
     shared_examples 'should call the command with the expected parameters' do
       let(:expected_arguments) do
         [*arguments, *args]
@@ -135,7 +135,6 @@ RSpec.describe Cuprum::Currying::CurriedCommand do
         expect(call_curried_command).to be result
       end
     end
-    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     shared_examples 'should curry the arguments and keywords' do
       describe 'with no arguments' do

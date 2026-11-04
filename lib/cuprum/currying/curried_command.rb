@@ -106,13 +106,12 @@ module Cuprum::Currying
       args   = [*arguments, *args]
       kwargs = keywords.merge(kwargs)
 
-      # rubocop:disable Style/RedundantParentheses
+      # rubocop:disable-next Style/RedundantParentheses
       if kwargs.empty?
         command.call(*args, &(override || block))
       else
         command.call(*args, **kwargs, &(override || block))
       end
-      # rubocop:enable Style/RedundantParentheses
     end
   end
 end

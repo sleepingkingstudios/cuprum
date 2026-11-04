@@ -43,9 +43,8 @@ RSpec.describe Cuprum::Errors::OperationNotCalled do
 
   describe '#==' do
     describe 'with nil' do
-      # rubocop:disable Style/NilComparison
+      # rubocop:disable-next Style/NilComparison
       it { expect(error == nil).to be false }
-      # rubocop:enable Style/NilComparison
     end
 
     describe 'with an Object' do

@@ -1565,7 +1565,7 @@ RSpec.describe Cuprum::RSpec::BeAResultMatcher do
               "\n  expected status: #{expected_status.inspect}" \
               "\n    actual status: #{params[:status].inspect}" \
               "\n   expected value: #{expected_value.inspect}" \
-              "\n     actual value: #{params[:value].inspect}" \
+              "\n     actual value: #{params[:value].inspect}"
           end
 
           it { expect(matcher.matches? actual).to be false }

@@ -37,9 +37,8 @@ RSpec.describe Cuprum::Error do
     end
 
     describe 'with nil' do
-      # rubocop:disable Style/NilComparison
+      # rubocop:disable-next Style/NilComparison
       it { expect(error == nil).to be false }
-      # rubocop:enable Style/NilComparison
     end
 
     describe 'with an Object' do
@@ -106,9 +105,8 @@ RSpec.describe Cuprum::Error do
       let(:message) { 'Something went wrong.' }
 
       describe 'with nil' do
-        # rubocop:disable Style/NilComparison
+        # rubocop:disable-next Style/NilComparison
         it { expect(error == nil).to be false }
-        # rubocop:enable Style/NilComparison
       end
 
       describe 'with an Object' do
@@ -162,9 +160,8 @@ RSpec.describe Cuprum::Error do
       let(:type) { 'spec.custom_error' }
 
       describe 'with nil' do
-        # rubocop:disable Style/NilComparison
+        # rubocop:disable-next Style/NilComparison
         it { expect(error == nil).to be false }
-        # rubocop:enable Style/NilComparison
       end
 
       describe 'with an Object' do
@@ -218,9 +215,8 @@ RSpec.describe Cuprum::Error do
       let(:properties) { { color: 'red', shape: 'möbius strip' } }
 
       describe 'with nil' do
-        # rubocop:disable Style/NilComparison
+        # rubocop:disable-next Style/NilComparison
         it { expect(error == nil).to be false }
-        # rubocop:enable Style/NilComparison
       end
 
       describe 'with an Object' do
@@ -264,9 +260,8 @@ RSpec.describe Cuprum::Error do
       let(:type)       { 'spec.custom_error' }
 
       describe 'with nil' do
-        # rubocop:disable Style/NilComparison
+        # rubocop:disable-next Style/NilComparison
         it { expect(error == nil).to be false }
-        # rubocop:enable Style/NilComparison
       end
 
       describe 'with an Object' do

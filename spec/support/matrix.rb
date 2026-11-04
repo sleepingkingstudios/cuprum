@@ -35,7 +35,7 @@ module Spec
       matrix
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def expand_scenarios(matrix:, keyword:, values:)
       expanded = []
 
@@ -53,7 +53,6 @@ module Spec
 
       expanded
     end
-    # rubocop:enable Metrics/MethodLength
 
     def generate_example_name(labels)
       ary = labels.map(&:to_s).reject(&:empty?)
