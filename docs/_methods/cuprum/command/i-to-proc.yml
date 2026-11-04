@@ -14,3 +14,4 @@ returns:
   - name: Proc
 short_description: Wraps the command in a proc.
 version: "*"
+checksum: HeGGdUWUykn1+WK8qdbLHA==

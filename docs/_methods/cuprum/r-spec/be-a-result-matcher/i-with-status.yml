@@ -20,3 +20,4 @@ short_description: |-
   Sets a status expectation on the matcher. Calls to #matches? will fail
   unless the actual object has the specified status.
 version: "*"
+checksum: kppOfP5AiB7ZhFOiqjzIcw==

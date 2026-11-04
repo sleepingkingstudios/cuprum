@@ -26,3 +26,4 @@ returns:
     path: cuprum/result
 short_description: Converts the result list to a Cuprum::Result.
 version: "*"
+checksum: acIV9mcRGs2HeL99+c8zmw==

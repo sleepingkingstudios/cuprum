@@ -64,3 +64,4 @@ metadata:
       multiply_command.call(operands: [3, 3])
       #=> returns a result with value 9
 version: "*"
+checksum: Q4sk8aRv0nSARjt4X+M2Yw==

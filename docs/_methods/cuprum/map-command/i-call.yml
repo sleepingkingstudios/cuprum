@@ -21,3 +21,4 @@ returns:
     path: cuprum/result-list
 short_description: Calls the command implementation for each item in the given Enumerable.
 version: "*"
+checksum: sL+9QNI1qGI8XzbJMN6zaA==

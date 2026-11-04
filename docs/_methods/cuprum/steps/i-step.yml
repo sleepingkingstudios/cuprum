@@ -56,3 +56,4 @@ short_description: Executes the block and returns the value, or halts on a failu
 yields:
 - description: Called with no parameters.
 version: "*"
+checksum: "/vZPf/AWxLzB0m3qIqYO4A=="

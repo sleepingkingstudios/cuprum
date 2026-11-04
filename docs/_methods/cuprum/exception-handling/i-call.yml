@@ -29,3 +29,4 @@ returns:
     path: cuprum/result
 short_description: 'Wraps the #call method with a rescue clause matching any StandardError.'
 version: "*"
+checksum: p1Xp6vl92bvRUaJ5YYBfyA==

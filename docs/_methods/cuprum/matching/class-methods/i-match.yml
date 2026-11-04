@@ -38,3 +38,4 @@ yield_params:
 yields:
 - description: The code to execute on a successful match.
 version: "*"
+checksum: Eg6HdI6irEj98SsIHCKzFA==

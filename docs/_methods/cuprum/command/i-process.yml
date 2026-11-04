@@ -38,3 +38,4 @@ short_description: The implementation of the command.
 yields:
 - description: 'The block, if any, passed from #call.'
 version: "*"
+checksum: Ccnq9XHMiy4XTfbmu+ye9w==

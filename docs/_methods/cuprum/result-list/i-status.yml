@@ -24,3 +24,4 @@ returns:
   - name: ":failure"
 short_description: Determines the status of the combined results.
 version: "*"
+checksum: vrBiIjw9gNa/m6alDmtZVg==

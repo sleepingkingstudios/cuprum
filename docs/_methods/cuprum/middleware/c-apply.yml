@@ -41,3 +41,4 @@ returns:
     path: cuprum/command
 short_description: Helper method for wrapping a command with middleware.
 version: "*"
+checksum: nnucxNuPfPDo7XVyBsT+9Q==

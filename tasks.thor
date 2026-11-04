@@ -18,4 +18,3 @@ registry.register Cuprum::Cli::Commands::File.commands
 
 # Docs Commands
 registry.register SleepingKingStudios::Docs::Jekyll.commands
-registry.register SleepingKingStudios::Docs::Jekyll.install_commands

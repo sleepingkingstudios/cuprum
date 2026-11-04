@@ -6,3 +6,4 @@ short_description: Short string used to identify the type of error.
 value: "'cuprum.errors.command_not_implemented'"
 data_path: cuprum/errors/command-not-implemented/type
 version: "*"
+checksum: UwEUyWaZyQSC+VnKEDG+Yw==

@@ -194,3 +194,4 @@ overloads:
       path: cuprum/parameter-validation/validator/unknown-validation-error
   short_description: Defines a validation for the specified parameter.
 version: "*"
+checksum: jX60m6P3UYw6SSw2pe3utQ==

@@ -50,3 +50,4 @@ metadata:
         expect(spy).to have_received(:call)
       end
 version: "*"
+checksum: R9RqLMM1k3P9i9gmwrAqVQ==

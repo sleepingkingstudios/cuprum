@@ -55,3 +55,4 @@ raises:
   - name: ArgumentError
 short_description: Finds or creates a spy object for the given module or class.
 version: "*"
+checksum: 9aGlwZf/A3k+qjKxfuDrMA==

@@ -12,3 +12,4 @@ inherited_classes:
 - name: StandardError
   slug: standard-error
 version: "*"
+checksum: 0fpiWSUCmS6ydR6B7WkwNQ==

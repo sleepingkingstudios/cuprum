@@ -6,3 +6,4 @@ short_description: Short string used to identify the type of error.
 value: "'cuprum.errors.invalid_parameters'"
 data_path: cuprum/errors/invalid-parameters/type
 version: "*"
+checksum: 2B/6KkTa8GZ5jVdUn0lH+w==

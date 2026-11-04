@@ -39,3 +39,4 @@ returns:
     path: cuprum/result
 short_description: Merges the arguments and keywords and calls the wrapped command.
 version: "*"
+checksum: cl33vwPdQNKIPynk89oDzg==

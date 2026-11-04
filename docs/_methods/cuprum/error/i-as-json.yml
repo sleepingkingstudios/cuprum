@@ -21,3 +21,4 @@ returns:
     - name: Object
 short_description: Generates a serializable representation of the error object.
 version: "*"
+checksum: Gc/NjHjOFKeryuRYLd6PMg==

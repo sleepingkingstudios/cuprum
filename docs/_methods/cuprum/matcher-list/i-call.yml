@@ -41,3 +41,4 @@ raises:
     path: cuprum/matching/no-match-error
 short_description: Finds and executes the best matching clause from the ordered matchers.
 version: "*"
+checksum: vRT0Ca4LM0p8HwpRzx7+RQ==
