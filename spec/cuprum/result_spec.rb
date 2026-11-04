@@ -108,9 +108,8 @@ RSpec.describe Cuprum::Result do
     }
 
     describe 'with nil' do
-      # rubocop:disable Style/NilComparison
+      # rubocop:disable-next Style/NilComparison
       it { expect(result == nil).to be false }
-      # rubocop:enable Style/NilComparison
     end
 
     include_examples 'should compare the results in each scenario',

@@ -6,7 +6,7 @@ module Cuprum::ParameterValidation
   # @api private
   #
   # Value class representing a single validation for a parameter.
-  class ValidationRule < Struct.new( # rubocop:disable Style/StructInheritance
+  class ValidationRule < Struct.new(
     :name,
     :type,
     :method_name,

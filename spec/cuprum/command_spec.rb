@@ -38,7 +38,7 @@ RSpec.describe Cuprum::Command do
 
   include_examples 'should implement the Steps methods'
 
-  # rubocop:disable RSpec/MultipleMemoizedHelpers
+  # rubocop:disable-next RSpec/MultipleMemoizedHelpers
   describe '.subclass' do
     subject(:command) { subclass.new(*arguments, **keywords, &block) }
 
@@ -131,7 +131,6 @@ RSpec.describe Cuprum::Command do
       end
     end
   end
-  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   describe '#call' do
     let(:implementation) { -> {} }

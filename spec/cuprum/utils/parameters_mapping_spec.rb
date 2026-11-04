@@ -156,7 +156,7 @@ RSpec.describe Cuprum::Utils::ParametersMapping do
 
     describe 'with a callable with mixed parameters' do
       let(:callable) do
-        # rubocop:disable Style/NilLambda
+        # rubocop:disable-next Style/NilLambda
         lambda do |
           article,
           author = nil,
@@ -170,7 +170,6 @@ RSpec.describe Cuprum::Utils::ParametersMapping do
           nil
           # :nocov:
         end
-        # rubocop:enable Style/NilLambda
       end
 
       include_deferred 'should define the mapping',
