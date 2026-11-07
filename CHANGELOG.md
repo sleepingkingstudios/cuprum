@@ -12,6 +12,11 @@ Added `Cuprum.initializer` to initialize dependencies and error messages. Call `
 
 Errors now support defining messages using `SleepingKingStudios::Tools::Messages` or by defining a `:MESSAGE` constant, including support for named parameters (see `Kernel#format`).
 
+You can now store `Exception`-like backtraces for `Cuprum::Error` objects. There are two ways to generate a backtrace for an error:
+
+- Pass `backtrace: true` when calling `Error.new` for a specific error.
+- Set the `CUPRUM_ERROR_BACKTRACE=true` environment flag to store backtraces for all errors.
+
 ### Results
 
 Added `Result.success` and `Result.failure`, which provide singleton results with respective `:success` and `:failure` statuses.
