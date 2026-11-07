@@ -66,6 +66,10 @@ module Cuprum::RSpec::Deferred
         end
       end
 
+      define_method :tools do
+        SleepingKingStudios::Tools::Toolbelt.instance
+      end
+
       it 'should return a failing result with InvalidParameters error' do
         expected_failure =
           expected_message ||
